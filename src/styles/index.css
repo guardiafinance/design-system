@@ -1,0 +1,616 @@
+@custom-variant dark (&:is(.dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light Theme */
+:root,
+:root[data-theme="light"] {
+    --surface-bg: #ffffff;
+    --surface-fg: #4f186d;
+    --color-text: #4f186d;
+    --color-link: #37104c;
+    --color-link-hover: #e07400;
+    --button-bg: #4f186d;
+    --button-fg: #ffffff;
+    --button-hover-bg: #37104c;
+    --ring: #e07400;
+
+    --background: 0 0% 100%;
+    --foreground: 271 59% 26%;
+    --card: 0 0% 100%;
+    --card-foreground: 271 59% 26%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 271 59% 26%;
+    --primary: 271 59% 26%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 271 59% 26%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 285 25% 55%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 271 59% 26%;
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --radius: 0.5rem;
+
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+}
+
+/* Dark Theme */
+:root[data-theme="dark"] {
+    --surface-bg: #1f092b;
+    --surface-fg: #dbd0e1;
+    --color-text: var(--surface-fg);
+    --color-link: #e07400;
+    --color-link-hover: #9c5100;
+    --button-bg: #37104c;
+    --button-fg: #dbd0e1;
+    --button-hover-bg: #4f186d;
+    --ring: #e07400;
+
+    --background: 285 62% 10%;
+    --foreground: 270 15% 85%;
+    --card: 285 62% 10%;
+    --card-foreground: 270 15% 85%;
+    --popover: 285 62% 10%;
+    --popover-foreground: 270 15% 85%;
+    --primary: 25 100% 44%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 285 30% 20%;
+    --secondary-foreground: 270 15% 85%;
+    --muted: 285 30% 20%;
+    --muted-foreground: 285 15% 68%;
+    --accent: 25 100% 44%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 270 15% 85%;
+    --border: 285 30% 20%;
+    --input: 285 30% 20%;
+
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+}
+
+html,
+body {
+    background: var(--surface-bg);
+    color: var(--surface-fg);
+    font-family: Poppins, ui-sans-serif, system-ui;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    @font-face {
+        font-family: "Poppins";
+        src: url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    }
+
+    * {
+        font-family: "Poppins", sans-serif;
+    }
+}
+
+/* Global utilities */
+.ds-text {
+    color: var(--color-text);
+}
+
+a.ds-link {
+    color: var(--color-link);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+a.ds-link:hover,
+a.ds-link:focus-visible {
+    color: var(--color-link-hover);
+}
+
+.ds-btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 transition-colors;
+    background: var(--button-bg);
+    color: var(--button-fg);
+    font-weight: 600;
+}
+
+.ds-btn:hover {
+    background: var(--button-hover-bg);
+}
+
+.ds-btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+:root {
+    --sidebar: hsl(0 0% 98%);
+    --sidebar-foreground: hsl(240 5.3% 26.1%);
+    --sidebar-primary: hsl(240 5.9% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(240 4.8% 95.9%);
+    --sidebar-accent-foreground: hsl(240 5.9% 10%);
+    --sidebar-border: hsl(220 13% 91%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+    --sidebar: hsl(240 5.9% 10%);
+    --sidebar-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-primary: hsl(224.3 76.3% 48%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(240 3.7% 15.9%);
+    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-border: hsl(240 3.7% 15.9%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --animate-accordion-down: accordion-down 0.2s ease-out;
+    --animate-accordion-up: accordion-up 0.2s ease-out;
+
+    @keyframes accordion-down {
+        from {
+            height: 0;
+        }
+
+        to {
+            height: var(--radix-accordion-content-height);
+        }
+    }
+
+    @keyframes accordion-up {
+        from {
+            height: var(--radix-accordion-content-height);
+        }
+
+        to {
+            height: 0;
+        }
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db transparent;
+    }
+
+    *::-webkit-scrollbar {
+        @apply w-2;
+    }
+
+    *::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-gray-300 hover:bg-gray-400;
+        transition: background-color 0.2s ease;
+    }
+
+    ::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    ::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    *::-webkit-scrollbar-button:start:decrement,
+    *::-webkit-scrollbar-button:end:increment {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    *::-webkit-scrollbar-button:single-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    *::-webkit-scrollbar-button:double-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    *::-webkit-scrollbar-corner {
+        @apply bg-transparent;
+    }
+
+    /* Dark theme scrollbar styles */
+    :root[data-theme="dark"] * {
+        scrollbar-color: #737373 transparent;
+    }
+
+    :root[data-theme="dark"] *::-webkit-scrollbar-thumb {
+        @apply bg-neutral-500 hover:bg-neutral-400;
+    }
+
+    /* Ensure the styles apply to specific scrollable elements */
+    html,
+    body,
+    main,
+    div,
+    section,
+    article,
+    aside,
+    nav,
+    ul,
+    ol,
+    dl,
+    table,
+    tbody,
+    thead,
+    tfoot {
+        scrollbar-width: thin;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    main::-webkit-scrollbar,
+    div::-webkit-scrollbar,
+    section::-webkit-scrollbar,
+    article::-webkit-scrollbar,
+    aside::-webkit-scrollbar,
+    nav::-webkit-scrollbar,
+    ul::-webkit-scrollbar,
+    ol::-webkit-scrollbar,
+    dl::-webkit-scrollbar,
+    table::-webkit-scrollbar,
+    tbody::-webkit-scrollbar,
+    thead::-webkit-scrollbar,
+    tfoot::-webkit-scrollbar {
+        @apply w-2;
+    }
+
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    main::-webkit-scrollbar-track,
+    div::-webkit-scrollbar-track,
+    section::-webkit-scrollbar-track,
+    article::-webkit-scrollbar-track,
+    aside::-webkit-scrollbar-track,
+    nav::-webkit-scrollbar-track,
+    ul::-webkit-scrollbar-track,
+    ol::-webkit-scrollbar-track,
+    dl::-webkit-scrollbar-track,
+    table::-webkit-scrollbar-track,
+    tbody::-webkit-scrollbar-track,
+    thead::-webkit-scrollbar-track,
+    tfoot::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    main::-webkit-scrollbar-thumb,
+    div::-webkit-scrollbar-thumb,
+    section::-webkit-scrollbar-thumb,
+    article::-webkit-scrollbar-thumb,
+    aside::-webkit-scrollbar-thumb,
+    nav::-webkit-scrollbar-thumb,
+    ul::-webkit-scrollbar-thumb,
+    ol::-webkit-scrollbar-thumb,
+    dl::-webkit-scrollbar-thumb,
+    table::-webkit-scrollbar-thumb,
+    tbody::-webkit-scrollbar-thumb,
+    thead::-webkit-scrollbar-thumb,
+    tfoot::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-gray-300 hover:bg-gray-400;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Hide scrollbar buttons for all specific elements - high priority */
+    html::-webkit-scrollbar-button,
+    body::-webkit-scrollbar-button,
+    main::-webkit-scrollbar-button,
+    div::-webkit-scrollbar-button,
+    section::-webkit-scrollbar-button,
+    article::-webkit-scrollbar-button,
+    aside::-webkit-scrollbar-button,
+    nav::-webkit-scrollbar-button,
+    ul::-webkit-scrollbar-button,
+    ol::-webkit-scrollbar-button,
+    dl::-webkit-scrollbar-button,
+    table::-webkit-scrollbar-button,
+    tbody::-webkit-scrollbar-button,
+    thead::-webkit-scrollbar-button,
+    tfoot::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    html::-webkit-scrollbar-button:start:decrement,
+    html::-webkit-scrollbar-button:end:increment,
+    body::-webkit-scrollbar-button:start:decrement,
+    body::-webkit-scrollbar-button:end:increment,
+    main::-webkit-scrollbar-button:start:decrement,
+    main::-webkit-scrollbar-button:end:increment,
+    div::-webkit-scrollbar-button:start:decrement,
+    div::-webkit-scrollbar-button:end:increment,
+    section::-webkit-scrollbar-button:start:decrement,
+    section::-webkit-scrollbar-button:end:increment,
+    article::-webkit-scrollbar-button:start:decrement,
+    article::-webkit-scrollbar-button:end:increment,
+    aside::-webkit-scrollbar-button:start:decrement,
+    aside::-webkit-scrollbar-button:end:increment,
+    nav::-webkit-scrollbar-button:start:decrement,
+    nav::-webkit-scrollbar-button:end:increment,
+    ul::-webkit-scrollbar-button:start:decrement,
+    ul::-webkit-scrollbar-button:end:increment,
+    ol::-webkit-scrollbar-button:start:decrement,
+    ol::-webkit-scrollbar-button:end:increment,
+    dl::-webkit-scrollbar-button:start:decrement,
+    dl::-webkit-scrollbar-button:end:increment,
+    table::-webkit-scrollbar-button:start:decrement,
+    table::-webkit-scrollbar-button:end:increment,
+    tbody::-webkit-scrollbar-button:start:decrement,
+    tbody::-webkit-scrollbar-button:end:increment,
+    thead::-webkit-scrollbar-button:start:decrement,
+    thead::-webkit-scrollbar-button:end:increment,
+    tfoot::-webkit-scrollbar-button:start:decrement,
+    tfoot::-webkit-scrollbar-button:end:increment {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    /* Dark theme specific element scrollbars */
+    :root[data-theme="dark"] html::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] body::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] main::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] div::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] section::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] article::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] aside::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] nav::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] ul::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] ol::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] dl::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] table::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] tbody::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] thead::-webkit-scrollbar-thumb,
+    :root[data-theme="dark"] tfoot::-webkit-scrollbar-thumb {
+        @apply bg-neutral-500 hover:bg-neutral-400;
+    }
+
+    /* COMPREHENSIVE SCROLLBAR ARROW REMOVAL - ALL BROWSERS */
+
+    /* Firefox scrollbar arrows removal */
+    html {
+        scrollbar-width: thin !important;
+        scrollbar-color: #d1d5db transparent !important;
+    }
+
+    :root[data-theme="dark"] html {
+        scrollbar-color: #737373 transparent !important;
+    }
+
+    /* Webkit browsers - Complete arrow elimination */
+    ::-webkit-scrollbar-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* All possible webkit scrollbar button variations */
+    ::-webkit-scrollbar-button:start:decrement,
+    ::-webkit-scrollbar-button:end:increment,
+    ::-webkit-scrollbar-button:vertical:start:decrement,
+    ::-webkit-scrollbar-button:vertical:end:increment,
+    ::-webkit-scrollbar-button:horizontal:start:decrement,
+    ::-webkit-scrollbar-button:horizontal:end:increment,
+    ::-webkit-scrollbar-button:single-button,
+    ::-webkit-scrollbar-button:double-button,
+    ::-webkit-scrollbar-button:vertical:single-button,
+    ::-webkit-scrollbar-button:vertical:double-button,
+    ::-webkit-scrollbar-button:horizontal:single-button,
+    ::-webkit-scrollbar-button:horizontal:double-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Remove track pieces that might contain buttons */
+    ::-webkit-scrollbar-track-piece {
+        background: transparent !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    ::-webkit-scrollbar-track-piece:start,
+    ::-webkit-scrollbar-track-piece:end {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    /* Force scrollbar to only show thumb */
+    ::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+        background: transparent !important;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #d1d5db !important;
+        border-radius: 10px !important;
+        border: none !important;
+        margin: 0 !important;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af !important;
+    }
+
+    :root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+        background: #737373 !important;
+    }
+
+    :root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+        background: #a3a3a3 !important;
+    }
+
+    /* Radix UI and component-specific overrides */
+    [data-radix-scroll-area-viewport],
+    [data-radix-scroll-area-scrollbar] {
+        scrollbar-width: thin !important;
+    }
+
+    [data-radix-scroll-area-viewport]::-webkit-scrollbar-button,
+    [data-radix-scroll-area-scrollbar]::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    /* FINAL OVERRIDE - Nuclear option for scrollbar arrows */
+    body *,
+    html *,
+    * {
+        scrollbar-width: thin !important;
+    }
+
+    body *::-webkit-scrollbar,
+    html *::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+    }
+
+    body *::-webkit-scrollbar-button,
+    html *::-webkit-scrollbar-button,
+    *::-webkit-scrollbar-button,
+    body *::-webkit-scrollbar-button:start,
+    html *::-webkit-scrollbar-button:start,
+    *::-webkit-scrollbar-button:start,
+    body *::-webkit-scrollbar-button:end,
+    html *::-webkit-scrollbar-button:end,
+    *::-webkit-scrollbar-button:end {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: none !important;
+        border: none !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+    }
+
+    /* OS-specific overrides */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        *::-webkit-scrollbar-button {
+            display: none !important;
+        }
+    }
+
+    /* Edge/IE specific */
+    @supports (-ms-overflow-style: none) {
+        * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+    }
+}
+
+.stylized-select-trigger {
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.8) 100%);
+    border: 1px solid hsl(var(--muted-foreground) / 0.1);
+}
+
+.stylized-select-trigger:hover {
+    background: linear-gradient(135deg, hsl(var(--muted) / 0.9) 0%, hsl(var(--muted) / 0.7) 100%);
+}
+
+.stylized-select-trigger:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+}
+
+.stylized-select-trigger[data-state="open"] {
+    background: linear-gradient(135deg, hsl(var(--muted) / 0.95) 0%, hsl(var(--muted) / 0.75) 100%);
+}
+
+/* Dark theme specific adjustments */
+:root[data-theme="dark"] .stylized-select-trigger {
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.6) 100%);
+    border: 1px solid hsl(var(--muted-foreground) / 0.2);
+}
+
+:root[data-theme="dark"] .stylized-select-trigger:hover {
+    background: linear-gradient(135deg, hsl(var(--muted) / 0.8) 0%, hsl(var(--muted) / 0.5) 100%);
+}
+
+:root[data-theme="dark"] .stylized-select-trigger:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring));
+}
