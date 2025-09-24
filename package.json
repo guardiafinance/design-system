@@ -1,6 +1,6 @@
 {
-  "name": "guardia-design-system",
-  "version": "1.0.1",
+  "name": "@guardiafinance/design-system",
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     ".": {
@@ -12,6 +12,13 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guardiafinance/design-system.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build --watch"
