@@ -1,3 +1,7 @@
+[![Build and Test](https://github.com/guardiafinance/design-system/actions/workflows/pull-request.yml/badge.svg)](https://github.com/guardiafinance/design-system/actions/workflows/pull-request.yml)
+[![Publish Package](https://github.com/guardiafinance/design-system/actions/workflows/publish.yml/badge.svg)](https://github.com/guardiafinance/design-system/actions/workflows/publish.yml)
+
+
 # Guardia Design System
 
 A comprehensive React component library built with TypeScript, Tailwind CSS, and Radix UI primitives. This design system provides a complete set of accessible, customizable components for building modern web applications.
