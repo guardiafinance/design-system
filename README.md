@@ -749,15 +749,42 @@ import { Label } from 'guardia-design-system'
 ### Typography
 
 #### **Typography**
-Pre-styled text components.
+Pre-styled text components with semantic variants and direct component access.
 
 ```tsx
-import { Typography } from 'guardia-design-system'
+import { Typography, H1, H2, H3, H4, H5, H6, P, Lead, Large, Small, Muted, Code, Blockquote, List, Link, PageTitle } from 'guardia-design-system'
 
+// Using Typography component with variants
 <Typography variant="h1">Heading 1</Typography>
 <Typography variant="h2">Heading 2</Typography>
-<Typography variant="body">Body text</Typography>
-<Typography variant="caption">Caption text</Typography>
+<Typography variant="p">Body text</Typography>
+<Typography variant="muted">Muted text</Typography>
+
+// Using direct components (recommended)
+<H1>Main Heading</H1>
+<H2>Section Heading</H2>
+<H3>Subsection Heading</H3>
+<H4>Page Title</H4>
+<H5>Card Title</H5>
+<H6>Small Heading</H6>
+
+<P>Regular paragraph text with proper spacing.</P>
+<Lead>Lead text for introductions and summaries.</Lead>
+<Large>Large text for emphasis.</Large>
+<Small>Small text for captions and labels.</Small>
+<Muted>Muted text for secondary information.</Muted>
+
+<Code>inline code</Code>
+<Blockquote>This is a blockquote with proper styling.</Blockquote>
+
+<List>
+  <li>First item</li>
+  <li>Second item</li>
+  <li>Third item</li>
+</List>
+
+<Link href="/docs">Documentation link</Link>
+<PageTitle>Page Title Component</PageTitle>
 ```
 
 ### Utilities
@@ -784,9 +811,12 @@ import { ScrollArea } from 'guardia-design-system'
 Collection of custom icon components.
 
 ```tsx
-import { CustomIcons } from 'guardia-design-system'
+import { SparklesFilled, Sparkles, SparkleSquared, SparkleAi } from 'guardia-design-system'
 
-<CustomIcons.GuardiaLogo className="h-8 w-8" />
+<SparklesFilled className="h-8 w-8" />
+<Sparkles className="h-6 w-6" />
+<SparkleSquared className="h-5 w-5" />
+<SparkleAi className="h-4 w-4" />
 ```
 
 ## 🎨 Theming
