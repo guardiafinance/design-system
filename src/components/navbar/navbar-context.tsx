@@ -1,4 +1,5 @@
 import React, { createContext, useContext, ReactNode, useState } from 'react';
+import { SidebarProvider } from '../sidebar';
 
 export interface NavbarState {
     activeArea: string;
@@ -17,9 +18,18 @@ const NavbarContext = createContext<NavbarContextValue | null>(null);
 export interface NavbarProviderProps {
     children: ReactNode;
     initialState?: NavbarState;
+    defaultOpen?: boolean;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export function NavbarProvider({ children, initialState }: NavbarProviderProps) {
+export function NavbarProvider({
+    children,
+    initialState,
+    defaultOpen = true,
+    open,
+    onOpenChange
+}: NavbarProviderProps) {
     const [state, setState] = useState<NavbarState>(
         initialState || { activeArea: '', activeItem: null }
     );
@@ -41,7 +51,9 @@ export function NavbarProvider({ children, initialState }: NavbarProviderProps) 
 
     return (
         <NavbarContext.Provider value={contextValue}>
-            {children}
+            <SidebarProvider defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange} >
+                {children}
+            </SidebarProvider>
         </NavbarContext.Provider>
     );
 }
