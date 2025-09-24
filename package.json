@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/guardiafinance/design-system.git"
+    "url": "git+https://github.com/guardiafinance/design-system.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
