@@ -19,6 +19,7 @@ export * from "./input-opt";
 export * from "./label";
 export * from "./menubar";
 export * from "./multi-select";
+export * from "./navbar";
 export * from "./navigation-menu";
 export * from "./pagination";
 export * from "./popover";
