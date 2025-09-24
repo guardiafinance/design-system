@@ -25,6 +25,16 @@ Make sure you have these peer dependencies installed:
 npm install react react-dom react-router zod
 ```
 
+## 🚀 Development Setup
+
+After installing dependencies, initialize your development environment:
+
+```bash
+npm run init:env
+```
+
+This command configures Git hooks to use the `.githooks/` directory for the project.
+
 ## 🎨 Quick Start
 
 ```tsx
