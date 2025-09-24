@@ -80,10 +80,7 @@ jobs:
             exit 1
           fi
 
-      - name: Set package to public for publishing
-        run: npm pkg set 'private=false'
-
       - name: Publish package
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
