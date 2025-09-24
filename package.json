@@ -2,6 +2,7 @@
   "name": "@guardiafinance/design-system",
   "version": "0.0.1",
   "type": "module",
+  "private": true,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,6 +21,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
+    "init:env": "git config core.hooksPath .githooks && chmod -R +x ./.githooks",
     "build": "rslib build",
     "dev": "rslib build --watch"
   },
