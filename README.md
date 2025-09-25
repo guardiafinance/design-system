@@ -17,6 +17,70 @@ A comprehensive React component library built with TypeScript, Tailwind CSS, and
 
 ## 📦 Installation
 
+### GitHub Packages Authentication
+
+Since this is a private package hosted on GitHub Packages, you need to authenticate before installation.
+
+#### Method 1: Personal Access Token (Recommended for Development)
+
+1. **Create a Personal Access Token:**
+   - Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Click "Generate new token (classic)"
+   - Select scopes: `read:packages` (and `repo` if accessing private repositories)
+   - Copy the generated token
+
+2. **Configure npm to use GitHub Packages:**
+
+   Create or update your `.npmrc` file in your home directory:
+   ```
+   @guardiafinance:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=YOUR_PERSONAL_ACCESS_TOKEN
+   ```
+
+3. **Install the package:**
+   ```bash
+   npm install @guardiafinance/design-system
+   ```
+
+#### Method 2: Environment Variable (Recommended for CI/CD)
+
+For production environments and CI/CD pipelines, use environment variables:
+
+1. **Set the environment variable:**
+   ```bash
+   export NPM_TOKEN=your_personal_access_token
+   ```
+
+2. **Create `.npmrc` with environment variable reference:**
+   ```
+   @guardiafinance:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+   ```
+
+3. **Install the package:**
+   ```bash
+   npm install @guardiafinance/design-system
+   ```
+
+#### Method 3: GitHub CLI (Alternative)
+
+If you have GitHub CLI installed and authenticated:
+
+```bash
+gh auth token | npm login --scope=@guardiafinance --auth-type=legacy --registry=https://npm.pkg.github.com
+npm install @guardiafinance/design-system
+```
+
+### Security Best Practices
+
+- **Never commit `.npmrc` files containing tokens to version control**
+- **Use environment variables in CI/CD pipelines**
+- **Regularly rotate your Personal Access Tokens**
+- **Use the principle of least privilege - only grant necessary scopes**
+- **Consider using GitHub Actions with `GITHUB_TOKEN` for CI/CD workflows**
+
+### Package Installation
+
 ```bash
 npm install @guardiafinance/design-system
 ```
