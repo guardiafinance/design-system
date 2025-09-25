@@ -18,7 +18,7 @@ A comprehensive React component library built with TypeScript, Tailwind CSS, and
 ## 📦 Installation
 
 ```bash
-npm install guardia-design-system
+npm install @guardiafinance/design-system
 ```
 
 ### Peer Dependencies
@@ -26,7 +26,7 @@ npm install guardia-design-system
 Make sure you have these peer dependencies installed:
 
 ```bash
-npm install react react-dom react-router zod
+npm install react react-dom react-router-dom zod
 ```
 
 ## 🚀 Development Setup
@@ -39,10 +39,20 @@ npm run init:env
 
 This command configures Git hooks to use the `.githooks/` directory for the project.
 
+### Development Scripts
+
+```bash
+# Start development mode with watch
+npm run dev
+
+# Build the library
+npm run build
+```
+
 ## 🎨 Quick Start
 
 ```tsx
-import { Button, Card, CardContent, CardHeader, CardTitle } from 'guardia-design-system'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@guardiafinance/design-system'
 
 function App() {
   return (
@@ -66,7 +76,7 @@ function App() {
 Flexible container component for grouping related content.
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'guardia-design-system'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@guardiafinance/design-system'
 
 <Card>
   <CardHeader>
@@ -86,7 +96,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 Visual separator for dividing content sections.
 
 ```tsx
-import { Separator } from 'guardia-design-system'
+import { Separator } from '@guardiafinance/design-system'
 
 <div>
   <p>Content above</p>
@@ -99,7 +109,7 @@ import { Separator } from 'guardia-design-system'
 Collapsible sidebar navigation component.
 
 ```tsx
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem } from 'guardia-design-system'
+import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem } from '@guardiafinance/design-system'
 
 <Sidebar>
   <SidebarHeader>Navigation</SidebarHeader>
@@ -116,7 +126,7 @@ import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem } 
 Advanced sidebar navigation with dynamic menu sections and user management.
 
 ```tsx
-import { Navbar, NavbarProvider } from 'guardia-design-system'
+import { Navbar, NavbarProvider } from '@guardiafinance/design-system'
 import { Home, Settings, User, BarChart3 } from 'lucide-react'
 
 const navbarSettings = {
@@ -175,7 +185,7 @@ const navbarSettings = {
 Versatile button component with multiple variants and sizes.
 
 ```tsx
-import { Button } from 'guardia-design-system'
+import { Button } from '@guardiafinance/design-system'
 
 <Button variant="default" size="default">Primary</Button>
 <Button variant="outline" size="sm">Secondary</Button>
@@ -190,7 +200,7 @@ import { Button } from 'guardia-design-system'
 Styled input field with focus states and validation support.
 
 ```tsx
-import { Input } from 'guardia-design-system'
+import { Input } from '@guardiafinance/design-system'
 
 <Input type="text" placeholder="Enter your name" />
 <Input type="email" placeholder="Enter your email" />
@@ -201,7 +211,7 @@ import { Input } from 'guardia-design-system'
 Multi-line text input component.
 
 ```tsx
-import { Textarea } from 'guardia-design-system'
+import { Textarea } from '@guardiafinance/design-system'
 
 <Textarea placeholder="Enter your message" rows={4} />
 ```
@@ -210,7 +220,7 @@ import { Textarea } from 'guardia-design-system'
 Dropdown selection component with search and multi-select support.
 
 ```tsx
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'guardia-design-system'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@guardiafinance/design-system'
 
 <Select>
   <SelectTrigger>
@@ -227,7 +237,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'g
 Component for selecting multiple options from a list.
 
 ```tsx
-import { MultiSelect } from 'guardia-design-system'
+import { MultiSelect } from '@guardiafinance/design-system'
 
 <MultiSelect 
   options={[
@@ -243,7 +253,7 @@ import { MultiSelect } from 'guardia-design-system'
 Styled checkbox input with indeterminate state support.
 
 ```tsx
-import { Checkbox } from 'guardia-design-system'
+import { Checkbox } from '@guardiafinance/design-system'
 
 <Checkbox id="terms" />
 <label htmlFor="terms">Accept terms and conditions</label>
@@ -253,7 +263,7 @@ import { Checkbox } from 'guardia-design-system'
 Group of radio buttons for single selection.
 
 ```tsx
-import { RadioGroup, RadioGroupItem } from 'guardia-design-system'
+import { RadioGroup, RadioGroupItem } from '@guardiafinance/design-system'
 
 <RadioGroup defaultValue="option1">
   <div className="flex items-center space-x-2">
@@ -271,7 +281,7 @@ import { RadioGroup, RadioGroupItem } from 'guardia-design-system'
 Toggle switch component for boolean values.
 
 ```tsx
-import { Switch } from 'guardia-design-system'
+import { Switch } from '@guardiafinance/design-system'
 
 <Switch id="notifications" />
 <label htmlFor="notifications">Enable notifications</label>
@@ -281,7 +291,7 @@ import { Switch } from 'guardia-design-system'
 One-time password input with individual digit fields.
 
 ```tsx
-import { InputOTP, InputOTPGroup, InputOTPSlot } from 'guardia-design-system'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@guardiafinance/design-system'
 
 <InputOTP maxLength={6}>
   <InputOTPGroup>
@@ -301,7 +311,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from 'guardia-design-system'
 Feature-rich table component with sorting, filtering, and pagination.
 
 ```tsx
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'guardia-design-system'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@guardiafinance/design-system'
 
 <Table>
   <TableHeader>
@@ -325,7 +335,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'g
 Small status and label component.
 
 ```tsx
-import { Badge } from 'guardia-design-system'
+import { Badge } from '@guardiafinance/design-system'
 
 <Badge variant="default">Default</Badge>
 <Badge variant="secondary">Secondary</Badge>
@@ -337,7 +347,7 @@ import { Badge } from 'guardia-design-system'
 User profile image component with fallback support.
 
 ```tsx
-import { Avatar, AvatarImage, AvatarFallback } from 'guardia-design-system'
+import { Avatar, AvatarImage, AvatarFallback } from '@guardiafinance/design-system'
 
 <Avatar>
   <AvatarImage src="/avatar.jpg" alt="User" />
@@ -349,7 +359,7 @@ import { Avatar, AvatarImage, AvatarFallback } from 'guardia-design-system'
 Data visualization component built on Recharts.
 
 ```tsx
-import { Chart, ChartContainer, ChartTooltip, ChartTooltipContent } from 'guardia-design-system'
+import { Chart, ChartContainer, ChartTooltip, ChartTooltipContent } from '@guardiafinance/design-system'
 
 <ChartContainer>
   <Chart data={chartData}>
@@ -364,7 +374,7 @@ import { Chart, ChartContainer, ChartTooltip, ChartTooltipContent } from 'guardi
 Loading placeholder component.
 
 ```tsx
-import { Skeleton } from 'guardia-design-system'
+import { Skeleton } from '@guardiafinance/design-system'
 
 <Skeleton className="h-4 w-[250px]" />
 <Skeleton className="h-4 w-[200px]" />
@@ -376,7 +386,7 @@ import { Skeleton } from 'guardia-design-system'
 Important message display component.
 
 ```tsx
-import { Alert, AlertDescription, AlertTitle } from 'guardia-design-system'
+import { Alert, AlertDescription, AlertTitle } from '@guardiafinance/design-system'
 
 <Alert>
   <AlertTitle>Heads up!</AlertTitle>
@@ -390,7 +400,7 @@ import { Alert, AlertDescription, AlertTitle } from 'guardia-design-system'
 Modal dialog component for important interactions.
 
 ```tsx
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from 'guardia-design-system'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@guardiafinance/design-system'
 
 <Dialog>
   <DialogTrigger asChild>
@@ -411,7 +421,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 Modal dialog specifically for destructive actions.
 
 ```tsx
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from 'guardia-design-system'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@guardiafinance/design-system'
 
 <AlertDialog>
   <AlertDialogTrigger asChild>
@@ -436,7 +446,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 Slide-out panel component.
 
 ```tsx
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from 'guardia-design-system'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@guardiafinance/design-system'
 
 <Sheet>
   <SheetTrigger asChild>
@@ -457,7 +467,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 Mobile-friendly drawer component.
 
 ```tsx
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from 'guardia-design-system'
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@guardiafinance/design-system'
 
 <Drawer>
   <DrawerTrigger asChild>
@@ -476,7 +486,7 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, Dr
 Floating content container.
 
 ```tsx
-import { Popover, PopoverContent, PopoverTrigger } from 'guardia-design-system'
+import { Popover, PopoverContent, PopoverTrigger } from '@guardiafinance/design-system'
 
 <Popover>
   <PopoverTrigger asChild>
@@ -492,7 +502,7 @@ import { Popover, PopoverContent, PopoverTrigger } from 'guardia-design-system'
 Contextual information on hover.
 
 ```tsx
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'guardia-design-system'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@guardiafinance/design-system'
 
 <TooltipProvider>
   <Tooltip>
@@ -510,7 +520,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'guardi
 Elegant toast notifications.
 
 ```tsx
-import { toast } from 'guardia-design-system'
+import { toast } from '@guardiafinance/design-system'
 
 // In your component
 const showToast = () => {
@@ -530,7 +540,7 @@ const showToast = () => {
 Tabbed interface component.
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'guardia-design-system'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@guardiafinance/design-system'
 
 <Tabs defaultValue="account">
   <TabsList>
@@ -550,7 +560,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from 'guardia-design-system'
 Collapsible content sections.
 
 ```tsx
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'guardia-design-system'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@guardiafinance/design-system'
 
 <Accordion type="single" collapsible>
   <AccordionItem value="item-1">
@@ -566,7 +576,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'gu
 Navigation breadcrumb component.
 
 ```tsx
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from 'guardia-design-system'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@guardiafinance/design-system'
 
 <Breadcrumb>
   <BreadcrumbList>
@@ -585,7 +595,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 Page navigation component.
 
 ```tsx
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from 'guardia-design-system'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@guardiafinance/design-system'
 
 <Pagination>
   <PaginationContent>
@@ -611,7 +621,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 Toggle button component.
 
 ```tsx
-import { Toggle } from 'guardia-design-system'
+import { Toggle } from '@guardiafinance/design-system'
 
 <Toggle aria-label="Toggle italic">
   <Italic className="h-4 w-4" />
@@ -622,7 +632,7 @@ import { Toggle } from 'guardia-design-system'
 Group of toggle buttons.
 
 ```tsx
-import { ToggleGroup, ToggleGroupItem } from 'guardia-design-system'
+import { ToggleGroup, ToggleGroupItem } from '@guardiafinance/design-system'
 
 <ToggleGroup type="multiple">
   <ToggleGroupItem value="bold" aria-label="Toggle bold">
@@ -638,7 +648,7 @@ import { ToggleGroup, ToggleGroupItem } from 'guardia-design-system'
 Collapsible content component.
 
 ```tsx
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'guardia-design-system'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@guardiafinance/design-system'
 
 <Collapsible>
   <CollapsibleTrigger asChild>
@@ -656,7 +666,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'guardia-des
 Dropdown menu component.
 
 ```tsx
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from 'guardia-design-system'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@guardiafinance/design-system'
 
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
@@ -674,7 +684,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 Right-click context menu.
 
 ```tsx
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from 'guardia-design-system'
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@guardiafinance/design-system'
 
 <ContextMenu>
   <ContextMenuTrigger>
@@ -691,7 +701,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 Horizontal menu bar component.
 
 ```tsx
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from 'guardia-design-system'
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@guardiafinance/design-system'
 
 <Menubar>
   <MenubarMenu>
@@ -708,7 +718,7 @@ import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } fro
 Complex navigation menu with mega menu support.
 
 ```tsx
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from 'guardia-design-system'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@guardiafinance/design-system'
 
 <NavigationMenu>
   <NavigationMenuList>
@@ -728,7 +738,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 Complete form component with validation support.
 
 ```tsx
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from 'guardia-design-system'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@guardiafinance/design-system'
 
 <Form>
   <FormField
@@ -754,7 +764,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 Accessible form label component.
 
 ```tsx
-import { Label } from 'guardia-design-system'
+import { Label } from '@guardiafinance/design-system'
 
 <Label htmlFor="email">Email</Label>
 <Input id="email" type="email" />
@@ -766,7 +776,7 @@ import { Label } from 'guardia-design-system'
 Pre-styled text components with semantic variants and direct component access.
 
 ```tsx
-import { Typography, H1, H2, H3, H4, H5, H6, P, Lead, Large, Small, Muted, Code, Blockquote, List, Link, PageTitle } from 'guardia-design-system'
+import { Typography, H1, H2, H3, H4, H5, H6, P, Lead, Large, Small, Muted, Code, Blockquote, List, Link, PageTitle } from '@guardiafinance/design-system'
 
 // Using Typography component with variants
 <Typography variant="h1">Heading 1</Typography>
@@ -807,7 +817,7 @@ import { Typography, H1, H2, H3, H4, H5, H6, P, Lead, Large, Small, Muted, Code,
 Custom scrollable area component.
 
 ```tsx
-import { ScrollArea } from 'guardia-design-system'
+import { ScrollArea } from '@guardiafinance/design-system'
 
 <ScrollArea className="h-72 w-48 rounded-md border">
   <div className="p-4">
@@ -825,7 +835,7 @@ import { ScrollArea } from 'guardia-design-system'
 Collection of custom icon components.
 
 ```tsx
-import { SparklesFilled, Sparkles, SparkleSquared, SparkleAi } from 'guardia-design-system'
+import { SparklesFilled, Sparkles, SparkleSquared, SparkleAi } from '@guardiafinance/design-system'
 
 <SparklesFilled className="h-8 w-8" />
 <Sparkles className="h-6 w-6" />
@@ -840,7 +850,7 @@ The design system supports theming through CSS custom properties and Tailwind CS
 ### Theme Provider
 
 ```tsx
-import { ThemeProvider } from 'guardia-design-system'
+import { ThemeProvider } from '@guardiafinance/design-system'
 
 function App() {
   return (
@@ -854,7 +864,7 @@ function App() {
 ### Theme Toggle
 
 ```tsx
-import { ThemeToggle } from 'guardia-design-system'
+import { ThemeToggle } from '@guardiafinance/design-system'
 
 <ThemeToggle />
 ```
@@ -866,7 +876,7 @@ import { ThemeToggle } from 'guardia-design-system'
 The `cn` utility function combines `clsx` and `tailwind-merge` for optimal class name handling:
 
 ```tsx
-import { cn } from 'guardia-design-system'
+import { cn } from '@guardiafinance/design-system'
 
 // Combines and deduplicates Tailwind classes
 const className = cn("px-4 py-2", "px-2", "bg-red-500") // "py-2 px-2 bg-red-500"
@@ -877,7 +887,7 @@ const className = cn("px-4 py-2", "px-2", "bg-red-500") // "py-2 px-2 bg-red-500
 The `When` component provides conditional rendering:
 
 ```tsx
-import { When } from 'guardia-design-system'
+import { When } from '@guardiafinance/design-system'
 
 <When condition={isLoading}>
   <Skeleton className="h-4 w-full" />
@@ -889,7 +899,7 @@ import { When } from 'guardia-design-system'
 All components are fully typed with TypeScript. You'll get full IntelliSense support and type checking.
 
 ```tsx
-import { Button, ButtonProps } from 'guardia-design-system'
+import { Button, ButtonProps } from '@guardiafinance/design-system'
 
 const CustomButton: React.FC<ButtonProps> = (props) => {
   return <Button {...props} />
