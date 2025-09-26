@@ -5,7 +5,7 @@ import { Toaster } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Toaster>
 
-export default function Sonner({ ...props }: ToasterProps) {
+export function Sonner({ ...props }: ToasterProps) {
   return (
     <Toaster
       closeButton={true}
