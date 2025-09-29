@@ -56,7 +56,7 @@ function NavbarInternal({
             navbarContext.setActiveArea(activeArea);
             navbarContext.setActiveItem(currentActiveItem);
         }
-    }, [location.pathname, settings, navbarContext]);
+    }, [location.pathname, settings]);
 
     const handleItemClick = (item: NavigationItem) => {
         navbarContext.setActiveItem(item.title);

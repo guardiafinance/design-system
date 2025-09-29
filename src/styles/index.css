@@ -201,6 +201,10 @@ a.ds-link:focus-visible {
         @apply border-border outline-ring/50;
     }
 
+    * {
+        border-color: hsl(var(--border)) !important;
+    }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -613,4 +617,9 @@ a.ds-link:focus-visible {
 
 :root[data-theme="dark"] .stylized-select-trigger:focus {
     box-shadow: 0 0 0 2px hsl(var(--ring));
+}
+
+/* Ensure dark theme borders are properly applied */
+:root[data-theme="dark"] * {
+    border-color: hsl(var(--border)) !important;
 }
