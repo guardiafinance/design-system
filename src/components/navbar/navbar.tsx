@@ -83,6 +83,7 @@ function NavbarInternal({
         <Sidebar
             variant="sidebar"
             collapsible="icon"
+            fixed={settings.styling?.fixed ?? true}
             className={`border-r-0 [&>[data-sidebar=sidebar]]:bg-transparent z-[60] ${className} ${settings.styling?.className || ""}`}
             style={sidebarStyle}
         >

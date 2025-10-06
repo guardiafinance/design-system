@@ -60,6 +60,7 @@ export interface NavbarConfiguration {
     styling?: {
         background?: string;
         className?: string;
+        fixed: boolean;
     };
 }
 
