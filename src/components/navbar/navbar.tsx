@@ -77,7 +77,7 @@ function NavbarInternal({
 
     const sidebarStyle = settings.styling?.background
         ? { background: settings.styling.background }
-        : { background: "linear-gradient(180deg, #37104C 0%, #4F186D 100%)" };
+        : { background: "#4F186D" };
 
     return (
         <Sidebar
