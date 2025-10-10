@@ -75,17 +75,17 @@ function NavbarInternal({
         onAreaChange?.(area);
     };
 
-    const sidebarStyle = settings.styling?.background
-        ? { background: settings.styling.background }
-        : { background: "#4F186D" };
-
     return (
         <Sidebar
             variant="sidebar"
             collapsible="icon"
             fixed={settings.styling?.fixed ?? true}
-            className={`border-r-0 [&>[data-sidebar=sidebar]]:bg-transparent z-[60] ${className} ${settings.styling?.className || ""}`}
-            style={sidebarStyle}
+            className={`
+                border-r-0 [&>[data-sidebar=sidebar]]:bg-transparent z-[60] 
+                ${settings.styling?.background ? '' : 'bg-brand-purple'}
+                ${className} ${settings.styling?.className || ""}
+            `}
+            style={settings.styling?.background ? { background: settings.styling.background } : undefined}
         >
             <When condition={Boolean(settings.organization)}>
                 <SidebarHeader>
