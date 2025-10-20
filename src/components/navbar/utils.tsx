@@ -75,7 +75,10 @@ export const stripRoutePrefix = (pathname: string, prefix?: string): string => {
 
     if (normalizedPathname.startsWith(normalizedPrefix)) {
         const stripped = normalizedPathname.slice(normalizedPrefix.length);
-        return stripped === '' ? '/' : stripped;
+        if (stripped === '') {
+            return '/';
+        }
+        return stripped.startsWith('/') ? stripped : `/${stripped}`;
     }
 
     return pathname;
@@ -86,11 +89,19 @@ export const addRoutePrefix = (path: string, prefix?: string): string => {
         return path;
     }
 
-    const normalizedPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`;
+    let normalizedPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`;
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
     if (normalizedPath === '/') {
         return normalizedPrefix;
+    }
+
+    if (normalizedPrefix === '/') {
+        return normalizedPath;
+    }
+
+    if (normalizedPrefix.endsWith('/')) {
+        normalizedPrefix = normalizedPrefix.slice(0, -1);
     }
 
     return `${normalizedPrefix}${normalizedPath}`;
