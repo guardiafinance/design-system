@@ -18,7 +18,8 @@ import {
     NavigationItem,
     getActiveStatesFromPath,
     getDefaultActiveArea,
-    getNavigationItems
+    getNavigationItems,
+    addRoutePrefix
 } from "./utils";
 import { DynamicMenuSections } from "./dynamic-section";
 import { When } from "../../lib/when";
@@ -64,7 +65,8 @@ function NavbarInternal({
         if (item.onClick) {
             item.onClick();
         } else if (item.path) {
-            navigate(item.path);
+            const pathWithPrefix = addRoutePrefix(item.path, settings.routePrefix);
+            navigate(pathWithPrefix);
         }
 
         onItemClick?.(item);
