@@ -53,6 +53,7 @@ export interface NavbarConfiguration {
     areas: NavigationArea[];
     defaultActiveArea?: string;
     allowDefaultPathBehavior?: boolean;
+    routePrefix?: string;
     organization?: NavbarOrganization;
     generalArea?: GeneralArea;
     user?: NavbarUser;
@@ -63,6 +64,48 @@ export interface NavbarConfiguration {
         fixed: boolean;
     };
 }
+
+export const stripRoutePrefix = (pathname: string, prefix?: string): string => {
+    if (!prefix) {
+        return pathname;
+    }
+
+    const normalizedPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`;
+    const normalizedPathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
+
+    if (normalizedPathname.startsWith(normalizedPrefix)) {
+        const stripped = normalizedPathname.slice(normalizedPrefix.length);
+        if (stripped === '') {
+            return '/';
+        }
+        return stripped.startsWith('/') ? stripped : `/${stripped}`;
+    }
+
+    return pathname;
+};
+
+export const addRoutePrefix = (path: string, prefix?: string): string => {
+    if (!prefix || !path) {
+        return path;
+    }
+
+    let normalizedPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`;
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    if (normalizedPath === '/') {
+        return normalizedPrefix;
+    }
+
+    if (normalizedPrefix === '/') {
+        return normalizedPath;
+    }
+
+    if (normalizedPrefix.endsWith('/')) {
+        normalizedPrefix = normalizedPrefix.slice(0, -1);
+    }
+
+    return `${normalizedPrefix}${normalizedPath}`;
+};
 
 export const getDefaultActiveArea = (config: NavbarConfiguration): string => {
     if (config.defaultActiveArea) {
@@ -113,10 +156,11 @@ export const matchesNavigationItem = (pathname: string, item: NavigationItem): b
 };
 
 export const findNavigationItemByPath = (config: NavbarConfiguration, path: string): NavigationItem | null => {
+    const strippedPath = stripRoutePrefix(path, config.routePrefix);
     for (const area of config.areas) {
         for (const section of area.sections) {
             for (const item of section.items) {
-                if (matchesNavigationItem(path, item)) {
+                if (matchesNavigationItem(strippedPath, item)) {
                     return item;
                 }
             }
@@ -146,9 +190,10 @@ export const getActiveStatesFromPath = (config: NavbarConfiguration, pathname: s
 
     const foundItem = findNavigationItemByPath(config, pathname);
     if (foundItem) {
+        const strippedPath = stripRoutePrefix(pathname, config.routePrefix);
         for (const area of config.areas) {
             for (const section of area.sections) {
-                if (section.items.some(item => matchesNavigationItem(pathname, item))) {
+                if (section.items.some(item => matchesNavigationItem(strippedPath, item))) {
                     activeArea = area.title;
                     activeItem = foundItem.title;
                     return { activeArea, activeItem };
