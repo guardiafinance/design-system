@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { match, P } from "ts-pattern";
 
 export interface NavigationArea {
     title: string;
@@ -9,12 +10,31 @@ export interface NavigationArea {
 
 export type NavigationItem = {
     title: string;
-    icon: LucideIcon;
+    icon?: LucideIcon;
     path?: string;
     pathPattern?: string;
     onClick?: () => void;
     disabled?: boolean;
     badge?: string | number;
+};
+
+export type ExpandableNavigationItem = {
+    title: string;
+    icon?: LucideIcon;
+    children: NavigationItem[];
+    disabled?: boolean;
+};
+
+export type MenuItemType = NavigationItem | ExpandableNavigationItem;
+
+export const isExpandableItem = (item: MenuItemType): item is ExpandableNavigationItem => {
+    return match(item)
+        .with({ children: P.array(P.any) }, () => true)
+        .otherwise(() => false);
+};
+
+export const isRegularItem = (item: MenuItemType): item is NavigationItem => {
+    return !isExpandableItem(item);
 };
 
 export interface GeneralArea {
@@ -24,7 +44,7 @@ export interface GeneralArea {
 
 export interface MenuSection {
     label: string;
-    items: NavigationItem[];
+    items: MenuItemType[];
 }
 
 export type ActiveStates = {
@@ -157,12 +177,25 @@ export const matchesNavigationItem = (pathname: string, item: NavigationItem): b
 
 export const findNavigationItemByPath = (config: NavbarConfiguration, path: string): NavigationItem | null => {
     const strippedPath = stripRoutePrefix(path, config.routePrefix);
+
     for (const area of config.areas) {
         for (const section of area.sections) {
             for (const item of section.items) {
-                if (matchesNavigationItem(strippedPath, item)) {
-                    return item;
-                }
+                const result = match(item)
+                    .with({ icon: P.any }, (regularItem) =>
+                        matchesNavigationItem(strippedPath, regularItem) ? regularItem : null
+                    )
+                    .with({ children: P.array(P.any) }, (expandableItem) => {
+                        for (const child of expandableItem.children) {
+                            if (matchesNavigationItem(strippedPath, child)) {
+                                return child;
+                            }
+                        }
+                        return null;
+                    })
+                    .otherwise(() => null);
+
+                if (result) return result;
             }
         }
     }
@@ -171,12 +204,24 @@ export const findNavigationItemByPath = (config: NavbarConfiguration, path: stri
 
 export const getAllNavigationPaths = (config: NavbarConfiguration): string[] => {
     const paths: string[] = [];
+
     for (const area of config.areas) {
         for (const section of area.sections) {
             for (const item of section.items) {
-                if (item.path) {
-                    paths.push(item.path);
-                }
+                match(item)
+                    .with({ icon: P.any, path: P.string }, (regularItem) => {
+                        if (regularItem.path) {
+                            paths.push(regularItem.path);
+                        }
+                    })
+                    .with({ children: P.array(P.any) }, (expandableItem) => {
+                        for (const child of expandableItem.children) {
+                            if (child.path) {
+                                paths.push(child.path);
+                            }
+                        }
+                    })
+                    .otherwise(() => { });
             }
         }
     }
@@ -191,16 +236,61 @@ export const getActiveStatesFromPath = (config: NavbarConfiguration, pathname: s
     const foundItem = findNavigationItemByPath(config, pathname);
     if (foundItem) {
         const strippedPath = stripRoutePrefix(pathname, config.routePrefix);
+
         for (const area of config.areas) {
             for (const section of area.sections) {
-                if (section.items.some(item => matchesNavigationItem(strippedPath, item))) {
+                const hasRegularMatch = section.items.some(item =>
+                    match(item)
+                        .with({ icon: P.any }, (regularItem) => matchesNavigationItem(strippedPath, regularItem))
+                        .otherwise(() => false)
+                );
+
+                if (hasRegularMatch) {
                     activeArea = area.title;
                     activeItem = foundItem.title;
                     return { activeArea, activeItem };
+                }
+
+                for (const item of section.items) {
+                    const hasChildMatch = match(item)
+                        .with({ children: P.array(P.any) }, (expandableItem) =>
+                            expandableItem.children.some(child => matchesNavigationItem(strippedPath, child))
+                        )
+                        .otherwise(() => false);
+
+                    if (hasChildMatch) {
+                        activeArea = area.title;
+                        activeItem = foundItem.title;
+                        return { activeArea, activeItem };
+                    }
                 }
             }
         }
     }
 
     return { activeArea, activeItem };
+};
+
+export const findExpandableParentByChildPath = (config: NavbarConfiguration, childPath: string): string | null => {
+    const strippedPath = stripRoutePrefix(childPath, config.routePrefix);
+
+    for (const area of config.areas) {
+        for (const section of area.sections) {
+            for (const item of section.items) {
+                const result = match(item)
+                    .with({ children: P.array(P.any) }, (expandableItem) => {
+                        for (const child of expandableItem.children) {
+                            if (matchesNavigationItem(strippedPath, child)) {
+                                return expandableItem.title;
+                            }
+                        }
+                        return null;
+                    })
+                    .otherwise(() => null);
+
+                if (result) return result;
+            }
+        }
+    }
+    return null;
 };

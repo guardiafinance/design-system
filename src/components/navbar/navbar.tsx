@@ -15,12 +15,14 @@ import {
 } from "../sidebar";
 import {
     NavbarConfiguration as NavbarSettings,
-    NavigationItem,
+    MenuItemType,
     getActiveStatesFromPath,
     getDefaultActiveArea,
     getNavigationItems,
-    addRoutePrefix
+    addRoutePrefix,
+    findExpandableParentByChildPath
 } from "./utils";
+import { match, P } from "ts-pattern";
 import { DynamicMenuSections } from "./dynamic-section";
 import { When } from "../../lib/when";
 import { useNavbarContext, InternalNavbarProvider, NavbarState } from "./navbar-context";
@@ -28,7 +30,7 @@ import { useNavbarContext, InternalNavbarProvider, NavbarState } from "./navbar-
 export interface NavbarProps {
     settings: NavbarSettings;
     className?: string;
-    onItemClick?: (item: NavigationItem) => void;
+    onItemClick?: (item: MenuItemType) => void;
     onAreaChange?: (area: string) => void;
 }
 
@@ -56,20 +58,41 @@ function NavbarInternal({
             const { activeArea, activeItem: currentActiveItem } = getActiveStatesFromPath(settings, location.pathname);
             navbarContext.setActiveArea(activeArea);
             navbarContext.setActiveItem(currentActiveItem);
+
+            match(currentActiveItem)
+                .with(P.string, () => {
+                    const expandableParent = findExpandableParentByChildPath(settings, location.pathname);
+                    match(expandableParent)
+                        .with(P.string, (parent) => {
+                            if (!navbarContext.state.expandedItems.includes(parent)) {
+                                navbarContext.setExpandedItems([...navbarContext.state.expandedItems, parent]);
+                            }
+                        })
+                        .otherwise(() => { });
+                })
+                .otherwise(() => { });
         }
     }, [location.pathname, settings]);
 
-    const handleItemClick = (item: NavigationItem) => {
-        navbarContext.setActiveItem(item.title);
+    const handleItemClick = (item: MenuItemType) => {
+        match(item)
+            .with({ children: P.array(P.any) }, (expandableItem) => {
+                navbarContext.toggleExpandedItem(expandableItem.title);
+                onItemClick?.(expandableItem);
+            })
+            .with({ icon: P.any }, (regularItem) => {
+                navbarContext.setActiveItem(regularItem.title);
 
-        if (item.onClick) {
-            item.onClick();
-        } else if (item.path) {
-            const pathWithPrefix = addRoutePrefix(item.path, settings.routePrefix);
-            navigate(pathWithPrefix);
-        }
+                if (regularItem.onClick) {
+                    regularItem.onClick();
+                } else if (regularItem.path) {
+                    const pathWithPrefix = addRoutePrefix(regularItem.path, settings.routePrefix);
+                    navigate(pathWithPrefix);
+                }
 
-        onItemClick?.(item);
+                onItemClick?.(regularItem);
+            })
+            .otherwise(() => { });
     };
 
     const handleAreaChange = (area: string) => {
@@ -122,7 +145,7 @@ function NavbarInternal({
                                             group-data-[collapsible=icon]:justify-center
                                         `}
                                     >
-                                        <item.icon className="h-5 w-5 flex-shrink-0" />
+                                        {item.icon && <item.icon className="h-5 w-5 flex-shrink-0" />}
                                         {!isCollapsed && <span className="text-sm font-medium">{item.title}</span>}
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -137,6 +160,7 @@ function NavbarInternal({
                     activeItem={activeItem}
                     isCollapsed={isCollapsed}
                     onItemClick={handleItemClick}
+                    expandedItems={navbarContext.state.expandedItems}
                 />
 
                 <When condition={Boolean(settings.generalArea)}>
@@ -162,7 +186,7 @@ function NavbarInternal({
                                              `}
                                             disabled={item.disabled}
                                         >
-                                            <item.icon className="h-5 w-5 flex-shrink-0" />
+                                            {item.icon && <item.icon className="h-5 w-5 flex-shrink-0" />}
                                             {!isCollapsed && (
                                                 <span className="text-sm font-medium">
                                                     {item.title}
@@ -233,7 +257,8 @@ export function Navbar(props: NavbarProps) {
 
     const initialState: NavbarState = {
         activeArea: defaultActiveArea,
-        activeItem: null
+        activeItem: null,
+        expandedItems: []
     };
 
     return (
