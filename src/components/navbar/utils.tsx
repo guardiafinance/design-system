@@ -182,9 +182,6 @@ export const findNavigationItemByPath = (config: NavbarConfiguration, path: stri
         for (const section of area.sections) {
             for (const item of section.items) {
                 const result = match(item)
-                    .with({ icon: P.any }, (regularItem) =>
-                        matchesNavigationItem(strippedPath, regularItem) ? regularItem : null
-                    )
                     .with({ children: P.array(P.any) }, (expandableItem) => {
                         for (const child of expandableItem.children) {
                             if (matchesNavigationItem(strippedPath, child)) {
@@ -193,6 +190,9 @@ export const findNavigationItemByPath = (config: NavbarConfiguration, path: stri
                         }
                         return null;
                     })
+                    .with({ icon: P.any }, (regularItem) =>
+                        matchesNavigationItem(strippedPath, regularItem) ? regularItem : null
+                    )
                     .otherwise(() => null);
 
                 if (result) return result;
