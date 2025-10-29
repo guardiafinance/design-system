@@ -8,7 +8,7 @@ import {
 } from "../sidebar";
 import { ChevronRight } from "lucide-react";
 import { match, P } from "ts-pattern";
-import { NavbarConfiguration, MenuItemType } from "./utils";
+import { type NavbarConfiguration, type MenuItemType } from "./utils";
 import { When } from "../../lib/when";
 
 interface DynamicMenuSectionsProps {
@@ -56,7 +56,7 @@ export const DynamicMenuSections: React.FC<DynamicMenuSectionsProps> = ({
                                 rounded-lg transition-all duration-200 mb-1.5
                                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
                                 ${expandableItem.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-                                ${expandableItem.icon ? 'justify-between' : 'justify-between'}
+                                justify-between
                             `}
                         >
                             <div className="flex items-center gap-2 flex-1 min-w-0">

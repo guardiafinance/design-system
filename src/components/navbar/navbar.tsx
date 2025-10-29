@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import {
     Sidebar,
@@ -14,8 +14,8 @@ import {
     useSidebar,
 } from "../sidebar";
 import {
-    NavbarConfiguration as NavbarSettings,
-    MenuItemType,
+    type NavbarConfiguration as NavbarSettings,
+    type MenuItemType,
     getActiveStatesFromPath,
     getDefaultActiveArea,
     getNavigationItems,
@@ -25,7 +25,7 @@ import {
 import { match, P } from "ts-pattern";
 import { DynamicMenuSections } from "./dynamic-section";
 import { When } from "../../lib/when";
-import { useNavbarContext, InternalNavbarProvider, NavbarState } from "./navbar-context";
+import { useNavbarContext, InternalNavbarProvider, type NavbarState } from "./navbar-context";
 
 export interface NavbarProps {
     settings: NavbarSettings;
@@ -75,24 +75,21 @@ function NavbarInternal({
     }, [location.pathname, settings]);
 
     const handleItemClick = (item: MenuItemType) => {
-        match(item)
-            .with({ children: P.array(P.any) }, (expandableItem) => {
-                navbarContext.toggleExpandedItem(expandableItem.title);
-                onItemClick?.(expandableItem);
-            })
-            .with({ icon: P.any }, (regularItem) => {
-                navbarContext.setActiveItem(regularItem.title);
+        if ('children' in item) {
+            navbarContext.toggleExpandedItem(item.title);
+            onItemClick?.(item);
+        } else {
+            navbarContext.setActiveItem(item.title);
 
-                if (regularItem.onClick) {
-                    regularItem.onClick();
-                } else if (regularItem.path) {
-                    const pathWithPrefix = addRoutePrefix(regularItem.path, settings.routePrefix);
-                    navigate(pathWithPrefix);
-                }
+            if (item.onClick) {
+                item.onClick();
+            } else if (item.path) {
+                const pathWithPrefix = addRoutePrefix(item.path, settings.routePrefix);
+                navigate(pathWithPrefix);
+            }
 
-                onItemClick?.(regularItem);
-            })
-            .otherwise(() => { });
+            onItemClick?.(item);
+        }
     };
 
     const handleAreaChange = (area: string) => {

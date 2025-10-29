@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { match, P } from "ts-pattern";
 
 export interface NavigationArea {
@@ -235,34 +235,22 @@ export const getActiveStatesFromPath = (config: NavbarConfiguration, pathname: s
 
     const foundItem = findNavigationItemByPath(config, pathname);
     if (foundItem) {
-        const strippedPath = stripRoutePrefix(pathname, config.routePrefix);
-
         for (const area of config.areas) {
             for (const section of area.sections) {
-                const hasRegularMatch = section.items.some(item =>
-                    match(item)
-                        .with({ icon: P.any }, (regularItem) => matchesNavigationItem(strippedPath, regularItem))
-                        .otherwise(() => false)
-                );
+                const itemContainingFoundItem = section.items.find(item => {
+                    if (isRegularItem(item)) {
+                        return item === foundItem;
+                    }
+                    if (isExpandableItem(item)) {
+                        return item.children.some(child => child === foundItem);
+                    }
+                    return false;
+                });
 
-                if (hasRegularMatch) {
+                if (itemContainingFoundItem) {
                     activeArea = area.title;
                     activeItem = foundItem.title;
                     return { activeArea, activeItem };
-                }
-
-                for (const item of section.items) {
-                    const hasChildMatch = match(item)
-                        .with({ children: P.array(P.any) }, (expandableItem) =>
-                            expandableItem.children.some(child => matchesNavigationItem(strippedPath, child))
-                        )
-                        .otherwise(() => false);
-
-                    if (hasChildMatch) {
-                        activeArea = area.title;
-                        activeItem = foundItem.title;
-                        return { activeArea, activeItem };
-                    }
                 }
             }
         }

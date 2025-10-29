@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useState } from 'react';
+import React, { createContext, useContext, type ReactNode, useState } from 'react';
 import { SidebarProvider } from '../sidebar';
 
 export interface NavbarState {
