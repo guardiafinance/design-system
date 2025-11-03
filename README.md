@@ -187,11 +187,11 @@ import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem } 
 ```
 
 #### **Navbar**
-Advanced sidebar navigation with dynamic menu sections and user management.
+Advanced sidebar navigation with dynamic menu sections, expandable menu items, and user management.
 
 ```tsx
 import { Navbar, NavbarProvider } from '@guardiafinance/design-system'
-import { Home, Settings, User, BarChart3 } from 'lucide-react'
+import { Home, Settings, User, BarChart3, FileText, Database, Code } from 'lucide-react'
 
 const navbarSettings = {
   organization: {
@@ -208,7 +208,16 @@ const navbarSettings = {
           label: "Overview",
           items: [
             { title: "Analytics", icon: BarChart3, path: "/dashboard/analytics" },
-            { title: "Reports", icon: BarChart3, path: "/dashboard/reports" }
+            { title: "Reports", icon: BarChart3, path: "/dashboard/reports" },
+            {
+              title: "Data Management",
+              icon: Database,
+              children: [
+                { title: "Import Data", icon: FileText, path: "/dashboard/import" },
+                { title: "Export Data", icon: FileText, path: "/dashboard/export" },
+                { title: "Data Sources", icon: Code, path: "/dashboard/sources" }
+              ]
+            }
           ]
         }
       ]
@@ -242,6 +251,29 @@ const navbarSettings = {
   <Navbar settings={navbarSettings} />
 </NavbarProvider>
 ```
+
+**Expandable Menu Items:**
+Create nested navigation structures by defining menu items with a `children` array instead of a `path`. These items expand/collapse on click to reveal their child items:
+
+```tsx
+{
+  title: "Data Management",
+  icon: Database,
+  children: [
+    { title: "Import Data", icon: FileText, path: "/dashboard/import" },
+    { title: "Export Data", icon: FileText, path: "/dashboard/export" },
+    { title: "Data Sources", icon: Code, path: "/dashboard/sources" }
+  ]
+}
+```
+
+**Features:**
+- Expandable items show a chevron icon that rotates when expanded
+- Child items are visually indented with a left border
+- Automatically expands when a child route is active
+- Hidden when sidebar is collapsed to save space
+- Supports `disabled` state on both parent and child items
+- Child items support badges and all standard menu item properties
 
 ### Form Controls
 

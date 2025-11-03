@@ -1,9 +1,10 @@
-import React, { createContext, useContext, ReactNode, useState } from 'react';
+import React, { createContext, useContext, type ReactNode, useState } from 'react';
 import { SidebarProvider } from '../sidebar';
 
 export interface NavbarState {
     activeArea: string;
     activeItem: string | null;
+    expandedItems: string[];
 }
 
 export interface NavbarContextValue {
@@ -11,6 +12,8 @@ export interface NavbarContextValue {
     setActiveArea: (area: string) => void;
     setActiveItem: (item: string | null) => void;
     setState: (state: NavbarState) => void;
+    toggleExpandedItem: (itemTitle: string) => void;
+    setExpandedItems: (items: string[]) => void;
 }
 
 const NavbarContext = createContext<NavbarContextValue | null>(null);
@@ -31,7 +34,7 @@ export function NavbarProvider({
     onOpenChange
 }: NavbarProviderProps) {
     const [state, setState] = useState<NavbarState>(
-        initialState || { activeArea: '', activeItem: null }
+        initialState || { activeArea: '', activeItem: null, expandedItems: [] }
     );
 
     const setActiveArea = (area: string) => {
@@ -42,11 +45,26 @@ export function NavbarProvider({
         setState(prev => ({ ...prev, activeItem: item }));
     };
 
+    const toggleExpandedItem = (itemTitle: string) => {
+        setState(prev => ({
+            ...prev,
+            expandedItems: prev.expandedItems.includes(itemTitle)
+                ? prev.expandedItems.filter(item => item !== itemTitle)
+                : [...prev.expandedItems, itemTitle]
+        }));
+    };
+
+    const setExpandedItems = (items: string[]) => {
+        setState(prev => ({ ...prev, expandedItems: items }));
+    };
+
     const contextValue: NavbarContextValue = {
         state,
         setActiveArea,
         setActiveItem,
         setState,
+        toggleExpandedItem,
+        setExpandedItems,
     };
 
     return (

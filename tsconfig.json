@@ -4,6 +4,7 @@
       "DOM",
       "ES2022"
     ],
+    "verbatimModuleSyntax": true,
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,

@@ -1,6 +1,6 @@
 {
   "name": "@guardiafinance/design-system",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "exports": {
     ".": {
@@ -48,6 +48,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-table": "^8.21.3",
+    "@types/react-router": "^5.1.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "input-otp": "^1.4.2",
@@ -59,16 +60,17 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
+    "ts-pattern": "^5.9.0",
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@rsbuild/plugin-react": "^1.4.0",
-    "@rslib/core": "^0.14.0",
-    "@types/react": "^19.1.13",
     "@rsbuild/core": "^1.5.11",
+    "@rsbuild/plugin-react": "^1.4.0",
     "@rsbuild/plugin-svgr": "^1.2.2",
+    "@rslib/core": "^0.14.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.5.6",
