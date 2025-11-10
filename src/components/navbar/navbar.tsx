@@ -231,8 +231,12 @@ function NavbarInternal({
                         mt-2 flex px-2 text-[10px] text-brand-fgLight/70
                         ${isCollapsed ? 'flex-col items-center gap-1 text-center' : 'items-center justify-between truncate'}
                     `}>
-                        {settings.footer?.version && <span className="truncate">{settings.footer.version}</span>}
-                        {!isCollapsed && settings.footer?.copyright && <span className="truncate">{settings.footer.copyright}</span>}
+                        <When condition={Boolean(settings.footer?.version)}>
+                            <span className="truncate">{settings.footer?.version}</span>
+                        </When>
+                        <When condition={!isCollapsed && Boolean(settings.footer?.copyright)}>
+                            <span className="truncate">{settings.footer?.copyright}</span>
+                        </When>
                     </div>
                 </When>
             </SidebarFooter>
