@@ -123,7 +123,7 @@ function NavbarInternal({
                     </div>
                 </SidebarHeader>
             </When>
-            <SidebarContent className="p-3 flex-1">
+            <SidebarContent className="flex-1">
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -227,9 +227,12 @@ function NavbarInternal({
                     </div>
                 </When>
                 <When condition={Boolean(settings.footer)}>
-                    <div className="mt-2 flex items-center justify-between px-2 text-[10px] text-brand-fgLight/70 truncate">
+                    <div className={`
+                        mt-2 flex px-2 text-[10px] text-brand-fgLight/70
+                        ${isCollapsed ? 'flex-col items-center gap-1 text-center' : 'items-center justify-between truncate'}
+                    `}>
                         {settings.footer?.version && <span className="truncate">{settings.footer.version}</span>}
-                        {settings.footer?.copyright && <span className="truncate">{settings.footer.copyright}</span>}
+                        {!isCollapsed && settings.footer?.copyright && <span className="truncate">{settings.footer.copyright}</span>}
                     </div>
                 </When>
             </SidebarFooter>
