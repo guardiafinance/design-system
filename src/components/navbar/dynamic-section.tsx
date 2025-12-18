@@ -37,10 +37,6 @@ export const DynamicMenuSections: React.FC<DynamicMenuSectionsProps> = ({
     const renderMenuItem = (item: MenuItemType) => {
         return match(item)
             .with({ children: P.array(P.any) }, (expandableItem) => {
-                if (isCollapsed) {
-                    return null;
-                }
-
                 const isExpanded = expandedItems.includes(expandableItem.title);
 
                 return (
@@ -48,7 +44,7 @@ export const DynamicMenuSections: React.FC<DynamicMenuSectionsProps> = ({
                         <SidebarMenuButton
                             isActive={false}
                             onClick={() => onItemClick(expandableItem)}
-                            tooltip={undefined}
+                            tooltip={isCollapsed ? expandableItem.title : undefined}
                             size="default"
                             disabled={expandableItem.disabled}
                             className={`
@@ -56,24 +52,26 @@ export const DynamicMenuSections: React.FC<DynamicMenuSectionsProps> = ({
                                 rounded-lg transition-all duration-200 mb-1.5
                                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
                                 ${expandableItem.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-                                justify-between
+                                ${isCollapsed ? 'group-data-[collapsible=icon]:justify-center' : 'justify-between'}
                             `}
                         >
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                                <When condition={Boolean(expandableItem.icon)}>
-                                    {expandableItem.icon && <expandableItem.icon className="h-4 w-4 flex-shrink-0" />}
-                                </When>
-                                <span className="text-sm font-medium truncate">
-                                    {expandableItem.title}
-                                </span>
-                            </div>
-                            <ChevronRight
-                                className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ease-in-out ${isExpanded ? 'transform rotate-90' : 'transform rotate-0'
-                                    }`}
-                            />
+                            <When condition={Boolean(expandableItem.icon)}>
+                                {expandableItem.icon && <expandableItem.icon className="h-5 w-5 flex-shrink-0" />}
+                            </When>
+                            <When condition={!isCollapsed}>
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    <span className="text-sm font-medium truncate">
+                                        {expandableItem.title}
+                                    </span>
+                                </div>
+                                <ChevronRight
+                                    className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ease-in-out ${isExpanded ? 'transform rotate-90' : 'transform rotate-0'
+                                        }`}
+                                />
+                            </When>
                         </SidebarMenuButton>
 
-                        <When condition={isExpanded}>
+                        <When condition={isExpanded && !isCollapsed}>
                             <SidebarMenu className="ml-2 mt-1 pr-2 border-l !border-[#7c598f]">
                                 {expandableItem.children.map((child) => (
                                     <SidebarMenuItem key={child.title} className="pl-1">
