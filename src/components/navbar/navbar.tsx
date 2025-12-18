@@ -42,7 +42,7 @@ function NavbarInternal({
 }: NavbarProps) {
     const navigate = useNavigate();
     const location = useLocation();
-    const { state } = useSidebar();
+    const { state, setOpen } = useSidebar();
     const navbarContext = useNavbarContext();
 
     const defaultActiveArea = getDefaultActiveArea(settings);
@@ -76,7 +76,16 @@ function NavbarInternal({
 
     const handleItemClick = (item: MenuItemType) => {
         if ('children' in item) {
-            navbarContext.toggleExpandedItem(item.title);
+            if (isCollapsed) {
+                // If navbar is collapsed, expand it and expand the item
+                setOpen(true);
+                if (!navbarContext.state.expandedItems.includes(item.title)) {
+                    navbarContext.setExpandedItems([...navbarContext.state.expandedItems, item.title]);
+                }
+            } else {
+                // If navbar is already expanded, use normal toggle behavior
+                navbarContext.toggleExpandedItem(item.title);
+            }
             onItemClick?.(item);
         } else {
             navbarContext.setActiveItem(item.title);
