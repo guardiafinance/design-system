@@ -1,6 +1,6 @@
 {
   "name": "@guardiafinance/design-system",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "type": "module",
   "exports": {
     ".": {
@@ -51,9 +51,11 @@
     "@types/react-router": "^5.1.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "input-otp": "^1.4.2",
     "jotai": "^2.13.1",
     "lucide-react": "^0.542.0",
+    "react-day-picker": "^9.13.0",
     "react-hook-form": "^7.62.0",
     "react-select": "^5.10.2",
     "recharts": "^2.15.4",

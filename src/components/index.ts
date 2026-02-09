@@ -41,3 +41,4 @@ export * from "./tooltip";
 export * from "./typography";
 export * from "./table";
 export * from "./custom-icons";
+export * from "./calendar";
