@@ -113,6 +113,24 @@ npm run dev
 npm run build
 ```
 
+### Storybook
+
+| Idioma | Descrição |
+|--------|-----------|
+| **PT** | O Storybook documenta todos os componentes do design system. Para subir o Storybook em modo desenvolvimento, execute `npm run storybook`. Para gerar o build estático (pasta `storybook-static`), execute `npm run build-storybook`. O build estático pode ser implantado em Chromatic, GitHub Pages ou outro host. |
+| **ES** | Storybook documenta todos los componentes del design system. Para iniciar Storybook en modo desarrollo, ejecute `npm run storybook`. Para generar el build estático (carpeta `storybook-static`), ejecute `npm run build-storybook`. El build estático puede desplegarse en Chromatic, GitHub Pages u otro host. |
+| **EN** | Storybook documents all design system components. To run Storybook in development mode, run `npm run storybook`. To generate the static build (output in `storybook-static`), run `npm run build-storybook`. The static build can be deployed to Chromatic, GitHub Pages, or any static host. |
+
+```bash
+# Run Storybook locally (http://localhost:6006)
+npm run storybook
+
+# Build static Storybook for deployment
+npm run build-storybook
+```
+
+**Deploy no GitHub Pages:** O workflow `.github/workflows/deploy-storybook.yml` faz o build e o deploy do Storybook ao dar push em `main`/`master` ou ao disparar manualmente. Em **Settings → Pages** do repositório, configure **Source** como **GitHub Actions**. O Storybook ficará disponível em `https://<org>.github.io/design-system/`.
+
 ## 🎨 Quick Start
 
 ```tsx
