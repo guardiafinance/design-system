@@ -1,4 +1,4 @@
-import React, { createContext, useContext, type ReactNode, useState } from 'react';
+import { createContext, useContext, type ReactNode, useState } from 'react';
 import { SidebarProvider } from '../sidebar';
 
 export interface NavbarState {
@@ -13,7 +13,7 @@ export interface NavbarContextValue {
     setActiveItem: (item: string | null) => void;
     setState: (state: NavbarState) => void;
     toggleExpandedItem: (itemTitle: string) => void;
-    setExpandedItems: (items: string[]) => void;
+    setExpandedItems: (items: string[] | ((prev: string[]) => string[])) => void;
 }
 
 const NavbarContext = createContext<NavbarContextValue | null>(null);
@@ -54,8 +54,11 @@ export function NavbarProvider({
         }));
     };
 
-    const setExpandedItems = (items: string[]) => {
-        setState(prev => ({ ...prev, expandedItems: items }));
+    const setExpandedItems = (items: string[] | ((prev: string[]) => string[])) => {
+        setState(prev => ({
+            ...prev,
+            expandedItems: typeof items === 'function' ? items(prev.expandedItems) : items,
+        }));
     };
 
     const contextValue: NavbarContextValue = {

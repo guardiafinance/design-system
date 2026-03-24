@@ -160,46 +160,57 @@ export const matchPathPattern = (pathname: string, pattern: string): boolean => 
 };
 
 export const matchesNavigationItem = (pathname: string, item: NavigationItem): boolean => {
+    return navigationItemMatchScore(pathname, item) > 0;
+};
+
+const EXACT_PATH_SCORE = 1_000_000;
+const PATTERN_SCORE = 100_000;
+
+const navigationItemMatchScore = (pathname: string, item: NavigationItem): number => {
     if (item.path && pathname === item.path) {
-        return true;
+        return EXACT_PATH_SCORE + item.path.length;
     }
 
     if (item.pathPattern && matchPathPattern(pathname, item.pathPattern)) {
-        return true;
+        return PATTERN_SCORE;
     }
 
     if (item.path && pathname.startsWith(item.path + '/')) {
-        return true;
+        return item.path.length;
     }
 
-    return false;
+    return 0;
 };
 
 export const findNavigationItemByPath = (config: NavbarConfiguration, path: string): NavigationItem | null => {
     const strippedPath = stripRoutePrefix(path, config.routePrefix);
+    let best: NavigationItem | null = null;
+    let bestScore = -1;
+
+    const consider = (candidate: NavigationItem) => {
+        const score = navigationItemMatchScore(strippedPath, candidate);
+        if (score > bestScore) {
+            bestScore = score;
+            best = candidate;
+        }
+    };
 
     for (const area of config.areas) {
         for (const section of area.sections) {
             for (const item of section.items) {
-                const result = match(item)
+                match(item)
                     .with({ children: P.array(P.any) }, (expandableItem) => {
                         for (const child of expandableItem.children) {
-                            if (matchesNavigationItem(strippedPath, child)) {
-                                return child;
-                            }
+                            consider(child);
                         }
-                        return null;
                     })
-                    .with({ icon: P.any }, (regularItem) =>
-                        matchesNavigationItem(strippedPath, regularItem) ? regularItem : null
-                    )
-                    .otherwise(() => null);
-
-                if (result) return result;
+                    .with({ icon: P.any }, (regularItem) => consider(regularItem))
+                    .otherwise(() => { });
             }
         }
     }
-    return null;
+
+    return bestScore > 0 ? best : null;
 };
 
 export const getAllNavigationPaths = (config: NavbarConfiguration): string[] => {
@@ -260,23 +271,20 @@ export const getActiveStatesFromPath = (config: NavbarConfiguration, pathname: s
 };
 
 export const findExpandableParentByChildPath = (config: NavbarConfiguration, childPath: string): string | null => {
-    const strippedPath = stripRoutePrefix(childPath, config.routePrefix);
+    const found = findNavigationItemByPath(config, childPath);
+    if (!found) {
+        return null;
+    }
 
     for (const area of config.areas) {
         for (const section of area.sections) {
             for (const item of section.items) {
-                const result = match(item)
-                    .with({ children: P.array(P.any) }, (expandableItem) => {
-                        for (const child of expandableItem.children) {
-                            if (matchesNavigationItem(strippedPath, child)) {
-                                return expandableItem.title;
-                            }
-                        }
-                        return null;
-                    })
-                    .otherwise(() => null);
-
-                if (result) return result;
+                if (
+                    isExpandableItem(item) &&
+                    item.children.some((child) => child === found)
+                ) {
+                    return item.title;
+                }
             }
         }
     }
