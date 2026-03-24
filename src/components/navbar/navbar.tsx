@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router";
 import {
     Sidebar,
@@ -53,26 +53,40 @@ function NavbarInternal({
     const activeNavigationArea = navbarContext.state.activeArea || defaultActiveArea;
     const activeItem = navbarContext.state.activeItem;
 
-    useEffect(() => {
-        if (settings.allowDefaultPathBehavior === true) {
-            const { activeArea, activeItem: currentActiveItem } = getActiveStatesFromPath(settings, location.pathname);
-            navbarContext.setActiveArea(activeArea);
-            navbarContext.setActiveItem(currentActiveItem);
+    const settingsRef = useRef(settings);
+    settingsRef.current = settings;
 
-            match(currentActiveItem)
-                .with(P.string, () => {
-                    const expandableParent = findExpandableParentByChildPath(settings, location.pathname);
-                    match(expandableParent)
-                        .with(P.string, (parent) => {
-                            if (!navbarContext.state.expandedItems.includes(parent)) {
-                                navbarContext.setExpandedItems([...navbarContext.state.expandedItems, parent]);
-                            }
-                        })
-                        .otherwise(() => { });
-                })
-                .otherwise(() => { });
+    useEffect(() => {
+        const s = settingsRef.current;
+        if (s.allowDefaultPathBehavior !== true) {
+            return;
         }
-    }, [location.pathname, settings]);
+
+        const { activeArea, activeItem: currentActiveItem } = getActiveStatesFromPath(
+            s,
+            location.pathname
+        );
+        navbarContext.setActiveArea(activeArea);
+        navbarContext.setActiveItem(currentActiveItem);
+
+        match(currentActiveItem)
+            .with(P.string, () => {
+                const expandableParent = findExpandableParentByChildPath(s, location.pathname);
+                match(expandableParent)
+                    .with(P.string, (parent) => {
+                        navbarContext.setExpandedItems((prev) =>
+                            prev.includes(parent) ? prev : [...prev, parent]
+                        );
+                    })
+                    .otherwise(() => { });
+            })
+            .otherwise(() => { });
+    }, [
+        location.pathname,
+        settings.routePrefix,
+        settings.defaultActiveArea,
+        settings.allowDefaultPathBehavior,
+    ]);
 
     const handleItemClick = (item: MenuItemType) => {
         if ('children' in item) {
