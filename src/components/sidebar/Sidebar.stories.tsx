@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "./index";
-import { Button } from "../button";
 
 const meta = {
   title: "Components/Sidebar",
@@ -49,9 +48,7 @@ export const Default: Story = {
           </SidebarContent>
         </Sidebar>
         <main className="flex flex-1 flex-col p-4">
-          <SidebarTrigger asChild>
-            <Button variant="outline" size="icon">Toggle</Button>
-          </SidebarTrigger>
+          <SidebarTrigger />
         </main>
       </div>
     </SidebarProvider>
