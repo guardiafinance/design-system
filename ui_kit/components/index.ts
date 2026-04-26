@@ -29,7 +29,7 @@ export * from "./navbar";
 export * from "./navigation-menu";
 export * from "./pagination";
 export * from "./popover";
-export * from "./radio-group";
+export * from "./radio";
 export * from "./scroll-area";
 export * from "./select";
 export * from "./badge-select";
