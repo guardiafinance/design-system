@@ -50,3 +50,4 @@ export * from "./table";
 export * from "./custom-icons";
 export * from "./calendar";
 export * from "./date-picker";
+export * from "./file-upload";
