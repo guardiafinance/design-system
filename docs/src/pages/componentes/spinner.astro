@@ -1,0 +1,194 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  SizesRow,
+  ColorsRow,
+  OnDarkRow,
+  CurrentColorRow,
+  InlineRow,
+  CustomLabelRow,
+} from "../../previews/spinner";
+import { LiveSpinnerSnippet } from "../../previews/spinner-live";
+import spinnerSource from "@ds/components/spinner/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Spinner"
+  group="Primitivos"
+  storybookId="components-spinner--default"
+  sourcePath="ui_kit/components/spinner"
+  lede='Indicador circular de carregamento. Cinco tamanhos canônicos, quatro cores e <code class="inline">currentColor</code> por default — basta definir <code class="inline">color</code> no parent. Animação respeita <code class="inline">prefers-reduced-motion</code>.'
+>
+  <!-- ============ TAMANHOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>xs · sm · md · lg · xl</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Tamanhos canônicos em px: <code class="inline">xs</code> 12,
+      <code class="inline">sm</code> 16, <code class="inline">md</code> 20 (default),
+      <code class="inline">lg</code> 28, <code class="inline">xl</code> 40.
+    </p>
+  </section>
+
+  <!-- ============ CORES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Cores</h2>
+      <small>current · brand · accent · white</small>
+    </div>
+    <div class="preview">
+      <ColorsRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">brand</code> = violet-500,
+      <code class="inline">accent</code> = orange-500.
+      <code class="inline">current</code> herda a cor do texto do parent.
+    </p>
+  </section>
+
+  <!-- ============ CURRENT COLOR ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Herança de cor (currentColor)</h2>
+      <small>color="current" segue o text-color do container</small>
+    </div>
+    <div class="preview">
+      <CurrentColorRow client:load />
+    </div>
+    <p class="preview-caption">
+      Padrão para inline em copy: o spinner adota a cor do texto que o
+      acompanha — sem precisar duplicar a token.
+    </p>
+  </section>
+
+  <!-- ============ DARK ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em fundo escuro</h2>
+      <small>color="white" sobre actions saturadas</small>
+    </div>
+    <div class="preview">
+      <OnDarkRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ INLINE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Inline com texto</h2>
+      <small>uso canônico em mensagens de status</small>
+    </div>
+    <div class="preview">
+      <InlineRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CUSTOM LABEL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Label customizado</h2>
+      <small>aria-label para leitores de tela</small>
+    </div>
+    <div class="preview">
+      <CustomLabelRow client:load />
+    </div>
+    <p class="preview-caption">
+      Default: <code class="inline">"Carregando"</code>. Sempre customize quando
+      o contexto da operação for relevante (ex.: "Conciliando lançamentos",
+      "Gerando relatório").
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSpinnerSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"xs" | "sm" | "md" | "lg" | "xl"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Tamanho em px (12/16/20/28/40).</td>
+          </tr>
+          <tr>
+            <td class="name">color</td>
+            <td class="type">"current" | "brand" | "accent" | "white"</td>
+            <td class="default">"current"</td>
+            <td class="desc">Cor do traço. <code class="inline">current</code> usa <code class="inline">currentColor</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">string</td>
+            <td class="default">"Carregando"</td>
+            <td class="desc">Texto anunciado por leitores de tela.</td>
+          </tr>
+          <tr>
+            <td class="name">aria-hidden</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Quando <code class="inline">true</code>, suprime <code class="inline">role="status"</code> e <code class="inline">aria-label</code> (use quando o loading já está sendo anunciado por outro elemento).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLSpanElement</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/spinner/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={spinnerSource}
+      language="tsx"
+      filename="ui_kit/components/spinner/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA + AAA motion</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Anuncio de loading</b> via <code class="inline">role="status"</code> + <code class="inline">aria-label</code> (default "Carregando", customizável).</span></li>
+        <li><span><b>SVG decorativo</b> (<code class="inline">aria-hidden</code>) — leitores leem só o span pai, sem duplicar.</span></li>
+        <li><span><b>Animação</b> wrapped em <code class="inline">motion-safe:</code> — em <code class="inline">prefers-reduced-motion</code>, o spinner congela visível mas não gira.</span></li>
+        <li><span><b>Modo decorativo</b>: passe <code class="inline">aria-hidden</code> quando outro elemento já anuncia o loading (evita anúncio duplo).</span></li>
+        <li><span><b>Não use</b> Spinner para esperas longas (&gt;3s) sem texto contextual — adicione mensagem inline.</span></li>
+        <li><span><b>Não use</b> Spinner em tela inteira como bloqueio de UX — prefira <code class="inline">Skeleton</code> que mostra a estrutura final.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
