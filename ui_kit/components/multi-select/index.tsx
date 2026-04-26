@@ -12,7 +12,7 @@ const MultiValue = (props: any) => {
     return (
         <components.MultiValue {...props}>
             <Badge
-                variant="secondary"
+                variant="brand"
                 className="mr-1 flex items-center gap-1"
             >
                 {props.data.icon && (
