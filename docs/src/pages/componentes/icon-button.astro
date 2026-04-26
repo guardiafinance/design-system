@@ -1,0 +1,216 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  VariantsRow,
+  SizesRow,
+  ShapesRow,
+  StatesRow,
+  ToolbarRow,
+} from "../../previews/icon-button";
+import { LiveIconButtonSnippet } from "../../previews/icon-button-live";
+import iconButtonSource from "@ds/components/icon-button/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="IconButton"
+  group="Primitivos"
+  storybookId="components-iconbutton--default"
+  sourcePath="ui_kit/components/icon-button"
+  lede='Botão de <b>ícone-único</b> para toolbars, linhas de tabela e ações compactas. <code class="inline">aria-label</code> (ou <code class="inline">aria-labelledby</code>) é <b>obrigatório</b> — o componente avisa em dev se faltar.'
+>
+  <!-- ============ VARIANTES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>5 tons · default=ghost</small>
+    </div>
+    <div class="preview row">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Alinhadas com <code class="inline">Button</code>, menos <code class="inline">link</code>
+      (sem sentido em icon-only). Em contextos de toolbar, <code class="inline">ghost</code>
+      é o default — discreto, não compete com o conteúdo.
+    </p>
+  </section>
+
+  <!-- ============ TAMANHOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm (28) · md (36) · lg (44)</small>
+    </div>
+    <div class="preview row">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Tamanhos mais compactos que o <code class="inline">Button</code> (36/40/44) —
+      refletem o contexto denso em que vivem (toolbars, headers).
+    </p>
+  </section>
+
+  <!-- ============ FORMATO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Formato</h2>
+      <small>square (default) · circle</small>
+    </div>
+    <div class="preview row">
+      <ShapesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">square</code> adapta o radius ao tamanho
+      (sm→radius-sm · md→radius-md · lg→radius-lg). <code class="inline">circle</code>
+      força <code class="inline">rounded-full</code> em qualquer tamanho.
+    </p>
+  </section>
+
+  <!-- ============ ESTADOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>loading · disabled</small>
+    </div>
+    <div class="preview row">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">loading</code> substitui o ícone por um spinner
+      acessível, seta <code class="inline">aria-busy="true"</code> e desabilita
+      cliques. O spinner respeita <code class="inline">prefers-reduced-motion</code>.
+    </p>
+  </section>
+
+  <!-- ============ TOOLBAR ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Toolbar</h2>
+      <small>role="toolbar" + aria-label por ação</small>
+    </div>
+    <div class="preview">
+      <ToolbarRow client:load />
+    </div>
+    <p class="preview-caption">
+      Combine com <code class="inline">ButtonGroup role="toolbar"</code> para
+      barras de formatação. Cada IconButton dentro precisa do seu próprio
+      <code class="inline">aria-label</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveIconButtonSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">aria-label</td>
+            <td class="type">string</td>
+            <td class="default">—<span class="required">obrigatório*</span></td>
+            <td class="desc">
+              Rótulo acessível. <b>Um entre</b> <code class="inline">aria-label</code>
+              ou <code class="inline">aria-labelledby</code> é obrigatório — sem um
+              deles, o componente avisa no console em dev.
+            </td>
+          </tr>
+          <tr>
+            <td class="name">aria-labelledby</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Alternativa ao <code class="inline">aria-label</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"default" | "secondary" | "destructive" | "outline" | "ghost"</td>
+            <td class="default">"ghost"</td>
+            <td class="desc">Tom visual.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">28 · 36 · 44 px.</td>
+          </tr>
+          <tr>
+            <td class="name">shape</td>
+            <td class="type">"square" | "circle"</td>
+            <td class="default">"square"</td>
+            <td class="desc">Formato do container.</td>
+          </tr>
+          <tr>
+            <td class="name">loading</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Mostra spinner, desabilita cliques, seta <code class="inline">aria-busy</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Delega via Radix Slot (virar <code class="inline">&lt;a&gt;</code>, etc).</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita interação.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLButtonElement</code>
+      (<code class="inline">onClick</code>, <code class="inline">type</code>, etc.).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/icon-button/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={iconButtonSource}
+      language="tsx"
+      filename="ui_kit/components/icon-button/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>aria-label</b> / <b>aria-labelledby</b> obrigatório — warning em dev se faltar.</span></li>
+        <li><span><b>Foco visível</b> — ring laranja (<code class="inline">ring-ring</code>) em <code class="inline">:focus-visible</code>.</span></li>
+        <li><span><b>Spinner</b> respeita <code class="inline">prefers-reduced-motion</code>.</span></li>
+        <li><span><b>loading</b> seta <code class="inline">aria-busy="true"</code> automaticamente.</span></li>
+        <li><span><b>asChild</b> preserva semântica (virar <code class="inline">&lt;a&gt;</code> mantém role=link).</span></li>
+        <li><span><b>disabled</b> desliga <code class="inline">pointer-events</code> e reduz opacidade.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

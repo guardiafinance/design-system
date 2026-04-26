@@ -1,0 +1,187 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  RequiredRow,
+  OptionalRow,
+  SizesRow,
+  FormRow,
+} from "../../previews/label";
+import { LiveLabelSnippet } from "../../previews/label-live";
+import labelSource from "@ds/components/label/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Label"
+  group="Primitivos"
+  storybookId="components-label--default"
+  sourcePath="ui_kit/components/label"
+  lede='Rótulo acessível de campo de formulário. Base no <b>Radix Label</b>, com indicadores <code class="inline">required</code> (asterisco) e <code class="inline">optional</code> (sufixo em cinza). Sempre conecte via <code class="inline">htmlFor</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>rótulo + input via htmlFor</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Clicar no label foca o input — comportamento nativo preservado pelo
+      <code class="inline">Radix Label</code>.
+    </p>
+  </section>
+
+  <!-- ============ REQUIRED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Obrigatório</h2>
+      <small>required — asterisco decorativo</small>
+    </div>
+    <div class="preview">
+      <RequiredRow client:load />
+    </div>
+    <p class="preview-caption">
+      O asterisco usa <code class="inline">aria-hidden="true"</code>. A
+      obrigatoriedade semântica vem do <code class="inline">required</code> do
+      próprio input — o asterisco é só sinalização visual.
+    </p>
+  </section>
+
+  <!-- ============ OPTIONAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Opcional</h2>
+      <small>optional — sufixo em cinza</small>
+    </div>
+    <div class="preview">
+      <OptionalRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">optional</code> quando a maioria dos campos é
+      obrigatória e você quer sinalizar os poucos que não são. O texto
+      customiza via <code class="inline">optionalLabel</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm (default) · md</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">sm</code> (12.5px) para formulários densos;
+      <code class="inline">md</code> (14px) para formulários confortáveis.
+    </p>
+  </section>
+
+  <!-- ============ FORMULÁRIO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>No formulário</h2>
+      <small>required + optional juntos</small>
+    </div>
+    <div class="preview">
+      <FormRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveLabelSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">htmlFor</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">ID do input que o label controla (recomendado).</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"sm"</td>
+            <td class="desc">Tamanho da fonte.</td>
+          </tr>
+          <tr>
+            <td class="name">required</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Adiciona asterisco vermelho decorativo (<code class="inline">aria-hidden</code>).</td>
+          </tr>
+          <tr>
+            <td class="name">optional</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Adiciona sufixo "(opcional)".</td>
+          </tr>
+          <tr>
+            <td class="name">optionalLabel</td>
+            <td class="type">string</td>
+            <td class="default">"(opcional)"</td>
+            <td class="desc">Customiza o texto do sufixo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLLabelElement</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/label/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={labelSource}
+      language="tsx"
+      filename="ui_kit/components/label/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Label</b> garante associação via <code class="inline">htmlFor</code> + clique foca input.</span></li>
+        <li><span><b>Asterisco</b> de <code class="inline">required</code> é decorativo (<code class="inline">aria-hidden</code>).</span></li>
+        <li><span><b>Obrigatoriedade</b> semântica deve vir do <code class="inline">required</code> do input.</span></li>
+        <li><span><b>Contraste</b> do texto default atende AAA (foreground sobre background).</span></li>
+        <li><span><b>peer-disabled</b> reduz opacidade quando o input pareado está desabilitado.</span></li>
+        <li><span><b>Não use</b> como substituto de <code class="inline">aria-label</code> em botões — Label é para inputs.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

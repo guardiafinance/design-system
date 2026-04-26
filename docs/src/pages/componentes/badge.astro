@@ -1,0 +1,223 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  SoftRow,
+  SolidRow,
+  OutlineRow,
+  DotRow,
+  IconsRow,
+  ShapeRow,
+  CountsRow,
+} from "../../previews/badge";
+import { LiveBadgeSnippet } from "../../previews/badge-live";
+import badgeSource from "@ds/components/badge/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Badge"
+  group="Primitivos"
+  storybookId="components-badge--default"
+  sourcePath="ui_kit/components/badge"
+  lede='Rótulo compacto para status, tags e contagens. <b>7 variantes</b> (neutral, brand, accent, success, warning, danger, info) × <b>3 aparências</b> (solid, soft, outline) × <b>2 formatos</b>, com ponto ou ícones opcionais. Zero cor hardcoded.'
+>
+  <!-- ============ SOFT (default) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Aparência: soft</h2>
+      <small>default · 7 variantes</small>
+    </div>
+    <div class="preview row">
+      <SoftRow client:load />
+    </div>
+    <p class="preview-caption">
+      Usa tons <code class="inline">-100</code> no fundo e <code class="inline">-700</code> no texto
+      para contraste AA. Default porque é menos agressivo em listas longas.
+    </p>
+  </section>
+
+  <!-- ============ SOLID ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Aparência: solid</h2>
+      <small>alta ênfase</small>
+    </div>
+    <div class="preview row">
+      <SolidRow client:load />
+    </div>
+    <p class="preview-caption">
+      Fundo cheio na cor <code class="inline">-500</code>. Use em contadores e alertas
+      críticos. <code class="inline">warning</code> mantém texto violet-900 para AA.
+    </p>
+  </section>
+
+  <!-- ============ OUTLINE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Aparência: outline</h2>
+      <small>baixa ênfase</small>
+    </div>
+    <div class="preview row">
+      <OutlineRow client:load />
+    </div>
+    <p class="preview-caption">
+      Fundo transparente + borda colorida. Use quando o badge mora sobre superfície colorida.
+    </p>
+  </section>
+
+  <!-- ============ DOT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Ponto (dot)</h2>
+      <small>indicador compacto</small>
+    </div>
+    <div class="preview row">
+      <DotRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">dot</code> insere um ponto colorido de <code class="inline">currentColor</code>
+      antes do texto. Padrão visual para status de fluxo (faturas, transações).
+    </p>
+  </section>
+
+  <!-- ============ ÍCONES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícones</h2>
+      <small>leadingIcon · trailingIcon</small>
+    </div>
+    <div class="preview row">
+      <IconsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ícones de <code class="inline">lucide-react</code> em 12×12 (auto via
+      <code class="inline">[&_svg]:size-3</code>). Cor herda da variant.
+    </p>
+  </section>
+
+  <!-- ============ FORMATO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Formato</h2>
+      <small>pill · square</small>
+    </div>
+    <div class="preview row">
+      <ShapeRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">pill</code> é o default (status, tags). Use
+      <code class="inline">square</code> em contextos densos como tabelas.
+    </p>
+  </section>
+
+  <!-- ============ CONTADORES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Contadores</h2>
+      <small>uso comum: numérico</small>
+    </div>
+    <div class="preview row">
+      <CountsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveBadgeSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"neutral" | "brand" | "accent" | "success" | "warning" | "danger" | "info"</td>
+            <td class="default">"neutral"</td>
+            <td class="desc">Tom semântico.</td>
+          </tr>
+          <tr>
+            <td class="name">appearance</td>
+            <td class="type">"solid" | "soft" | "outline"</td>
+            <td class="default">"soft"</td>
+            <td class="desc">Nível de ênfase visual.</td>
+          </tr>
+          <tr>
+            <td class="name">shape</td>
+            <td class="type">"pill" | "square"</td>
+            <td class="default">"pill"</td>
+            <td class="desc">Formato do container.</td>
+          </tr>
+          <tr>
+            <td class="name">dot</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Exibe um ponto colorido antes do texto.</td>
+          </tr>
+          <tr>
+            <td class="name">leadingIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda (cor herda da variant).</td>
+          </tr>
+          <tr>
+            <td class="name">trailingIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à direita.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLSpanElement</code>
+      (exceto <code class="inline">color</code>, que é substituído pelo sistema de variantes).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/badge/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={badgeSource}
+      language="tsx"
+      filename="ui_kit/components/badge/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Contraste</b> AA em todas as combinações variant × appearance.</span></li>
+        <li><span><b>warning solid</b> usa texto violet-900 para manter 4.5:1.</span></li>
+        <li><span><b>Dot</b> usa <code class="inline">aria-hidden</code> — texto já descreve o estado.</span></li>
+        <li><span>Ícones decorativos (Lucide) não recebem <code class="inline">aria-label</code>.</span></li>
+        <li><span><b>Renderiza span</b> — inline por padrão, respeita o fluxo do texto.</span></li>
+        <li><span>Se usado como status em lista, envolva em <code class="inline">role="status"</code> externo.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

@@ -1,0 +1,226 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  Static,
+  FilterToggle,
+  FilterGroup,
+  Removable,
+  SelectableAndRemovable,
+  Sizes,
+  Disabled,
+} from "../../previews/chip";
+import { LiveChipSnippet } from "../../previews/chip-live";
+import chipSource from "@ds/components/chip/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Chip"
+  group="Primitivos"
+  storybookId="components-chip--default"
+  sourcePath="ui_kit/components/chip"
+  lede='Item compacto com três papéis: <b>filtro</b> (toggle com <code class="inline">onSelect</code>), <b>tag removível</b> (<code class="inline">onRemove</code>) ou <b>rótulo informacional</b>. Acessível via teclado quando interativo.'
+>
+  <!-- ============ ESTÁTICO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Informacional</h2>
+      <small>sem handlers · só visual</small>
+    </div>
+    <div class="preview row">
+      <Static client:load />
+    </div>
+    <p class="preview-caption">
+      Sem <code class="inline">onSelect</code> nem <code class="inline">onRemove</code>,
+      o Chip não recebe <code class="inline">role</code>, <code class="inline">tabindex</code>
+      nem hover interativo. Bom para listar metadados.
+    </p>
+  </section>
+
+  <!-- ============ FILTRO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Filtro (toggle)</h2>
+      <small>onSelect + selected</small>
+    </div>
+    <div class="preview row">
+      <FilterToggle client:load />
+    </div>
+    <p class="preview-caption">
+      Com <code class="inline">onSelect</code>, o Chip ganha
+      <code class="inline">role="button"</code>, <code class="inline">tabIndex=0</code>,
+      <code class="inline">aria-pressed</code> e resposta a Enter/Space.
+      Selecionado usa violeta (7.85:1 AAA).
+    </p>
+  </section>
+
+  <!-- ============ FILTER GROUP ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupo de filtros</h2>
+      <small>multi-seleção com Set</small>
+    </div>
+    <div class="preview row">
+      <FilterGroup client:load />
+    </div>
+    <p class="preview-caption">
+      Padrão recomendado para filtros de lista (status de conciliação,
+      categorias). Clique em cada item alterna individualmente.
+    </p>
+  </section>
+
+  <!-- ============ REMOVÍVEL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tag removível</h2>
+      <small>onRemove · botão × nested</small>
+    </div>
+    <div class="preview row">
+      <Removable client:load />
+    </div>
+    <p class="preview-caption">
+      Botão de remover é <code class="inline">&lt;button&gt;</code> nested
+      com <code class="inline">aria-label="Remover"</code>. Click do × não
+      propaga para o Chip externo.
+    </p>
+  </section>
+
+  <!-- ============ BOTH ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Selecionável e removível</h2>
+      <small>onSelect + onRemove</small>
+    </div>
+    <div class="preview">
+      <SelectableAndRemovable client:load />
+    </div>
+    <p class="preview-caption">
+      Use com moderação — dois controles aumentam a superfície cognitiva.
+      Prefira separar quando possível.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm · md</small>
+    </div>
+    <div class="preview row">
+      <Sizes client:load />
+    </div>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Desabilitado</h2>
+      <small>bloqueia seleção e remoção</small>
+    </div>
+    <div class="preview row">
+      <Disabled client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">disabled</code> desabilita ambos os handlers +
+      marca <code class="inline">aria-disabled</code>, zera
+      <code class="inline">pointer-events</code> e reduz opacidade para 50%.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveChipSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"sm"</td>
+            <td class="desc">Altura do chip (24 ou 32 px).</td>
+          </tr>
+          <tr>
+            <td class="name">selected</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Estado ativo (fundo violeta).</td>
+          </tr>
+          <tr>
+            <td class="name">onSelect</td>
+            <td class="type">(next: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Torna o chip interativo (role=button + teclado). Recebe o <b>novo</b> valor.</td>
+          </tr>
+          <tr>
+            <td class="name">onRemove</td>
+            <td class="type">() =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Adiciona um botão × ao final.</td>
+          </tr>
+          <tr>
+            <td class="name">leadingIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone antes do texto.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita seleção e remoção. Marca <code class="inline">aria-disabled</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/chip/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={chipSource}
+      language="tsx"
+      filename="ui_kit/components/chip/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>role="button"</b> aplicado só quando <code class="inline">onSelect</code> existe.</span></li>
+        <li><span><b>aria-pressed</b> reflete <code class="inline">selected</code> em chips de toggle.</span></li>
+        <li><span><b>Enter / Space</b> ativam o toggle quando interativo.</span></li>
+        <li><span><b>aria-label="Remover"</b> no botão × nested.</span></li>
+        <li><span><b>stopPropagation</b> do × impede toggle paralelo.</span></li>
+        <li><span><b>aria-disabled</b> + opacity + pointer-events none em <code class="inline">disabled</code>.</span></li>
+        <li><span><b>Foco visível</b> via <code class="inline">ring-ring</code> (laranja).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

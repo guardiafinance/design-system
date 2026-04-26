@@ -1,0 +1,184 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  AttachedRow,
+  SpacedRow,
+  VerticalRow,
+  ToolbarRow,
+  MixedVariantsRow,
+} from "../../previews/button-group";
+import { LiveButtonGroupSnippet } from "../../previews/button-group-live";
+import buttonGroupSource from "@ds/components/button-group/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="ButtonGroup"
+  group="Primitivos"
+  storybookId="components-buttongroup--default"
+  sourcePath="ui_kit/components/button-group"
+  lede='Agrupa <b>Buttons</b> (ou IconButtons) visualmente conectados. Default <b>attached</b> — bordas internas colapsam. Modo <b>spaced</b> para separar com gap. Horizontal ou vertical, com <code class="inline">role="group"</code> ou <code class="inline">role="toolbar"</code> para a11y.'
+>
+  <!-- ============ ATTACHED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Attached (default)</h2>
+      <small>bordas colapsadas entre botões</small>
+    </div>
+    <div class="preview">
+      <AttachedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Radii do primeiro item viram <code class="inline">rounded-l-*</code>;
+      os do último <code class="inline">rounded-r-*</code>; os do meio ficam
+      retos. Margem <code class="inline">-ml-px</code> sobrepõe as bordas
+      adjacentes.
+    </p>
+  </section>
+
+  <!-- ============ SPACED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Spaced</h2>
+      <small>attached=false · gap entre botões</small>
+    </div>
+    <div class="preview">
+      <SpacedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use quando os botões representam ações distintas que não deveriam parecer
+      uma unidade.
+    </p>
+  </section>
+
+  <!-- ============ VERTICAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Vertical</h2>
+      <small>orientation="vertical"</small>
+    </div>
+    <div class="preview">
+      <VerticalRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ TOOLBAR ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Toolbar</h2>
+      <small>role="toolbar" com IconButtons</small>
+    </div>
+    <div class="preview row">
+      <ToolbarRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para barras de formatação (editor de texto, filtros), combine
+      <code class="inline">role="toolbar"</code> + <code class="inline">aria-label</code>
+      descritivo. Ícones usam <code class="inline">Button size="icon"</code>
+      com <code class="inline">aria-label</code> individual.
+    </p>
+  </section>
+
+  <!-- ============ MIXED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes mistas</h2>
+      <small>decisão binária</small>
+    </div>
+    <div class="preview">
+      <MixedVariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para par aprovar/rejeitar, misture <code class="inline">default</code>
+      + <code class="inline">destructive</code>. Use com moderação — grupos
+      com variantes diferentes podem confundir prioridade.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveButtonGroupSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">orientation</td>
+            <td class="type">"horizontal" | "vertical"</td>
+            <td class="default">"horizontal"</td>
+            <td class="desc">Direção do agrupamento.</td>
+          </tr>
+          <tr>
+            <td class="name">attached</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Colapsa radii/bordas entre filhos. <code class="inline">false</code> adiciona gap.</td>
+          </tr>
+          <tr>
+            <td class="name">role</td>
+            <td class="type">string</td>
+            <td class="default">"group"</td>
+            <td class="desc">Sobrescreva para <code class="inline">"toolbar"</code> em barras de ação.</td>
+          </tr>
+          <tr>
+            <td class="name">aria-label</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Descrição do grupo para leitores de tela (ex: "Paginação").</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLDivElement</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/button-group/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={buttonGroupSource}
+      language="tsx"
+      filename="ui_kit/components/button-group/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>role="group"</b> por padrão — sobrescreva para <code class="inline">"toolbar"</code> em barras de formatação.</span></li>
+        <li><span><b>aria-label</b> obrigatório quando o grupo tem semântica (paginação, toolbar).</span></li>
+        <li><span><b>Foco visível</b> sobe com <code class="inline">z-10</code> para não ser cortado pelo vizinho colado.</span></li>
+        <li><span><b>Tab</b> navega entre os botões do grupo normalmente.</span></li>
+        <li><span>Para <code class="inline">toolbar</code>, considere navegação por setas via hook externo.</span></li>
+        <li><span><b>size="icon"</b> dentro de grupo exige <code class="inline">aria-label</code> individual.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
