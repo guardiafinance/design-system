@@ -1,0 +1,250 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithDefaultRow,
+  MinMaxRow,
+  SizesRow,
+  StatesRow,
+  FormSubmitRow,
+} from "../../previews/date-picker";
+import { LiveDatePickerSnippet } from "../../previews/date-picker-live";
+import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="DatePicker"
+  group="Forms"
+  storybookId="components-datepicker--default"
+  sourcePath="ui_kit/components/date-picker"
+  lede='Seletor de data única em popover. Formato <code class="inline">dd/mm/aaaa</code>, locale pt-BR, base no <b>react-day-picker</b> (a11y de calendar grid completa) + Radix Popover. Submissão em formulário usa formato ISO via <code class="inline">name</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>controlled · sem valor inicial</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ DEFAULT VALUE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com valor inicial</h2>
+      <small>defaultValue (uncontrolled)</small>
+    </div>
+    <div class="preview">
+      <WithDefaultRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ MIN MAX ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Limite de datas</h2>
+      <small>minDate / maxDate</small>
+    </div>
+    <div class="preview">
+      <MinMaxRow client:load />
+    </div>
+    <p class="preview-caption">
+      Datas fora do intervalo aparecem com 35% de opacidade e ficam
+      bloqueadas (não recebem foco/clique).
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 32 · md 38 (default) · lg 46</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em formulário</h2>
+      <small>name renderiza input hidden ISO</small>
+    </div>
+    <div class="preview">
+      <FormSubmitRow client:load />
+    </div>
+    <p class="preview-caption">
+      O atributo <code class="inline">name</code> renderiza um
+      <code class="inline">&lt;input type="hidden"&gt;</code> com a data no
+      formato <strong>YYYY-MM-DD</strong> (ISO 8601 truncado), pronto para
+      backends que esperam este formato.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveDatePickerSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">value / defaultValue</td>
+            <td class="type">Date | null</td>
+            <td class="default">null</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">onChange</td>
+            <td class="type">(date: Date | null) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback de seleção. <code class="inline">null</code> quando o usuário limpa.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Heights 32 / 38 / 46 px.</td>
+          </tr>
+          <tr>
+            <td class="name">placeholder</td>
+            <td class="type">string</td>
+            <td class="default">"dd/mm/aaaa"</td>
+            <td class="desc">Texto sem valor.</td>
+          </tr>
+          <tr>
+            <td class="name">minDate / maxDate</td>
+            <td class="type">Date</td>
+            <td class="default">—</td>
+            <td class="desc">Limites do intervalo selecionável.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Border destructive + <code class="inline">aria-invalid</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">clearable</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Mostra botão X quando há valor.</td>
+          </tr>
+          <tr>
+            <td class="name">showToday</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Renderiza atalho "Hoje" no rodapé do popover.</td>
+          </tr>
+          <tr>
+            <td class="name">name</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Renderiza <code class="inline">&lt;input hidden&gt;</code> com data ISO (YYYY-MM-DD).</td>
+          </tr>
+          <tr>
+            <td class="name">aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Selecionar data"</td>
+            <td class="desc">Rótulo acessível do trigger.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>react-day-picker pattern</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Space / Enter</td><td class="desc">Abre o popover quando o trigger está focado.</td></tr>
+          <tr><td class="name">↑↓←→</td><td class="desc">Navega entre os dias do calendário.</td></tr>
+          <tr><td class="name">Page↑ / Page↓</td><td class="desc">Navega entre meses.</td></tr>
+          <tr><td class="name">Shift+Page↑ / Page↓</td><td class="desc">Navega entre anos.</td></tr>
+          <tr><td class="name">Home / End</td><td class="desc">Início / fim da semana.</td></tr>
+          <tr><td class="name">Enter</td><td class="desc">Seleciona o dia em foco e fecha.</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha sem selecionar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/date-picker/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={datePickerSource}
+      language="tsx"
+      filename="ui_kit/components/date-picker/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · ARIA dialog + grid</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: <code class="inline">aria-haspopup="dialog"</code> + <code class="inline">aria-expanded</code> + <code class="inline">aria-label</code> customizável.</span></li>
+        <li><span><b>Popover</b>: <code class="inline">role="dialog"</code> com focus trap (Radix).</span></li>
+        <li><span><b>Calendar grid</b>: <code class="inline">role="grid"</code> + <code class="inline">role="gridcell"</code> em cada dia (react-day-picker).</span></li>
+        <li><span><b>Keyboard navigation</b> completa (setas + PageUp/Down + Home/End) — fluxo padrão de calendar pattern.</span></li>
+        <li><span><b>Locale</b>: pt-BR via <code class="inline">date-fns/locale/ptBR</code>; nomes de meses e dias da semana traduzidos.</span></li>
+        <li><span><b>Tabular nums</b> nos números do dia para alinhamento visual estável (font-feature: tnum).</span></li>
+        <li><span><b>Hoje</b> tem peso visual diferente (<code class="inline">font-bold</code> + violet-700) — primeira pista de orientação para o usuário.</span></li>
+        <li><span><b>Contraste</b>: violet-500 sobre branco no estado selected atende AA (texto pequeno).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
