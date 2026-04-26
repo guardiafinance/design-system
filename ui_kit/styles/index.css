@@ -1,0 +1,561 @@
+/**
+ * @guardiafinance/design-system — global stylesheet
+ * Tailwind CSS v4 — CSS-first configuration via @theme inline
+ *
+ * Fonte de verdade consolidada a partir de wip/preview (tokens.html,
+ * colors-*.html, type-*.html, spacing-radii-shadows.html).
+ *
+ * Load via:
+ *   import "@guardiafinance/design-system/styles.css";
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Garante que o Tailwind escaneie todos os componentes do ui_kit
+   (o path é relativo a este arquivo) */
+@source "../components/**/*.{ts,tsx}";
+@source "../theme/**/*.{ts,tsx}";
+
+/* Dark mode variant — driven by data-theme OR .dark class */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+/*
+ * Fontes.
+ * Poppins (UI primária) e Roboto (secundária / fallback) via Google Fonts CDN.
+ * Lastica (display da marca) é paga: vive em docs/public/fonts e é usada
+ * apenas em logos/marks — nunca em UI do pacote.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* ────────────────────────────────────────────────────────────────────────
+ * BRAND PALETTE — rampas canônicas (wip/preview/colors-ramps.html)
+ * 5 cores × 5 tons (100/200/500/700/900)
+ * ──────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Yellow — confiança e transparência */
+  --guardia-yellow-100: #FFF3CE;
+  --guardia-yellow-200: #FFE490;
+  --guardia-yellow-500: #FFC30A;
+  --guardia-yellow-700: #B28807;
+  --guardia-yellow-900: #664E04;
+
+  /* Orange — eficiência e agilidade */
+  --guardia-orange-100: #F8E3CC;
+  --guardia-orange-200: #F1C08C;
+  --guardia-orange-500: #E07400;
+  --guardia-orange-700: #9C5100;
+  --guardia-orange-900: #592E00;
+
+  /* Pink — acolhimento e inclusão */
+  --guardia-pink-100: #F7DFE6;
+  --guardia-pink-200: #EEB8C8;
+  --guardia-pink-500: #DB6286;
+  --guardia-pink-700: #99445D;
+  --guardia-pink-900: #572735;
+
+  /* Violet — profundidade e excelência */
+  --guardia-violet-100: #DBD0E1;
+  --guardia-violet-200: #AF97BD;
+  --guardia-violet-500: #4F186D;
+  --guardia-violet-700: #37104C;
+  --guardia-violet-900: #1F092B;
+
+  /* Gray — estabilidade e integridade */
+  --guardia-gray-100: #D7D7D9;
+  --guardia-gray-200: #A6A6AA;
+  --guardia-gray-500: #3A3A44;
+  --guardia-gray-700: #28282F;
+  --guardia-gray-900: #17171B;
+
+  /* Monochrome */
+  --mono-white: #FDFDFD;
+  --mono-black: #0E1016;
+
+  /* Signal (Lighthouse) — exclusivos para data-viz, nunca para UI chrome */
+  --signal-green: #00BF63;
+  --signal-yellow: #FFDE59;
+  --signal-red: #FF3131;
+  --signal-blue: #004AAD;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SEMANTIC TOKENS — LIGHT THEME (default)
+ *
+ * Duas camadas de vocabulário coexistem:
+ *   (a) Guardia-native: --bg, --fg, --action, --accent, --link, --ring
+ *       (vindo de wip/preview/tokens.html)
+ *   (b) shadcn-compat: --background, --foreground, --primary, --secondary,
+ *       --destructive, --muted, --accent, --border, --input, --ring
+ *       (exigido pelos 45 componentes herdados)
+ *
+ * Mapeamento estratégico:
+ *   --primary   = accent    (laranja, CTA, shadcn default)
+ *   --secondary = action    (violeta, autoridade)
+ *   --destructive = danger  (signal-red)
+ *
+ * shadcn tokens são triplos HSL (sem `hsl()`) para compor `hsl(var(--x))`.
+ * ──────────────────────────────────────────────────────────────────────── */
+:root,
+:root[data-theme="light"] {
+  /* Surfaces & text (Guardia vocab) */
+  --bg: var(--mono-white);
+  --bg-subtle: #F7F5F9;
+  --surface: #FFFFFF;
+  --fg: var(--guardia-violet-500);
+  --fg-muted: var(--guardia-gray-500);
+  --fg-subtle: var(--guardia-gray-200);
+
+  /* Borders & rings (Guardia vocab) */
+  --border-guardia: #E7E3EC;
+  --border-strong: var(--guardia-violet-200);
+  --ring-guardia: var(--guardia-orange-500);
+
+  /* Links */
+  --link: var(--guardia-violet-700);
+  --link-hover: var(--guardia-orange-500);
+
+  /* Actions */
+  --action: var(--guardia-violet-500);
+  --action-hover: var(--guardia-violet-700);
+  --accent-brand: var(--guardia-orange-500);
+  --accent-brand-hover: var(--guardia-orange-700);
+
+  /* State */
+  --success: var(--signal-green);
+  --success-soft: #D6F5E6;
+  --warning: var(--signal-yellow);
+  --warning-soft: #FFF3CE;
+  --danger: var(--signal-red);
+  --danger-soft: #FFE0E0;
+  --info: var(--signal-blue);
+  --info-soft: #D9E3F7;
+
+  /* Legacy convenience (usados por componentes antigos) */
+  --surface-bg: var(--bg);
+  --surface-fg: var(--fg);
+  --color-text: var(--fg);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --button-bg: var(--action);
+  --button-fg: #ffffff;
+  --button-hover-bg: var(--action-hover);
+
+  /* ─── shadcn-compat (HSL triples) ─── */
+  --background: 0 0% 99%;                /* mono-white */
+  --foreground: 271 64% 26%;             /* violet-500 */
+  --card: 0 0% 100%;
+  --card-foreground: 271 64% 26%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 271 64% 26%;
+  /* primary = accent = orange-500 (#E07400 ≈ hsl(31 100% 44%)) */
+  --primary: 31 100% 44%;
+  --primary-foreground: 0 0% 100%;
+  /* secondary = action = violet-500 (#4F186D ≈ hsl(281 64% 26%)) */
+  --secondary: 281 64% 26%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 280 20% 96%;
+  --muted-foreground: 240 4% 38%;
+  --accent: 31 100% 44%;                 /* alias of primary */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 100% 59%;             /* signal-red (#FF3131) */
+  --destructive-foreground: 0 0% 100%;
+  --border: 280 22% 91%;                 /* #E7E3EC */
+  --input: 280 22% 91%;
+  --ring: 31 100% 44%;                   /* orange-500 */
+
+  /* Radii — Guardia canon (2/3/6/8/10/14/999) */
+  --radius: 0.5rem;                      /* 8px = radius-lg, default shadcn */
+
+  /* Sidebar (shadcn) */
+  --sidebar: 0 0% 99%;
+  --sidebar-foreground: 240 5% 26%;
+  --sidebar-primary: 281 64% 26%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 280 20% 96%;
+  --sidebar-accent-foreground: 281 64% 26%;
+  --sidebar-border: 280 22% 91%;
+  --sidebar-ring: 31 100% 44%;
+
+  /* Chart palette — mapeada a signal + brand */
+  --chart-1: oklch(0.646 0.222 41.116);  /* orange */
+  --chart-2: oklch(0.6 0.118 184.704);   /* teal-ish */
+  --chart-3: oklch(0.398 0.07 227.392);  /* blue */
+  --chart-4: oklch(0.828 0.189 84.429);  /* yellow */
+  --chart-5: oklch(0.769 0.188 70.08);   /* gold */
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SEMANTIC TOKENS — DARK THEME
+ * ──────────────────────────────────────────────────────────────────────── */
+:root[data-theme="dark"],
+.dark {
+  --bg: var(--guardia-violet-900);
+  --bg-subtle: #2A1538;
+  --surface: #2A1538;
+  --fg: var(--guardia-violet-100);
+  --fg-muted: var(--guardia-violet-200);
+  --fg-subtle: var(--guardia-gray-200);
+
+  --border-guardia: var(--guardia-violet-700);
+  --border-strong: var(--guardia-violet-500);
+  --ring-guardia: var(--guardia-orange-500);
+
+  --link: var(--guardia-orange-500);
+  --link-hover: var(--guardia-orange-200);
+
+  --action: var(--guardia-orange-500);
+  --action-hover: var(--guardia-orange-700);
+  --accent-brand: var(--guardia-violet-100);
+  --accent-brand-hover: var(--guardia-violet-200);
+
+  --surface-bg: var(--bg);
+  --surface-fg: var(--fg);
+  --color-text: var(--fg);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --button-bg: var(--action);
+  --button-fg: #ffffff;
+  --button-hover-bg: var(--action-hover);
+
+  --background: 285 62% 10%;
+  --foreground: 280 25% 85%;
+  --card: 285 62% 10%;
+  --card-foreground: 280 25% 85%;
+  --popover: 285 62% 10%;
+  --popover-foreground: 280 25% 85%;
+  --primary: 31 100% 44%;                /* orange-500 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 281 64% 26%;              /* violet-500 */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 285 30% 20%;
+  --muted-foreground: 280 15% 68%;
+  --accent: 31 100% 44%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 100% 59%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 285 30% 20%;
+  --input: 285 30% 20%;
+  --ring: 31 100% 44%;
+
+  --sidebar: 281 64% 15%;
+  --sidebar-foreground: 280 25% 85%;
+  --sidebar-primary: 31 100% 44%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 285 30% 20%;
+  --sidebar-accent-foreground: 280 25% 85%;
+  --sidebar-border: 285 30% 20%;
+  --sidebar-ring: 31 100% 44%;
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * @theme inline — expõe tokens para utility classes (bg-*, text-*, etc.)
+ * ──────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  /* Typography — families */
+  --font-sans: "Poppins", "Roboto", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-secondary: "Roboto", "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Lastica", "Poppins", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Typography — font-size tokens (escala Guardia oficial, 10 níveis) */
+  --text-caption: 0.75rem;       /* 12px */
+  --text-caption--line-height: 1.4;
+  --text-body-sm: 0.875rem;      /* 14px */
+  --text-body-sm--line-height: 1.5;
+  --text-body: 1rem;             /* 16px */
+  --text-body--line-height: 1.5;
+  --text-body-lg: 1.125rem;      /* 18px */
+  --text-body-lg--line-height: 1.5;
+  --text-h4: 1.25rem;            /* 20px */
+  --text-h4--line-height: 1.35;
+  --text-h3: 1.5rem;             /* 24px */
+  --text-h3--line-height: 1.3;
+  --text-h2: 2rem;               /* 32px */
+  --text-h2--line-height: 1.2;
+  --text-h1: 2.5rem;             /* 40px */
+  --text-h1--line-height: 1.15;
+  --text-display: 3.5rem;        /* 56px */
+  --text-display--line-height: 1.15;
+
+  /* Typography — Tailwind default scale (mantido para compat com componentes) */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-eyebrow: 0.14em;
+
+  /* Radii — Guardia canon */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 14px;
+  --radius-full: 9999px;
+
+  /* Shadows — violet-tinted (Guardia canon) */
+  --shadow-xs: 0 1px 2px 0 rgba(47, 14, 64, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(47, 14, 64, 0.06), 0 1px 2px -1px rgba(47, 14, 64, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(47, 14, 64, 0.08), 0 2px 4px -2px rgba(47, 14, 64, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(47, 14, 64, 0.10), 0 4px 6px -4px rgba(47, 14, 64, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(47, 14, 64, 0.12), 0 8px 10px -6px rgba(47, 14, 64, 0.08);
+  --shadow-brand: 0 8px 24px -4px rgba(224, 116, 0, 0.30);
+
+  /* Motion — easing */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Motion — duration */
+  --duration-instant: 80ms;
+  --duration-fast: 160ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+  --duration-slower: 480ms;
+
+  /* ─── Semantic colors — shadcn-compat (HSL composition) ─── */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-border-strong: var(--border-strong);
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* ─── Brand palette exposed as utilities (bg-guardia-orange-500 etc.) ─── */
+  --color-guardia-yellow-100: var(--guardia-yellow-100);
+  --color-guardia-yellow-200: var(--guardia-yellow-200);
+  --color-guardia-yellow-500: var(--guardia-yellow-500);
+  --color-guardia-yellow-700: var(--guardia-yellow-700);
+  --color-guardia-yellow-900: var(--guardia-yellow-900);
+
+  --color-guardia-orange-100: var(--guardia-orange-100);
+  --color-guardia-orange-200: var(--guardia-orange-200);
+  --color-guardia-orange-500: var(--guardia-orange-500);
+  --color-guardia-orange-700: var(--guardia-orange-700);
+  --color-guardia-orange-900: var(--guardia-orange-900);
+
+  --color-guardia-pink-100: var(--guardia-pink-100);
+  --color-guardia-pink-200: var(--guardia-pink-200);
+  --color-guardia-pink-500: var(--guardia-pink-500);
+  --color-guardia-pink-700: var(--guardia-pink-700);
+  --color-guardia-pink-900: var(--guardia-pink-900);
+
+  --color-guardia-violet-100: var(--guardia-violet-100);
+  --color-guardia-violet-200: var(--guardia-violet-200);
+  --color-guardia-violet-500: var(--guardia-violet-500);
+  --color-guardia-violet-700: var(--guardia-violet-700);
+  --color-guardia-violet-900: var(--guardia-violet-900);
+
+  --color-guardia-gray-100: var(--guardia-gray-100);
+  --color-guardia-gray-200: var(--guardia-gray-200);
+  --color-guardia-gray-500: var(--guardia-gray-500);
+  --color-guardia-gray-700: var(--guardia-gray-700);
+  --color-guardia-gray-900: var(--guardia-gray-900);
+
+  /* Legacy brand aliases (retro-compat com componentes herdados) */
+  --color-brand-orange: var(--guardia-orange-500);
+  --color-brand-orange-strong: var(--guardia-orange-700);
+  --color-brand-orange-soft: var(--guardia-orange-200);
+  --color-brand-purple: var(--guardia-violet-500);
+  --color-brand-purple-strong: var(--guardia-violet-700);
+  --color-brand-bg-dark: var(--guardia-violet-900);
+  --color-brand-fg-light: var(--guardia-violet-100);
+
+  /* Signal (data-viz only) */
+  --color-signal-green: var(--signal-green);
+  --color-signal-yellow: var(--signal-yellow);
+  --color-signal-red: var(--signal-red);
+  --color-signal-blue: var(--signal-blue);
+
+  /* Sidebar tokens (shadcn) */
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* Chart palette */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Keyframes & animations legados */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to   { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to   { height: 0; }
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * BASE ELEMENTS
+ * ──────────────────────────────────────────────────────────────────────── */
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* Scrollbar (thin + violet-tinted) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--guardia-gray-200) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--guardia-gray-200);
+    border-radius: 10px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--guardia-gray-500);
+  }
+  *::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  :root[data-theme="dark"] *::-webkit-scrollbar-thumb {
+    background: var(--guardia-gray-700);
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * UTILITIES — helpers project-specific
+ * ──────────────────────────────────────────────────────────────────────── */
+.ds-text {
+  color: var(--fg);
+}
+
+.ds-link {
+  color: var(--link);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color var(--duration-instant) var(--ease-standard);
+}
+.ds-link:hover,
+.ds-link:focus-visible {
+  color: var(--link-hover);
+}
+
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  background: var(--action);
+  color: var(--button-fg);
+  font-weight: 600;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.ds-btn:hover {
+  background: var(--action-hover);
+}
+.ds-btn:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.625rem; /* 10px */
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.stylized-select-trigger {
+  background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.8) 100%);
+  border: 1px solid hsl(var(--muted-foreground) / 0.1);
+}
+.stylized-select-trigger:hover {
+  background: linear-gradient(135deg, hsl(var(--muted) / 0.9) 0%, hsl(var(--muted) / 0.7) 100%);
+}
+.stylized-select-trigger:focus {
+  box-shadow: 0 0 0 2px hsl(var(--ring));
+}
+.stylized-select-trigger[data-state="open"] {
+  background: linear-gradient(135deg, hsl(var(--muted) / 0.95) 0%, hsl(var(--muted) / 0.75) 100%);
+}
+:root[data-theme="dark"] .stylized-select-trigger {
+  background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.6) 100%);
+  border: 1px solid hsl(var(--muted-foreground) / 0.2);
+}
