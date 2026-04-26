@@ -1,0 +1,230 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithIconsRow,
+  PrefixSuffixRow,
+  SizesRow,
+  StatesRow,
+  DisabledRow,
+  FormSubmitRow,
+} from "../../previews/input";
+import { LiveInputSnippet } from "../../previews/input-live";
+import inputSource from "@ds/components/input/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Input"
+  group="Forms"
+  storybookId="components-input--default"
+  sourcePath="ui_kit/components/input"
+  lede='Campo de texto de linha única. Wrap <code class="inline">&lt;input&gt;</code> num <code class="inline">&lt;div&gt;</code> para acomodar <code class="inline">leftIcon</code>/<code class="inline">rightIcon</code>, <code class="inline">prefix</code>/<code class="inline">suffix</code> e estados visuais. O <code class="inline">ref</code> aponta para o <code class="inline">&lt;input&gt;</code> interno.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>placeholder + foco</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ ICONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Ícones</h2>
+      <small>leftIcon · rightIcon · ambos</small>
+    </div>
+    <div class="preview">
+      <WithIconsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ícones aceitam qualquer ReactNode. Uso comum: <code class="inline">Search</code> à esquerda
+      em campos de busca, <code class="inline">Mail</code>/<code class="inline">User</code> contextuais
+      à direita.
+    </p>
+  </section>
+
+  <!-- ============ PREFIX SUFFIX ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Prefix / Suffix</h2>
+      <small>com separator vertical</small>
+    </div>
+    <div class="preview">
+      <PrefixSuffixRow client:load />
+    </div>
+    <p class="preview-caption">
+      Diferente dos ícones, prefix/suffix têm <strong>separator border</strong> vertical
+      e tipografia ligeiramente menor — ideal para unidades (R$, USD, .com).
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 32 · md 38 (default) · lg 46</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · error · success</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">invalid={`{true}`}</code> é shortcut para <code class="inline">state="error"</code>
+      + <code class="inline">aria-invalid="true"</code>. Para integração com FormLayout,
+      o Field injeta <code class="inline">invalid</code> automaticamente quando há erro.
+    </p>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Disabled</h2>
+      <small>data-disabled no wrapper + disabled no input</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em formulário</h2>
+      <small>name + required + FormData</small>
+    </div>
+    <div class="preview">
+      <FormSubmitRow client:load />
+    </div>
+    <p class="preview-caption">
+      Aceita todos os attrs nativos: <code class="inline">name</code>, <code class="inline">required</code>,
+      <code class="inline">autocomplete</code>, <code class="inline">pattern</code>, <code class="inline">minLength</code>,
+      <code class="inline">type="email|number|tel|password|..."</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveInputSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Heights 32 / 38 / 46 px.</td>
+          </tr>
+          <tr>
+            <td class="name">state</td>
+            <td class="type">"default" | "error" | "success"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Cor da border + ring de focus.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Shortcut para <code class="inline">state="error"</code> + <code class="inline">aria-invalid="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">leftIcon / rightIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone com aria-hidden (decorativo).</td>
+          </tr>
+          <tr>
+            <td class="name">prefix / suffix</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Adornments com separator border vertical (R$, .com, @).</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia interação. Wrapper recebe <code class="inline">data-disabled="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">className / wrapperClassName</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Classe no wrapper. Os dois props somam (alias).</td>
+          </tr>
+          <tr>
+            <td class="name">inputClassName</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Classe extra no <code class="inline">&lt;input&gt;</code> interno (caso avançado).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita todos os atributos de <code class="inline">HTMLInputElement</code> exceto <code class="inline">size</code> (sobrescrito pelo prop CVA).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/input/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={inputSource}
+      language="tsx"
+      filename="ui_kit/components/input/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Native input</b>: o ref aponta para o <code class="inline">&lt;input&gt;</code> interno — code legado que faz <code class="inline">.focus()</code> ou <code class="inline">.value</code> segue funcionando.</span></li>
+        <li><span><b>Foco no wrapper</b>: <code class="inline">focus-within:ring</code> reflete o foco do input mesmo quando o usuário interage com prefix/suffix — feedback visual estável.</span></li>
+        <li><span><b>aria-invalid</b> auto quando <code class="inline">invalid={`{true}`}</code> ou <code class="inline">aria-invalid</code> explícito.</span></li>
+        <li><span><b>Ícones decorativos</b>: <code class="inline">aria-hidden="true"</code> para evitar leitura redundante.</span></li>
+        <li><span><b>Compat HTML5</b>: <code class="inline">required</code>, <code class="inline">pattern</code>, <code class="inline">minLength</code> funcionam — e o <code class="inline">aria-invalid</code> sincroniza com a validação nativa via <code class="inline">:invalid</code>.</span></li>
+        <li><span><b>placeholder</b> nunca substitui label — sempre use <code class="inline">FormLayout.Field label</code> ou <code class="inline">&lt;Label htmlFor&gt;</code> externo.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
