@@ -36,6 +36,36 @@ describe("Separator", () => {
     expect(sep!.getAttribute("style") ?? "").toMatch(/repeating-linear-gradient/);
   });
 
+  it("horizontal dashed usa period 12px (6/6) — wip parity", () => {
+    const { container } = render(
+      <Separator appearance="dashed" orientation="horizontal" data-testid="sep" />,
+    );
+    const sep = container.querySelector(
+      '[data-testid="sep"]',
+    ) as HTMLElement;
+    expect(sep.getAttribute("style") ?? "").toMatch(/0 6px, transparent 6px 12px/);
+  });
+
+  it("vertical dashed usa period 8px (4/4) — wip parity", () => {
+    const { container } = render(
+      <Separator appearance="dashed" orientation="vertical" data-testid="sep" />,
+    );
+    const sep = container.querySelector(
+      '[data-testid="sep"]',
+    ) as HTMLElement;
+    expect(sep.getAttribute("style") ?? "").toMatch(/0 4px, transparent 4px 8px/);
+  });
+
+  it("gradient envolve --border em hsl() (token shadcn é HSL components)", () => {
+    const { container } = render(
+      <Separator appearance="dashed" data-testid="sep" />,
+    );
+    const sep = container.querySelector(
+      '[data-testid="sep"]',
+    ) as HTMLElement;
+    expect(sep.getAttribute("style") ?? "").toMatch(/hsl\(var\(--border\)\)/);
+  });
+
   it("aplica appearance=dotted via background gradient", () => {
     const { container } = render(
       <Separator appearance="dotted" data-testid="sep" />,

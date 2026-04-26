@@ -16,12 +16,23 @@ import { cn } from "@/lib/utils";
  * Semântica: decorative=false quando label presente (divisor de seção).
  */
 
-/* Gradients para dashed/dotted via inline style (Tailwind não expõe repeating-linear-gradient) */
+/* Gradients para dashed/dotted via inline style (Tailwind não expõe repeating-linear-gradient).
+ * Periods seguem wip/ui_kits/components/Separator/index.css:
+ *   horizontal dashed → 6px traço / 6px gap   (period 12)
+ *   vertical   dashed → 4px traço / 4px gap   (period 8) — denso para colunas curtas
+ *   dotted (qualquer) → 2px ponto / 3px gap   (period 5)
+ *
+ * Importante: `--border` é exposto como triplet HSL (compat shadcn), não como
+ * cor pronta. Precisa do wrapper `hsl(...)` para o navegador reconhecer.
+ */
+const BORDER = "hsl(var(--border))";
 function dashedBg(direction: "right" | "bottom") {
-  return `repeating-linear-gradient(to ${direction}, var(--border) 0 6px, transparent 6px 12px)`;
+  return direction === "right"
+    ? `repeating-linear-gradient(to right, ${BORDER} 0 6px, transparent 6px 12px)`
+    : `repeating-linear-gradient(to bottom, ${BORDER} 0 4px, transparent 4px 8px)`;
 }
 function dottedBg(direction: "right" | "bottom") {
-  return `repeating-linear-gradient(to ${direction}, var(--border) 0 2px, transparent 2px 5px)`;
+  return `repeating-linear-gradient(to ${direction}, ${BORDER} 0 2px, transparent 2px 5px)`;
 }
 
 const lineVariants = cva("shrink-0 bg-border", {
@@ -82,7 +93,7 @@ const Separator = React.forwardRef<
           aria-orientation={orientation as "horizontal" | "vertical"}
           className={cn(
             "flex items-center gap-3",
-            "text-muted-foreground text-[11px] font-semibold uppercase tracking-widest",
+            "text-fg-muted text-[11px] font-semibold uppercase tracking-[0.08em]",
             className,
           )}
           style={style}
