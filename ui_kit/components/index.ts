@@ -12,6 +12,7 @@ export * from "./checkbox";
 export * from "./chip";
 export * from "./code-block";
 export * from "./code-editor";
+export * from "./combobox";
 export * from "./collapsible";
 export * from "./context-menu";
 export * from "./dialog";
