@@ -1,0 +1,287 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithDescriptionsRow,
+  HorizontalRow,
+  SizesRow,
+  StatesRow,
+  ControlledRow,
+  FormSubmitRow,
+} from "../../previews/radio";
+import { LiveRadioSnippet } from "../../previews/radio-live";
+import radioSource from "@ds/components/radio/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Radio"
+  group="Forms"
+  storybookId="components-radio--default"
+  sourcePath="ui_kit/components/radio"
+  lede='Seleção única dentro de um grupo. Compound: <code class="inline">&lt;RadioGroup&gt;</code> envolve N <code class="inline">&lt;Radio&gt;</code>. Base no <b>Radix Radio Group</b> — keyboard nav (↑↓ com roving tabindex), <code class="inline">role="radiogroup"</code>, focus management.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>label inline · clique no label seleciona</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ DESCRIPTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com descrição</h2>
+      <small>aria-describedby automático</small>
+    </div>
+    <div class="preview">
+      <WithDescriptionsRow client:load />
+    </div>
+    <p class="preview-caption">
+      A descrição liga via <code class="inline">aria-describedby</code> ao radio —
+      leitores de tela leem ambos quando o controle recebe foco.
+    </p>
+  </section>
+
+  <!-- ============ HORIZONTAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Horizontal</h2>
+      <small>orientation="horizontal"</small>
+    </div>
+    <div class="preview">
+      <HorizontalRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use horizontal para escolhas curtas (≤ 5 opções). Para listas longas, prefira vertical.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 16px · md 18px (default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CONTROLLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Controlado</h2>
+      <small>value + onValueChange</small>
+    </div>
+    <div class="preview">
+      <ControlledRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em formulário</h2>
+      <small>fieldset + legend + name</small>
+    </div>
+    <div class="preview">
+      <FormSubmitRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sempre envolva grupos relacionados em <code class="inline">&lt;fieldset&gt;</code>
+      com <code class="inline">&lt;legend&gt;</code>. Quando dentro de um <code class="inline">&lt;form&gt;</code>,
+      Radix renderiza inputs hidden automaticamente para submission via <code class="inline">FormData</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveRadioSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th colspan="4">RadioGroup</th></tr>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">value / defaultValue</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">onValueChange</td>
+            <td class="type">(value: string) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback de mudança (Radix nativo).</td>
+          </tr>
+          <tr>
+            <td class="name">name</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Para form submission. Renderiza inputs hidden dentro de <code class="inline">&lt;form&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">orientation</td>
+            <td class="type">"horizontal" | "vertical"</td>
+            <td class="default">"vertical"</td>
+            <td class="desc">Direção dos radios.</td>
+          </tr>
+          <tr>
+            <td class="name">gap</td>
+            <td class="type">number</td>
+            <td class="default">10</td>
+            <td class="desc">Espaçamento em px entre radios.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita todos os radios do grupo.</td>
+          </tr>
+          <tr>
+            <td class="name">required</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Marca o grupo como obrigatório (validação HTML).</td>
+          </tr>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr><th colspan="4">Radio</th></tr>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">value</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Valor selecionado quando este radio é escolhido. <strong>Obrigatório.</strong></td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Box do radio (16/18 px) e tipografia da label.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Texto inline. Quando presente, envolve em <code class="inline">&lt;label&gt;</code> clicável.</td>
+          </tr>
+          <tr>
+            <td class="name">description</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Descrição auxiliar; liga via <code class="inline">aria-describedby</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Border red + <code class="inline">aria-invalid="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia este radio individualmente.</td>
+          </tr>
+          <tr>
+            <td class="name">wrapperClassName</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Classe extra no <code class="inline">&lt;label&gt;</code> wrapper (quando label/description é passada).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>Radix roving tabindex</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Foca o radio selecionado (ou o primeiro habilitado).</td></tr>
+          <tr><td class="name">↓ / →</td><td class="desc">Move o foco para o próximo radio (ciclo).</td></tr>
+          <tr><td class="name">↑ / ←</td><td class="desc">Move o foco para o anterior (ciclo).</td></tr>
+          <tr><td class="name">Space</td><td class="desc">Seleciona o radio focado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/radio/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={radioSource}
+      language="tsx"
+      filename="ui_kit/components/radio/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Radio Group</b> garante <code class="inline">role="radiogroup"</code>, <code class="inline">role="radio"</code> em cada item, e <code class="inline">aria-checked</code> auto.</span></li>
+        <li><span><b>Roving tabindex</b>: apenas o radio selecionado (ou o primeiro) é tabável; setas movem foco entre eles.</span></li>
+        <li><span><b>Space</b> seleciona o radio focado.</span></li>
+        <li><span><b>Description</b> liga via <code class="inline">aria-describedby</code> — leitores leem após o label.</span></li>
+        <li><span><b>Invalid</b> aplica <code class="inline">aria-invalid="true"</code> + border vermelha. Acompanhe sempre de mensagem inline.</span></li>
+        <li><span><b>Grupos</b> devem usar <code class="inline">&lt;fieldset&gt;</code> + <code class="inline">&lt;legend&gt;</code> para anunciar contexto.</span></li>
+        <li><span><b>Quando preferir Checkbox</b>: múltiplas seleções são possíveis. Quando preferir Select/Combobox: lista &gt; 5 opções.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
