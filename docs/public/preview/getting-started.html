@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Primeiros passos</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 44px 48px 72px; max-width: 1100px; }
+  .hdr { margin-bottom: 28px; }
+  .hdr h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; color: var(--violet-500); margin: 6px 0 4px; }
+  .hdr .lede { font-size: 15px; line-height: 1.6; color: var(--gray-700); max-width: 720px; margin: 14px 0 0; }
+  .hdr .lede b { color: var(--fg); font-weight: 600; }
+
+  .sec { margin-top: 44px; }
+  .sec-hdr { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  .sec-hdr h2 { margin: 0; font-size: 18px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+  .sec-hdr small { font-size: 11px; color: var(--gray-500); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+  /* Passos numerados */
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 16px; margin-bottom: 20px; align-items: start; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--violet-500); color: #fff;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-body h3 { margin: 4px 0 8px; font-size: 15px; font-weight: 600; color: var(--fg); letter-spacing: -0.005em; }
+  .step-body p { margin: 0 0 10px; font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+  .step-body p.note { color: var(--gray-500); font-style: italic; font-size: 12.5px; }
+  .step-body p b { color: var(--fg); font-weight: 600; }
+  .step-body a { color: var(--violet-700); }
+  .step-body a:hover { color: var(--orange-500); }
+
+  /* Code blocks */
+  pre {
+    background: var(--violet-900); color: #EDE4F3;
+    padding: 14px 18px; border-radius: var(--radius-md);
+    overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12.5px; line-height: 1.65;
+    margin: 0 0 10px; border: 1px solid var(--violet-700);
+  }
+  pre .k { color: #F1C08C; }  /* keyword orange */
+  pre .s { color: #D7BFE4; }  /* string soft-violet */
+  pre .c { color: #8F7AA6; font-style: italic; } /* comment */
+  code.inline {
+    font-family: var(--font-mono); font-size: 12px;
+    background: var(--violet-100); color: var(--violet-700);
+    padding: 2px 6px; border-radius: 3px; letter-spacing: -0.01em;
+  }
+
+  /* Stack table */
+  .stack { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .stack table { width: 100%; border-collapse: collapse; }
+  .stack th, .stack td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .stack th { background: #FAF8FC; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--gray-500); }
+  .stack tr:last-child td { border-bottom: none; }
+  .stack td:first-child { font-weight: 500; color: var(--fg); width: 30%; }
+  .stack td:nth-child(2) { font-family: var(--font-mono); font-size: 12px; color: var(--violet-700); width: 28%; }
+  .stack td:last-child { color: var(--gray-700); font-size: 12.5px; }
+
+  /* Next cards */
+  .next { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .next-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+    text-decoration: none; color: inherit;
+    transition: border-color .12s, transform .12s;
+  }
+  .next-card:hover { border-color: var(--violet-300); transform: translateY(-1px); }
+  .next-card .nc-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet-500); }
+  .next-card .nc-title { font-size: 14px; font-weight: 600; color: var(--fg); letter-spacing: -0.005em; }
+  .next-card .nc-desc { font-size: 12px; color: var(--gray-700); line-height: 1.45; }
+
+  /* Callout */
+  .callout {
+    background: var(--orange-100); border: 1px solid var(--orange-200);
+    border-radius: var(--radius-md); padding: 14px 18px;
+    display: flex; gap: 12px; align-items: flex-start;
+    margin: 10px 0;
+  }
+  .callout .ico {
+    width: 22px; height: 22px; flex-shrink: 0;
+    color: var(--orange-700);
+  }
+  .callout .body { font-size: 12.5px; line-height: 1.55; color: var(--gray-700); }
+  .callout .body b { color: var(--violet-700); }
+  .callout .body code { font-family: var(--font-mono); font-size: 11.5px; background: #fff; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--orange-200); }
+
+  /* Token hint */
+  .hint { font-size: 11.5px; color: var(--gray-500); margin-top: 6px; }
+  .hint b { color: var(--violet-500); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="eyebrow">COMEÇAR · PRIMEIROS PASSOS</div>
+  <h1>Primeiros passos com o Guardia DS</h1>
+  <p class="lede">Adicione o <b>@guardiafinance/design-system</b> em qualquer app <b>React 19</b> em quatro passos. Traz 45 componentes acessíveis, tokens semânticos alinhados com a marca, <b>Tailwind 4</b> CSS-first e <b>Poppins</b> carregada automaticamente. <i>Lastica fica fora do bundle</i> — é reservada a logos.</p>
+</div>
+
+<!-- ============ INSTALL ============ -->
+<div class="sec">
+  <div class="sec-hdr">
+    <h2>Instalação</h2>
+    <small>~5 min</small>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h3>Configure o registry do GitHub Packages</h3>
+      <p>O pacote é privado. Gere um <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry" target="_blank">Personal Access Token</a> com scope <code class="inline">read:packages</code> e crie um <code class="inline">.npmrc</code> na raiz do seu projeto:</p>
+<pre><span class="c"># .npmrc</span>
+<span class="k">@guardiafinance</span>:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}</pre>
+      <p class="note">Em CI, exporte <code class="inline">GITHUB_TOKEN</code> com um token de read-only nos secrets.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h3>Instale o pacote e as peer deps</h3>
+<pre><span class="c"># o pacote</span>
+npm install <span class="s">@guardiafinance/design-system</span>
+
+<span class="c"># peer deps</span>
+npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span></pre>
+      <p class="note">Se a resolução reclamar de peer-deps, use <code class="inline">--legacy-peer-deps</code>.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h3>Importe o CSS no entrypoint da aplicação</h3>
+<pre><span class="c">// src/main.tsx (ou equivalente)</span>
+<span class="k">import</span> <span class="s">"@guardiafinance/design-system/styles.css"</span>;</pre>
+      <p>Esse único import já traz todos os tokens de cor, tipografia, spacing, radii, shadows e motion, além do reset e da CDN do Google Fonts (Poppins + Roboto).</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h3>Envolva a app no ThemeProvider</h3>
+<pre><span class="k">import</span> { <span class="s">ThemeProvider</span>, <span class="s">ThemeToggle</span> } <span class="k">from</span> <span class="s">"@guardiafinance/design-system"</span>;
+
+<span class="k">export function</span> <span class="s">App</span>() {
+  <span class="k">return</span> (
+    &lt;<span class="s">ThemeProvider</span> defaultTheme=<span class="s">"light"</span>&gt;
+      &lt;<span class="s">Shell</span>&gt;...&lt;/<span class="s">Shell</span>&gt;
+      &lt;<span class="s">ThemeToggle</span>/&gt;
+    &lt;/<span class="s">ThemeProvider</span>&gt;
+  );
+}</pre>
+      <p>Tema é controlado via atributo <code class="inline">data-theme="light|dark"</code> no <code class="inline">&lt;html&gt;</code>. Pronto.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FIRST COMPONENT ============ -->
+<div class="sec">
+  <div class="sec-hdr">
+    <h2>Seu primeiro componente</h2>
+    <small>exemplo mínimo</small>
+  </div>
+
+<pre><span class="k">import</span> { <span class="s">Button</span>, <span class="s">Card</span>, <span class="s">Badge</span> } <span class="k">from</span> <span class="s">"@guardiafinance/design-system"</span>;
+<span class="k">import</span> { <span class="s">Save</span>, <span class="s">Sparkles</span> } <span class="k">from</span> <span class="s">"lucide-react"</span>;
+
+<span class="k">export default function</span> <span class="s">Dashboard</span>() {
+  <span class="k">return</span> (
+    &lt;<span class="s">Card</span>&gt;
+      &lt;<span class="s">Card.Header</span>&gt;
+        &lt;<span class="s">Card.Title</span>&gt;Saldo total&lt;/<span class="s">Card.Title</span>&gt;
+        &lt;<span class="s">Badge</span> variant=<span class="s">"secondary"</span>&gt;Real-time&lt;/<span class="s">Badge</span>&gt;
+      &lt;/<span class="s">Card.Header</span>&gt;
+      &lt;<span class="s">Card.Content</span>&gt;
+        &lt;<span class="s">Button</span> variant=<span class="s">"default"</span> leadingIcon={&lt;<span class="s">Save</span>/&gt;}&gt;Salvar&lt;/<span class="s">Button</span>&gt;
+        &lt;<span class="s">Button</span> variant=<span class="s">"secondary"</span> leadingIcon={&lt;<span class="s">Sparkles</span>/&gt;}&gt;Perguntar ao Isac&lt;/<span class="s">Button</span>&gt;
+      &lt;/<span class="s">Card.Content</span>&gt;
+    &lt;/<span class="s">Card</span>&gt;
+  );
+}</pre>
+  <p class="hint">
+    <b>variant="default"</b> é a ação primária (laranja Guardia) ·
+    <b>variant="secondary"</b> é a ação de autoridade (violeta) · ícones vêm do
+    <code class="inline">lucide-react</code>.
+  </p>
+</div>
+
+<!-- ============ TAILWIND HINT ============ -->
+<div class="sec">
+  <div class="sec-hdr">
+    <h2>Tailwind 4 no seu app</h2>
+    <small>opcional, mas recomendado</small>
+  </div>
+
+  <div class="callout">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="body">
+      Se o seu app <b>não</b> usa Tailwind, você ainda recebe todos os estilos
+      dos componentes (o CSS vem compilado no <code>styles.css</code>). Se <b>usa</b>
+      Tailwind 4, os tokens Guardia ficam disponíveis como utilities
+      — <code>bg-primary</code>, <code>text-foreground</code>,
+      <code>bg-guardia-orange-500</code>, <code>shadow-brand</code>,
+      <code>duration-base ease-standard</code> — sem configuração adicional.
+    </div>
+  </div>
+</div>
+
+<!-- ============ STACK ============ -->
+<div class="sec">
+  <div class="sec-hdr">
+    <h2>Stack</h2>
+    <small>o que vem junto</small>
+  </div>
+  <div class="stack">
+    <table>
+      <thead>
+        <tr><th>Camada</th><th>Tecnologia</th><th>Papel</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Framework</td><td>React 19</td><td>Requisito peer — React 18 não suportado.</td></tr>
+        <tr><td>Linguagem</td><td>TypeScript 5.7</td><td>Strict mode, tipos publicados em <code class="inline">dist/index.d.ts</code>.</td></tr>
+        <tr><td>Estilos</td><td>Tailwind CSS 4</td><td>CSS-first <code class="inline">@theme inline</code>, sem <code class="inline">tailwind.config.ts</code>.</td></tr>
+        <tr><td>Acessibilidade</td><td>Radix UI</td><td>Primitivos acessíveis (focus, ARIA, keyboard).</td></tr>
+        <tr><td>Variantes</td><td>class-variance-authority</td><td>API de variantes declarativa.</td></tr>
+        <tr><td>Formulários</td><td>react-hook-form + zod</td><td>Validação tipada, sem re-render.</td></tr>
+        <tr><td>Gráficos</td><td>Recharts</td><td>Wrappers em <code class="inline">Chart</code>.</td></tr>
+        <tr><td>Tabelas</td><td>TanStack Table</td><td>Fonte do <code class="inline">DataTable</code>.</td></tr>
+        <tr><td>Ícones</td><td>lucide-react</td><td>1500+ outline, stroke 1.75–2px.</td></tr>
+        <tr><td>Build</td><td>Rslib (Rspack/Rust)</td><td>Build incremental e rápido.</td></tr>
+        <tr><td>Testes</td><td>Vitest + Testing Library</td><td>jsdom, cobertura com threshold.</td></tr>
+        <tr><td>Docs</td><td>Storybook 8.6 + Astro</td><td>Visual em Storybook, conteúdo em Astro.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ NEXT ============ -->
+<div class="sec">
+  <div class="sec-hdr">
+    <h2>Próximos passos</h2>
+    <small>explore o DS</small>
+  </div>
+  <div class="next">
+    <a class="next-card" href="branding.html">
+      <span class="nc-eyebrow">FUNDAMENTOS</span>
+      <span class="nc-title">Branding</span>
+      <span class="nc-desc">Tagline, personalidade, voz e pilares visuais.</span>
+    </a>
+    <a class="next-card" href="tokens.html">
+      <span class="nc-eyebrow">TOKENS</span>
+      <span class="nc-title">Todos os tokens</span>
+      <span class="nc-desc">Cores, tipo, spacing, radii, shadows, motion.</span>
+    </a>
+    <a class="next-card" href="colors-base.html">
+      <span class="nc-eyebrow">COR · BASE</span>
+      <span class="nc-title">Paleta base</span>
+      <span class="nc-desc">5 cores canônicas + Lighthouse + Mono.</span>
+    </a>
+    <a class="next-card" href="type-families.html">
+      <span class="nc-eyebrow">TIPOGRAFIA</span>
+      <span class="nc-title">Famílias</span>
+      <span class="nc-desc">Poppins, Roboto, Lastica e seus papéis.</span>
+    </a>
+    <a class="next-card" href="ai-first.html">
+      <span class="nc-eyebrow">DIRETRIZ</span>
+      <span class="nc-title">AI-First</span>
+      <span class="nc-desc">Agêntico por padrão — 7 princípios.</span>
+    </a>
+    <a class="next-card" href="iconography.html">
+      <span class="nc-eyebrow">ICONOGRAFIA</span>
+      <span class="nc-title">Visão geral</span>
+      <span class="nc-desc">Lucide, tamanhos, grupos e convenções.</span>
+    </a>
+    <a class="next-card" href="https://69e15f3b0534f646ac88774b-cpmytvatdp.chromatic.com/" target="_blank" rel="noreferrer">
+      <span class="nc-eyebrow">INTERATIVO · CHROMATIC</span>
+      <span class="nc-title">Storybook</span>
+      <span class="nc-desc">Todas as 45 stories com controls ao vivo, hospedado no Chromatic.</span>
+    </a>
+    <a class="next-card" href="https://www.chromatic.com/library?appId=69e15f3b0534f646ac88774b" target="_blank" rel="noreferrer">
+      <span class="nc-eyebrow">VISUAL REVIEW</span>
+      <span class="nc-title">Chromatic Library</span>
+      <span class="nc-desc">Histórico de snapshots, visual regression e design review.</span>
+    </a>
+    <a class="next-card" href="https://github.com/guardiafinance/design-system" target="_blank" rel="noreferrer">
+      <span class="nc-eyebrow">GITHUB</span>
+      <span class="nc-title">Repositório</span>
+      <span class="nc-desc">Código-fonte, issues e roadmap público.</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

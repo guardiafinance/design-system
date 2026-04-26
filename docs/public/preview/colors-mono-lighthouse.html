@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Mono e Lighthouse</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .section { margin-bottom: 28px; }
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--violet-500);
+    margin: 0 0 4px;
+  }
+  .section-desc {
+    font-size: 12px; color: var(--gray-500); line-height: 1.5;
+    max-width: 780px; margin: 0 0 14px;
+  }
+  .row { display: grid; gap: 12px; }
+  .row.mono { grid-template-columns: repeat(2, 1fr); }
+  .row.light { grid-template-columns: repeat(4, 1fr); }
+  .tile {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-xs);
+  }
+  .bar { height: 84px; }
+  .info { padding: 12px 14px; }
+  .info .name { font-weight: 600; font-size: 13px; color: var(--violet-500); }
+  .info .hex { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .info .use { font-size: 11px; color: var(--gray-500); margin-top: 6px; line-height: 1.4; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">CORES · NEUTROS E SEMÂNTICAS</div>
+  <h1 class="card-title">Mono e Lighthouse</h1>
+  <p class="card-sub">Neutros técnicos (Mono) sustentam superfícies e eixos. Cores Lighthouse carregam julgamento de valor em data viz e estados. <strong>Não substituem a paleta principal</strong>.</p>
+
+  <div class="section">
+    <div class="section-title">Mono · neutros de base</div>
+    <div class="section-desc">Fora da paleta cromática. Uso técnico: fundos, plot areas, tinta de texto, eixos.</div>
+    <div class="row mono">
+      <div class="tile">
+        <div class="bar" style="background:#FDFDFD;border-bottom:1px solid var(--border)"></div>
+        <div class="info">
+          <div class="name">Mono Branco</div>
+          <div class="hex">#FDFDFD · --mono-white</div>
+          <div class="use">Fundos claros, superfícies, plot areas de gráficos.</div>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="bar" style="background:#0E1016"></div>
+        <div class="info">
+          <div class="name">Mono Preto</div>
+          <div class="hex">#0E1016 · --mono-black</div>
+          <div class="use">Tinta de texto, eixos, linhas de base em gráficos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Lighthouse · semânticas de data viz</div>
+    <div class="section-desc">Convenção universal. Use para julgamento de valor em gráficos, alertas e estados críticos. Evite aplicar em elementos de navegação ou brand.</div>
+    <div class="row light">
+      <div class="tile">
+        <div class="bar" style="background:#00BF63"></div>
+        <div class="info">
+          <div class="name">Verde Sinal</div>
+          <div class="hex">#00BF63 · --signal-green</div>
+          <div class="use">Positivo, saúde, crescimento.</div>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="bar" style="background:#FFDE59"></div>
+        <div class="info">
+          <div class="name">Amarelo Sinal</div>
+          <div class="hex">#FFDE59 · --signal-yellow</div>
+          <div class="use">Atenção, pendência, alerta.</div>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="bar" style="background:#FF3131"></div>
+        <div class="info">
+          <div class="name">Vermelho Sinal</div>
+          <div class="hex">#FF3131 · --signal-red</div>
+          <div class="use">Negativo, queda, exceção crítica.</div>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="bar" style="background:#004AAD"></div>
+        <div class="info">
+          <div class="name">Azul Sinal</div>
+          <div class="hex">#004AAD · --signal-blue</div>
+          <div class="use">Informativo, baseline, referência.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

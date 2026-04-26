@@ -1,0 +1,338 @@
+/* ============================================================
+   Guardia Design System — Tokens (Colors, Type, Spacing, etc)
+   Fonte: Notion Brand Kit (fonte única de verdade).
+   Espelho sincronizado com os documentos oficiais exportados
+   em uploads/branding-guardia.md e uploads/design-system-guardia.md.
+   ============================================================ */
+
+/* --- Fonts ---------------------------------------------------
+   Brand (corrente): Poppins — 9 pesos + itálico (arquivos em /fonts)
+   Fallback oficial: Roboto — para ambientes sem Poppins
+   Lastica: EXCLUSIVA para logotipos oficiais, nunca em UI/corpo
+   ------------------------------------------------------------- */
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 100; font-display: swap; src: url('fonts/Poppins-Thin.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 100; font-display: swap; src: url('fonts/Poppins-ThinItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 200; font-display: swap; src: url('fonts/Poppins-ExtraLight.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 200; font-display: swap; src: url('fonts/Poppins-ExtraLightItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 300; font-display: swap; src: url('fonts/Poppins-Light.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 300; font-display: swap; src: url('fonts/Poppins-LightItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/Poppins-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 400; font-display: swap; src: url('fonts/Poppins-Italic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 500; font-display: swap; src: url('fonts/Poppins-Medium.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 500; font-display: swap; src: url('fonts/Poppins-MediumItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/Poppins-SemiBold.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 600; font-display: swap; src: url('fonts/Poppins-SemiBoldItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/Poppins-Bold.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 700; font-display: swap; src: url('fonts/Poppins-BoldItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/Poppins-ExtraBold.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 800; font-display: swap; src: url('fonts/Poppins-ExtraBoldItalic.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: normal; font-weight: 900; font-display: swap; src: url('fonts/Poppins-Black.ttf') format('truetype'); }
+@font-face { font-family: 'Poppins'; font-style: italic; font-weight: 900; font-display: swap; src: url('fonts/Poppins-BlackItalic.ttf') format('truetype'); }
+
+:root {
+  /* ============================================================
+     CORES BASE — 5 cores da paleta Guardia (Notion: Cores > Cores base)
+     Cada cor tem significado alinhado aos valores culturais.
+     ============================================================ */
+  --guardia-yellow:  #FFC30A;  /* Confiança e Transparência */
+  --guardia-orange:  #E07400;  /* Eficiência e Agilidade   */
+  --guardia-pink:     #DB6286;  /* Acolhimento e Inclusão    */
+  --guardia-violet:  #4F186D;  /* Profundidade e Excelência */
+  --guardia-gray:    #3A3A44;  /* Estabilidade e Integridade*/
+
+  /* ============================================================
+     ESCALAS — 100 / 200 / 500 (base) / 700 / 900
+     Valores fiéis ao Notion > Cores > Escala de cores.
+     ============================================================ */
+
+  /* ---------- ESCALAS OFICIAIS ----------
+     Tons 100 / 200 / 500 / 700 / 900 são oficiais (Notion Brand Kit).
+     Tons 50 / 300 / 400 / 600 / 800 são DERIVADOS TÉCNICOS para micro-uso
+     de UI (superfícies sutis, hovers, bordas). Interpolados a partir dos
+     oficiais via oklch para preservar harmonia cromática.
+     Não devem ser usados em peças de marca, apenas em interface. */
+
+  /* Amarelo Brilhante */
+  --yellow-50:  #FFF9E5;
+  --yellow-100: #FFF3CE;
+  --yellow-200: #FFE490;
+  --yellow-300: #FFD55C;
+  --yellow-400: #FFCC33;
+  --yellow-500: #FFC30A;
+  --yellow-600: #D9A408;
+  --yellow-700: #B28807;
+  --yellow-800: #8C6B05;
+  --yellow-900: #664E04;
+
+  /* Laranja Quente */
+  --orange-50:  #FDF1E3;
+  --orange-100: #F8E3CC;
+  --orange-200: #F1C08C;
+  --orange-300: #ECA354;
+  --orange-400: #E78C2B;
+  --orange-500: #E07400;
+  --orange-600: #BE6300;
+  --orange-700: #9C5100;
+  --orange-800: #7B4000;
+  --orange-900: #592E00;
+
+  /* Rosa Suave */
+  --pink-50:  #FBEEF2;
+  --pink-100: #F7DFE6;
+  --pink-200: #EEB8C8;
+  --pink-300: #E690AA;
+  --pink-400: #E17A99;
+  --pink-500: #DB6286;
+  --pink-600: #BA5372;
+  --pink-700: #99445D;
+  --pink-800: #783549;
+  --pink-900: #572735;
+
+  /* Violeta Profundo */
+  --violet-50:  #EEE8F1;
+  --violet-100: #DBD0E1;
+  --violet-200: #AF97BD;
+  --violet-300: #8A6B9C;
+  --violet-400: #6D4985;
+  --violet-500: #4F186D;
+  --violet-600: #43145D;
+  --violet-700: #37104C;
+  --violet-800: #2B0C3B;
+  --violet-900: #1F092B;
+
+  /* Cinza Báltico */
+  --gray-50:  #F7F6F8;
+  --gray-100: #D7D7D9;
+  --gray-200: #A6A6AA;
+  --gray-300: #85858A;
+  --gray-400: #61616A;
+  --gray-500: #3A3A44;
+  --gray-600: #313139;
+  --gray-700: #28282F;
+  --gray-800: #1E1E24;
+  --gray-900: #17171B;
+
+  /* ============================================================
+     MONO — Neutros técnicos (fora da paleta cromática)
+     Uso: fundos, plot areas, tinta de texto, eixos.
+     ============================================================ */
+  --mono-white: #FDFDFD;
+  --mono-black:  #0E1016;
+
+  /* ============================================================
+     LIGHTHOUSE — Cores semânticas para data viz e estados
+     Convenção universal: verde=+, amarelo=atenção, vermelho=-,
+     azul=informativo. Reservado para gráficos e alertas.
+     ============================================================ */
+  --signal-green:    #00BF63;  /* Positivo, saúde, crescimento */
+  --signal-yellow:  #FFDE59;  /* Atenção, pendência, alerta   */
+  --signal-red: #FF3131;  /* Negativo, queda, exceção     */
+  --signal-blue:     #004AAD;  /* Informativo, baseline        */
+
+  /* ============================================================
+     TOKENS SEMÂNTICOS — aplicação em UI (light)
+     Derivados da paleta base. Tema dark inverte em :root.dark
+     ============================================================ */
+  --bg:             var(--mono-white);
+  --bg-subtle:      #F7F5F9;            /* superfície secundária, viés violeta */
+  --surface:        #FFFFFF;            /* cards e containers */
+  --papel:          #FFFFFF;            /* alias de surface usado em playgrounds */
+  --fg:             var(--mono-black);  /* tinta de texto — Mono Preto (Brand Kit) */
+  --fg-strong:      var(--violet-900);  /* títulos com presença de marca */
+  --fg-muted:       var(--gray-500);
+  --fg-subtle:      var(--gray-300);
+  --border:         #E7E3EC;            /* neutro com viés violeta */
+  --border-strong:  var(--violet-200);
+  --ring:           var(--orange-500);  /* foco = laranja */
+
+  /* ============================================================
+     FOCUS RINGS — tokens unificados (3px, cor semântica + 28% alpha)
+     Use SEMPRE via var() — nunca escrever rgba() hardcoded.
+     ============================================================ */
+  --focus-ring:         0 0 0 3px rgba(79, 24, 109, 0.22);   /* violet-500 — ação padrão */
+  --focus-ring-accent:  0 0 0 3px rgba(224, 116, 0, 0.28);   /* orange-500 — CTA, botões de ação */
+  --focus-ring-error:   0 0 0 3px rgba(255, 49, 49, 0.22);   /* signal-red */
+  --focus-ring-success: 0 0 0 3px rgba(0, 191, 99, 0.22);    /* signal-green */
+  --focus-ring-info:    0 0 0 3px rgba(0, 74, 173, 0.22);    /* signal-blue */
+
+  --link:           var(--violet-700);
+  --link-hover:     var(--orange-500);
+
+  --action:         var(--violet-500);
+  --action-hover:   var(--violet-700);
+  --action-fg:      #FFFFFF;
+
+  --accent:         var(--orange-500);
+  --accent-hover:   var(--orange-700);
+  --accent-fg:      #FFFFFF;
+
+  /* Semânticas em UI (derivadas de Lighthouse) */
+  --success:        var(--signal-green);
+  --success-soft:   #D6F5E6;
+  --warning:        var(--signal-yellow);
+  --warning-soft:   #FFF3CE;
+  --danger:         var(--signal-red);
+  --danger-soft:    #FFE0E0;
+  --info:           var(--signal-blue);
+  --info-soft:      #D9E3F7;
+
+  /* ============================================================
+     Chart palette — use Lighthouse Signal colors for all charts.
+     Ordem categórica: Azul (baseline) → Verde (positivo) → Amarelo
+     (atenção) → Vermelho (crítico). Violeta 500 apenas para série
+     agregada ou categoria "Guardia". Laranja só como destaque pontual.
+     ============================================================ */
+  --guardia-blue-chart:   #004AAD;  /* Azul Sinal — série principal / baseline */
+  --guardia-green-chart:  #00BF63;  /* Verde Sinal — positivo, entradas */
+  --guardia-yellow-chart: #FFDE59;  /* Amarelo Sinal — atenção */
+  --guardia-red-chart:    #FF3131;  /* Vermelho Sinal — queda, saídas */
+
+  /* ============================================================
+     TIPOGRAFIA
+     Brand: Poppins. Fallback: Roboto, sans-serif.
+     Lastica ficou reservada aos logotipos — não declarada aqui.
+     ============================================================ */
+  --font-sans:    'Poppins', 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Poppins', 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Escala tipográfica (Notion > Tipografia > Hierarquia recomendada)
+     Mapeada para um escala modular equilibrada a partir de 16px. */
+  --fs-display: 56px;  /* hero display */
+  --fs-h1:      40px;  /* Bold/SemiBold — título principal    */
+  --fs-h2:      32px;  /* SemiBold — seção                     */
+  --fs-h3:      24px;  /* SemiBold — subseção                  */
+  --fs-h4:      20px;  /* Medium — subdivisão                  */
+  --fs-body-lg: 18px;  /* corpo com presença                   */
+  --fs-body:    16px;  /* corpo padrão                         */
+  --fs-body-sm: 14px;  /* apoio, legendas                      */
+  --fs-caption: 12px;  /* metadados, timestamps                */
+  --fs-mono:    14px;
+
+  --lh-tight:   1.15;
+  --lh-snug:    1.3;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.65;
+
+  --fw-thin:        100;
+  --fw-extralight:  200;
+  --fw-light:       300;
+  --fw-regular:     400;
+  --fw-medium:      500;
+  --fw-semibold:    600;
+  --fw-bold:        700;
+  --fw-extrabold:   800;
+  --fw-black:       900;
+
+  --ls-tight:   -0.02em;
+  --ls-snug:    -0.01em;
+  --ls-normal:   0;
+  --ls-wide:     0.02em;
+  --ls-eyebrow:  0.14em;  /* UPPERCASE eyebrows */
+
+  /* ============================================================
+     ESPAÇAMENTO — base 4px (múltiplos consistentes)
+     ============================================================ */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ============================================================
+     RAIOS — geometria modular alinhada aos blocos do símbolo G
+     ============================================================ */
+  --radius-xs:   2px;
+  --radius-sm:   3px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+  --radius-xl:   10px;
+  --radius-2xl:  14px;
+  --radius-pill: 999px;
+
+  /* ============================================================
+     SOMBRAS — tint violeta (derivado de rgba(47,14,64, α))
+     ============================================================ */
+  --shadow-xs: 0 1px 2px 0 rgba(47, 14, 64, .06);
+  --shadow-sm: 0 1px 3px 0 rgba(47, 14, 64, .08), 0 1px 2px -1px rgba(47, 14, 64, .06);
+  --shadow-md: 0 4px 12px -2px rgba(47, 14, 64, .10), 0 2px 4px -2px rgba(47, 14, 64, .06);
+  --shadow-lg: 0 12px 24px -6px rgba(47, 14, 64, .14), 0 4px 8px -4px rgba(47, 14, 64, .08);
+  --shadow-xl: 0 24px 48px -12px rgba(47, 14, 64, .22);
+  --shadow-brand: 0 10px 24px -6px rgba(224, 116, 0, .32); /* laranja — CTA em destaque */
+
+  /* ============================================================
+     MOTION
+     ============================================================ */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+
+  --dur-instant: 80ms;
+  --dur-fast:    160ms;
+  --dur-base:    220ms;
+  --dur-slow:    320ms;
+  --dur-slower:  480ms;
+}
+
+/* ============================================================
+   DARK MODE — superfície violeta profundo (Notion: --guardia-violet-900)
+   ============================================================ */
+:root.dark,
+[data-theme="dark"] {
+  --bg:            var(--violet-900);
+  --bg-subtle:     #2A0E3A;
+  --surface:       #2A0E3A;
+  --papel:         #2A0E3A;
+  --fg:            var(--mono-white);   /* tinta clara sobre violeta profundo */
+  --fg-strong:     var(--mono-white);
+  --fg-muted:      #B4A4BE;
+  --fg-subtle:     #7D6A89;
+  --border:        #3A1A4E;
+  --border-strong: var(--violet-700);
+
+  --link:          var(--orange-500);
+  --link-hover:    var(--orange-200);
+
+  --action:        var(--orange-500);
+  --action-hover:  var(--orange-700);
+  --action-fg:     #FFFFFF;
+
+  --accent:        var(--yellow-500);
+  --accent-hover:  var(--yellow-700);
+  --accent-fg:     var(--violet-900);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+  color-scheme: light dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--fg);
+  background: var(--bg);
+}
+
+/* Utilitários curtos, usados pelos cards de preview */
+.eyebrow {
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}

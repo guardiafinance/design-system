@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Branding</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 44px 48px 72px; max-width: 1100px; }
+  .hdr { margin-bottom: 28px; }
+  .hdr h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; color: var(--violet-500); margin: 6px 0 4px; }
+  .hdr .lede { font-size: 15px; line-height: 1.6; color: var(--gray-700); max-width: 720px; margin: 14px 0 0; }
+  .hdr .lede b { color: var(--fg); font-weight: 600; }
+
+  .sec { margin-top: 44px; }
+  .sec-hdr { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  .sec-hdr h2 { margin: 0; font-size: 18px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+  .sec-hdr small { font-size: 11px; color: var(--gray-500); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+  /* Tagline hero */
+  .tagline { background: var(--violet-500); color: #fff; border-radius: var(--radius-lg); padding: 44px 44px 40px; position: relative; overflow: hidden; }
+  .tagline::before { content: ""; position: absolute; top: 0; right: 0; width: 180px; height: 100%; background: var(--orange-500); opacity: 0.12; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); }
+  .tagline .eyebrow-w { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+  .tagline h3 { margin: 10px 0 22px; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; max-width: 520px; }
+  .tagline .layers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 8px; position: relative; z-index: 1; }
+  .tagline .layer { padding-top: 18px; border-top: 2px solid rgba(255,255,255,0.25); }
+  .tagline .layer b { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; color: var(--orange-500); }
+  .tagline .layer p { margin: 0; font-size: 13px; line-height: 1.55; opacity: 0.92; }
+
+  /* Pilares visuais */
+  .pilares { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .pilar { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .pilar .pic { height: 140px; background: #FDFDFD; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .pilar .pic img { max-height: 80px; width: auto; }
+  .pilar .pic.viol { background: var(--violet-700); }
+  .pilar .pic.viol img { max-height: 90px; }
+  .pilar h4 { margin: 0; font-size: 14px; font-weight: 600; color: var(--violet-500); letter-spacing: -0.01em; }
+  .pilar .num { font-family: var(--font-mono); font-size: 10px; color: var(--gray-500); letter-spacing: 0.08em; }
+  .pilar p { margin: 4px 0 0; font-size: 12.5px; color: var(--gray-700); line-height: 1.55; }
+  .pilar p b { color: var(--fg); font-weight: 600; }
+
+  /* Personalidade */
+  .persona { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .persona-item { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .persona-item .num { font-family: var(--font-mono); font-size: 22px; font-weight: 600; color: var(--orange-500); flex-shrink: 0; line-height: 1; min-width: 24px; }
+  .persona-item h5 { margin: 0 0 3px; font-size: 13.5px; font-weight: 600; color: var(--fg); letter-spacing: -0.005em; }
+  .persona-item p { margin: 0; font-size: 12px; color: var(--gray-700); line-height: 1.5; }
+
+  /* Voz da marca */
+  .voz { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .voz-pilar { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px 18px; }
+  .voz-pilar .ico { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--violet-100); color: var(--violet-500); margin-bottom: 10px; }
+  .voz-pilar .ico svg { width: 14px; height: 14px; }
+  .voz-pilar h5 { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--violet-500); }
+  .voz-pilar p { margin: 0; font-size: 11.5px; color: var(--gray-700); line-height: 1.5; }
+
+  /* Evitar */
+  .dont { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .dont table { width: 100%; border-collapse: collapse; }
+  .dont th, .dont td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .dont th { background: #FAF8FC; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--gray-500); }
+  .dont tr:last-child td { border-bottom: none; }
+  .dont td:first-child { font-weight: 500; color: var(--fg); width: 32%; }
+  .dont td:last-child { color: var(--gray-700); }
+  .dont td.x { color: var(--signal-red); font-family: var(--font-mono); font-size: 14px; font-weight: 600; width: 24px; text-align: center; padding-right: 0; }
+
+  /* Referências */
+  .refs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .refs a { font-family: var(--font-mono); font-size: 11.5px; color: var(--violet-700); background: var(--violet-100); padding: 6px 10px; border-radius: var(--radius-sm); text-decoration: none; border: 1px solid transparent; transition: all 0.12s; }
+  .refs a:hover { border-color: var(--violet-300); }
+
+  .note { font-size: 12px; color: var(--gray-500); font-style: italic; margin-top: 16px; max-width: 640px; line-height: 1.55; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="eyebrow">FUNDAMENTOS · BRANDING</div>
+  <h1>Diretrizes de marca</h1>
+  <p class="lede">A Guardia é a primeira plataforma de <b>Contabilidade Agêntica</b> do Brasil. A marca traduz essa promessa em forma, cor e palavra: <b>precisão técnica com proximidade humana, sofisticação operacional sem rigidez</b>. Esta página sintetiza o que a marca <i>é</i> — personalidade, voz, pilares visuais e tagline. Para aplicação (paleta, tipografia, logos, ícones), use as páginas específicas do DS.</p>
+</div>
+
+<!-- TAGLINE -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Tagline</h2><small>A promessa em uma frase</small></div>
+  <div class="tagline">
+    <div class="eyebrow-w">Promessa central</div>
+    <h3>Tempo para focar no que importa.</h3>
+    <div class="layers">
+      <div class="layer">
+        <b>Tempo de decisão</b>
+        <p>Para empreendedores. Informação confiável no momento da decisão.</p>
+      </div>
+      <div class="layer">
+        <b>Tempo estratégico</b>
+        <p>Para contadores. Liberação da rotina para atuar como conselheiros.</p>
+      </div>
+      <div class="layer">
+        <b>Tempo institucional</b>
+        <p>Para o mercado. Contabilidade como inteligência, não obrigação acessória.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PILARES VISUAIS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Três pilares visuais</h2><small>A identidade em forma</small></div>
+  <div class="pilares">
+    <div class="pilar">
+      <div class="pic"><img src="../assets/logo/guardia-logo-purple-rounded.svg" alt="Símbolo G"></div>
+      <div><span class="num">01</span><h4>Símbolo G</h4></div>
+      <p>G geométrico em quadrado violeta, com corte horizontal interno. Forma fechada = <b>proteção e custódia</b>; corte interno = <b>leitura aberta</b>. <b>Proteção com transparência.</b></p>
+    </div>
+    <div class="pilar">
+      <div class="pic"><img src="../assets/logo/guardia-logotipo-purple.svg" alt="Três blocos"></div>
+      <div><span class="num">02</span><h4>Três blocos</h4></div>
+      <p>Referência à peça L do Tetris ("Orange Ricky") com o <b>quarto bloco propositalmente removido</b> — o que sobra vira ponta de flecha, indicando <b>direção e avanço</b>.</p>
+    </div>
+    <div class="pilar">
+      <div class="pic viol"><img src="../assets/logo/guardia-logotipo-orange.svg" alt="Paleta dual"></div>
+      <div><span class="num">03</span><h4>Paleta dual + escala completa</h4></div>
+      <p>Violeta como <b>base de autoridade</b>, laranja como <b>acento de energia</b>. Completados por amarelo, rosa e cinza báltico na paleta base de cinco cores.</p>
+    </div>
+  </div>
+  <p class="note">Os três pilares operam juntos. Nenhum deles é suficiente sozinho; a identidade emerge da coexistência.</p>
+</div>
+
+<!-- PERSONALIDADE -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Personalidade da marca</h2><small>Como a Guardia se comporta</small></div>
+  <div class="persona">
+    <div class="persona-item"><span class="num">01</span><div><h5>Confiante e respeitosa</h5><p>Autoridade técnica sem rigidez.</p></div></div>
+    <div class="persona-item"><span class="num">02</span><div><h5>Próxima e profissional</h5><p>Clientes como parceiros.</p></div></div>
+    <div class="persona-item"><span class="num">03</span><div><h5>Precisa e humana</h5><p>Clareza, dados e calor humano.</p></div></div>
+    <div class="persona-item"><span class="num">04</span><div><h5>Ambiciosa com viabilidade</h5><p>Visão grande com execução real.</p></div></div>
+    <div class="persona-item" style="grid-column: 1 / -1;"><span class="num">05</span><div><h5>Discreta sobre processo, ruidosa sobre resultado</h5><p>O trabalho do agente fica legível; o impacto do trabalho fica celebrado.</p></div></div>
+  </div>
+</div>
+
+<!-- VOZ -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Voz da marca</h2><small>Quatro pilares para toda comunicação</small></div>
+  <div class="voz">
+    <div class="voz-pilar">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 18l6-6-6-6"/></svg></div>
+      <h5>Direta</h5>
+      <p>Fala o que é. Sem rodeios, sem eufemismos. Nomeia o problema e a solução.</p>
+    </div>
+    <div class="voz-pilar">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+      <h5>Estratégica</h5>
+      <p>Toda palavra puxa uma decisão. Nada de informação decorativa.</p>
+    </div>
+    <div class="voz-pilar">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a3 3 0 0 1 6 0v5M5 11h14v10H5z"/></svg></div>
+      <h5>Afirmativa</h5>
+      <p>Constrói em positivo. Fala do que se conquista, não do que se perde.</p>
+    </div>
+    <div class="voz-pilar">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+      <h5>Clara</h5>
+      <p>Leitura em fluxo único. Frase curta. Jargão só quando agrega precisão.</p>
+    </div>
+  </div>
+</div>
+
+<!-- O QUE NÃO DIZER -->
+<div class="sec">
+  <div class="sec-hdr"><h2>O que <u>não</u> dizer</h2><small>Ancoragens que enfraquecem a tese</small></div>
+  <div class="dont">
+    <table>
+      <thead><tr><th></th><th>Evitar</th><th>Motivo</th></tr></thead>
+      <tbody>
+        <tr><td class="x">×</td><td>"Substituir contadores"</td><td>A Guardia amplia o contador, não o elimina.</td></tr>
+        <tr><td class="x">×</td><td>"Contabilidade automática"</td><td>Reduz a tese a uma commodity operacional.</td></tr>
+        <tr><td class="x">×</td><td>"Software de contabilidade"</td><td>A Guardia é infraestrutura de inteligência, não ferramenta.</td></tr>
+        <tr><td class="x">×</td><td>"Mais rápido que o concorrente"</td><td>Velocidade sem qualidade de decisão não diferencia.</td></tr>
+        <tr><td class="x">×</td><td>"Inovação pela inovação"</td><td>Ancorar em tempo, clareza e resultado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- REFERÊNCIAS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Aprofundar</h2><small>Onde cada tópico mora</small></div>
+  <p style="font-size:13px;color:var(--gray-700);line-height:1.6;max-width:720px;margin:0 0 10px">
+    Esta página é o <b>resumo executivo</b> da marca. Para a aplicação visual
+    concreta, consulte as páginas específicas do DS. Para o documento completo
+    no Notion, use os links abaixo.
+  </p>
+  <div class="refs">
+    <a href="../README.md" target="_blank">README.md</a>
+    <a href="../uploads/branding-guardia.md" target="_blank">branding-guardia.md</a>
+    <a href="personas.html">→ Personas</a>
+    <a href="ai-first.html">→ AI-First Experience</a>
+    <a href="colors-base.html">→ Paleta base</a>
+    <a href="type-families.html">→ Tipografia</a>
+    <a href="home.html">→ Abrir navegador do DS</a>
+  </div>
+</div>
+
+</body>
+</html>

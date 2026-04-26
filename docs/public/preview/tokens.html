@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tokens · Guardia DS</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 36px 44px 60px; background: var(--bg); }
+  .hdr { margin-bottom: 32px; }
+  .hdr h1 { margin: 4px 0 8px; font-size: 30px; font-weight: 700; letter-spacing: -0.025em; color: var(--violet-500); }
+  .hdr p.lede { margin: 0; font-size: 14px; color: var(--gray-700); max-width: 720px; line-height: 1.55; }
+
+  .section { margin-top: 40px; }
+  .section-hdr {
+    display: flex; align-items: baseline; gap: 10px;
+    padding-bottom: 10px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-hdr h2 {
+    margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--fg);
+  }
+  .section-hdr small { font-size: 12px; color: var(--gray-500); }
+  .section-hdr .count {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--violet-700); background: var(--violet-100);
+    padding: 2px 8px; border-radius: var(--radius-pill);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+  .grid-wide { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .tk {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 78px;
+  }
+  .tk-name {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--violet-700);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tk-name .copy {
+    opacity: 0; cursor: pointer;
+    border: 0; background: transparent; padding: 2px 4px;
+    font: inherit; font-size: 10px; color: var(--gray-500);
+    border-radius: var(--radius-xs);
+  }
+  .tk:hover .tk-name .copy { opacity: 1; }
+  .copy:hover { background: var(--gray-100); color: var(--violet-500); }
+  .copy.ok { color: var(--signal-green); opacity: 1; }
+  .tk-val { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); }
+  .tk-preview { display: flex; align-items: center; gap: 10px; }
+
+  .swatch .tk-preview {
+    height: 52px; border-radius: var(--radius-sm);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .space .tk-preview {
+    height: 40px; background: var(--violet-100);
+    border-radius: var(--radius-xs); position: relative;
+  }
+  .space .bar { height: 100%; background: var(--violet-500); border-radius: var(--radius-xs); }
+  .radii .tk-preview {
+    width: 56px; height: 56px;
+    background: var(--violet-500);
+    border: 1px solid var(--violet-700);
+  }
+  .shadows { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .shadow-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 14px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .shadow-box { height: 64px; background: #fff; border-radius: var(--radius-sm); }
+
+  .motion { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .m-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .m-track { height: 24px; background: var(--gray-100); border-radius: var(--radius-pill); position: relative; overflow: hidden; }
+  .m-dot { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: var(--radius-pill); background: var(--violet-500); }
+  .m-card button {
+    align-self: flex-start;
+    font: inherit; font-size: 11px; font-weight: 600;
+    color: var(--violet-700); background: var(--violet-100);
+    border: 0; border-radius: var(--radius-sm);
+    padding: 3px 9px; cursor: pointer;
+  }
+  .m-card button:hover { background: var(--violet-200); }
+
+  .toc {
+    position: sticky; top: 0; z-index: 3;
+    background: rgba(253, 252, 254, 0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    margin: -36px -44px 0; padding: 10px 44px;
+    display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px;
+  }
+  .toc a { color: var(--gray-700); text-decoration: none; padding: 3px 9px; border-radius: var(--radius-sm); border: 1px solid transparent; }
+  .toc a:hover { background: var(--violet-100); color: var(--violet-500); }
+
+  .stack { display: flex; flex-direction: column; gap: 8px; }
+  code.inline {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--violet-700); background: var(--violet-100);
+    padding: 1px 6px; border-radius: var(--radius-sm);
+  }
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <a href="#howto">Como importar</a>
+  <a href="#colors">Cores base</a>
+  <a href="#ramps">Rampas</a>
+  <a href="#mono">Mono · Signal</a>
+  <a href="#semantic">Semânticos</a>
+  <a href="#chart">Chart</a>
+  <a href="#type">Tipografia</a>
+  <a href="#space">Espaço</a>
+  <a href="#radii">Raios</a>
+  <a href="#shadows">Sombras</a>
+  <a href="#motion">Motion</a>
+</nav>
+
+<div class="hdr">
+  <span class="eyebrow">FUNDAMENTOS · TOKENS</span>
+  <h1>Tokens do DS</h1>
+  <p class="lede">
+    Catálogo completo dos design tokens disponíveis em <code class="inline">colors_and_type.css</code>.
+    Todo componente do DS consome estas variáveis — para criar um novo padrão, comece aqui.
+    Clique em qualquer nome para copiar a chamada <code class="inline">var(--…)</code>.
+  </p>
+</div>
+
+<!-- ============ HOW TO IMPORT ============ -->
+<section class="section" id="howto" style="margin-top:8px">
+  <div class="section-hdr">
+    <h2>Como importar no projeto</h2>
+    <small>Um único arquivo CSS expõe todos os tokens como variáveis nativas.</small>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 20px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--violet-500);margin-bottom:10px">1. Copiar o arquivo</div>
+      <p style="margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--gray-700)">
+        Copie <code class="inline">colors_and_type.css</code> para a raiz do seu projeto (ou onde preferir centralizar tokens).
+      </p>
+      <pre style="margin:0;background:var(--mono-black);color:#E8E1EE;padding:12px 14px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:12px;line-height:1.6;overflow-x:auto"><span style="color:#8A7A99">// estrutura sugerida</span>
+src/
+├── styles/
+│   └── <span style="color:#FFC30A">colors_and_type.css</span>  <span style="color:#8A7A99">← tokens</span>
+└── app.css                  <span style="color:#8A7A99">← seu código</span></pre>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 20px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--violet-500);margin-bottom:10px">2. Importar no CSS raiz</div>
+      <p style="margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--gray-700)">
+        Use <code class="inline">@import</code> no topo do seu CSS principal — tokens ficam disponíveis em toda a app.
+      </p>
+      <pre style="margin:0;background:var(--mono-black);color:#E8E1EE;padding:12px 14px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:12px;line-height:1.6;overflow-x:auto"><span style="color:#8A7A99">/* app.css */</span>
+@import <span style="color:#FFC30A">"./styles/colors_and_type.css"</span>;
+
+<span style="color:#8A7A99">/* agora use os tokens */</span>
+.my-card {
+  background: <span style="color:#FFC30A">var(--surface)</span>;
+  border: 1px solid <span style="color:#FFC30A">var(--border)</span>;
+  border-radius: <span style="color:#FFC30A">var(--radius-md)</span>;
+  padding: <span style="color:#FFC30A">var(--space-4)</span>;
+}</pre>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 20px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--violet-500);margin-bottom:10px">3. Alternativa · link no HTML</div>
+      <p style="margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--gray-700)">
+        Em páginas estáticas ou protótipos, inclua antes dos seus outros stylesheets.
+      </p>
+      <pre style="margin:0;background:var(--mono-black);color:#E8E1EE;padding:12px 14px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:12px;line-height:1.6;overflow-x:auto"><span style="color:#8A7A99">&lt;!-- index.html --&gt;</span>
+&lt;link rel=<span style="color:#FFC30A">"stylesheet"</span>
+      href=<span style="color:#FFC30A">"styles/colors_and_type.css"</span>&gt;
+&lt;link rel=<span style="color:#FFC30A">"stylesheet"</span>
+      href=<span style="color:#FFC30A">"app.css"</span>&gt;</pre>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 20px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--violet-500);margin-bottom:10px">4. Uso em TS/JS (opcional)</div>
+      <p style="margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--gray-700)">
+        Para ler tokens de runtime (ex.: Chart, Canvas), use <code class="inline">getComputedStyle</code>.
+      </p>
+      <pre style="margin:0;background:var(--mono-black);color:#E8E1EE;padding:12px 14px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:12px;line-height:1.6;overflow-x:auto"><span style="color:#8A7A99">// lê o valor atual do token</span>
+<span style="color:#DB6286">const</span> violet = <span style="color:#DB6286">getComputedStyle</span>(
+  document.documentElement
+).getPropertyValue(<span style="color:#FFC30A">"--violet-500"</span>).trim();
+
+<span style="color:#8A7A99">// "#4F186D"</span></pre>
+    </div>
+  </div>
+  <p style="margin:18px 0 0;font-size:12.5px;line-height:1.55;color:var(--gray-700);max-width:820px">
+    <strong style="color:var(--violet-500)">Princípio nº 1 —</strong> sempre consuma <code class="inline">var(--token)</code> em vez de hex cru. Trocar um valor em <code class="inline">colors_and_type.css</code> propaga automaticamente para todos os componentes.
+  </p>
+</section>
+
+<!-- ============ CORES BASE ============ -->
+<section class="section" id="colors">
+  <div class="section-hdr">
+    <h2>Cores · base</h2>
+    <small>5 cores canônicas alinhadas aos valores culturais.</small>
+    <span class="count">5 base</span>
+  </div>
+  <div class="grid grid-wide" id="grid-base"></div>
+</section>
+
+<!-- ============ RAMPAS ============ -->
+<section class="section" id="ramps">
+  <div class="section-hdr">
+    <h2>Cores · rampas</h2>
+    <small>5 tons por rampa — 100, 200, 500 (base), 700, 900.</small>
+    <span class="count">25 tons</span>
+  </div>
+  <div class="stack" id="grid-ramps"></div>
+</section>
+
+<!-- ============ MONO + SIGNAL ============ -->
+<section class="section" id="mono">
+  <div class="section-hdr">
+    <h2>Mono &amp; Signal</h2>
+    <small>Neutros técnicos (Mono) + cores semânticas para data-viz e estados (Signal / Lighthouse).</small>
+  </div>
+  <div class="grid grid-wide" id="grid-mono"></div>
+</section>
+
+<!-- ============ SEMÂNTICOS ============ -->
+<section class="section" id="semantic">
+  <div class="section-hdr">
+    <h2>Tokens semânticos</h2>
+    <small>Apontam para cores da paleta. Use estes em componentes — não as cores base diretamente.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-semantic"></div>
+</section>
+
+<!-- ============ CHART ============ -->
+<section class="section" id="chart">
+  <div class="section-hdr">
+    <h2>Chart palette</h2>
+    <small>Ordem categórica sugerida: Azul → Verde → Amarelo → Vermelho. Violeta apenas para série agregada.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-chart"></div>
+</section>
+
+<!-- ============ TIPOGRAFIA ============ -->
+<section class="section" id="type">
+  <div class="section-hdr">
+    <h2>Tipografia · famílias</h2>
+    <small>Poppins (brand · UI) · Roboto (fallback). Lastica reservada aos logotipos.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-fams"></div>
+
+  <div class="section-hdr" style="margin-top:32px">
+    <h2>Tipografia · escala</h2>
+    <small>10 tamanhos da escala modular.</small>
+  </div>
+  <div class="stack" id="grid-fs"></div>
+
+  <div class="section-hdr" style="margin-top:32px">
+    <h2>Pesos · alturas · tracking</h2>
+    <small>Pesos Poppins (100–900), line-heights e letter-spacings padronizados.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-type-aux"></div>
+</section>
+
+<!-- ============ ESPAÇO ============ -->
+<section class="section" id="space">
+  <div class="section-hdr">
+    <h2>Espaçamento</h2>
+    <small>Base 4px. Use nomes (<code class="inline">--space-4</code>), nunca valores absolutos.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-space"></div>
+</section>
+
+<!-- ============ RAIOS ============ -->
+<section class="section" id="radii">
+  <div class="section-hdr">
+    <h2>Raios de borda</h2>
+    <small>Geometria modular alinhada aos blocos do símbolo G.</small>
+  </div>
+  <div class="grid grid-wide" id="grid-radii"></div>
+</section>
+
+<!-- ============ SOMBRAS ============ -->
+<section class="section" id="shadows">
+  <div class="section-hdr">
+    <h2>Sombras</h2>
+    <small>Tint violeta, derivado de <code class="inline">rgba(47,14,64, α)</code>. Brand-shadow reservado a CTAs de destaque.</small>
+  </div>
+  <div class="shadows" id="grid-shadows"></div>
+</section>
+
+<!-- ============ MOTION ============ -->
+<section class="section" id="motion">
+  <div class="section-hdr">
+    <h2>Easings &amp; durações</h2>
+    <small>Clique nas faixas para ver o easing em ação.</small>
+  </div>
+  <div class="motion" id="grid-easings"></div>
+
+  <div class="section-hdr" style="margin-top:24px">
+    <h2>Durações</h2>
+  </div>
+  <div class="grid grid-wide" id="grid-durs"></div>
+</section>
+
+<script>
+// ============ TOKEN DEFINITIONS ============
+// 1:1 com colors_and_type.css
+
+const BASE_COLORS = [
+  { n: "guardia-yellow", sub: "Confiança e transparência",     hex: "#FFC30A" },
+  { n: "guardia-orange", sub: "Eficiência e agilidade",         hex: "#E07400" },
+  { n: "guardia-pink",   sub: "Acolhimento e inclusão",         hex: "#DB6286" },
+  { n: "guardia-violet", sub: "Profundidade e excelência",     hex: "#4F186D" },
+  { n: "guardia-gray",   sub: "Estabilidade e integridade",     hex: "#3A3A44" },
+];
+
+const RAMPS = [
+  { name: "yellow", tones: ["100","200","500","700","900"] },
+  { name: "orange", tones: ["100","200","500","700","900"] },
+  { name: "pink",   tones: ["100","200","500","700","900"] },
+  { name: "violet", tones: ["100","200","500","700","900"] },
+  { name: "gray",   tones: ["100","200","500","700","900"] },
+];
+
+const MONO = [
+  { n: "mono-white",    sub: "Branco técnico · papel",     hex: "#FDFDFD" },
+  { n: "mono-black",    sub: "Preto técnico · tinta",      hex: "#0E1016" },
+  { n: "signal-green",  sub: "Positivo · saúde · crescimento", hex: "#00BF63" },
+  { n: "signal-yellow", sub: "Atenção · pendência · alerta",   hex: "#FFDE59" },
+  { n: "signal-red",    sub: "Negativo · queda · exceção",     hex: "#FF3131" },
+  { n: "signal-blue",   sub: "Informativo · baseline",          hex: "#004AAD" },
+];
+
+const SEMANTIC = [
+  { n: "bg",             sub: "Background app",          resolves: "var(--mono-white)" },
+  { n: "bg-subtle",      sub: "Background subtle (viés violeta)", resolves: "#F7F5F9" },
+  { n: "surface",        sub: "Cards · containers",      resolves: "#FFFFFF" },
+  { n: "fg",             sub: "Texto principal",         resolves: "var(--violet-500)" },
+  { n: "fg-muted",       sub: "Texto secundário",        resolves: "var(--gray-500)" },
+  { n: "fg-subtle",      sub: "Texto terciário",         resolves: "var(--gray-200)" },
+  { n: "border",         sub: "Borda padrão",             resolves: "#E7E3EC" },
+  { n: "border-strong",  sub: "Borda forte",             resolves: "var(--violet-200)" },
+  { n: "ring",           sub: "Focus ring (laranja)",     resolves: "var(--orange-500)" },
+  { n: "link",           sub: "Links",                   resolves: "var(--violet-700)" },
+  { n: "link-hover",     sub: "Link hover",              resolves: "var(--orange-500)" },
+  { n: "action",         sub: "Ação primária",           resolves: "var(--violet-500)" },
+  { n: "action-hover",   sub: "Ação · hover",            resolves: "var(--violet-700)" },
+  { n: "accent",         sub: "Destaque (CTA laranja)",   resolves: "var(--orange-500)" },
+  { n: "accent-hover",   sub: "Destaque · hover",         resolves: "var(--orange-700)" },
+  { n: "success",        sub: "Sucesso",                 resolves: "var(--signal-green)" },
+  { n: "success-soft",   sub: "Sucesso soft",             resolves: "#D6F5E6" },
+  { n: "warning",        sub: "Atenção",                 resolves: "var(--signal-yellow)" },
+  { n: "warning-soft",   sub: "Atenção soft",             resolves: "#FFF3CE" },
+  { n: "danger",         sub: "Erro",                    resolves: "var(--signal-red)" },
+  { n: "danger-soft",    sub: "Erro soft",               resolves: "#FFE0E0" },
+  { n: "info",           sub: "Informação",              resolves: "var(--signal-blue)" },
+  { n: "info-soft",      sub: "Informação soft",          resolves: "#D9E3F7" },
+];
+
+const CHART = [
+  { n: "guardia-blue-chart",   sub: "Azul sinal — série baseline",    hex: "#004AAD" },
+  { n: "guardia-green-chart",  sub: "Verde sinal — positivo, entradas", hex: "#00BF63" },
+  { n: "guardia-yellow-chart", sub: "Amarelo sinal — atenção",         hex: "#FFDE59" },
+  { n: "guardia-red-chart",    sub: "Vermelho sinal — queda, saídas", hex: "#FF3131" },
+];
+
+const FAMS = [
+  { n: "font-sans", sub: "Poppins — UI principal (+ fallback Roboto, system-ui)", sample: "A contabilidade assistida por agentes." },
+  { n: "font-mono", sub: "Monospace — código · dados tabulares",                   sample: "CNPJ 42.110.877/0001-55" },
+];
+
+const FS = [
+  { n: "fs-display", v: "56px", role: "Hero · display" },
+  { n: "fs-h1",      v: "40px", role: "H1 · título principal" },
+  { n: "fs-h2",      v: "32px", role: "H2 · seção" },
+  { n: "fs-h3",      v: "24px", role: "H3 · subseção" },
+  { n: "fs-h4",      v: "20px", role: "H4 · subdivisão" },
+  { n: "fs-body-lg", v: "18px", role: "Body grande · lede" },
+  { n: "fs-body",    v: "16px", role: "Body padrão" },
+  { n: "fs-body-sm", v: "14px", role: "Body pequeno · apoio" },
+  { n: "fs-caption", v: "12px", role: "Caption · metadados" },
+  { n: "fs-mono",    v: "14px", role: "Monospace default" },
+];
+
+const TYPE_AUX = [
+  { n: "fw-thin",       v: "100", role: "Peso · Thin" },
+  { n: "fw-extralight", v: "200", role: "Peso · ExtraLight" },
+  { n: "fw-light",      v: "300", role: "Peso · Light" },
+  { n: "fw-regular",    v: "400", role: "Peso · Regular · body" },
+  { n: "fw-medium",     v: "500", role: "Peso · Medium · ênfase" },
+  { n: "fw-semibold",   v: "600", role: "Peso · SemiBold · títulos/botões" },
+  { n: "fw-bold",       v: "700", role: "Peso · Bold · destaque" },
+  { n: "fw-extrabold",  v: "800", role: "Peso · ExtraBold" },
+  { n: "fw-black",      v: "900", role: "Peso · Black" },
+  { n: "lh-tight",      v: "1.15", role: "Altura · títulos grandes" },
+  { n: "lh-snug",       v: "1.3",  role: "Altura · headings" },
+  { n: "lh-normal",     v: "1.5",  role: "Altura · body" },
+  { n: "lh-relaxed",    v: "1.65", role: "Altura · leitura longa" },
+  { n: "ls-tight",      v: "-0.02em", role: "Tracking · títulos grandes" },
+  { n: "ls-snug",       v: "-0.01em", role: "Tracking · títulos médios" },
+  { n: "ls-normal",     v: "0",        role: "Tracking · body" },
+  { n: "ls-wide",       v: "0.02em",   role: "Tracking · UI labels" },
+  { n: "ls-eyebrow",    v: "0.14em",   role: "Tracking · EYEBROWS" },
+];
+
+const SPACE = [
+  { n: "space-0",  v: "0" },
+  { n: "space-1",  v: "4px"  },
+  { n: "space-2",  v: "8px"  },
+  { n: "space-3",  v: "12px" },
+  { n: "space-4",  v: "16px" },
+  { n: "space-5",  v: "20px" },
+  { n: "space-6",  v: "24px" },
+  { n: "space-8",  v: "32px" },
+  { n: "space-10", v: "40px" },
+  { n: "space-12", v: "48px" },
+  { n: "space-16", v: "64px" },
+  { n: "space-20", v: "80px" },
+  { n: "space-24", v: "96px" },
+];
+
+const RADII = [
+  { n: "radius-xs",   v: "2px",   role: "Micro (chip, tag, code inline)" },
+  { n: "radius-sm",   v: "3px",   role: "Controles pequenos (checkbox, badge-square)" },
+  { n: "radius-md",   v: "6px",   role: "Controles padrão (input, button, select)" },
+  { n: "radius-lg",   v: "8px",   role: "Cards · popovers · menus · accordion" },
+  { n: "radius-xl",   v: "10px",  role: "Overlays grandes (dialog, drawer)" },
+  { n: "radius-2xl",  v: "14px",  role: "Containers grandes · empty-state icons" },
+  { n: "radius-pill", v: "999px", role: "Switch · progress · badge-pill · avatars" },
+];
+
+const SHADOWS = [
+  { n: "shadow-xs",    role: "Divisão sutil" },
+  { n: "shadow-sm",    role: "Cards em repouso" },
+  { n: "shadow-md",    role: "Popovers · menus" },
+  { n: "shadow-lg",    role: "Dropdowns · tooltips" },
+  { n: "shadow-xl",    role: "Dialogs · drawers" },
+  { n: "shadow-brand", role: "CTA laranja em destaque" },
+];
+
+const EASINGS = [
+  { n: "ease-standard", v: "cubic-bezier(0.2, 0, 0, 1)",    role: "Padrão · entradas/saídas UI" },
+  { n: "ease-emphasis", v: "cubic-bezier(0.3, 0, 0, 1)",    role: "Ênfase · chamadas de atenção" },
+  { n: "ease-in",       v: "cubic-bezier(0.4, 0, 1, 1)",    role: "Saída · elementos removendo" },
+  { n: "ease-out",      v: "cubic-bezier(0, 0, 0.2, 1)",    role: "Entrada · elementos aparecendo" },
+];
+
+const DURS = [
+  { n: "dur-instant", v: "80ms",  role: "Micro · hover · focus" },
+  { n: "dur-fast",    v: "160ms", role: "Toggle · swap" },
+  { n: "dur-base",    v: "220ms", role: "Padrão" },
+  { n: "dur-slow",    v: "320ms", role: "Overlays · panels" },
+  { n: "dur-slower",  v: "480ms", role: "Transições de página" },
+];
+
+// ============ UTIL ============
+function copy(el, text) {
+  navigator.clipboard.writeText(text);
+  el.textContent = "✓"; el.classList.add("ok");
+  setTimeout(() => { el.textContent = "copy"; el.classList.remove("ok"); }, 900);
+}
+function mkName(full) {
+  return `<span class="tk-name">--${full}<button class="copy" onclick="copy(this,'var(--${full})')">copy</button></span>`;
+}
+
+// ============ BASE ============
+const gridBase = document.getElementById("grid-base");
+BASE_COLORS.forEach(c => {
+  const el = document.createElement("div");
+  el.className = "tk swatch";
+  el.innerHTML = `
+    <div class="tk-preview" style="background: var(--${c.n})"></div>
+    ${mkName(c.n)}
+    <span class="tk-val">${c.hex} · ${c.sub}</span>`;
+  gridBase.appendChild(el);
+});
+
+// ============ RAMPAS ============
+const gridRamps = document.getElementById("grid-ramps");
+RAMPS.forEach(ramp => {
+  const row = document.createElement("div");
+  row.style.cssText = "display:grid;grid-template-columns:80px repeat(5,1fr);gap:4px;align-items:stretch";
+  const lbl = document.createElement("div");
+  lbl.style.cssText = "font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--violet-700);display:flex;align-items:center;padding:0 8px";
+  lbl.textContent = ramp.name;
+  row.appendChild(lbl);
+  ramp.tones.forEach(t => {
+    const name = `${ramp.name}-${t}`;
+    const cell = document.createElement("div");
+    const isDark = Number(t) >= 500;
+    cell.style.cssText = `background:var(--${name});min-height:54px;border-radius:var(--radius-sm);padding:6px 8px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;color:${isDark ? "#fff" : "var(--gray-900)"}`;
+    cell.innerHTML = `
+      <span style="font-family:var(--font-mono);font-size:10px;opacity:.8">${t}</span>
+      <span style="font-family:var(--font-mono);font-size:10px;opacity:.6">--${name}</span>`;
+    cell.addEventListener("click", () => navigator.clipboard.writeText(`var(--${name})`));
+    cell.title = `Copiar var(--${name})`;
+    row.appendChild(cell);
+  });
+  gridRamps.appendChild(row);
+});
+
+// ============ MONO ============
+const gridMono = document.getElementById("grid-mono");
+MONO.forEach(c => {
+  const el = document.createElement("div");
+  el.className = "tk swatch";
+  el.innerHTML = `
+    <div class="tk-preview" style="background: var(--${c.n})"></div>
+    ${mkName(c.n)}
+    <span class="tk-val">${c.hex} · ${c.sub}</span>`;
+  gridMono.appendChild(el);
+});
+
+// ============ SEMÂNTICOS ============
+const gridSem = document.getElementById("grid-semantic");
+SEMANTIC.forEach(c => {
+  const el = document.createElement("div");
+  el.className = "tk";
+  el.innerHTML = `
+    <div class="tk-preview" style="height:36px;border-radius:var(--radius-sm);border:1px solid rgba(0,0,0,.05);background:var(--${c.n})"></div>
+    ${mkName(c.n)}
+    <span class="tk-val">→ ${c.resolves}</span>
+    <span class="tk-val" style="color:var(--gray-700)">${c.sub}</span>`;
+  gridSem.appendChild(el);
+});
+
+// ============ CHART ============
+const gridChart = document.getElementById("grid-chart");
+CHART.forEach(c => {
+  const el = document.createElement("div");
+  el.className = "tk swatch";
+  el.innerHTML = `
+    <div class="tk-preview" style="background: var(--${c.n})"></div>
+    ${mkName(c.n)}
+    <span class="tk-val">${c.hex} · ${c.sub}</span>`;
+  gridChart.appendChild(el);
+});
+
+// ============ TIPO · FAMS ============
+const gridFams = document.getElementById("grid-fams");
+FAMS.forEach(f => {
+  const el = document.createElement("div");
+  el.className = "tk";
+  el.innerHTML = `
+    <div style="font-family: var(--${f.n}); font-size: 18px; font-weight: 500; color:var(--fg)">${f.sample}</div>
+    ${mkName(f.n)}
+    <span class="tk-val">${f.sub}</span>`;
+  gridFams.appendChild(el);
+});
+
+// ============ TIPO · FS ============
+const gridFs = document.getElementById("grid-fs");
+FS.forEach(f => {
+  const row = document.createElement("div");
+  row.className = "tk";
+  row.style.cssText = "flex-direction:row;align-items:center;gap:20px;min-height:0;padding:14px 16px";
+  const px = Number(f.v.replace("px","")) || 14;
+  row.innerHTML = `
+    <div style="flex:0 0 160px">
+      <span class="tk-name">--${f.n}<button class="copy" onclick="copy(this,'var(--${f.n})')">copy</button></span><br>
+      <span class="tk-val">${f.v} · ${f.role}</span>
+    </div>
+    <div style="flex:1;font-family:var(--font-sans);font-size:var(--${f.n});line-height:1.15;color:var(--fg);font-weight:500;letter-spacing:${px >= 24 ? "-0.015em" : "0"}">
+      Contábil Silva &amp; Cia Ltda.
+    </div>`;
+  gridFs.appendChild(row);
+});
+
+// ============ TIPO · AUX ============
+const gridTypeAux = document.getElementById("grid-type-aux");
+TYPE_AUX.forEach(f => {
+  const el = document.createElement("div");
+  el.className = "tk";
+  let preview = "";
+  if (f.n.startsWith("fw-")) {
+    preview = `<div style="font-weight:var(--${f.n});font-size:16px;color:var(--fg)">Contábil Silva &amp; Cia</div>`;
+  } else if (f.n.startsWith("lh-")) {
+    preview = `<div style="line-height:var(--${f.n});font-size:12px;color:var(--gray-700);max-width:100%">Lançamento classificado automaticamente pelo agente contábil com base em padrão histórico de transações.</div>`;
+  } else {
+    preview = `<div style="letter-spacing:var(--${f.n});font-size:13px;color:var(--fg);font-weight:500">${f.n === "ls-eyebrow" ? "EYEBROW TEXT" : "Contábil Silva &amp; Cia"}</div>`;
+  }
+  el.innerHTML = `${preview}${mkName(f.n)}<span class="tk-val">${f.v} · ${f.role}</span>`;
+  gridTypeAux.appendChild(el);
+});
+
+// ============ ESPAÇO ============
+const gridSpace = document.getElementById("grid-space");
+SPACE.forEach(s => {
+  const el = document.createElement("div");
+  el.className = "tk space";
+  const n = Number(s.v.replace("px","")) || 0;
+  el.innerHTML = `
+    <div class="tk-preview"><div class="bar" style="width: ${Math.min(n, 96)}px"></div></div>
+    ${mkName(s.n)}
+    <span class="tk-val">${s.v}</span>`;
+  gridSpace.appendChild(el);
+});
+
+// ============ RAIOS ============
+const gridRadii = document.getElementById("grid-radii");
+RADII.forEach(r => {
+  const el = document.createElement("div");
+  el.className = "tk radii";
+  el.innerHTML = `
+    <div class="tk-preview" style="border-radius: var(--${r.n})"></div>
+    ${mkName(r.n)}
+    <span class="tk-val">${r.v}</span>
+    <span class="tk-val" style="color:var(--gray-700)">${r.role}</span>`;
+  gridRadii.appendChild(el);
+});
+
+// ============ SOMBRAS ============
+const gridShadows = document.getElementById("grid-shadows");
+SHADOWS.forEach(s => {
+  const el = document.createElement("div");
+  el.className = "shadow-card";
+  el.innerHTML = `
+    <div class="shadow-box" style="box-shadow: var(--${s.n})"></div>
+    ${mkName(s.n)}
+    <span class="tk-val">${s.role}</span>`;
+  gridShadows.appendChild(el);
+});
+
+// ============ EASINGS ============
+const gridEasings = document.getElementById("grid-easings");
+EASINGS.forEach(e => {
+  const el = document.createElement("div");
+  el.className = "m-card";
+  const id = `m-${e.n}`;
+  el.innerHTML = `
+    <div class="m-track"><div class="m-dot" id="${id}" style="transition: transform 900ms var(--${e.n})"></div></div>
+    ${mkName(e.n)}
+    <span class="tk-val">${e.v}</span>
+    <span class="tk-val" style="color:var(--gray-700)">${e.role}</span>
+    <button>▶ animar</button>`;
+  gridEasings.appendChild(el);
+  const dot = el.querySelector(`#${id}`);
+  const btn = el.querySelector("button");
+  let toggled = false;
+  const run = () => { toggled = !toggled; dot.style.transform = toggled ? "translateX(220px)" : "translateX(0)"; };
+  btn.addEventListener("click", run);
+  el.querySelector(".m-track").addEventListener("click", run);
+});
+
+// ============ DURAÇÕES ============
+const gridDurs = document.getElementById("grid-durs");
+DURS.forEach(d => {
+  const el = document.createElement("div");
+  el.className = "tk";
+  el.innerHTML = `
+    ${mkName(d.n)}
+    <span class="tk-val">${d.v}</span>
+    <span class="tk-val" style="color:var(--gray-700)">${d.role}</span>`;
+  gridDurs.appendChild(el);
+});
+</script>
+</body>
+</html>

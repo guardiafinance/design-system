@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Escala de cores</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .ramp { display: grid; grid-template-columns: 120px repeat(5, 1fr); gap: 8px; align-items: stretch; margin-bottom: 10px; }
+  .ramp-label {
+    display: flex; flex-direction: column; justify-content: center;
+    font-weight: 600; font-size: 14px; color: var(--violet-500);
+    padding-right: 8px;
+  }
+  .ramp-label small {
+    font-weight: 400; font-size: 11px; color: var(--gray-500); margin-top: 2px;
+  }
+  .tone {
+    height: 72px;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    border: 1px solid rgba(0,0,0,.04);
+  }
+  .tone .lvl { font-weight: 700; font-size: 12px; font-family: var(--font-sans); letter-spacing: -0.005em; }
+  .tone .hex { opacity: 0.88; }
+  .tone.base { outline: 2px solid var(--violet-500); outline-offset: 2px; }
+  .on-dark { color: #fff; }
+  .on-light { color: var(--violet-700); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">CORES · ESCALA</div>
+  <h1 class="card-title">Escala de cores — 100 / 200 / 500 / 700 / 900</h1>
+  <p class="card-sub">Cada cor da paleta base tem cinco tons. O tom 500 é a base (destacado com outline violeta). Os tons 100 e 200 servem a fundos e superfícies; 700 libera texto branco em AA; 900 é reservado a áreas escuras e contraste máximo.</p>
+
+  <!-- Amarelo -->
+  <div class="ramp">
+    <div class="ramp-label">Amarelo<small>Brilhante</small></div>
+    <div class="tone on-light" style="background:#FFF3CE"><span class="lvl">100</span><span class="hex">#FFF3CE</span></div>
+    <div class="tone on-light" style="background:#FFE490"><span class="lvl">200</span><span class="hex">#FFE490</span></div>
+    <div class="tone base on-light" style="background:#FFC30A"><span class="lvl">500</span><span class="hex">#FFC30A</span></div>
+    <div class="tone on-dark" style="background:#B28807"><span class="lvl">700</span><span class="hex">#B28807</span></div>
+    <div class="tone on-dark" style="background:#664E04"><span class="lvl">900</span><span class="hex">#664E04</span></div>
+  </div>
+
+  <!-- Laranja -->
+  <div class="ramp">
+    <div class="ramp-label">Laranja<small>Quente</small></div>
+    <div class="tone on-light" style="background:#F8E3CC"><span class="lvl">100</span><span class="hex">#F8E3CC</span></div>
+    <div class="tone on-light" style="background:#F1C08C"><span class="lvl">200</span><span class="hex">#F1C08C</span></div>
+    <div class="tone base on-dark" style="background:#E07400"><span class="lvl">500</span><span class="hex">#E07400</span></div>
+    <div class="tone on-dark" style="background:#9C5100"><span class="lvl">700</span><span class="hex">#9C5100</span></div>
+    <div class="tone on-dark" style="background:#592E00"><span class="lvl">900</span><span class="hex">#592E00</span></div>
+  </div>
+
+  <!-- Rosa -->
+  <div class="ramp">
+    <div class="ramp-label">Rosa<small>Suave</small></div>
+    <div class="tone on-light" style="background:#F7DFE6"><span class="lvl">100</span><span class="hex">#F7DFE6</span></div>
+    <div class="tone on-light" style="background:#EEB8C8"><span class="lvl">200</span><span class="hex">#EEB8C8</span></div>
+    <div class="tone base on-dark" style="background:#DB6286"><span class="lvl">500</span><span class="hex">#DB6286</span></div>
+    <div class="tone on-dark" style="background:#99445D"><span class="lvl">700</span><span class="hex">#99445D</span></div>
+    <div class="tone on-dark" style="background:#572735"><span class="lvl">900</span><span class="hex">#572735</span></div>
+  </div>
+
+  <!-- Violeta -->
+  <div class="ramp">
+    <div class="ramp-label">Violeta<small>Profundo</small></div>
+    <div class="tone on-light" style="background:#DBD0E1"><span class="lvl">100</span><span class="hex">#DBD0E1</span></div>
+    <div class="tone on-light" style="background:#AF97BD"><span class="lvl">200</span><span class="hex">#AF97BD</span></div>
+    <div class="tone base on-dark" style="background:#4F186D"><span class="lvl">500</span><span class="hex">#4F186D</span></div>
+    <div class="tone on-dark" style="background:#37104C"><span class="lvl">700</span><span class="hex">#37104C</span></div>
+    <div class="tone on-dark" style="background:#1F092B"><span class="lvl">900</span><span class="hex">#1F092B</span></div>
+  </div>
+
+  <!-- Cinza -->
+  <div class="ramp">
+    <div class="ramp-label">Cinza<small>Báltico</small></div>
+    <div class="tone on-light" style="background:#D7D7D9"><span class="lvl">100</span><span class="hex">#D7D7D9</span></div>
+    <div class="tone on-light" style="background:#A6A6AA"><span class="lvl">200</span><span class="hex">#A6A6AA</span></div>
+    <div class="tone base on-dark" style="background:#3A3A44"><span class="lvl">500</span><span class="hex">#3A3A44</span></div>
+    <div class="tone on-dark" style="background:#28282F"><span class="lvl">700</span><span class="hex">#28282F</span></div>
+    <div class="tone on-dark" style="background:#17171B"><span class="lvl">900</span><span class="hex">#17171B</span></div>
+  </div>
+</body>
+</html>

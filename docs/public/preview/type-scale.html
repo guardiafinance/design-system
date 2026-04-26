@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Hierarquia tipográfica</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 32px 48px; }
+  .row { display: grid; grid-template-columns: 180px 1fr 120px; gap: 20px; align-items: baseline; padding: 14px 0; border-bottom: 1px dashed var(--border); }
+  .row:last-child { border-bottom: 0; }
+  .label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-500); font-weight: 600; }
+  .label small { display: block; font-weight: 400; font-family: var(--font-mono); letter-spacing: 0; text-transform: none; color: var(--gray-200); margin-top: 4px; font-size: 10px; }
+  .sample { color: var(--violet-500); font-family: var(--font-sans); }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); text-align: right; }
+  .h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  .h2 { font-size: 32px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+  .h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+  .h4 { font-size: 20px; font-weight: 500; line-height: 1.35; }
+  .body-lg { font-size: 18px; font-weight: 400; line-height: 1.5; }
+  .body { font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .body-sm { font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--gray-500); }
+  .caption { font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--gray-500); }
+  .eyebrow-s { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-500); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">TIPOGRAFIA · HIERARQUIA</div>
+  <h1 class="card-title">Escala recomendada</h1>
+  <p class="card-sub">Hierarquia oficial do Notion. Títulos em SemiBold/Bold, corpo em Regular, apoio em Light. Ênfase usa SemiBold ou itálico — nunca underline decorativo.</p>
+
+  <div class="row">
+    <div class="label">Eyebrow<small>12 · 600 · upper</small></div>
+    <div class="sample"><span class="eyebrow-s">Contabilidade agêntica</span></div>
+    <div class="meta">--fs-caption</div>
+  </div>
+  <div class="row">
+    <div class="label">H1<small>40 · 700/600</small></div>
+    <div class="sample"><span class="h1">O livro contábil vivo, auditável e conectado à origem dos dados.</span></div>
+    <div class="meta">--fs-h1</div>
+  </div>
+  <div class="row">
+    <div class="label">H2<small>32 · 600</small></div>
+    <div class="sample"><span class="h2">Os agentes leem, aplicam as regras e conciliam.</span></div>
+    <div class="meta">--fs-h2</div>
+  </div>
+  <div class="row">
+    <div class="label">H3<small>24 · 600</small></div>
+    <div class="sample"><span class="h3">Rastreabilidade do lançamento ao razão</span></div>
+    <div class="meta">--fs-h3</div>
+  </div>
+  <div class="row">
+    <div class="label">H4<small>20 · 500</small></div>
+    <div class="sample"><span class="h4">Humano no loop com Isac e o contador responsável</span></div>
+    <div class="meta">--fs-h4</div>
+  </div>
+  <div class="row">
+    <div class="label">Body LG<small>18 · 400</small></div>
+    <div class="sample"><span class="body-lg">A operação contábil manual consome 40% do tempo da equipe. A Guardia devolve esse tempo.</span></div>
+    <div class="meta">--fs-body-lg</div>
+  </div>
+  <div class="row">
+    <div class="label">Body<small>16 · 400</small></div>
+    <div class="sample"><span class="body">Reconciliação cruzando múltiplas fontes em uma única execução, com trilha de auditoria pronta para compliance.</span></div>
+    <div class="meta">--fs-body</div>
+  </div>
+  <div class="row">
+    <div class="label">Body SM<small>14 · 400</small></div>
+    <div class="sample"><span class="body-sm">Legendas, notas de rodapé, metadados e apoio em formulários densos.</span></div>
+    <div class="meta">--fs-body-sm</div>
+  </div>
+  <div class="row">
+    <div class="label">Caption<small>12 · 400</small></div>
+    <div class="sample"><span class="caption">atualizado há 3 minutos · por Isac</span></div>
+    <div class="meta">--fs-caption</div>
+  </div>
+</body>
+</html>
