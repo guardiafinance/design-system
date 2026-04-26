@@ -4,7 +4,7 @@ import { defineConfig } from '@rslib/core';
 export default defineConfig({
   source: {
     entry: {
-      index: ['./src/**'],
+      index: ['./ui_kit/**/*.{ts,tsx}', '!./ui_kit/**/*.{test,stories}.{ts,tsx}'],
     },
   },
   lib: [
@@ -16,6 +16,12 @@ export default defineConfig({
   ],
   output: {
     target: 'web',
+    copy: [
+      {
+        from: 'ui_kit/styles/index.css',
+        to: 'styles/index.css',
+      },
+    ],
   },
   plugins: [pluginReact()],
 });
