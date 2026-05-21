@@ -13,8 +13,9 @@ storybook-static
 !.vscode/extensions.json
 .idea
 
-# Claude Code worktree metadata
-.claude/
+# Claude Code worktree and plans
+.worktrees/
+.plans/
 
 # Astro generated cache
 docs/.astro/

@@ -1,0 +1,12 @@
+{
+  "_comment": "Ahrena MCP: Notion server config. HTTP-first per lex-mcp §5. Both platforms use the official remote endpoint at mcp.notion.com/mcp; auth is per-user OAuth (browser flow on first call). Teams that prefer a shared NOTION_API_KEY (legacy npx path) override this file in .ahrena/mcp/notion.json with their justification — see codex-mcp-notion. Merged into platform MCP files during install.",
+  "cursor": {
+    "url": "https://mcp.notion.com/mcp",
+    "requires": []
+  },
+  "claude-code": {
+    "type": "http",
+    "url": "https://mcp.notion.com/mcp",
+    "requires": []
+  }
+}
