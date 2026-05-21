@@ -284,31 +284,48 @@
 }
 
 /* ============================================================
-   DARK MODE — superfície violeta profundo (Notion: --guardia-violet-900)
+   DARK MODE — hierarquia de superfícies por luminosidade
+   Fonte da verdade: Notion > Branding > Cores > Dark Mode
+   https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b
+
+   Surfaces: Mono Preto (base) → Cinza 900 → Cinza 700 → Cinza 500
+   Brand:    Violeta 900 / Violeta 700 (login, splash, onboarding)
+   Texto:    Mono Branco (primário) → Cinza 100 → Cinza 200
+   Ação:     Laranja 500 (Laranja vira a cor de ação em dark)
    ============================================================ */
 :root.dark,
 [data-theme="dark"] {
-  --bg:            var(--violet-900);
-  --bg-subtle:     #2A0E3A;
-  --surface:       #2A0E3A;
-  --papel:         #2A0E3A;
-  --fg:            var(--mono-white);   /* tinta clara sobre violeta profundo */
-  --fg-strong:     var(--mono-white);
-  --fg-muted:      #B4A4BE;
-  --fg-subtle:     #7D6A89;
-  --border:        #3A1A4E;
-  --border-strong: var(--violet-700);
+  --bg:                    var(--mono-black);   /* Surface Base (#0E1016) */
+  --bg-subtle:             var(--gray-900);     /* Surface 1 (#17171B) */
+  --surface:               var(--gray-700);     /* Surface 2 (#28282F) */
+  --papel:                 var(--gray-700);     /* alias de surface */
+  --surface-brand:         var(--violet-900);   /* Surface Brand (#1F092B) */
+  --surface-brand-elevated: var(--violet-700);  /* Surface Brand Elevado (#37104C) */
 
+  --fg:                    var(--mono-white);   /* Texto Primário */
+  --fg-strong:             var(--mono-white);
+  --fg-muted:              var(--gray-100);     /* Texto Secundário (#D7D7D9) */
+  --fg-subtle:             var(--gray-200);     /* Texto Terciário (#A6A6AA) */
+
+  --border:                var(--gray-700);     /* Divisor sutil (Surface 2) */
+  --border-strong:         var(--gray-500);     /* Divisor forte (Surface 3) */
+
+  /* Laranja assume papel de ação em dark; violeta migra para a versão 200
+     que mantém contraste sobre fundos escuros (Violet 500 atinge só 1.6:1). */
   --link:          var(--orange-500);
   --link-hover:    var(--orange-200);
 
   --action:        var(--orange-500);
   --action-hover:  var(--orange-700);
-  --action-fg:     #FFFFFF;
+  --action-fg:     var(--mono-black);   /* Botão primário: Laranja 500 + texto Preto (6.2:1) */
 
   --accent:        var(--yellow-500);
   --accent-hover:  var(--yellow-700);
-  --accent-fg:     var(--violet-900);
+  --accent-fg:     var(--mono-black);   /* Amarelo 500 + Preto (12.3:1) */
+
+  /* Brand color para texto/ícones sobre fundos escuros — Violet 200
+     substitui Violet 500 (que perde contraste contra dark surfaces). */
+  --brand-on-dark: var(--violet-200);
 }
 
 /* ============================================================

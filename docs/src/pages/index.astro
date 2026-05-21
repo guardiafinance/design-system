@@ -359,33 +359,34 @@ const storybookUrl = import.meta.env.DEV
       /* ============ DARK MODE OVERRIDES ============
          As variaveis --bg, --surface, --fg, --border ja flipam via
          colors_and_type.css quando [data-theme="dark"] esta em <html>.
-         Aqui apenas re-tonalizamos focos visuais que dependem de
-         violet-100/gray-50/violet-500 (mantidas literais no tema light). */
+         Tudo abaixo usa exclusivamente tokens da palette oficial
+         (Cinza Baltico 100-900 + Laranja 500/200 + Mono Preto/Branco)
+         conforme Notion > Branding > Cores > Dark Mode. */
       :root[data-theme="dark"] .nav-item:hover,
       :root[data-theme="dark"] .nav-item.active {
-        background: rgba(255,255,255,0.06);
+        background: var(--gray-500);   /* Surface 3 — hover/selected */
         color: var(--mono-white);
       }
       :root[data-theme="dark"] .nav-item.active .ni-glyph {
-        background: var(--orange-500); color: var(--violet-900);
+        background: var(--orange-500); color: var(--mono-black);
         border-color: var(--orange-500);
       }
       :root[data-theme="dark"] .top-link:hover {
-        background: rgba(255,255,255,0.06);
+        background: var(--gray-500);
         color: var(--orange-500);
       }
-      :root[data-theme="dark"] .top-search input { background: rgba(255,255,255,0.04); color: var(--fg); }
-      :root[data-theme="dark"] .top-search input:focus { background: rgba(255,255,255,0.08); }
+      :root[data-theme="dark"] .top-search input { background: var(--gray-800); color: var(--fg); }
+      :root[data-theme="dark"] .top-search input:focus { background: var(--gray-500); }
       :root[data-theme="dark"] .top-brand .ver {
-        background: rgba(255,255,255,0.08); color: var(--fg-muted);
+        background: var(--gray-500); color: var(--fg-muted);
       }
       :root[data-theme="dark"] .quick-card:hover { border-color: var(--orange-500); }
       :root[data-theme="dark"] .stat b,
       :root[data-theme="dark"] .welcome h1 { color: var(--orange-500); }
       :root[data-theme="dark"] .quick-card .qc-eyebrow,
       :root[data-theme="dark"] .nav-parent-title { color: var(--orange-500); }
-      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb { background: var(--gray-500); }
+      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
     </style>
   </head>
   <body>

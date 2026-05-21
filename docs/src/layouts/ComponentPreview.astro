@@ -159,19 +159,22 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       /* ============ DARK MODE OVERRIDES ============
          As variaveis --bg, --surface, --fg, --border ja flipam via
          colors_and_type.css quando [data-theme="dark"] esta em <html>.
-         Aqui ajustamos elementos que dependem de violet-100/violet-500/
-         violet-700 (mantidos literais no light). */
+         Tudo abaixo usa exclusivamente tokens da palette oficial
+         conforme Notion > Branding > Cores > Dark Mode. */
       :root[data-theme="dark"] .hdr h1 { color: var(--orange-500); }
       :root[data-theme="dark"] .hdr .hdr-actions a {
         color: var(--orange-200);
-        background: rgba(255,255,255,0.06);
+        background: var(--gray-700);   /* Surface 2 */
       }
       :root[data-theme="dark"] .hdr .hdr-actions a:hover { border-color: var(--orange-500); }
       :root[data-theme="dark"] code.inline {
-        background: rgba(224,116,0,0.18); color: var(--orange-200);
+        background: var(--gray-800); color: var(--orange-500);
       }
       :root[data-theme="dark"] .props td.name { color: var(--orange-200); }
-      :root[data-theme="dark"] pre { background: #15081C; color: #EDE4F3; }
+      :root[data-theme="dark"] pre {
+        background: var(--gray-900);    /* Surface 1 — separacao do conteudo */
+        color: var(--violet-100);       /* tinta clara da escala violet */
+      }
       :root[data-theme="dark"] .props th { color: var(--fg-muted); }
 
       /* Indicador discreto enquanto a iframe espera o primeiro tema do parent */
