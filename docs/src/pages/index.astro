@@ -55,15 +55,15 @@ const storybookUrl = import.meta.env.DEV
       .top-brand img { height: 40px; width: auto; display: block; }
       .top-brand .dot {
         width: 4px; height: 4px; border-radius: 50%;
-        background: var(--gray-300); margin: 0 8px;
+        background: var(--fg-subtle); margin: 0 8px;
       }
       .top-brand .ds-label {
         font-size: 12px; font-weight: 500;
-        color: var(--gray-500); letter-spacing: -0.005em;
+        color: var(--fg-muted); letter-spacing: -0.005em;
       }
       .top-brand .ver {
         font-family: var(--font-mono); font-size: 10px;
-        color: var(--gray-500); background: var(--violet-100);
+        color: var(--fg-strong); background: var(--bg-hover);
         padding: 2px 6px; border-radius: 4px; margin-left: 8px;
       }
       .top-search {
@@ -72,7 +72,7 @@ const storybookUrl = import.meta.env.DEV
       }
       .top-search input {
         width: 100%; height: 32px;
-        background: var(--gray-50);
+        background: var(--bg-subtle);
         border: 1px solid transparent;
         border-radius: var(--radius-md);
         padding: 0 34px 0 32px;
@@ -81,8 +81,8 @@ const storybookUrl = import.meta.env.DEV
       }
       .top-search input:focus {
         background: var(--surface);
-        border-color: var(--violet-300);
-        box-shadow: 0 0 0 3px rgba(113, 64, 171, 0.12);
+        border-color: var(--ring);
+        box-shadow: var(--focus-ring-accent);
       }
       .top-search::before {
         content: ""; position: absolute;
@@ -94,17 +94,17 @@ const storybookUrl = import.meta.env.DEV
       .top-search kbd {
         position: absolute; top: 6px; right: 8px;
         font-family: var(--font-mono); font-size: 10px;
-        color: var(--gray-500);
+        color: var(--fg-muted);
         background: var(--surface); border: 1px solid var(--border);
         border-radius: 4px; padding: 2px 5px;
         line-height: 1;
       }
       .top-right { display: flex; align-items: center; gap: 14px; }
       .top-link {
-        font-size: 12px; color: var(--gray-700);
+        font-size: 12px; color: var(--fg);
         text-decoration: none; padding: 4px 8px; border-radius: 4px;
       }
-      .top-link:hover { background: var(--gray-50); color: var(--violet-500); }
+      .top-link:hover { background: var(--bg-hover); color: var(--fg-strong); }
 
       /* Theme toggle — pareado com o seletor do Storybook */
       .theme-toggle {
@@ -119,11 +119,11 @@ const storybookUrl = import.meta.env.DEV
         cursor: pointer;
         padding: 4px 8px; border-radius: 4px;
         font: inherit; font-size: 11px; line-height: 1;
-        color: var(--gray-500);
+        color: var(--fg-muted);
         display: inline-flex; align-items: center; gap: 4px;
         transition: background .12s, color .12s;
       }
-      .theme-toggle button:hover { color: var(--violet-500); }
+      .theme-toggle button:hover { color: var(--fg-strong); }
       .theme-toggle button[aria-pressed="true"] {
         background: var(--surface);
         color: var(--fg);
@@ -132,7 +132,7 @@ const storybookUrl = import.meta.env.DEV
       .theme-toggle svg { width: 12px; height: 12px; stroke-width: 2; }
       .search-meta {
         position: absolute; top: 9px; right: 36px;
-        font-size: 10px; color: var(--gray-500);
+        font-size: 10px; color: var(--fg-muted);
         font-family: var(--font-mono);
         pointer-events: none;
       }
@@ -152,7 +152,7 @@ const storybookUrl = import.meta.env.DEV
         position: absolute;
         left: 0; top: 22px; bottom: 4px;
         width: 1px;
-        background: var(--violet-100);
+        background: var(--border);
       }
       .nav-parent {
         margin: 6px 0 10px;
@@ -163,59 +163,59 @@ const storybookUrl = import.meta.env.DEV
       .nav-parent-title {
         font-size: 11px; font-weight: 700;
         letter-spacing: 0.06em;
-        color: var(--violet-500);
+        color: var(--action);
         display: flex; align-items: center; gap: 8px;
       }
       .nav-parent-title::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: var(--violet-100);
+        background: var(--border);
       }
       .nav-group-title {
         display: flex; align-items: center; gap: 8px;
         font-size: 10px; font-weight: 600;
         letter-spacing: 0.12em; text-transform: uppercase;
-        color: var(--gray-500);
+        color: var(--fg-muted);
         padding: 0 10px 6px;
       }
       .nav-group-count {
         font-family: var(--font-mono); font-size: 9px;
-        color: var(--gray-500); background: var(--gray-50);
+        color: var(--fg-muted); background: var(--bg-subtle);
         padding: 1px 5px; border-radius: 3px;
         letter-spacing: 0;
       }
       .nav-item {
         display: flex; align-items: center; gap: 10px;
         padding: 6px 10px;
-        font-size: 13px; color: var(--gray-700);
+        font-size: 13px; color: var(--fg);
         text-decoration: none;
         border-radius: var(--radius-sm);
         cursor: pointer;
         line-height: 1.3;
         border: 1px solid transparent;
       }
-      .nav-item:hover { background: var(--violet-100); color: var(--violet-500); }
+      .nav-item:hover { background: var(--bg-hover); color: var(--fg-strong); }
       .nav-item.active {
-        background: var(--violet-100);
-        color: var(--violet-500);
+        background: var(--bg-hover);
+        color: var(--fg-strong);
         font-weight: 500;
       }
       .nav-item .ni-glyph {
         font-family: var(--font-mono); font-size: 9px;
-        color: var(--gray-500);
+        color: var(--fg-muted);
         background: var(--surface); border: 1px solid var(--border);
         border-radius: 3px; padding: 1px 4px;
         min-width: 24px; text-align: center;
         letter-spacing: -0.02em;
       }
       .nav-item.active .ni-glyph {
-        background: var(--violet-500); color: #fff; border-color: var(--violet-500);
+        background: var(--action); color: var(--action-fg); border-color: var(--action);
       }
       .nav-item .ni-label { flex: 1; }
       .nav-empty {
         padding: 16px 12px;
-        font-size: 12px; color: var(--gray-500);
+        font-size: 12px; color: var(--fg-muted);
         text-align: center;
         display: none;
       }
@@ -249,15 +249,15 @@ const storybookUrl = import.meta.env.DEV
       .welcome-eyebrow {
         font-size: 10px; font-weight: 600;
         letter-spacing: 0.14em; text-transform: uppercase;
-        color: var(--gray-500);
+        color: var(--fg-muted);
       }
       .welcome h1 {
         margin: 4px 0 10px;
         font-size: 36px; font-weight: 700; letter-spacing: -0.025em;
-        color: var(--violet-500);
+        color: var(--fg-strong);
       }
       .welcome p.lede {
-        font-size: 15px; color: var(--gray-700);
+        font-size: 15px; color: var(--fg);
         max-width: 680px; line-height: 1.6;
         margin: 0 0 32px;
       }
@@ -277,11 +277,11 @@ const storybookUrl = import.meta.env.DEV
       .stat b {
         display: block;
         font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
-        color: var(--violet-500);
+        color: var(--fg-strong);
         font-family: var(--font-mono); font-variant-numeric: tabular-nums;
       }
       .stat span {
-        font-size: 11px; color: var(--gray-500);
+        font-size: 11px; color: var(--fg-muted);
         text-transform: uppercase; letter-spacing: 0.08em;
         font-weight: 500;
       }
@@ -296,7 +296,7 @@ const storybookUrl = import.meta.env.DEV
         color: var(--fg); letter-spacing: -0.005em;
       }
       .welcome-section-hdr small {
-        font-size: 11px; color: var(--gray-500);
+        font-size: 11px; color: var(--fg-muted);
       }
       .quick-grid {
         display: grid;
@@ -316,20 +316,20 @@ const storybookUrl = import.meta.env.DEV
         color: inherit;
       }
       .quick-card:hover {
-        border-color: var(--violet-300);
+        border-color: var(--ring);
         transform: translateY(-1px);
       }
       .quick-card .qc-eyebrow {
         font-size: 9px; font-weight: 600;
         letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--violet-500);
+        color: var(--action);
       }
       .quick-card .qc-title {
         font-size: 14px; font-weight: 600;
         color: var(--fg); letter-spacing: -0.01em;
       }
       .quick-card .qc-desc {
-        font-size: 12px; color: var(--gray-700);
+        font-size: 12px; color: var(--fg);
         line-height: 1.45;
       }
 
@@ -340,11 +340,11 @@ const storybookUrl = import.meta.env.DEV
         background: var(--bg-subtle);
       }
       .stub-pending h2 {
-        margin: 0 0 8px; color: var(--violet-500);
+        margin: 0 0 8px; color: var(--fg-strong);
         font-size: 20px; font-weight: 600;
       }
       .stub-pending p {
-        margin: 0; color: var(--gray-700); font-size: 14px;
+        margin: 0; color: var(--fg); font-size: 14px;
         max-width: 420px; line-height: 1.5;
       }
 
@@ -352,41 +352,19 @@ const storybookUrl = import.meta.env.DEV
       .nav::-webkit-scrollbar { width: 6px; }
       .nav::-webkit-scrollbar-track { background: transparent; }
       .nav::-webkit-scrollbar-thumb {
-        background: var(--gray-100); border-radius: 3px;
+        background: var(--border-strong); border-radius: 3px;
       }
-      .nav::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+      .nav::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
 
-      /* ============ DARK MODE OVERRIDES ============
-         As variaveis --bg, --surface, --fg, --border ja flipam via
-         colors_and_type.css quando [data-theme="dark"] esta em <html>.
-         Tudo abaixo usa exclusivamente tokens da palette oficial
-         (Cinza Baltico 100-900 + Laranja 500/200 + Mono Preto/Branco)
-         conforme Notion > Branding > Cores > Dark Mode. */
-      :root[data-theme="dark"] .nav-item:hover,
-      :root[data-theme="dark"] .nav-item.active {
-        background: var(--gray-500);   /* Surface 3 — hover/selected */
-        color: var(--mono-white);
-      }
-      :root[data-theme="dark"] .nav-item.active .ni-glyph {
-        background: var(--orange-500); color: var(--mono-black);
-        border-color: var(--orange-500);
-      }
-      :root[data-theme="dark"] .top-link:hover {
-        background: var(--gray-500);
-        color: var(--orange-500);
-      }
-      :root[data-theme="dark"] .top-search input { background: var(--gray-800); color: var(--fg); }
+      /* ============ DARK MODE OVERRIDE: search input bg ============
+         Em light, .top sit on --surface (white) and o input usa --bg-subtle
+         (pale violet) para ter superficie levemente diferente. Em dark,
+         .top tambem usa --surface (Cinza 700) e --bg-subtle (Cinza 900)
+         vira MAIS escuro que o entorno — invertendo a hierarquia material
+         "elevado = mais claro". Aqui forcamos o input para uma superficie
+         visivelmente acima do .top (Cinza 500 = Surface 3). */
+      :root[data-theme="dark"] .top-search input { background: var(--gray-800); }
       :root[data-theme="dark"] .top-search input:focus { background: var(--gray-500); }
-      :root[data-theme="dark"] .top-brand .ver {
-        background: var(--gray-500); color: var(--fg-muted);
-      }
-      :root[data-theme="dark"] .quick-card:hover { border-color: var(--orange-500); }
-      :root[data-theme="dark"] .stat b,
-      :root[data-theme="dark"] .welcome h1 { color: var(--orange-500); }
-      :root[data-theme="dark"] .quick-card .qc-eyebrow,
-      :root[data-theme="dark"] .nav-parent-title { color: var(--orange-500); }
-      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb { background: var(--gray-500); }
-      :root[data-theme="dark"] .nav::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
     </style>
   </head>
   <body>
@@ -435,7 +413,7 @@ const storybookUrl = import.meta.env.DEV
         <p class="lede">
           Sistema de design da Guardia — identidade, fundamentos visuais e um kit
           de componentes React. Navegue pela lateral, use a busca no topo (ou
-          tecle <kbd style="font-family:var(--font-mono);font-size:11px;background:var(--gray-50);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">/</kbd>) ou escolha um atalho abaixo.
+          tecle <kbd style="font-family:var(--font-mono);font-size:11px;background:var(--bg-subtle);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">/</kbd>) ou escolha um atalho abaixo.
         </p>
 
         <div class="welcome-stats">
@@ -509,7 +487,7 @@ const storybookUrl = import.meta.env.DEV
             <h2>Componentes</h2>
             <small>status da migração</small>
           </div>
-          <p style="color: var(--gray-700); font-size: 13px; margin: 0 0 12px;">
+          <p style="color: var(--fg); font-size: 13px; margin: 0 0 12px;">
             Os componentes ainda não foram migrados do <code>wip/</code> para <code>ui_kit/</code>.
             Preview individual será liberado conforme a migração avança — siga o
             <a href="https://github.com/guardiafinance/design-system" target="_blank" rel="noreferrer">ROTEIRO-MIGRACAO.md</a>.

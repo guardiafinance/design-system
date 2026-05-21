@@ -135,6 +135,7 @@
      ============================================================ */
   --bg:             var(--mono-white);
   --bg-subtle:      #F7F5F9;            /* superfície secundária, viés violeta */
+  --bg-hover:       var(--violet-100);  /* hover/selected (light: pale violet; dark: gray 500) */
   --surface:        #FFFFFF;            /* cards e containers */
   --papel:          #FFFFFF;            /* alias de surface usado em playgrounds */
   --fg:             var(--mono-black);  /* tinta de texto — Mono Preto (Brand Kit) */
@@ -297,6 +298,7 @@
 [data-theme="dark"] {
   --bg:                    var(--mono-black);   /* Surface Base (#0E1016) */
   --bg-subtle:             var(--gray-900);     /* Surface 1 (#17171B) */
+  --bg-hover:              var(--gray-500);     /* Surface 3 — hover/selected */
   --surface:               var(--gray-700);     /* Surface 2 (#28282F) */
   --papel:                 var(--gray-700);     /* alias de surface */
   --surface-brand:         var(--violet-900);   /* Surface Brand (#1F092B) */

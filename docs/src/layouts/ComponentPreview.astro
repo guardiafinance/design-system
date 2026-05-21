@@ -49,23 +49,23 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       .hdr { margin-bottom: 28px; }
       .hdr h1 {
         font-size: 30px; font-weight: 700; letter-spacing: -0.015em;
-        color: var(--violet-500); margin: 6px 0 4px;
+        color: var(--fg-strong); margin: 6px 0 4px;
       }
       .hdr .lede {
-        font-size: 15px; line-height: 1.6; color: var(--gray-700);
+        font-size: 15px; line-height: 1.6; color: var(--fg);
         max-width: 720px; margin: 14px 0 0;
       }
       .hdr .lede b { color: var(--fg); font-weight: 600; }
       .hdr .hdr-actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
       .hdr .hdr-actions a {
         font-family: var(--font-mono); font-size: 11.5px;
-        color: var(--violet-700); background: var(--violet-100);
+        color: var(--link); background: var(--bg-subtle);
         padding: 6px 10px; border-radius: var(--radius-sm);
         text-decoration: none; border: 1px solid transparent;
         transition: border-color .12s;
         display: inline-flex; align-items: center; gap: 6px;
       }
-      .hdr .hdr-actions a:hover { border-color: var(--violet-300); }
+      .hdr .hdr-actions a:hover { border-color: var(--ring); }
       .hdr .hdr-actions svg { width: 14px; height: 14px; stroke-width: 1.75; }
       .hdr .hdr-actions .ext { opacity: 0.5; }
 
@@ -80,7 +80,7 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
         color: var(--fg); letter-spacing: -0.01em;
       }
       .sec-hdr small {
-        font-size: 11px; color: var(--gray-500);
+        font-size: 11px; color: var(--fg-muted);
         letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
       }
 
@@ -101,29 +101,31 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       }
       .preview.bg-subtle { background: var(--bg-subtle); }
       .preview-caption {
-        font-size: 11.5px; color: var(--gray-500);
+        font-size: 11.5px; color: var(--fg-muted);
         font-family: var(--font-mono); letter-spacing: -0.01em;
       }
       .preview-label {
         font-size: 10.5px; font-weight: 600;
         letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--gray-500);
+        color: var(--fg-muted);
       }
 
       /* Código */
       pre {
-        background: var(--violet-900); color: #EDE4F3;
+        background: var(--surface-brand, var(--violet-900)); color: var(--violet-100);
         padding: 14px 18px; border-radius: var(--radius-md);
         overflow-x: auto; font-family: var(--font-mono);
         font-size: 12.5px; line-height: 1.65;
         margin: 0 0 10px;
       }
-      pre .k { color: #F1C08C; }
-      pre .s { color: #D7BFE4; }
-      pre .c { color: #8F7AA6; font-style: italic; }
+      /* Syntax highlighting — orange-200 (keyword), violet-100 (string), violet-300 (comment).
+         Mesma palette consumida em light e dark via tokens da escala oficial. */
+      pre .k { color: var(--orange-200); }
+      pre .s { color: var(--violet-100); }
+      pre .c { color: var(--violet-200); font-style: italic; }
       code.inline {
         font-family: var(--font-mono); font-size: 12px;
-        background: var(--violet-100); color: var(--violet-700);
+        background: var(--bg-subtle); color: var(--link);
         padding: 2px 6px; border-radius: 3px;
       }
 
@@ -131,12 +133,12 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       .props { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
       .props table { width: 100%; border-collapse: collapse; }
       .props th, .props td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
-      .props th { background: var(--bg-subtle); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--gray-500); }
+      .props th { background: var(--bg-subtle); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--fg-muted); }
       .props tr:last-child td { border-bottom: none; }
-      .props td.name { font-family: var(--font-mono); font-size: 12px; color: var(--violet-700); width: 20%; font-weight: 500; }
-      .props td.type { font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-700); width: 28%; }
-      .props td.default { font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-500); width: 14%; }
-      .props td.desc { color: var(--gray-700); font-size: 12.5px; }
+      .props td.name { font-family: var(--font-mono); font-size: 12px; color: var(--link); width: 20%; font-weight: 500; }
+      .props td.type { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg); width: 28%; }
+      .props td.default { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-muted); width: 14%; }
+      .props td.desc { color: var(--fg); font-size: 12.5px; }
       .props .required {
         font-family: var(--font-mono); font-size: 9px; color: var(--signal-red);
         margin-left: 4px; letter-spacing: 0.05em;
@@ -145,7 +147,7 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       /* a11y checklist */
       .a11y ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
       .a11y li {
-        font-size: 12.5px; color: var(--gray-700);
+        font-size: 12.5px; color: var(--fg);
         display: flex; align-items: flex-start; gap: 8px;
         padding: 8px 12px; background: var(--surface);
         border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -155,27 +157,6 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
         font-weight: 700; flex-shrink: 0;
       }
       .a11y li b { color: var(--fg); font-weight: 600; }
-
-      /* ============ DARK MODE OVERRIDES ============
-         As variaveis --bg, --surface, --fg, --border ja flipam via
-         colors_and_type.css quando [data-theme="dark"] esta em <html>.
-         Tudo abaixo usa exclusivamente tokens da palette oficial
-         conforme Notion > Branding > Cores > Dark Mode. */
-      :root[data-theme="dark"] .hdr h1 { color: var(--orange-500); }
-      :root[data-theme="dark"] .hdr .hdr-actions a {
-        color: var(--orange-200);
-        background: var(--gray-700);   /* Surface 2 */
-      }
-      :root[data-theme="dark"] .hdr .hdr-actions a:hover { border-color: var(--orange-500); }
-      :root[data-theme="dark"] code.inline {
-        background: var(--gray-800); color: var(--orange-500);
-      }
-      :root[data-theme="dark"] .props td.name { color: var(--orange-200); }
-      :root[data-theme="dark"] pre {
-        background: var(--gray-900);    /* Surface 1 — separacao do conteudo */
-        color: var(--violet-100);       /* tinta clara da escala violet */
-      }
-      :root[data-theme="dark"] .props th { color: var(--fg-muted); }
 
       /* Indicador discreto enquanto a iframe espera o primeiro tema do parent */
       html.theme-syncing body { visibility: hidden; }
@@ -243,7 +224,7 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
     </div>
     <slot />
     <p
-      style="margin-top:56px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--gray-500);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;"
+      style="margin-top:56px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--fg-muted);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;"
     >
       {group}
     </p>
