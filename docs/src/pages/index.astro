@@ -9,7 +9,8 @@
  * apontam para um stub com aviso.
  */
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const logoUrl = `${base}/assets/logo/guardia-logotipo-purple.svg`;
+const logoLightUrl = `${base}/assets/logo/guardia-logotipo-purple.svg`;
+const logoDarkUrl = `${base}/assets/logo/guardia-logotipo-mono-white.svg`;
 const colorsCssUrl = `${base}/colors_and_type.css`;
 const previewUrl = (file: string) => `${base}/preview/${file}`;
 const storybookUrl = import.meta.env.DEV
@@ -53,6 +54,12 @@ const storybookUrl = import.meta.env.DEV
       }
       .top-brand { display: flex; align-items: center; gap: 12px; }
       .top-brand img { height: 40px; width: auto; display: block; }
+      /* Logo per tema: principal em light (palavra "Guardia" em violeta),
+         monocromatico branco em dark — Violeta 500 falha contraste sobre
+         fundos escuros per Notion > Branding > Cores > Dark Mode. */
+      .top-brand .logo-dark { display: none; }
+      :root[data-theme="dark"] .top-brand .logo-light { display: none; }
+      :root[data-theme="dark"] .top-brand .logo-dark { display: block; }
       .top-brand .dot {
         width: 4px; height: 4px; border-radius: 50%;
         background: var(--fg-subtle); margin: 0 8px;
@@ -355,23 +362,14 @@ const storybookUrl = import.meta.env.DEV
         background: var(--border-strong); border-radius: 3px;
       }
       .nav::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
-
-      /* ============ DARK MODE OVERRIDE: search input bg ============
-         Em light, .top sit on --surface (white) and o input usa --bg-subtle
-         (pale violet) para ter superficie levemente diferente. Em dark,
-         .top tambem usa --surface (Cinza 700) e --bg-subtle (Cinza 900)
-         vira MAIS escuro que o entorno — invertendo a hierarquia material
-         "elevado = mais claro". Aqui forcamos o input para uma superficie
-         visivelmente acima do .top (Cinza 500 = Surface 3). */
-      :root[data-theme="dark"] .top-search input { background: var(--gray-800); }
-      :root[data-theme="dark"] .top-search input:focus { background: var(--gray-500); }
     </style>
   </head>
   <body>
     <!-- TOPBAR -->
     <header class="top">
       <div class="top-brand">
-        <img src={logoUrl} alt="Guardia" />
+        <img class="logo-light" src={logoLightUrl} alt="Guardia" />
+        <img class="logo-dark" src={logoDarkUrl} alt="Guardia" />
         <span class="dot"></span>
         <span class="ds-label">Design System</span>
         <span class="ver">v1.0</span>

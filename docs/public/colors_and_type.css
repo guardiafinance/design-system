@@ -285,21 +285,27 @@
 }
 
 /* ============================================================
-   DARK MODE — hierarquia de superfícies por luminosidade
+   DARK MODE — hierarquia de superfícies em escala Cinza Báltico
    Fonte da verdade: Notion > Branding > Cores > Dark Mode
    https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b
 
-   Surfaces: Mono Preto (base) → Cinza 900 → Cinza 700 → Cinza 500
+   A diretriz orienta "Quando em dúvida, escolha o tom escuro que vem
+   da escala neutra (Cinza Báltico 700 ou 900), nunca um preto puro
+   inventado." Adotamos a escala Cinza Báltico como base (em vez de
+   Mono Preto) para que o conjunto comunique grafite suave em vez de
+   preto pleno. Mono Preto fica reservado a texto/ícones.
+
+   Surfaces: Cinza 900 (base) → Cinza 800 → Cinza 700 → Cinza 500
    Brand:    Violeta 900 / Violeta 700 (login, splash, onboarding)
    Texto:    Mono Branco (primário) → Cinza 100 → Cinza 200
    Ação:     Laranja 500 (Laranja vira a cor de ação em dark)
    ============================================================ */
 :root.dark,
 [data-theme="dark"] {
-  --bg:                    var(--mono-black);   /* Surface Base (#0E1016) */
-  --bg-subtle:             var(--gray-900);     /* Surface 1 (#17171B) */
-  --bg-hover:              var(--gray-500);     /* Surface 3 — hover/selected */
-  --surface:               var(--gray-700);     /* Surface 2 (#28282F) */
+  --bg:                    var(--gray-900);     /* Surface Base — grafite (#17171B) */
+  --bg-subtle:             var(--gray-800);     /* Surface 1 — sub-area (#1E1E24) */
+  --bg-hover:              var(--gray-500);     /* Surface 3 — hover/selected (#3A3A44) */
+  --surface:               var(--gray-700);     /* Surface 2 — cards (#28282F) */
   --papel:                 var(--gray-700);     /* alias de surface */
   --surface-brand:         var(--violet-900);   /* Surface Brand (#1F092B) */
   --surface-brand-elevated: var(--violet-700);  /* Surface Brand Elevado (#37104C) */
