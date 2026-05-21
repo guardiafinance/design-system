@@ -111,13 +111,17 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
       }
 
       /* Código */
+      /* Bloco de código — espelha o estilo do <CodeEditor>/<CodeBlock>:
+         Violet 900 (Surface Brand) em light, Cinza 900 (Surface 1) em dark
+         per diretriz "plot areas usam Surface 1". */
       pre {
-        background: var(--surface-brand, var(--violet-900)); color: var(--violet-100);
+        background: var(--violet-900); color: var(--violet-100);
         padding: 14px 18px; border-radius: var(--radius-md);
         overflow-x: auto; font-family: var(--font-mono);
         font-size: 12.5px; line-height: 1.65;
         margin: 0 0 10px;
       }
+      :root[data-theme="dark"] pre { background: var(--gray-900); }
       /* Syntax highlighting — orange-200 (keyword), violet-100 (string), violet-300 (comment).
          Mesma palette consumida em light e dark via tokens da escala oficial. */
       pre .k { color: var(--orange-200); }

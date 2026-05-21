@@ -168,7 +168,7 @@ const CodeEditor = React.forwardRef<HTMLTextAreaElement, CodeEditorProps>(
     return (
       <div
         className={cn(
-          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm transition-colors",
+          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm transition-colors dark:bg-[#17171b]",
           !readOnly && "focus-within:border-ring",
           readOnly && "opacity-90",
           className,

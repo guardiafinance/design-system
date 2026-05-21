@@ -64,7 +64,7 @@ const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
       <div
         ref={ref}
         className={cn(
-          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm",
+          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm dark:bg-[#17171b]",
           className,
         )}
         data-language={language}
