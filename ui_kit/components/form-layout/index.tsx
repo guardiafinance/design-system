@@ -522,7 +522,7 @@ export {
   FormHeader,
   FormSection,
   FormRow,
-  FormField,
+  FormField as FormLayoutField,
   FormActions,
   FormDivider,
 };

@@ -77,7 +77,7 @@ export type InputState = NonNullable<
 >;
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> {
   size?: InputSize;
   state?: InputState;
   /** Shortcut para state="error" + aria-invalid="true". */
