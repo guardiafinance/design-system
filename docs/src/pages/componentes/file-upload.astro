@@ -1,0 +1,453 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  ValidationAcceptRow,
+  ValidationMaxSizeRow,
+  CompactRow,
+  MultipleRow,
+  StatusListRow,
+  AutoUploadRow,
+  RejectCallbackRow,
+  DisabledRow,
+  ButtonVariantRow,
+  ButtonSizesRow,
+  ButtonWithUploaderRow,
+  ButtonInTableRow,
+} from "../../previews/file-upload";
+import { LiveFileUploadSnippet } from "../../previews/file-upload-live";
+import fileUploadSource from "@ds/components/file-upload/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="FileUpload"
+  group="Forms"
+  storybookId="components-fileupload--default"
+  sourcePath="ui_kit/components/file-upload"
+  lede='Dropzone com validação client-side de tipo e tamanho, drag-and-drop e <strong>dois modos de operação</strong>: <em>auto-upload</em> (componente faz o XHR e atualiza progress sozinho) ou <em>controlled</em> (consumer gerencia tudo).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>dropzone simples, sem validação</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ BUTTON VARIANT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variant: button</h2>
+      <small>versão minimalista para forms inline</small>
+    </div>
+    <div class="preview">
+      <ButtonVariantRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">variant="button"</code> troca a dropzone por um
+      botão simples (com ícone <em>Paperclip</em>). Útil em forms estreitos,
+      células de tabela, modais e qualquer lugar onde a dropzone é demais.
+      <strong>Toda a validação, auto-upload e lista de arquivos continuam
+      funcionando</strong> — só o trigger muda. Drag-and-drop não é
+      suportado neste variant (a dropzone é a forma de drag).
+    </p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos do botão</h2>
+      <small>buttonSize: sm / md / lg</small>
+    </div>
+    <div class="preview">
+      <ButtonSizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Os tamanhos seguem a mesma escala dos demais inputs (32 / 38 / 46 px),
+      compatível com Combobox e DatePicker quando misturados em formulários.
+    </p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Botão com auto-upload</h2>
+      <small>combina com uploader / uploadUrl</small>
+    </div>
+    <div class="preview">
+      <ButtonWithUploaderRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em célula de tabela</h2>
+      <small>uso típico: anexar documentos linha a linha</small>
+    </div>
+    <div class="preview">
+      <ButtonInTableRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ ACCEPT VALIDATION ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Validação por <code class="inline">accept</code></h2>
+      <small>extensões + MIME · drag-and-drop também valida</small>
+    </div>
+    <div class="preview">
+      <ValidationAcceptRow client:load />
+    </div>
+    <p class="preview-caption">
+      Aceita CSV de tipos: <code class="inline">".pdf"</code> (extensão),
+      <code class="inline">"image/png"</code> (MIME exato),
+      <code class="inline">"image/*"</code> (wildcard MIME). O componente
+      valida <strong>inclusive em drag-and-drop</strong> — comportamento
+      que o navegador não dá nativamente.
+    </p>
+  </section>
+
+  <!-- ============ MAX SIZE VALIDATION ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Validação por <code class="inline">maxSize</code></h2>
+      <small>limite real, não só hint</small>
+    </div>
+    <div class="preview">
+      <ValidationMaxSizeRow client:load />
+    </div>
+    <p class="preview-caption">
+      Arquivos maiores são rejeitados antes de chegar ao
+      <code class="inline">onFiles</code>. O hint automático
+      ("Máx. X MB") aparece quando você não passa um <code class="inline">hint</code>
+      customizado.
+    </p>
+  </section>
+
+  <!-- ============ AUTO-UPLOAD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Auto-upload</h2>
+      <small>uploader prop · barra de progresso atualiza sozinha</small>
+    </div>
+    <div class="preview">
+      <AutoUploadRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando você passa <code class="inline">uploader</code> (ou
+      <code class="inline">uploadUrl</code>), o componente <strong>mantém o
+      estado interno</strong>, dispara o upload imediatamente após a
+      validação e atualiza <code class="inline">progress</code> conforme o
+      XHR sobe.
+    </p>
+    <p class="preview-caption">
+      <strong>Cancelar vs remover:</strong> durante upload, o botão X é
+      rotulado como <em>"Cancelar envio de &lt;arquivo&gt;"</em> — clique
+      aborta o XHR via <code class="inline">AbortSignal</code> e marca o item
+      como <strong>error · "Envio cancelado"</strong> (mantém visível). Após
+      done/error/cancelado, o mesmo X vira <em>"Remover &lt;arquivo&gt;"</em>
+      e tira o item da lista. A guarda de race garante que um uploader que
+      resolve <em>depois</em> de cancelado não sobrescreve a mensagem.
+    </p>
+  </section>
+
+  <!-- ============ ON REJECT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2><code class="inline">onReject</code> callback</h2>
+      <small>rejeições fora da lista interna</small>
+    </div>
+    <div class="preview">
+      <RejectCallbackRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sem <code class="inline">onReject</code>, rejeições aparecem
+      automaticamente na lista interna como itens em <em>error</em>.
+      Quando você passa <code class="inline">onReject</code>, o consumer
+      assume o display (banner, toast, lista própria, etc.).
+    </p>
+  </section>
+
+  <!-- ============ MULTIPLE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Múltiplos arquivos</h2>
+      <small>multiple no input file</small>
+    </div>
+    <div class="preview">
+      <MultipleRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ COMPACT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Compact</h2>
+      <small>variante densa</small>
+    </div>
+    <div class="preview">
+      <CompactRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATUS LIST (CONTROLLED) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Modo controlled</h2>
+      <small>files prop · consumer gerencia o XHR</small>
+    </div>
+    <div class="preview">
+      <StatusListRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando <code class="inline">files</code> é passado, o componente vira
+      um display puro. Use quando precisa de fluxos avançados (retry,
+      pause, multi-step) ou quando o estado já vive no Redux/Zustand do
+      consumer.
+    </p>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Disabled</h2>
+      <small>bloqueia clique e drop</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveFileUploadSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr><th colspan="4">Validação</th></tr>
+          <tr>
+            <td class="name">accept</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">CSV de extensões / MIME / wildcards. Validado também em drag-and-drop.</td>
+          </tr>
+          <tr>
+            <td class="name">maxSize</td>
+            <td class="type">number (bytes)</td>
+            <td class="default">—</td>
+            <td class="desc">Limite real. Arquivos maiores rejeitados com <code class="inline">reason="size"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">validate</td>
+            <td class="type">(file: File) =&gt; string | null</td>
+            <td class="default">—</td>
+            <td class="desc">Custom. Retorne mensagem de erro ou <code class="inline">null</code> se válido. Falha vira <code class="inline">reason="custom"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">multiple</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Permite selecionar mais de um arquivo.</td>
+          </tr>
+
+          <tr><th colspan="4">Auto-upload</th></tr>
+          <tr>
+            <td class="name">uploader</td>
+            <td class="type">FileUploader</td>
+            <td class="default">—</td>
+            <td class="desc">Função custom que retorna Promise. Recebe <code class="inline">&#123; file, onProgress, signal &#125;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">uploadUrl</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Atalho: cria XHR POST com FormData (campo "file"). Use <code class="inline">uploader</code> para casos custom.</td>
+          </tr>
+          <tr>
+            <td class="name">onUploadSuccess</td>
+            <td class="type">(file: File) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Disparado por arquivo após Promise resolver.</td>
+          </tr>
+          <tr>
+            <td class="name">onUploadError</td>
+            <td class="type">(file: File, err: Error) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Disparado por arquivo após Promise rejeitar.</td>
+          </tr>
+
+          <tr><th colspan="4">Display &amp; controlled</th></tr>
+          <tr>
+            <td class="name">hint</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Texto auxiliar. Sobrescreve hint automático do <code class="inline">maxSize</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">title</td>
+            <td class="type">ReactNode</td>
+            <td class="default">"Arraste arquivos aqui ou clique para escolher"</td>
+            <td class="desc">Sobrescreve o título do dropzone.</td>
+          </tr>
+          <tr>
+            <td class="name">linkLabel</td>
+            <td class="type">ReactNode</td>
+            <td class="default">"clique para escolher"</td>
+            <td class="desc">Sobrescreve só o texto sublinhado.</td>
+          </tr>
+          <tr>
+            <td class="name">files</td>
+            <td class="type">UploadFile[]</td>
+            <td class="default">—</td>
+            <td class="desc">Quando passado, ativa modo controlled (componente vira display puro).</td>
+          </tr>
+          <tr>
+            <td class="name">onFiles</td>
+            <td class="type">(files: File[]) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Recebe arquivos APROVADOS na validação.</td>
+          </tr>
+          <tr>
+            <td class="name">onReject</td>
+            <td class="type">(rejections: FileRejection[]) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Recebe arquivos REJEITADOS. Sem o callback, aparecem automaticamente na lista interna como erro.</td>
+          </tr>
+          <tr>
+            <td class="name">onRemove</td>
+            <td class="type">(index: number) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">
+              Renderiza X em cada item. Em auto-mode, durante upload o X
+              é "Cancelar" (aborta via <code class="inline">AbortSignal</code>
+              + marca como <em>error · "Envio cancelado"</em> mantendo visível);
+              após done/error vira "Remover" e tira da lista.
+            </td>
+          </tr>
+
+          <tr><th colspan="4">Variant</th></tr>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"dropzone" | "button"</td>
+            <td class="default">"dropzone"</td>
+            <td class="desc">Forma do trigger. <code class="inline">button</code> = versão minimalista, sem drop.</td>
+          </tr>
+          <tr>
+            <td class="name">buttonLabel</td>
+            <td class="type">ReactNode</td>
+            <td class="default">"Selecionar arquivo(s)"</td>
+            <td class="desc">Texto do botão (apenas variant="button").</td>
+          </tr>
+          <tr>
+            <td class="name">buttonIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">Paperclip</td>
+            <td class="desc">Ícone à esquerda do botão (apenas variant="button").</td>
+          </tr>
+          <tr>
+            <td class="name">buttonSize</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">32 / 38 / 46 px.</td>
+          </tr>
+
+          <tr><th colspan="4">Misc</th></tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia clique e drop.</td>
+          </tr>
+          <tr>
+            <td class="name">compact</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Reduz padding e ícone do dropzone (apenas variant="dropzone").</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TYPES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tipos</h2>
+      <small>exportados com o componente</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tipo</th><th>Forma</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">UploadFile</td>
+            <td class="type">&#123; name, size, status?: "uploading"|"done"|"error", progress?: number, error?: string &#125;</td>
+          </tr>
+          <tr>
+            <td class="name">FileRejection</td>
+            <td class="type">&#123; file: File, reason: "size"|"type"|"custom", message: string &#125;</td>
+          </tr>
+          <tr>
+            <td class="name">FileUploader</td>
+            <td class="type">(args: &#123; file: File; onProgress: (n: number) =&gt; void; signal: AbortSignal &#125;) =&gt; Promise&lt;void&gt;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/file-upload/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={fileUploadSource}
+      language="tsx"
+      filename="ui_kit/components/file-upload/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Input file</b> visualmente oculto via <code class="inline">sr-only</code> mas focável e ativável por Enter/Space — abre o file picker nativo.</span></li>
+        <li><span><b>Label wrapper</b> permite clicar em qualquer parte do dropzone para abrir o picker (HTML puro, sem JS).</span></li>
+        <li><span><b>aria-describedby</b> liga o hint ao input.</span></li>
+        <li><span><b>Drag &amp; drop</b> dá feedback visual (border violet-500 + bg violet) — drop target claro.</span></li>
+        <li><span><b>Progressbar</b> em uploads tem <code class="inline">role="progressbar"</code> + <code class="inline">aria-valuenow/min/max</code> + <code class="inline">aria-label="Enviando &lt;arquivo&gt;"</code>.</span></li>
+        <li><span><b>Botão X dinâmico</b>: durante upload é <code class="inline">aria-label="Cancelar envio de &lt;arquivo&gt;"</code>; após done/error vira <code class="inline">aria-label="Remover &lt;arquivo&gt;"</code>. <code class="inline">title</code> também muda para hover-tooltip.</span></li>
+        <li><span><b>Erros</b> aparecem inline com <code class="inline">text-signal-red</code> e ícone XCircle.</span></li>
+        <li><span><b>Validação client-side</b> bloqueia tipos/tamanhos não permitidos antes de mandar pro servidor — economiza banda e dá feedback imediato.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

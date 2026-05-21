@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><title>Iconografia · Guardia Design System</title>
+<link rel="stylesheet" href="_base.css">
+<link rel="stylesheet" href="_iconography.css">
+<style>
+  body { padding: 36px 44px 72px; }
+
+  /* Overview page specifics */
+  .meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 22px; }
+  .meta { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .meta .k { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-500); }
+  .meta .v { font-size: 14px; font-weight: 600; color: var(--violet-500); margin-top: 4px; line-height: 1.4; }
+  .meta .v small { display: block; font-weight: 400; font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+  .sizes { display: flex; align-items: baseline; gap: 28px; padding: 22px 24px; background: #fff; border: 1px solid var(--border); border-radius: 8px; flex-wrap: wrap; }
+  .size-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .size-tile svg { color: var(--violet-500); }
+  .size-tile .px { font-family: var(--font-mono); font-size: 10px; color: var(--gray-500); }
+  .size-tile .use { font-size: 11px; color: var(--violet-500); font-weight: 500; }
+
+  /* Category catalog */
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .cat {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .12s, transform .12s;
+  }
+  .cat:hover { border-color: var(--violet-300); transform: translateY(-1px); }
+  .cat .cat-ic {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: var(--violet-100);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cat .cat-ic svg { color: var(--violet-500); }
+  .cat.core .cat-ic { background: var(--orange-100); }
+  .cat.core .cat-ic svg { color: var(--orange-500); }
+  .cat.agent .cat-ic { background: var(--violet-100); }
+  .cat .cat-top { display: flex; justify-content: space-between; align-items: center; }
+  .cat .count {
+    font-family: var(--font-mono); font-size: 10px; color: var(--gray-500);
+    background: var(--gray-50); padding: 2px 6px; border-radius: 4px;
+  }
+  .cat .cat-name {
+    font-size: 14px; font-weight: 600; letter-spacing: -0.005em;
+    color: var(--violet-500);
+  }
+  .cat .cat-desc {
+    font-size: 11.5px; color: var(--gray-700); line-height: 1.45;
+  }
+
+  /* Code block */
+  .code-block {
+    background: #FAF8FC;
+    border: 1px solid var(--violet-100);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--violet-900);
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+    margin: 8px 0 0;
+  }
+  .code-block .cmt { color: var(--gray-500); }
+  .code-block .kw { color: var(--orange-700); }
+  .code-block .st { color: var(--verde-700); }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .how-card {
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .how-card h3 {
+    margin: 0 0 6px;
+    font-size: 13px; font-weight: 700; color: var(--violet-500);
+    letter-spacing: -0.005em;
+  }
+  .how-card p {
+    margin: 0 0 10px; font-size: 12.5px; color: var(--gray-700); line-height: 1.55;
+  }
+  .how-card p + .code-block { margin-top: 4px; }
+  .how-card strong { color: var(--fg); font-weight: 600; }
+
+  .rules {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-top: 12px;
+  }
+  .rule {
+    padding: 14px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--gray-700);
+  }
+  .rule .r-head {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rule.do   { border-color: var(--verde-200); background: #F7FBF8; }
+  .rule.do   .r-head { color: var(--verde-700); }
+  .rule.dont { border-color: #F5D7CE; background: #FDF8F6; }
+  .rule.dont .r-head { color: var(--vermelho-700); }
+</style>
+</head>
+<body>
+
+<div class="icono-wrap">
+
+  <div class="icono-hdr">
+    <div class="icono-eyebrow">FUNDAMENTOS · BRAND</div>
+    <h1 class="icono-title">Iconografia</h1>
+    <span class="icono-tag">lucide-react · outline · 24×24</span>
+    <p class="icono-lede">
+      Biblioteca oficial: <strong>Lucide</strong> (outline, stroke 1.75–2px, grade 24×24).
+      Organizada por domínios de uso. Um ícone por elemento — nunca composições.
+      Ícones herdam a cor do contexto; não use cor para informar estado.
+    </p>
+  </div>
+
+  <!-- Meta: technical specs -->
+  <div class="meta-grid">
+    <div class="meta"><div class="k">Grade</div><div class="v">24 × 24 px<small>padding interno 2px</small></div></div>
+    <div class="meta"><div class="k">Peso de linha</div><div class="v">1.75 – 2 px<small>conforme tamanho de aplicação</small></div></div>
+    <div class="meta"><div class="k">Estilo</div><div class="v">Outline<small>filled só em estado ativo</small></div></div>
+    <div class="meta"><div class="k">Biblioteca</div><div class="v">Lucide<small>1.500+ ícones · licença ISC</small></div></div>
+  </div>
+
+  <!-- Sizes -->
+  <div class="icono-section">
+    <div class="icono-section-hdr">
+      <span class="icono-section-name">Tamanhos de aplicação</span>
+      <span class="icono-section-count">Por canal</span>
+    </div>
+    <div class="sizes">
+      <div class="size-tile"><i data-lucide="check" style="width:16px;height:16px"></i><span class="px">16px</span><span class="use">UI densa</span></div>
+      <div class="size-tile"><i data-lucide="check" style="width:20px;height:20px"></i><span class="px">20px</span><span class="use">UI padrão</span></div>
+      <div class="size-tile"><i data-lucide="check" style="width:24px;height:24px"></i><span class="px">24px</span><span class="use">UI / site</span></div>
+      <div class="size-tile"><i data-lucide="check" style="width:32px;height:32px"></i><span class="px">32px</span><span class="use">Site / decks</span></div>
+      <div class="size-tile"><i data-lucide="check" style="width:48px;height:48px"></i><span class="px">48px</span><span class="use">Site / decks</span></div>
+      <div class="size-tile"><i data-lucide="check" style="width:64px;height:64px"></i><span class="px">64px</span><span class="use">Hero / pôster</span></div>
+    </div>
+  </div>
+
+  <!-- HOW TO IMPORT -->
+  <div class="icono-section">
+    <div class="icono-section-hdr">
+      <span class="icono-section-name">Como importar no projeto</span>
+      <span class="icono-section-count">React + Vite/Next</span>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-card">
+        <h3>1. Instalar</h3>
+        <p><strong>lucide-react</strong> — pacote oficial, tree-shakable. Cada ícone é um componente React.</p>
+<div class="code-block"><span class="cmt"># npm</span>
+npm install lucide-react
+
+<span class="cmt"># pnpm / yarn</span>
+pnpm add lucide-react
+yarn add lucide-react</div>
+      </div>
+
+      <div class="how-card">
+        <h3>2. Importar e usar</h3>
+        <p>Importe apenas os ícones que precisar — o bundler remove o resto.</p>
+<div class="code-block"><span class="kw">import</span> { Search, Check, CircleCheck } <span class="kw">from</span> <span class="st">"lucide-react"</span>;
+
+<span class="kw">export function</span> Example() {
+  <span class="kw">return</span> (
+    &lt;button&gt;
+      &lt;Search size={16} /&gt;
+      Buscar
+    &lt;/button&gt;
+  );
+}</div>
+      </div>
+
+      <div class="how-card">
+        <h3>3. Nomes kebab-case → PascalCase</h3>
+        <p>Na referência da Guardia os nomes são <span class="mono">kebab-case</span> (convenção Lucide). Em código React, use <span class="mono">PascalCase</span>:</p>
+<div class="code-block"><span class="cmt">// referência do DS</span>
+<span class="st">"arrow-left-right"</span>  →  ArrowLeftRight
+<span class="st">"book-open-check"</span>  →  BookOpenCheck
+<span class="st">"circle-check"</span>     →  CircleCheck
+<span class="st">"trending-up"</span>      →  TrendingUp</div>
+      </div>
+
+      <div class="how-card">
+        <h3>4. Cor e tamanho</h3>
+        <p>Ícones Lucide usam <span class="mono">stroke="currentColor"</span> — herdam a cor do texto. Nunca defina cor inline.</p>
+<div class="code-block"><span class="cmt">// ✓ bom — herda a cor do botão</span>
+&lt;button <span class="kw">className</span>=<span class="st">"btn-primary"</span>&gt;
+  &lt;Check size={16} /&gt;
+&lt;/button&gt;
+
+<span class="cmt">// ✗ ruim — cor cristalizada</span>
+&lt;Check <span class="kw">color</span>=<span class="st">"#7140AB"</span> /&gt;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DO / DON'T -->
+  <div class="icono-section">
+    <div class="icono-section-hdr">
+      <span class="icono-section-name">Regras</span>
+      <span class="icono-section-count">do · don't</span>
+    </div>
+    <div class="rules">
+      <div class="rule do">
+        <div class="r-head"><i data-lucide="check" style="width:14px;height:14px"></i> Consistência no domínio</div>
+        Use o mesmo ícone para a mesma ação em toda a UI. Se "Excluir" é <code>trash-2</code> numa tela, é <code>trash-2</code> em todas.
+      </div>
+      <div class="rule dont">
+        <div class="r-head"><i data-lucide="x" style="width:14px;height:14px"></i> Não componha ícones</div>
+        Não empilhe <code>file</code> + <code>plus</code> para criar "Novo arquivo". Use <code>file-plus</code> — a biblioteca já tem.
+      </div>
+      <div class="rule do">
+        <div class="r-head"><i data-lucide="check" style="width:14px;height:14px"></i> Consistência no domínio</div>
+        Ações direcionais usam <code>arrow-*</code>; disclosure usa <code>chevron-*</code>. Nunca misture.
+      </div>
+      <div class="rule dont">
+        <div class="r-head"><i data-lucide="x" style="width:14px;height:14px"></i> Não use como único sinal</div>
+        Ícone sozinho exige <code>aria-label</code> ou <code>title</code>. Não substitua texto por ícone em CTAs críticos.
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY CATALOG -->
+  <div class="icono-section">
+    <div class="cats">
+      <a class="cat" href="iconography-actions.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="pencil"></i></span>
+          <span class="count">17</span>
+        </div>
+        <span class="cat-name">Ações essenciais</span>
+        <span class="cat-desc">CRUD, seleção, toolbar. Primeira parada — se existe, usar.</span>
+      </a>
+
+      <a class="cat" href="iconography-navigation.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="menu"></i></span>
+          <span class="count">10</span>
+        </div>
+        <span class="cat-name">Navegação</span>
+        <span class="cat-desc">Layout, trilhas, chevrons e disclosures.</span>
+      </a>
+
+      <a class="cat" href="iconography-feedback.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="circle-check"></i></span>
+          <span class="count">10</span>
+        </div>
+        <span class="cat-name">Feedback e estados</span>
+        <span class="cat-desc">Semântica de status. Alerts, toasts, vazios.</span>
+      </a>
+
+      <a class="cat core" href="iconography-guardia-core.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="landmark"></i></span>
+          <span class="count">20</span>
+        </div>
+        <span class="cat-name">Guardia core</span>
+        <span class="cat-desc">Contábil, financeiro, fiscal e tributário.</span>
+      </a>
+
+      <a class="cat agent" href="iconography-agent.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="bot"></i></span>
+          <span class="count">12</span>
+        </div>
+        <span class="cat-name">Agente IA</span>
+        <span class="cat-desc">O que diferencia a Guardia — vocabulário do agente.</span>
+      </a>
+
+      <a class="cat" href="iconography-data.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="chart-column"></i></span>
+          <span class="count">8</span>
+        </div>
+        <span class="cat-name">Dados e visualização</span>
+        <span class="cat-desc">Seletores de gráfico, dashboards, KPIs.</span>
+      </a>
+
+      <a class="cat" href="iconography-files.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="file-text"></i></span>
+          <span class="count">8</span>
+        </div>
+        <span class="cat-name">Arquivos e documentos</span>
+        <span class="cat-desc">Upload, download, formatos.</span>
+      </a>
+
+      <a class="cat" href="iconography-time.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="calendar"></i></span>
+          <span class="count">8</span>
+        </div>
+        <span class="cat-name">Tempo e agendamento</span>
+        <span class="cat-desc">Calendários, prazos, recorrência.</span>
+      </a>
+
+      <a class="cat" href="iconography-users.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="users"></i></span>
+          <span class="count">10</span>
+        </div>
+        <span class="cat-name">Usuários e acesso</span>
+        <span class="cat-desc">Perfil, equipe, permissões.</span>
+      </a>
+
+      <a class="cat" href="iconography-comms.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="bell"></i></span>
+          <span class="count">6</span>
+        </div>
+        <span class="cat-name">Comunicação</span>
+        <span class="cat-desc">Notificações, mensagens, comentários.</span>
+      </a>
+
+      <a class="cat" href="iconography-system.html">
+        <div class="cat-top">
+          <span class="cat-ic"><i data-lucide="plug"></i></span>
+          <span class="count">13</span>
+        </div>
+        <span class="cat-name">Sistema e interface</span>
+        <span class="cat-desc">Integrações, preferências, ajuda.</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons({ attrs: { width: 24, height: 24, 'stroke-width': 1.75 } });
+</script>
+</body></html>

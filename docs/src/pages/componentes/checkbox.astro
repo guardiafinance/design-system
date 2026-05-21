@@ -1,0 +1,242 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithDescriptionRow,
+  StatesRow,
+  SizesRow,
+  GroupRow,
+  SelectAllRow,
+  StandaloneRow,
+} from "../../previews/checkbox";
+import { LiveCheckboxSnippet } from "../../previews/checkbox-live";
+import checkboxSource from "@ds/components/checkbox/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Checkbox"
+  group="Forms"
+  storybookId="components-checkbox--default"
+  sourcePath="ui_kit/components/checkbox"
+  lede='Seleção múltipla. Base no <b>Radix Checkbox</b> com indicator visual, estado <code class="inline">indeterminate</code> (3-state), <code class="inline">invalid</code>, e composição opcional com <code class="inline">label</code> + <code class="inline">description</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>label clicável · cursor-pointer</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando você passa <code class="inline">label</code>, o Checkbox renderiza
+      dentro de um <code class="inline">&lt;label&gt;</code> nativo: clique no
+      texto também alterna o estado.
+    </p>
+  </section>
+
+  <!-- ============ DESCRIPTION ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com descrição</h2>
+      <small>aria-describedby automático</small>
+    </div>
+    <div class="preview">
+      <WithDescriptionRow client:load />
+    </div>
+    <p class="preview-caption">
+      A descrição liga via <code class="inline">aria-describedby</code> — leitores
+      de tela leem ambos os textos quando o checkbox recebe foco.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · checked · indeterminate · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm (16px) · md (18px, default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ GROUP ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupo</h2>
+      <small>fieldset + legend para agrupamento semântico</small>
+    </div>
+    <div class="preview">
+      <GroupRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sempre envolva grupos relacionados em <code class="inline">&lt;fieldset&gt;</code>
+      com <code class="inline">&lt;legend&gt;</code> — leitores anunciam o
+      grupo antes de cada item.
+    </p>
+  </section>
+
+  <!-- ============ SELECT ALL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Selecionar todos · padrão master/child</h2>
+      <small>indeterminate como estado misto</small>
+    </div>
+    <div class="preview">
+      <SelectAllRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando alguns (mas não todos) os filhos estão marcados, o pai mostra
+      estado <code class="inline">indeterminate</code> — anunciado por leitores
+      como <em>"mixed"</em>.
+    </p>
+  </section>
+
+  <!-- ============ STANDALONE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Standalone (sem label interna)</h2>
+      <small>label externa via htmlFor</small>
+    </div>
+    <div class="preview">
+      <StandaloneRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sem <code class="inline">label</code>/<code class="inline">description</code>
+      props, o componente renderiza só o checkbox. Útil dentro de Forms com
+      layout customizado (FormLayout, tabela, etc.).
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveCheckboxSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Tamanho do box (16/18px) e da tipografia da label.</td>
+          </tr>
+          <tr>
+            <td class="name">checked</td>
+            <td class="type">boolean | "indeterminate"</td>
+            <td class="default">—</td>
+            <td class="desc">Estado controlado. Padrão Radix (3-state).</td>
+          </tr>
+          <tr>
+            <td class="name">indeterminate</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Atalho para <code class="inline">checked="indeterminate"</code>. Sobrescreve <code class="inline">checked</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Border red + <code class="inline">aria-invalid="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Texto do rótulo. Quando presente, envolve em <code class="inline">&lt;label&gt;</code> clicável.</td>
+          </tr>
+          <tr>
+            <td class="name">description</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Descrição auxiliar; liga via <code class="inline">aria-describedby</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">onCheckedChange</td>
+            <td class="type">(checked: boolean | "indeterminate") =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback Radix nativo.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita o controle e o wrapper label.</td>
+          </tr>
+          <tr>
+            <td class="name">wrapperClassName</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Classe extra no <code class="inline">&lt;label&gt;</code> wrapper (quando label/description é passada).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita todos os props de <code class="inline">@radix-ui/react-checkbox</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/checkbox/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={checkboxSource}
+      language="tsx"
+      filename="ui_kit/components/checkbox/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Checkbox</b> garante <code class="inline">role="checkbox"</code>, <code class="inline">aria-checked</code> ("true"/"false"/"mixed"), e foco gerenciado.</span></li>
+        <li><span><b>Espaço</b> alterna o estado quando o controle tem foco.</span></li>
+        <li><span><b>Indeterminate</b> é anunciado como <em>"mixed"</em> — use para grupo "selecionar todos" parcialmente marcado.</span></li>
+        <li><span><b>Invalid</b> aplica <code class="inline">aria-invalid="true"</code> + border vermelha. Sempre acompanhe de mensagem inline (<code class="inline">description</code>) explicando o erro.</span></li>
+        <li><span><b>Description</b> liga via <code class="inline">aria-describedby</code> — leitores leem após o label.</span></li>
+        <li><span><b>Grupos</b> devem usar <code class="inline">&lt;fieldset&gt;</code> + <code class="inline">&lt;legend&gt;</code> para anunciar contexto.</span></li>
+        <li><span><b>Contraste</b>: violet-500 sobre branco atende AA (texto pequeno) e o branco sobre violet-500 atende AAA quando checked.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

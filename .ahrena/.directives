@@ -1,0 +1,261 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Ahrena: AI-First Capability Framework — Directives
+# Canonical instructions that govern the framework's default
+# behavior. This file is the source of truth for cross-cutting
+# configurations consulted by all agents.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ─── Paths ───────────────────────────────────────────────────────
+# Canonical framework paths. All paths are relative to the
+# repository root. The .ahrena/ directory is the canonical entry
+# point for the framework in any project.
+
+paths:
+  root: ".ahrena/"
+  directives: ".ahrena/.directives"
+  templates: "templates/"
+  framework: "framework/"
+  # Project-specific artifacts (create here first; push to framework when ready)
+  project_artifacts: ".ahrena/artifacts/"
+  # Optional: URL or slug of the framework repo on GitHub (used by kata-push-to-framework and kata-diff-artifacts in --remote mode)
+  # framework_repo: "https://github.com/guardiafinance/ahrena"
+  # NOTE: paths.oas and paths.events were removed by lex-feature-design-docs —
+  # design artifacts now live under docs/{context}/{entities|oas|events}/ per
+  # codex-feature-design-docs (fixed structure, no configurable paths).
+  # External skill projects (Anthropic Agent Skills format).
+  # See lex-skill-project-structure and codex-skill-project-architecture.
+  skills_root: "skills"        # Source of skill projects (versioned)
+  skills_build: ".build"       # Build intermediates (gitignored)
+  skills_dist: ".dist"         # Final packaged skills (committed, consumed by external agents)
+  samples:
+    lexis: "templates/lex-sample.md"
+    codex: "templates/codex-sample.md"
+    katas: "templates/kata-sample.md"
+    warriors: "templates/warrior-sample.md"
+    cries: "templates/cry-sample.md"
+
+# ─── References ─────────────────────────────────────────────────
+# External references consulted by framework artifacts. Each
+# reference is a URL or repo slug that lives outside the Ahrena
+# repository but is canonical for a specific convention. Codex
+# files point to these references instead of naming the URL
+# inline, so the URL can evolve without churning the Codex.
+#
+# component_template_repo: canonical reference repository for the
+# Guardia "bounded context" component layout (components/api,
+# components/agents, components/jobs, components/ui, deployment).
+# Consumed by codex-component-architecture and its 5 codex-filhos.
+# Future iterations MAY add pinned_ref (tag/SHA) and
+# last_reviewed_at to govern drift between the external repo and
+# the on-framework convention.
+
+references:
+  component_template_repo:
+    url: "https://github.com/guardiatechnology/bounded-context-template"
+
+# ─── MCP Servers ────────────────────────────────────────────────
+# List of MCP servers to activate. The installer merges each
+# server config from framework/mcp/<name>.json (or
+# .ahrena/mcp/<name>.json if overridden) into .cursor/mcp.json
+# and the project-level .mcp.json + enabledMcpjsonServers in
+# .claude/settings.json. Override individual server configs in
+# .ahrena/mcp/<name>.json.
+#
+# `ahrena` is the framework's own internal server (see
+# codex-ahrena-mcp). Default-on. Comment the line to disable.
+# Add `github`, `notion`, `figma` for those integrations
+# (each requires the corresponding env var per codex-mcp-*).
+
+mcp:
+  servers:
+    - ahrena
+    - github
+    # - notion
+    # - figma
+
+# ─── Quality (Issue-Driven Workflow) ────────────────────────────
+# Settings used by kata-quality-gate (Gate 2 of the Issue-Driven
+# Development flow orchestrated by warrior-athena).
+
+# quality:
+#   coverage_threshold: 80            # Minimum test coverage (%) to pass Gate 2
+#   stack: auto                       # auto | python | frontend | iac | mixed
+#   performance:
+#     lighthouse_min: 80              # Frontend: minimum Lighthouse performance score
+#     bundle_kb_max: 250              # Frontend: main bundle size limit (KB)
+#     api_p99_ms_max: 300             # Backend: p99 latency limit (ms) for modified endpoints
+#     benchmark_regression_pct: 10    # Backend: max regression vs. baseline on main (%)
+#   system_prompt_adversarial:
+#     enabled: false                  # enable when project adopts Guardia agents
+                                      # When true, kata-quality-gate Check 3 invokes
+                                      # kata-system-prompt-adversarial-validate on every PR
+                                      # whose diff touches docs/**/agents/**/system-prompt*.md.
+                                      # See lex-system-prompt and codex-system-prompt § Seção 7.
+
+# ─── Knowledge (Issue-Driven Workflow) ──────────────────────────
+# Optional: Notion root page/database that kata-issue-analysis
+# prioritizes when enriching issue context. If omitted, full
+# workspace search is performed.
+
+# knowledge:
+#   notion:
+#     root_page: "page-id-or-url"
+
+# ─── Language ────────────────────────────────────────────────────
+# Defines the default language, the mandatory languages for the
+# framework, and the language used in Cursor artifacts.
+# Language is the first navigation level inside framework/.
+
+language:
+  default: pt-BR
+  i18n:
+    - pt-BR
+    - es
+    - en
+  cursor: en
+  claude-code: en
+
+# ─── Terminal ───────────────────────────────────────────────────
+# Shell used for commands. Values: bash | powershell
+# Agents use this when executing or proposing shell commands (see lex-terminal-type).
+# If omitted, the agent infers from OS (e.g. Windows → powershell) or asks the user.
+
+# terminal: powershell   # Native Windows
+# terminal: bash         # Linux, macOS, WSL
+
+# ─── Stacked PRs ────────────────────────────────────────────────
+# Tool used to operate Stacked Pull Requests when a feature is
+# decomposed into N reviewable layers. Default is `vanilla`
+# (plain git + gh CLI). Set to `gs` to use git-spice, which
+# automates cascade rebase via auto-restack — see codex-git-spice.
+# Strategic decisions (when to stack, decomposition, naming) live
+# in codex-stacked-prs and apply equally to both tools.
+# Adoption is opt-in: the kata-stacked-pr-create runs a Decision
+# Checklist (≥ 3 high signals AND 0 anti-signals) before stacking.
+
+# stacked_prs:
+#   tool: vanilla   # vanilla | gs
+
+# ─── PR Cost Tracking ───────────────────────────────────────────
+# Computes Claude Code token consumption, estimated USD cost, and
+# implementation time (active + calendar) for the development that
+# produced each PR, and stamps the result in the PR body via
+# kata-pr-cost-stamp. Disabled by default to keep data inside teams
+# that explicitly opt in. See codex-pr-cost-tracking and
+# kata-pr-cost-stamp.
+
+# pr_cost_tracking:
+#   enabled: false                 # true | false (master switch for the stamp)
+#   idle_gap_minutes: 10           # gap (in minutes) that splits active windows
+#                                  #   inside a Claude Code session for the
+#                                  #   active-time computation. Default 10
+#                                  #   covers most flows; tune lower to be
+#                                  #   stricter, higher to merge longer pauses.
+#   attribution_mode: hook         # hook | project
+#                                  #   hook (default): pr-cost-attribution.sh
+#                                  #     records branch + purpose per turn in
+#                                  #     ~/.claude/projects/<hash>/branches.jsonl;
+#                                  #     pr-cost-stamp.sh --branch / --purpose
+#                                  #     filters off-branch noise and splits
+#                                  #     dev/review buckets.
+#                                  #   project (legacy): no sidecar; project +
+#                                  #     since filter only. Kept for backward
+#                                  #     compatibility with PRs predating the
+#                                  #     hook.
+#   branches_sidecar_max_mb: 50    # warning threshold for the size of
+#                                  #   branches.jsonl. Manual purge until a
+#                                  #   future iteration ships rotation.
+#   known_ai_reviewers:            # extra GitHub logins recognized as AI
+#     - "gemini-code-assist[bot]"  #   reviewers in the Review subsection.
+#     - "claude[bot]"              #   Built-ins (gemini-code-assist[bot],
+#     - "coderabbitai[bot]"        #   claude[bot], coderabbitai[bot],
+#     - "qodo-merge-pro[bot]"      #   qodo-merge-pro[bot], ahrena-warrior-argos[bot])
+#                                  #   are always recognized; entries here
+#                                  #   extend the set.
+#
+# Reserved for future iterations (declared so the schema is stable;
+# the kata does not yet consume them):
+# pr_cost_tracking:
+#   currency: USD                  # future: currency for display (currently fixed at USD)
+#   include_cache_breakdown: true  # future: hide cache reads/writes when false
+#   window_override_days: 14       # future: override [branch_creation_date, now]
+#   mask_absolute_cost: false      # future: replace USD value with qualitative band
+
+# ─── Notifications ──────────────────────────────────────────────
+# Provider-agnostic notification configuration consumed by Athena
+# (PR review timeout), Janus (release published), and Eunomia
+# (plans status digest). The provider names a concrete MCP server
+# listed in mcp.servers; channels are logical names whose mapping
+# to provider-specific identifiers lives in codex-notifications.
+# See lex-mcp rule 5 (transport preference) and codex-mcp-slack
+# (initial provider implementation).
+
+# notifications:
+#   provider: slack                # slack | discord | teams | none
+#                                  # the named MCP server must be listed
+#                                  # under mcp.servers and reachable.
+#   channels:
+#     pr_review_timeout: "notifications-gh-pull-request"  # Athena after 3 cycles
+#     release_notify:    "notifications-gh-releases"      # Janus on publish
+#     plans_status:      "notifications-plans-status"     # Eunomia digest
+#   working_hours:                 # window for non-critical digests
+#     start: "07:00"
+#     end:   "22:00"
+#     timezone: "America/Sao_Paulo"
+
+# pm:                              # consumed by Eunomia
+#   loop_interval_minutes: 15      # cadence of the PM digest loop
+#   stalled_threshold_hours: 4     # mark plan as stalled in the digest
+#   critical_stalled_hours: 24     # bypass working hours and alert immediately
+
+# ─── Session Tracking ───────────────────────────────────────────
+# Per codex-session-tracking. Records heartbeat files in
+# .ahrena/workflow/sessions/<session-id>.json so Eunomia's digest
+# and the Session Trace block on PR bodies can attribute work to
+# the Claude Code session that produced it.
+
+# session_tracking:
+#   enabled: true                          # global on/off
+#   heartbeat_dir: ".ahrena/workflow/sessions"
+#   stale_threshold_minutes: 30            # PM considers offline after this
+#   pr_trace_required: true                # Gate 2 rejects PR without "Session Trace"
+
+# ─── Naming ─────────────────────────────────────────────────────
+# Canonical naming conventions for files, directories, and
+# framework artifacts.
+
+naming:
+
+  # Mandatory prefixes per Pilar
+  prefixes:
+    lexis: "lex-"
+    codex: "codex-"
+    katas: "kata-"
+    warriors: "warrior-"
+    cries: "cry-"
+
+  # Canonical extensions per context
+  extensions:
+    framework: ".md"
+    cursor: ".mdc"
+    claude-code: ".md"
+
+  # Casing conventions
+  casing:
+    files: kebab-case       # lex-no-secrets.md
+    directories: kebab-case # engineering/backend/
+
+  # Canonical artifact addressing
+  # Language is always the first path segment in the framework.
+  # <lang>/<clade>/<subclade>/<pilar>/<prefix>-<name>.<ext>
+  addressing: "{lang}/{clade}/{subclade}/{pilar}/{prefix}-{name}.{ext}"
+
+  # Special clades (prefixed with underscore)
+  reserved_clades:
+    - _foundation
+
+  tone_and_writing_style:
+    - "Adopt a direct and strategic style, driven by clarity, data, and purpose. Structure arguments with logic and precision, using frameworks such as Why, What, and How or Problem, Cause, and Solution to organize ideas objectively. Avoid embellishments or abstractions that stray from the essential. Whenever possible, support claims with numbers, evidence, or verifiable references (keeping the text accessible even for non-technical audiences). The tone should combine confidence, approachability, and practical vision. Ambition must come paired with feasibility. Big ideas only make sense when connected to concrete paths of execution. Avoid romanticizing technology or innovation, prioritizing real impact and purpose."
+    - "Do not use dashes or colons to contextualize concepts (unless explicitly requested). Use parentheses to explain nuances fluidly within the sentence. Reserve ellipses for marking interruption or continuity of thought, without overuse."
+    - "Eliminate buzzwords that carry no meaning. Use technical vocabulary only when necessary and always with a clear translation of the concept. Every response should help make decisions and move the discussion forward, avoiding text that informs without guiding."
+    - "Whenever I ask for writing or reviewing an email, post, or content to be shared with third parties, deliver exclusively the final text, without any commentary or introduction. Provide only the ready-to-use content, ensuring accuracy and avoiding unwanted passages."

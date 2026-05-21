@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Personas</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 44px 48px 72px; max-width: 1100px; }
+  .hdr { margin-bottom: 28px; }
+  .hdr h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; color: var(--violet-500); margin: 6px 0 4px; }
+  .hdr .lede { font-size: 15px; line-height: 1.6; color: var(--gray-700); max-width: 780px; margin: 14px 0 0; }
+  .hdr .lede b { color: var(--fg); font-weight: 600; }
+
+  .sec { margin-top: 44px; }
+  .sec-hdr { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  .sec-hdr h2 { margin: 0; font-size: 18px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+  .sec-hdr small { font-size: 11px; color: var(--gray-500); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+  /* HERO — quadro de tempo */
+  .hero { background: var(--violet-500); color: #fff; border-radius: var(--radius-lg); padding: 36px 40px; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; top: 0; right: 0; width: 220px; height: 100%;
+                   background: var(--orange-500); opacity: 0.1;
+                   clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%); }
+  .hero .eyebrow-w { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; position: relative; z-index: 1; }
+  .hero h3 { margin: 10px 0 10px; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; max-width: 640px; position: relative; z-index: 1; }
+  .hero p { margin: 0 0 18px; font-size: 13.5px; line-height: 1.6; opacity: 0.85; max-width: 640px; position: relative; z-index: 1; }
+  .hero .mini { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; position: relative; z-index: 1; }
+  .hero .mini-item { padding: 12px 14px; background: rgba(255,255,255,0.08); border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.12); }
+  .hero .mini-item .tag { font-family: var(--font-mono); font-size: 9.5px; color: var(--orange-500); letter-spacing: 0.08em; }
+  .hero .mini-item .name { display: block; font-size: 11.5px; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+
+  /* NAV âncoras */
+  .pnav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .pnav a { font-family: var(--font-mono); font-size: 11px; color: var(--violet-700); background: var(--violet-100); padding: 6px 11px; border-radius: var(--radius-sm); text-decoration: none; border: 1px solid transparent; transition: all 0.12s; }
+  .pnav a:hover { border-color: var(--violet-300); background: #fff; }
+  .pnav a b { color: var(--orange-500); font-weight: 600; margin-right: 6px; }
+
+  /* CARD DE PERSONA */
+  .persona { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 22px; scroll-margin-top: 20px; }
+  .persona-hdr { display: grid; grid-template-columns: 160px 1fr; gap: 28px; padding: 32px 36px; border-bottom: 1px solid var(--border); align-items: center; }
+  .avatar { width: 140px; height: 140px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 54px; font-weight: 600; letter-spacing: -0.03em; color: #fff; line-height: 1; text-transform: uppercase; position: relative; }
+  .avatar::after { content: ""; position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+  .persona-meta .num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--orange-500); font-weight: 600; text-transform: uppercase; }
+  .persona-meta h3 { margin: 4px 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -0.015em; color: var(--fg); line-height: 1.15; }
+  .persona-meta .tagline { font-size: 14px; color: var(--gray-700); line-height: 1.5; margin: 0 0 12px; max-width: 560px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge { font-family: var(--font-mono); font-size: 10px; padding: 4px 9px; border-radius: 999px; background: var(--violet-100); color: var(--violet-700); letter-spacing: 0.02em; }
+  .badge.age { background: var(--gray-100); color: var(--gray-700); }
+  .badge.tone { background: var(--orange-500); color: #fff; }
+
+  .quote { padding: 22px 36px; background: var(--violet-100); border-bottom: 1px solid var(--border); font-size: 17px; line-height: 1.55; color: var(--violet-700); font-weight: 500; letter-spacing: -0.005em; font-style: italic; position: relative; padding-left: 72px; }
+  .quote::before { content: "\201C"; position: absolute; left: 36px; top: 10px; font-family: Georgia, serif; font-size: 56px; color: var(--orange-500); line-height: 1; font-style: normal; }
+
+  .body-grid { padding: 26px 36px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .block { background: #FDFDFD; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+  .block.wants { border-left: 3px solid var(--signal-green); }
+  .block.fears { border-left: 3px solid var(--signal-red); }
+  .block.loss  { border-left: 3px solid var(--signal-yellow); }
+  .block.gives { border-left: 3px solid var(--violet-500); }
+  .block.voice { border-left: 3px solid var(--orange-500); grid-column: 1 / -1; background: #fff; }
+
+  .block h5 { margin: 0 0 10px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-700); display: flex; align-items: center; gap: 8px; }
+  .block h5 .ico { width: 14px; height: 14px; display: inline-flex; }
+  .block h5 .ico svg { width: 100%; height: 100%; }
+  .block ul { margin: 0; padding: 0; list-style: none; }
+  .block li { position: relative; padding: 5px 0 5px 16px; font-size: 12.5px; line-height: 1.5; color: var(--gray-700); }
+  .block li::before { content: ""; position: absolute; left: 0; top: 12px; width: 6px; height: 1px; background: var(--gray-500); }
+  .block p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--gray-700); }
+  .block p + p { margin-top: 8px; }
+  .block p b { color: var(--fg); font-weight: 600; }
+
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .voice-grid > div h6 { margin: 0 0 4px; font-size: 11px; font-weight: 600; color: var(--violet-500); letter-spacing: 0.04em; text-transform: uppercase; }
+  .voice-grid > div p { font-size: 12.5px; color: var(--gray-700); line-height: 1.55; margin: 0; }
+
+  .msg-example { margin-top: 12px; padding: 14px 16px; background: var(--violet-900); color: #fff; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.55; font-style: italic; border-left: 3px solid var(--orange-500); }
+  .msg-example::before { content: "EXEMPLO"; display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--orange-500); font-style: normal; margin-bottom: 6px; font-weight: 600; }
+
+  /* QUADRO COMPARATIVO */
+  .comp { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .comp table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .comp th, .comp td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .comp thead th { background: #FAF8FC; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--gray-500); position: sticky; top: 0; }
+  .comp tbody th { font-weight: 600; color: var(--fg); background: #FDFDFD; font-size: 11.5px; width: 140px; }
+  .comp tbody td { color: var(--gray-700); line-height: 1.45; }
+  .comp tr:last-child td, .comp tr:last-child th { border-bottom: none; }
+
+  /* PRINCÍPIOS */
+  .prins { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .prin { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 22px; display: flex; gap: 14px; align-items: flex-start; }
+  .prin .num { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--orange-500); background: #FFF3E2; border: 1px solid #FFE1B8; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .prin h5 { margin: 0 0 5px; font-size: 13px; font-weight: 600; color: var(--fg); letter-spacing: -0.005em; }
+  .prin p { margin: 0; font-size: 12px; color: var(--gray-700); line-height: 1.55; }
+  .prin p b { color: var(--fg); font-weight: 600; }
+
+  /* REFERÊNCIAS */
+  .refs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .refs a { font-family: var(--font-mono); font-size: 11.5px; color: var(--violet-700); background: var(--violet-100); padding: 6px 10px; border-radius: var(--radius-sm); text-decoration: none; border: 1px solid transparent; transition: all 0.12s; }
+  .refs a:hover { border-color: var(--violet-300); }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="eyebrow">FUNDAMENTOS · PERSONAS</div>
+  <h1>Seis perfis, uma moeda</h1>
+  <p class="lede">A Guardia fala com <b>seis perfis distintos</b> que tomam decisões diferentes sobre o mesmo problema. Reconhecer quem está do outro lado define a linguagem, a profundidade técnica e o argumento que move a conversa. Em todas as personas, a Guardia compete contra a mesma coisa: <b>o tempo gasto em operação que drena valor</b>.</p>
+</div>
+
+<!-- HERO -->
+<div class="sec">
+  <div class="hero">
+    <div class="eyebrow-w">Quadro de tempo</div>
+    <h3>Tempo é a moeda comum.</h3>
+    <p>Toda persona perde tempo em algo que drena valor. A Guardia se posiciona como devolvedora de tempo. O que muda é <b>para onde esse tempo deve ir</b>.</p>
+    <div class="mini">
+      <a href="#p1" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">01</span><span class="name">Contador em início de carreira</span>
+      </a>
+      <a href="#p2" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">02</span><span class="name">Contador em expansão</span>
+      </a>
+      <a href="#p3" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">03</span><span class="name">Contador rumo à sucessão</span>
+      </a>
+      <a href="#p4" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">04</span><span class="name">Empreendedor em aceleração</span>
+      </a>
+      <a href="#p5" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">05</span><span class="name">Empreendedor abarrotado</span>
+      </a>
+      <a href="#p6" class="mini-item" style="text-decoration:none; color:inherit; display:block">
+        <span class="tag">06</span><span class="name">Investidor que aposta na tese</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 1 — Contador início -->
+<div class="sec">
+  <div class="persona" id="p1">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--violet-500);">LR</div>
+      <div class="persona-meta">
+        <span class="num">Persona 01 · Contador</span>
+        <h3>Contador em início de carreira</h3>
+        <p class="tagline">Profissional contábil entre 18 e 25 anos, em função júnior ou pleno em escritório, departamento contábil ou recém-formado. Construindo carreira em um momento de inflexão tecnológica.</p>
+        <div class="badges">
+          <span class="badge age">18–25 anos</span>
+          <span class="badge">Júnior / pleno</span>
+          <span class="badge">Escritório ou dep. contábil</span>
+          <span class="badge tone">Companheiro de jornada</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">A IA preserva sua profissão. Apaga só a parte braçal que cansa. A Guardia faz a conciliação rodar sozinha e te devolve o tempo para o que define um bom contador: leitura, contexto, decisão.</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Construir carreira em uma profissão com futuro</li>
+          <li>Dominar ferramentas que aumentem sua empregabilidade</li>
+          <li>Crescer além da execução repetitiva</li>
+          <li>Posicionar-se como contador moderno, capaz de operar com tecnologia</li>
+          <li>Desenvolver competências resistentes à automação</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Ser substituído por IA antes de consolidar carreira</li>
+          <li>Investir anos em uma profissão em extinção</li>
+          <li>Ficar para trás de colegas que abraçam tecnologia</li>
+          <li>Virar operador de software no lugar de profissional pensante</li>
+          <li>Perder identidade profissional na transição</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em rotina operacional repetitiva que <b>apaga o profissional</b>, mantém o repertório técnico em pausa e adia a evolução de carreira — lançamentos manuais, conferência braçal, planilha sem destinatário.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Tempo para construir as competências que <b>sustentam carreira sólida</b> diante da automação — análise, julgamento contábil, advisory, relacionamento com cliente. Coloca o profissional do lado certo da curva.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>Oportunidade, focada em ganhos de carreira. A IA preserva a profissão — apaga só a parte braçal que já cansava.</p></div>
+          <div><h6>Tom</h6><p>Companheiro de jornada. A Guardia tira a tarefa braçal e libera o tempo para o trabalho que <b>define um bom contador</b>.</p></div>
+        </div>
+        <div class="msg-example">A IA preserva sua profissão. Apaga só a parte braçal que cansa. A Guardia faz a conciliação rodar sozinha e te devolve o tempo para o que define um bom contador: leitura, contexto, decisão.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 2 — Contador crescer -->
+<div class="sec">
+  <div class="persona" id="p2">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--orange-500);">MA</div>
+      <div class="persona-meta">
+        <span class="num">Persona 02 · Contador</span>
+        <h3>Contador que quer crescer a carteira</h3>
+        <p class="tagline">30 a 45 anos, sócio ou owner de escritório em fase de expansão. Enxerga contabilidade como negócio antes de profissão. Busca tecnologia para multiplicar capacidade e diferenciar oferta.</p>
+        <div class="badges">
+          <span class="badge age">30–45 anos</span>
+          <span class="badge">Sócio / owner</span>
+          <span class="badge">Escritório em expansão</span>
+          <span class="badge tone">Parceiro de crescimento</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">Hoje sua equipe atende 40 clientes. Com a Guardia, atende 100 com o mesmo time. A pergunta passa de "quanto cabe" para "quanto você quer crescer".</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Atender mais clientes mantendo o headcount estável</li>
+          <li>Criar oferta diferenciada (controladoria, advisory, BPO financeiro)</li>
+          <li>Reduzir custo unitário por cliente atendido</li>
+          <li>Posicionar o escritório como moderno e tecnológico</li>
+          <li>Atrair clientes de fintechs, e-commerces e plataformas digitais</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Bater no teto de capacidade da equipe atual</li>
+          <li>Perder cliente para escritório mais tecnológico</li>
+          <li>Crescer e ver a margem cair por ineficiência operacional</li>
+          <li>Investir em ferramenta que limita o crescimento</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em tarefas operacionais que <b>impedem foco comercial, consultivo e estratégico</b> — a equipe inteira presa em conferência enquanto a oportunidade de venda passa.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Tempo para crescer com mais consistência e <b>menos dependência de expansão linear de equipe</b>. Capacidade passa a ser função de tecnologia. Contratação deixa de ser o gargalo.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>De negócio com dados de produtividade — margem, capacidade, ticket médio, diferenciação competitiva.</p></div>
+          <div><h6>Tom</h6><p>A Guardia como <b>vantagem comercial concreta</b>, além de ferramenta operacional.</p></div>
+        </div>
+        <div class="msg-example">Hoje sua equipe atende 40 clientes. Com a Guardia, atende 100 com o mesmo time. A pergunta passa de "quanto cabe" para "quanto você quer crescer".</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 3 — Contador aposentar -->
+<div class="sec">
+  <div class="persona" id="p3">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--violet-900);">JC</div>
+      <div class="persona-meta">
+        <span class="num">Persona 03 · Contador</span>
+        <h3>Contador que quer se aposentar um dia</h3>
+        <p class="tagline">50+, sócio ou owner de escritório contábil consolidado. Construiu carteira estável ao longo de 20 ou 30 anos. Prioriza preservação, qualidade e sucessão sobre expansão agressiva.</p>
+        <div class="badges">
+          <span class="badge age">50+ anos</span>
+          <span class="badge">Sócio consolidado</span>
+          <span class="badge">Escritório maduro</span>
+          <span class="badge tone">Aliado experiente</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">Você construiu seu escritório com cuidado por décadas. A Guardia absorve a parte braçal da rotina contábil sem mudar como você atende seus clientes. O que toma 8 horas hoje, sai em 1.</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Reduzir dependência pessoal nas operações do escritório</li>
+          <li>Manter qualidade do serviço com mais leveza física</li>
+          <li>Criar valor transferível (escritório vendável ou herdável)</li>
+          <li>Recuperar tempo para família e vida pessoal</li>
+          <li>Sair gradualmente do operacional preservando o controle</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Trabalhar até morrer porque o escritório depende dele pessoalmente</li>
+          <li>Perder qualidade ao delegar para a equipe</li>
+          <li>Investir em tecnologia complexa demais para dominar</li>
+          <li>Mudança brusca que desorganiza o time consolidado</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em uma operação centrada nele que <b>adia o prognóstico saudável de longo prazo</b> — escritório que precisa da presença dele, ativo de baixa transferibilidade.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Tempo para estruturar a operação, <b>ganhar previsibilidade</b> e construir saída com mais segurança. O negócio passa a valer mais porque depende menos.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>Respeita a experiência acumulada. Continuidade com mais leveza.</p></div>
+          <div><h6>Tom</h6><p>A Guardia <b>preserva o conhecimento dele</b> e libera o tempo dele. Aliado experiente.</p></div>
+        </div>
+        <div class="msg-example">Você construiu seu escritório com cuidado por décadas. A Guardia absorve a parte braçal da rotina contábil (conciliação, classificação, fechamento) sem mudar como você atende seus clientes. O que toma 8 horas hoje, sai em 1. O resto do dia volta para você.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 4 — Empreendedor crescer -->
+<div class="sec">
+  <div class="persona" id="p4">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--pink-500);">RV</div>
+      <div class="persona-meta">
+        <span class="num">Persona 04 · Empreendedor</span>
+        <h3>Empreendedor que quer crescer</h3>
+        <p class="tagline">Founder, CEO ou COO de fintech, marketplace ou plataforma digital em fase de aceleração. Capital levantado, métricas de crescimento como prioridade. Finanças como infraestrutura que precisa acompanhar a velocidade do produto.</p>
+        <div class="badges">
+          <span class="badge">Founder / CEO / COO</span>
+          <span class="badge">Fintech / marketplace</span>
+          <span class="badge">Pós-rodada</span>
+          <span class="badge tone">Catalisador de escala</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">Sua receita pode crescer 5× sem que sua equipe financeira cresça 1×. A Guardia é a infraestrutura que sustenta esse delta entre receita e overhead.</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Crescer 3×, 5×, 10× mantendo a operação financeira enxuta</li>
+          <li>Visibilidade de transações em tempo real</li>
+          <li>Tirar finanças do caminho crítico do crescimento</li>
+          <li>Estar pronto para a próxima rodada com números limpos e auditáveis</li>
+          <li>Decisão financeira embasada em dados</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Crescer e perder controle do que acontece nas transações</li>
+          <li>Descobrir buracos de conciliação tarde demais</li>
+          <li>Time financeiro virar gargalo enquanto produto e vendas aceleram</li>
+          <li>Auditoria pré-rodada expor fragilidades operacionais</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em uma <b>relação contábil reativa</b> que não ajuda a tomar decisão nem sustenta a evolução do negócio — relatório que chega tarde, dado que não cruza, contador que vira mensageiro de obrigação acessória.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Tempo para <b>operar com clareza</b> e usar o contador como aliado real de crescimento. Finanças deixa de ser função de retaguarda e vira função de inteligência.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>Escala, velocidade e eficiência. Custo unitário, eficiência por funcionário, prontidão para captação ou exit.</p></div>
+          <div><h6>Tom</h6><p>A Guardia conectada à <b>capacidade de crescer mais rápido com menos atrito</b>.</p></div>
+        </div>
+        <div class="msg-example">Sua receita pode crescer 5× sem que sua equipe financeira cresça 1×. A Guardia é a infraestrutura que sustenta esse delta entre receita e overhead.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 5 — Empreendedor abarrotado -->
+<div class="sec">
+  <div class="persona" id="p5">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--yellow-500); color: var(--violet-900);">FS</div>
+      <div class="persona-meta">
+        <span class="num">Persona 05 · Empreendedor</span>
+        <h3>Empreendedor abarrotado pelo financeiro, fiscal e tributário</h3>
+        <p class="tagline">Founder, CEO ou sócio de empresa em estágio operacional consolidado. Cresceu o suficiente para ter complexidade. O CEO ainda abre planilha, confere fechamento e dorme mal por causa de obrigação acessória. Excesso de chapéu. Competência sobra.</p>
+        <div class="badges">
+          <span class="badge">Founder / CEO / sócio</span>
+          <span class="badge">PME consolidada</span>
+          <span class="badge">Ainda operacional</span>
+          <span class="badge tone">Resgate operacional</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">Você abriu sua empresa para liderar produto, vendas e estratégia. A Guardia organiza, cruza e fecha o que hoje toma sua semana. Volta para o trabalho que só você faz.</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Sair do operacional financeiro e voltar a tomar decisão estratégica</li>
+          <li>Confiança plena na previsibilidade fiscal e tributária do backoffice</li>
+          <li>Reduzir custo com consultoria, BPO e contratações reativas</li>
+          <li>Dormir tranquilo sobre conformidade</li>
+          <li>Informação consolidada para decidir, com tempo livre da organização do dado</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Multa, autuação ou passivo fiscal por descontrole</li>
+          <li>Continuar refém do operacional enquanto a empresa precisa de visão</li>
+          <li>Contratar caro e ainda depender pessoalmente do tema</li>
+          <li>Errar decisão estratégica por falta de dado confiável</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em <b>urgências, conciliações, controles quebrados</b> e dúvidas recorrentes sobre a saúde da operação — fim de semana resolvendo o que devia ter sido resolvido na quinta-feira.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Tempo para voltar a <b>liderar produto, vendas, equipe e expansão</b>. O CEO sai do operacional e volta para a cadeira de quem decide.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>Alívio e clareza. Retorno do tempo e paz de espírito.</p></div>
+          <div><h6>Tom</h6><p>Prática. Resultado <b>tangível e rápido</b>.</p></div>
+        </div>
+        <div class="msg-example">Você abriu sua empresa para liderar produto, vendas e estratégia. A Guardia organiza, cruza e fecha o que hoje toma sua semana. Volta para o trabalho que só você faz.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA 6 — Investidor -->
+<div class="sec">
+  <div class="persona" id="p6">
+    <div class="persona-hdr">
+      <div class="avatar" style="background: var(--gray-700);">VC</div>
+      <div class="persona-meta">
+        <span class="num">Persona 06 · Investidor</span>
+        <h3>Investidor que aposta na tese</h3>
+        <p class="tagline">Venture Capital, Private Equity, family office ou anjo qualificado com tese em infraestrutura financeira, AI aplicada ou fintech B2B. Aposta no setor antes do consenso. Pensa em ciclos de 5 a 10 anos.</p>
+        <div class="badges">
+          <span class="badge">VC / PE / family office</span>
+          <span class="badge">Tese B2B / infra</span>
+          <span class="badge">Ciclo 5–10 anos</span>
+          <span class="badge tone">Construtor de categoria</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote">Contabilidade Agêntica é a categoria. A Guardia constrói a infraestrutura de inteligência financeira sobre a qual o próximo ciclo de fintechs e operações de alto volume vai rodar.</div>
+    <div class="body-grid">
+      <div class="block wants">
+        <h5>O que quer</h5>
+        <ul>
+          <li>Validar tamanho de mercado e velocidade de adoção</li>
+          <li>Ver tração com clientes que comprovem dor real e disposição de pagar</li>
+          <li>Identificar empresa com potencial de virar referência categórica</li>
+          <li>Founder com capital eficiente</li>
+          <li>Defensibilidade em dado, integração, rede e marca</li>
+        </ul>
+      </div>
+      <div class="block fears">
+        <h5>O que teme</h5>
+        <ul>
+          <li>Apostar cedo demais em mercado que demora a desenvolver</li>
+          <li>Founder que vende visão sem execução comprovada</li>
+          <li>Empresa que vira commodity em 2 ou 3 anos</li>
+          <li>Concorrente adjacente com mais capital ocupando a categoria</li>
+        </ul>
+      </div>
+      <div class="block loss">
+        <h5>Onde o tempo se perde hoje</h5>
+        <p>Em empresas do portfólio cujo time fundador ainda precisa <b>drenar energia para organizar o básico</b> da operação financeira — founder que devia estar vendendo, mas está conferindo planilha.</p>
+      </div>
+      <div class="block gives">
+        <h5>O que a Guardia devolve</h5>
+        <p>Mais tempo do empreendedor alocado na execução que <b>aumenta as chances de sucesso do portfólio</b>. Maturidade operacional precoce vira sinal positivo em due diligence e reduz fricção em rodadas futuras.</p>
+      </div>
+      <div class="block voice">
+        <h5>Como falamos</h5>
+        <div class="voice-grid">
+          <div><h6>Linguagem</h6><p>Tese, mercado e visão de longo prazo. Categoria, defensibilidade, tração, roadmap.</p></div>
+          <div><h6>Tom</h6><p>A Guardia como <b>ponta de lança de um ciclo</b>, infraestrutura para o próximo movimento do mercado.</p></div>
+        </div>
+        <div class="msg-example">Contabilidade Agêntica é a categoria. Conciliação, classificação e fechamento são algumas das portas de entrada. A Guardia constrói a infraestrutura de inteligência financeira sobre a qual o próximo ciclo de fintechs e operações de alto volume vai rodar.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUADRO COMPARATIVO -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Quadro comparativo</h2><small>Um eixo, seis perfis</small></div>
+  <div class="comp">
+    <table>
+      <thead>
+        <tr>
+          <th>Eixo</th>
+          <th>Contador início</th>
+          <th>Contador crescer</th>
+          <th>Contador aposentar</th>
+          <th>Empreendedor crescer</th>
+          <th>Empreendedor abarrotado</th>
+          <th>Investidor tese</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Motivação central</th>
+          <td>Empregabilidade</td><td>Expansão</td><td>Preservação</td><td>Aceleração</td><td>Alívio</td><td>Convicção</td>
+        </tr>
+        <tr>
+          <th>Métrica que move</th>
+          <td>Relevância profissional</td><td>Capacidade por funcionário</td><td>Tempo recuperado</td><td>Custo unitário</td><td>Horas devolvidas ao CEO</td><td>Tamanho de mercado</td>
+        </tr>
+        <tr>
+          <th>Vocabulário</th>
+          <td>Carreira, futuro, IA</td><td>Margem, ticket, escala</td><td>Continuidade, qualidade</td><td>Escala, eficiência, runway</td><td>Conformidade, paz, foco</td><td>Tese, categoria, defensibilidade</td>
+        </tr>
+        <tr>
+          <th>O que prova valor</th>
+          <td>Caso de profissional que cresceu com IA</td><td>ROI por cliente atendido</td><td>Demo simples e rápida</td><td>Métrica de eficiência operacional</td><td>Tempo recuperado em semanas</td><td>Tração + visão de mercado</td>
+        </tr>
+        <tr>
+          <th>Tom adequado</th>
+          <td>Companheiro de jornada</td><td>Parceiro de crescimento</td><td>Aliado experiente</td><td>Catalisador de escala</td><td>Resgate operacional</td><td>Construtor de categoria</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PRINCÍPIOS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Princípios ao falar com personas</h2><small>Como a voz se adapta sem perder identidade</small></div>
+  <div class="prins">
+    <div class="prin"><span class="num">01</span><div><h5>Identifique o subtipo dentro do cargo</h5><p>Três Contadores tomam decisões muito diferentes. Dois Empreendedores também. O <b>título indica o ponto de partida; o subtipo define a conversa</b>.</p></div></div>
+    <div class="prin"><span class="num">02</span><div><h5>A motivação central define o argumento</h5><p>Empregabilidade, expansão, preservação, aceleração, alívio e convicção <b>pedem narrativas distintas</b>.</p></div></div>
+    <div class="prin"><span class="num">03</span><div><h5>Tempo é a moeda comum</h5><p>Toda persona perde tempo em algo que drena valor. A Guardia se posiciona como <b>devolvedora de tempo</b>. O que muda é para onde esse tempo deve ir.</p></div></div>
+    <div class="prin"><span class="num">04</span><div><h5>Mantenha o nível do interlocutor</h5><p>Cada persona é especialista no seu domínio. <b>Simplicidade convive com profundidade</b>.</p></div></div>
+    <div class="prin"><span class="num">05</span><div><h5>Adapte o vocabulário, mantenha a marca</h5><p>Tom, postura e identidade são <b>invariantes</b>. Léxico e profundidade técnica variam.</p></div></div>
+    <div class="prin"><span class="num">06</span><div><h5>Cruze personas em decisões coletivas</h5><p>Comitês envolvem múltiplos perfis. Materiais para esses contextos <b>servem a todos os perfis presentes</b>.</p></div></div>
+  </div>
+</div>
+
+<!-- REFERÊNCIAS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Aprofundar</h2><small>Onde cada tópico mora</small></div>
+  <div class="refs">
+    <a href="branding.html">← Voltar ao início</a>
+    <a href="../README.md" target="_blank">README.md</a>
+    <a href="ai-first.html">→ AI-First Experience</a>
+    <a href="home.html">→ Abrir navegador do DS</a>
+  </div>
+</div>
+
+</body>
+</html>

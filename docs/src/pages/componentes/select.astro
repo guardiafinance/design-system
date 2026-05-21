@@ -1,0 +1,237 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithLeftIconRow,
+  SizesRow,
+  StatesRow,
+  FormSubmitRow,
+} from "../../previews/select";
+import { LiveSelectSnippet } from "../../previews/select-live";
+import selectSource from "@ds/components/select/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Select"
+  group="Forms"
+  storybookId="components-select--default"
+  sourcePath="ui_kit/components/select"
+  lede='Dropdown estilizado para listas curtas. Mesma arquitetura do <a href="../combobox/" class="underline">Combobox</a> (Radix Popover + listbox custom) — só sem o campo de busca. Para listas longas ou buscáveis, prefira o Combobox.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>options + placeholder</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ LEFT ICON ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícone</h2>
+      <small>leftIcon · contexto visual</small>
+    </div>
+    <div class="preview">
+      <WithLeftIconRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 32 · md 38 (default) · lg 46</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em formulário</h2>
+      <small>name renderiza input hidden</small>
+    </div>
+    <div class="preview">
+      <FormSubmitRow client:load />
+    </div>
+    <p class="preview-caption">
+      Como o Select não é um <code class="inline">&lt;select&gt;</code> nativo,
+      ele renderiza um <code class="inline">&lt;input type="hidden"&gt;</code>
+      com o valor selecionado quando você passa <code class="inline">name</code>.
+      O <code class="inline">required</code> também é repassado pro hidden.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSelectSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">options</td>
+            <td class="type">&#123; value, label, disabled? &#125;[]</td>
+            <td class="default">—</td>
+            <td class="desc">Lista de opções.</td>
+          </tr>
+          <tr>
+            <td class="name">value / defaultValue</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">onChange</td>
+            <td class="type">(value, option?) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback de seleção.</td>
+          </tr>
+          <tr>
+            <td class="name">placeholder</td>
+            <td class="type">string</td>
+            <td class="default">"Selecione…"</td>
+            <td class="desc">Texto exibido sem valor.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Heights 32 / 38 / 46 px.</td>
+          </tr>
+          <tr>
+            <td class="name">state</td>
+            <td class="type">"default" | "error" | "success"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Cor da border + ring de focus.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Shortcut para state="error" + aria-invalid="true".</td>
+          </tr>
+          <tr>
+            <td class="name">leftIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda do trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">name</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Renderiza <code class="inline">&lt;input hidden&gt;</code> p/ form submission.</td>
+          </tr>
+          <tr>
+            <td class="name">required</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Aplicado ao input hidden quando <code class="inline">name</code> está presente.</td>
+          </tr>
+          <tr>
+            <td class="name">popoverWidth</td>
+            <td class="type">number | string</td>
+            <td class="default">trigger width</td>
+            <td class="desc">Largura customizada do popover.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação completa</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Space / Enter</td><td class="desc">Abre o popover quando o trigger está focado.</td></tr>
+          <tr><td class="name">↓ / ↑</td><td class="desc">Navega entre opções (pula disabled automaticamente).</td></tr>
+          <tr><td class="name">Home / End</td><td class="desc">Vai para a primeira / última opção.</td></tr>
+          <tr><td class="name">Enter / Space</td><td class="desc">Seleciona a opção ativa e fecha.</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha sem selecionar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/select/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={selectSource}
+      language="tsx"
+      filename="ui_kit/components/select/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · listbox pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: <code class="inline">role="combobox"</code> + <code class="inline">aria-haspopup="listbox"</code> + <code class="inline">aria-expanded</code> + <code class="inline">aria-controls</code>.</span></li>
+        <li><span><b>Lista</b>: <code class="inline">role="listbox"</code>; cada item é <code class="inline">role="option"</code> com <code class="inline">aria-selected</code>.</span></li>
+        <li><span><b>Foco virtual</b> via <code class="inline">aria-activedescendant</code> — o foco real fica no trigger, leitores de tela anunciam o option ativo.</span></li>
+        <li><span><b>Disabled options</b> são puladas pelo keyboard nav (ArrowUp/Down).</span></li>
+        <li><span><b>Outside click + Escape</b>: gerenciado pelo Radix Popover.</span></li>
+        <li><span><b>activeIndex inicial</b> = índice do option selecionado (não 0). Quando você abre, o cursor já está onde você esperava.</span></li>
+        <li><span><b>Quando preferir Combobox</b>: lista &gt; ~7 items · busca incremental · valores compostos (label + meta).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

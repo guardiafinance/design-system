@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · AI-First Experience</title>
+<link rel="stylesheet" href="_base.css">
+
+<!-- DS components CSS -->
+<link rel="stylesheet" href="../ui_kits/components/ChatMessage/index.css">
+<link rel="stylesheet" href="../ui_kits/components/Badge/index.css">
+<link rel="stylesheet" href="../ui_kits/components/Chip/index.css">
+<link rel="stylesheet" href="../ui_kits/components/Progress/index.css">
+<link rel="stylesheet" href="../ui_kits/components/DataTable/index.css">
+
+<style>
+  body { padding: 44px 48px 72px; max-width: 1100px; }
+  .hdr { margin-bottom: 28px; }
+  .hdr h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; color: var(--violet-500); margin: 6px 0 4px; }
+  .hdr .lede { font-size: 15px; line-height: 1.6; color: var(--gray-700); max-width: 760px; margin: 14px 0 0; }
+  .hdr .lede b { color: var(--fg); font-weight: 600; }
+
+  .sec { margin-top: 44px; }
+  .sec-hdr { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  .sec-hdr h2 { margin: 0; font-size: 18px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+  .sec-hdr small { font-size: 11px; color: var(--gray-500); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+  /* Manifesto hero */
+  .hero { background: var(--violet-900); color: #fff; border-radius: var(--radius-lg); padding: 40px 44px; position: relative; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 200px; background: var(--orange-500); opacity: 0.15; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%); }
+  .hero .eyebrow-w { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; }
+  .hero h3 { margin: 10px 0 14px; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; max-width: 640px; }
+  .hero p { margin: 0; font-size: 13.5px; line-height: 1.65; opacity: 0.85; max-width: 640px; position: relative; z-index: 1; }
+  .hero b { color: var(--orange-500); font-weight: 600; }
+
+  /* Princípios */
+  .prins { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .prin { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px 22px; display: flex; gap: 14px; align-items: flex-start; }
+  .prin .num { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--orange-500); background: #FFF3E2; border: 1px solid #FFE1B8; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .prin h5 { margin: 0 0 5px; font-size: 13.5px; font-weight: 600; color: var(--fg); letter-spacing: -0.005em; }
+  .prin p { margin: 0; font-size: 12px; color: var(--gray-700); line-height: 1.55; }
+  .prin p b { color: var(--fg); font-weight: 600; }
+
+  /* Layout padrão — diagrama usando componentes do DS */
+  .layout { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 28px; }
+  .layout .mockup { display: grid; grid-template-columns: 380px 1fr; gap: 12px; margin-bottom: 18px; }
+  .layout .panel { border-radius: var(--radius-md); border: 1px solid var(--border); padding: 20px 22px; position: relative; display: flex; flex-direction: column; gap: 12px; min-height: 340px; }
+  .layout .p-chat { background: var(--violet-100); }
+  .layout .p-work { background: #FDFDFD; }
+  .layout .panel .p-label { position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9.5px; color: var(--gray-500); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .layout .panel h5 { display: block; font-size: 13px; font-weight: 600; color: var(--violet-500); margin: 0 0 4px; letter-spacing: -0.005em; }
+
+  /* scope overrides: the playground chat is for diagram purposes */
+  .layout .grd-cm { margin-bottom: 2px; }
+  .layout .grd-cm-body { font-size: 12px; line-height: 1.5; }
+  .layout .chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .layout .grd-dt { font-size: 11px; }
+  .layout .grd-dt td, .layout .grd-dt th { padding: 6px 10px; }
+
+  .layout .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 12.5px; color: var(--gray-700); line-height: 1.6; }
+  .layout .legend b { color: var(--violet-500); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 3px; font-weight: 600; }
+
+  /* Fazer / Não fazer */
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .rules-col { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 22px 24px; }
+  .rules-col.do { border-color: #C8E6CF; }
+  .rules-col.dont { border-color: #F8CFC9; }
+  .rules-col h5 { margin: 0 0 14px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .rules-col.do h5 { color: #1E6630; }
+  .rules-col.dont h5 { color: #8F1A12; }
+  .rules-col ul { margin: 0; padding: 0; list-style: none; }
+  .rules-col li { position: relative; padding: 8px 0 8px 26px; border-bottom: 1px dashed var(--border); font-size: 12.5px; line-height: 1.55; color: var(--gray-700); }
+  .rules-col li:last-child { border-bottom: none; }
+  .rules-col li::before { position: absolute; left: 0; top: 9px; font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+  .rules-col.do li::before { content: "✓"; color: var(--signal-green); }
+  .rules-col.dont li::before { content: "×"; color: var(--signal-red); font-size: 17px; top: 6px; }
+
+  /* Exemplos */
+  .ex { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 14px; }
+  .ex-hdr { padding: 12px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .ex-hdr.good { background: #EAF6ED; color: #1E6630; }
+  .ex-hdr.bad  { background: #FDECEA; color: #8F1A12; }
+  .ex-hdr .tag { font-family: var(--font-mono); font-size: 10px; padding: 2px 8px; border-radius: 999px; background: #fff; }
+  .ex-body { padding: 18px 22px; font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+  .ex-body .user { background: #FAF8FC; border-left: 3px solid var(--violet-500); padding: 8px 14px; margin: 0 0 12px; font-style: italic; color: var(--violet-700); }
+  .ex-body ol { margin: 0; padding-left: 20px; }
+  .ex-body li { margin-bottom: 4px; }
+  .ex-body .why { margin-top: 10px; font-size: 12px; color: var(--signal-red); }
+  .ex-body .why b { text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px; }
+
+  /* Implicações */
+  .impl { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .impl-item { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 20px; }
+  .impl-item h5 { margin: 0 0 5px; font-size: 13px; font-weight: 600; color: var(--violet-500); }
+  .impl-item p { margin: 0; font-size: 12px; color: var(--gray-700); line-height: 1.55; }
+
+  /* Governança */
+  .gov { background: #FFF8EC; border: 1px solid #F8DFA4; border-radius: var(--radius-md); padding: 18px 22px; display: flex; gap: 14px; align-items: flex-start; }
+  .gov .warn { color: #7A4F00; font-size: 18px; flex-shrink: 0; }
+  .gov p { margin: 0; font-size: 12.5px; color: #7A4F00; line-height: 1.6; }
+
+  /* Referências */
+  .refs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .refs a { font-family: var(--font-mono); font-size: 11.5px; color: var(--violet-700); background: var(--violet-100); padding: 6px 10px; border-radius: var(--radius-sm); text-decoration: none; border: 1px solid transparent; transition: all 0.12s; }
+  .refs a:hover { border-color: var(--violet-300); }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="eyebrow">DIRETRIZ · AI-FIRST EXPERIENCE</div>
+  <h1>Agêntico por padrão</h1>
+  <p class="lede">A experiência da Guardia é <b>agêntica por padrão</b>. O Isac é o centro da interação, não um assistente acoplado a um SaaS tradicional. O usuário descreve um resultado, o agente planeja, executa e presta contas. Cabe à UI tornar isso <b>legível, controlável e auditável</b>.</p>
+</div>
+
+<!-- HERO MANIFESTO -->
+<div class="sec">
+  <div class="hero">
+    <div class="eyebrow-w">Por que esta diretriz existe</div>
+    <h3>O modelo mental do SaaS clássico não se aplica.</h3>
+    <p>Menus, telas e formulários empilhados pressupõem um <b>analista operando o sistema passo a passo</b>. A Guardia substitui esse modelo por uma operação orquestrada pelo Isac, onde a interface serve para dar <b>visibilidade, contexto e controle</b> sobre o que o agente está fazendo.</p>
+  </div>
+</div>
+
+<!-- PRINCÍPIOS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Sete princípios</h2><small>A base da experiência</small></div>
+  <div class="prins">
+    <div class="prin"><span class="num">01</span><div><h5>Conversa como interface primária</h5><p>A superfície principal é o diálogo com o Isac. Qualquer tela, painel ou visualização nasce como <b>resposta do agente</b> ou contexto invocado pela conversa — não como destino de navegação.</p></div></div>
+    <div class="prin"><span class="num">02</span><div><h5>Intenção sobre funcionalidade</h5><p>O usuário expressa <b>o que quer alcançar</b> (reconciliar, investigar, aprovar). O Isac decide quais ferramentas, fontes e passos usar. A UI não expõe features isoladas esperando combinação.</p></div></div>
+    <div class="prin"><span class="num">03</span><div><h5>Transparência do raciocínio</h5><p>Toda execução do agente é <b>observável em tempo real</b> — plano, passos, fontes consultadas, decisões tomadas. Nada acontece em caixa-preta.</p></div></div>
+    <div class="prin"><span class="num">04</span><div><h5>Controle graduado</h5><p>O usuário pode pausar, intervir, corrigir ou assumir qualquer etapa. A autonomia do Isac é um <b>espectro ajustável</b>, não um interruptor.</p></div></div>
+    <div class="prin"><span class="num">05</span><div><h5>Artefatos sob demanda</h5><p>Tabelas, gráficos, relatórios e dashboards são gerados pelo agente <b>quando servem à decisão em curso</b>. Nenhum artefato vive como menu permanente.</p></div></div>
+    <div class="prin"><span class="num">06</span><div><h5>Auditabilidade nativa</h5><p>Cada ação do Isac gera rastro versionado (input, contexto, decisão, resultado). A interface dá <b>acesso direto a esse histórico</b>.</p></div></div>
+    <div class="prin" style="grid-column: 1 / -1;"><span class="num">07</span><div><h5>Memória estruturada</h5><p>O contexto da operação (clientes, conciliações em curso, regras, preferências) é <b>externalizado e recuperado pelo agente</b> — não empilhado em estados de tela.</p></div></div>
+  </div>
+</div>
+
+<!-- LAYOUT PADRÃO -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Padrão de layout</h2><small>Conversa + workspace ao vivo</small></div>
+  <div class="layout">
+    <div class="mockup">
+      <div class="panel p-chat">
+        <span class="p-label">ESQUERDA</span>
+        <h5>Conversa com o Isac</h5>
+
+        <!-- ChatMessage · user -->
+        <div class="grd-cm grd-cm-user">
+          <div class="grd-cm-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="grd-cm-bubble">
+            <div class="grd-cm-head"><span class="grd-cm-name">Você</span><span class="grd-cm-ts">14:22</span></div>
+            <div class="grd-cm-body">Concilie as liquidações da Cielo de ontem.</div>
+          </div>
+        </div>
+
+        <!-- ChatMessage · assistant -->
+        <div class="grd-cm grd-cm-assistant">
+          <div class="grd-cm-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></div>
+          <div class="grd-cm-bubble">
+            <div class="grd-cm-head"><span class="grd-cm-name">Isac</span><span class="grd-cm-ts">14:22</span></div>
+            <div class="grd-cm-body">Vou buscar o extrato, cruzar com o EDI e listar divergências.</div>
+          </div>
+        </div>
+
+        <!-- Chips (passos) -->
+        <div class="chip-row">
+          <span class="grd-chip grd-chip-selected">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+            Extrato Itaú
+          </span>
+          <span class="grd-chip">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="15" y2="13"/><line x1="8" y1="17" x2="15" y2="17"/></svg>
+            EDI Cielo
+          </span>
+          <span class="grd-chip">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Divergências
+          </span>
+        </div>
+
+        <!-- Progress -->
+        <div class="grd-pg grd-pg-linear grd-pg-violet grd-pg-sm">
+          <div class="grd-pg-meta">
+            <span class="grd-pg-label">Passo 1 de 3 · Buscando extrato</span>
+            <span class="grd-pg-val">38%</span>
+          </div>
+          <div class="grd-pg-track" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100">
+            <div class="grd-pg-fill" style="width: 38%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel p-work">
+        <span class="p-label">DIREITA</span>
+        <h5>Workspace dinâmico</h5>
+        <div class="grd-dt grd-dt-compact">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:30%">Origem</th>
+                <th class="grd-dt-a-right" style="width:25%">Valor</th>
+                <th style="width:30%">Match</th>
+                <th class="grd-dt-a-center" style="width:15%">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Itaú · 14:02</td><td class="grd-dt-a-right">R$ 1.240,00</td><td>Cielo #8812</td><td class="grd-dt-a-center"><span class="grd-badge grd-badge-pill grd-badge-solid grd-badge-success">OK</span></td></tr>
+              <tr><td>Itaú · 14:07</td><td class="grd-dt-a-right">R$ 890,40</td><td>Cielo #8813</td><td class="grd-dt-a-center"><span class="grd-badge grd-badge-pill grd-badge-solid grd-badge-success">OK</span></td></tr>
+              <tr><td>Itaú · 14:11</td><td class="grd-dt-a-right">R$ 2.310,00</td><td>—</td><td class="grd-dt-a-center"><span class="grd-badge grd-badge-pill grd-badge-solid grd-badge-warning">Aberto</span></td></tr>
+              <tr><td>Itaú · 14:19</td><td class="grd-dt-a-right">R$ 456,80</td><td>Cielo #8815</td><td class="grd-dt-a-center"><span class="grd-badge grd-badge-pill grd-badge-solid grd-badge-success">OK</span></td></tr>
+              <tr><td>Itaú · 14:24</td><td class="grd-dt-a-right">R$ 1.020,00</td><td>Cielo #8816</td><td class="grd-dt-a-center"><span class="grd-badge grd-badge-pill grd-badge-solid grd-badge-success">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <div><b>Esquerda · conversa</b>Entrada principal, histórico da sessão, plano de execução e status.</div>
+      <div><b>Direita · workspace</b>Renderiza o que o Isac está consultando ou produzindo — tabela, visão de conciliação, documento, painel, fonte externa.</div>
+    </div>
+    <p style="margin:18px 0 0; font-size:12px; color:var(--gray-500); font-style:italic; line-height:1.55">Em mobile, a conversa vai para cima e o workspace para baixo. O workspace é <b>reativo ao diálogo</b>: quando a conversa muda de contexto, o workspace acompanha. O usuário não navega para encontrar uma tela.</p>
+  </div>
+</div>
+
+<!-- REGRAS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Regras de uso</h2><small>Fazer e não fazer</small></div>
+  <div class="rules">
+    <div class="rules-col do">
+      <h5>✓ Fazer</h5>
+      <ul>
+        <li>Partir sempre da <b>intenção do usuário</b> e deixar o Isac decompor em passos.</li>
+        <li>Exibir o <b>plano do agente</b> antes da execução quando a tarefa tiver impacto relevante (escrita, aprovação, envio externo).</li>
+        <li>Mostrar <b>fontes consultadas</b> e dados usados em cada decisão.</li>
+        <li>Permitir que o usuário <b>edite o plano, bloqueie passos ou aprove etapas</b> sensíveis antes da execução.</li>
+        <li>Gerar artefatos (tabelas, gráficos, relatórios) como <b>resultado do trabalho agêntico</b>, com link para o contexto que os originou.</li>
+        <li>Preservar <b>memória de longo prazo</b> fora da tela (arquivos, estado persistido, preferências), invocada pelo Isac quando relevante.</li>
+        <li>Tratar <b>ações irreversíveis</b> (envio de mensagem, baixa contábil, liberação de valor) como pontos de confirmação explícita.</li>
+      </ul>
+    </div>
+    <div class="rules-col dont">
+      <h5>× Não fazer</h5>
+      <ul>
+        <li>Construir <b>menus laterais com features empilhadas</b> (Conciliação, Relatórios, Configurações) como arquitetura principal. Features são capacidades do Isac, não destinos.</li>
+        <li>Abrir modais ou wizards que forcem o usuário a <b>preencher campos antes de conversar</b>.</li>
+        <li>Esconder o que o agente está fazendo. Nada de loaders genéricos ou "processando..." sem detalhe.</li>
+        <li>Duplicar o mesmo dado em <b>múltiplas telas estáticas</b>. Se é relevante, o Isac traz quando necessário.</li>
+        <li>Criar <b>dashboards permanentes</b> para o usuário monitorar. Dashboards são materializados sob demanda ou por regra.</li>
+        <li>Delegar ao usuário a <b>orquestração entre ferramentas</b>. Se duas capacidades se combinam, é o Isac quem combina.</li>
+        <li>Tratar autonomia como <b>binário</b> (manual ou automático). Deve haver níveis configuráveis por tipo de tarefa e por perfil.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- EXEMPLOS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Exemplos</h2><small>Aplicação concreta</small></div>
+
+  <div class="ex">
+    <div class="ex-hdr good">✓ Correto <span class="tag">conciliação Cielo</span></div>
+    <div class="ex-body">
+      <p class="user">"Concilie as liquidações da Cielo de ontem e me avise o que ficou em aberto."</p>
+      <ol>
+        <li>Isac exibe o <b>plano</b>: buscar extrato bancário · buscar arquivo EDI da Cielo · aplicar regras de matching · listar divergências.</li>
+        <li>Workspace mostra, em tempo real, cada fonte sendo consultada e as linhas sendo conciliadas.</li>
+        <li>Resultado aparece como <b>artefato</b> (tabela de divergências) com justificativa por linha.</li>
+        <li>Usuário pode clicar em qualquer divergência, perguntar por que não bateu, e o Isac responde com rastro completo.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-hdr good">✓ Correto <span class="tag">investigação aberta</span></div>
+    <div class="ex-body">
+      <p class="user">"Quero entender por que o fluxo de Pix do cliente X está com ruído."</p>
+      <ol>
+        <li>Isac propõe investigação (períodos, contrapartes, padrões de valor).</li>
+        <li>Workspace renderiza os cortes solicitados progressivamente.</li>
+        <li>Nenhum relatório pré-construído é aberto. <b>Tudo é gerado para essa pergunta específica.</b></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-hdr bad">× Incorreto <span class="tag">sidebar de módulos</span></div>
+    <div class="ex-body">
+      <p>Tela inicial com sidebar de módulos (Conciliação, Relatórios, Regras, Integrações) e o chat do Isac como botão flutuante no canto.</p>
+      <p class="why"><b>Motivo:</b> inverte a hierarquia. O Isac vira acessório de um SaaS clássico. O usuário volta a operar módulos em vez de delegar intenções.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-hdr bad">× Incorreto <span class="tag">execução opaca</span></div>
+    <div class="ex-body">
+      <p>Isac executa uma conciliação em segundo plano e devolve apenas "Concluído. 127 transações conciliadas."</p>
+      <p class="why"><b>Motivo:</b> quebra transparência e auditabilidade. O usuário não tem como validar nem aprender com a operação.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-hdr bad">× Incorreto <span class="tag">formulário rígido</span></div>
+    <div class="ex-body">
+      <p>Formulário com 12 campos obrigatórios para criar uma regra de conciliação.</p>
+      <p class="why"><b>Motivo:</b> o usuário deveria descrever a regra em linguagem natural ao Isac, que estrutura, valida e confirma antes de persistir.</p>
+    </div>
+  </div>
+</div>
+
+<!-- IMPLICAÇÕES DS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Implicações para o Design System</h2><small>Como o DS se reorganiza</small></div>
+  <div class="impl">
+    <div class="impl-item">
+      <h5>Componentes</h5>
+      <p>A biblioteca prioriza <b>bolhas de conversa, blocos de plano, trace de passos, cartões de fonte consultada, artefatos inline</b> (tabela, gráfico, documento) e controles de aprovação e intervenção.</p>
+    </div>
+    <div class="impl-item">
+      <h5>Navegação</h5>
+      <p><b>Mínima.</b> Histórico de sessões, memória do usuário e configurações. Nenhuma árvore de features.</p>
+    </div>
+    <div class="impl-item">
+      <h5>Estados de loading</h5>
+      <p>Substituídos por <b>streaming de raciocínio</b> e progresso do plano. Spinner genérico é falha de transparência.</p>
+    </div>
+    <div class="impl-item">
+      <h5>Tokens e padrões visuais</h5>
+      <p>Seguem o Brand Kit do Notion. Figma traduz em componentes de produto com <b>paridade entre design e código</b>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- GOVERNANÇA -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Governança</h2><small>Exceções</small></div>
+  <div class="gov">
+    <span class="warn">⚠</span>
+    <p>Qualquer exceção a esta diretriz (tela com arquitetura tradicional, feature sem entrada agêntica) exige <b>proposta formal no Notion</b>, com justificativa e aprovação do CEO ou responsável designado pelo Brand, conforme fluxo padrão de governança do Design System.</p>
+  </div>
+</div>
+
+<!-- REFERÊNCIAS -->
+<div class="sec">
+  <div class="sec-hdr"><h2>Referências</h2><small>O padrão agêntico em uso</small></div>
+  <p style="font-size:13px;color:var(--gray-700);line-height:1.6;max-width:720px;margin:0 0 12px">
+    <b>Claude (Anthropic)</b> e <b>Manus AI (Meta)</b> como referências de padrão agêntico. A diretriz se apoia no consenso emergente de que o layout dominante para agentes combina <b>conversa persistente com workspace ao vivo</b>, priorizando transparência sobre polimento visual.
+  </p>
+  <div class="refs">
+    <a href="../README.md" target="_blank">README.md</a>
+    <a href="branding.html">← Voltar ao início</a>
+  </div>
+</div>
+
+</body>
+</html>

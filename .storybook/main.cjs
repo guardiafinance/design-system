@@ -2,7 +2,7 @@ const path = require("path");
 
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
-  stories: ["../src/**/*.stories.@(ts|tsx)"],
+  stories: ["../ui_kit/**/*.stories.@(ts|tsx|mdx)"],
   addons: ["@storybook/addon-essentials"],
   framework: "@storybook/react-vite",
   async viteFinal(config) {
@@ -14,7 +14,7 @@ const config = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          "@": path.resolve(__dirname, "../src"),
+          "@": path.resolve(__dirname, "../ui_kit"),
         },
       },
     };

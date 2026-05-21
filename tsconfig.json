@@ -1,26 +1,26 @@
 {
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES2022"
-    ],
-    "verbatimModuleSyntax": true,
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "verbatimModuleSyntax": false,
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["ui_kit/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["ui_kit"],
+  "exclude": ["ui_kit/**/*.test.ts", "ui_kit/**/*.test.tsx"]
 }

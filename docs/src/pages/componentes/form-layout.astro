@@ -1,0 +1,238 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  StackedRow,
+  SplitRow,
+  InlineRow,
+  ErrorsRow,
+  CompactFiltersRow,
+} from "../../previews/form-layout";
+import { LiveFormLayoutSnippet } from "../../previews/form-layout-live";
+import formLayoutSource from "@ds/components/form-layout/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="FormLayout"
+  group="Forms"
+  storybookId="components-formlayout--stacked"
+  sourcePath="ui_kit/components/form-layout"
+  lede='Esqueleto de formulários da Guardia. Compound component que padroniza cadastros, filtros, settings e wizards via <code class="inline">Header</code> / <code class="inline">Section</code> / <code class="inline">Row</code> / <code class="inline">Field</code> / <code class="inline">Actions</code> / <code class="inline">Divider</code> — três variantes (stacked · split · inline) e duas densidades (comfy · compact).'
+>
+  <!-- ============ STACKED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variant: stacked (default)</h2>
+      <small>label em cima · grid responsivo</small>
+    </div>
+    <div class="preview">
+      <StackedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Padrão para cadastros e formulários gerais. Labels acima dos campos, descrição da seção
+      (quando presente) acima do conteúdo. <code class="inline">FormLayout.Row</code> dá o grid
+      de 12 colunas com colspan via <code class="inline">span</code>.
+    </p>
+  </section>
+
+  <!-- ============ SPLIT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variant: split</h2>
+      <small>título à esquerda · campos à direita (desktop)</small>
+    </div>
+    <div class="preview">
+      <SplitRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ideal para edição de configurações onde cada seção tem um propósito narrativo.
+      O cabeçalho da seção fica <em>sticky</em> no scroll (desktop). Em telas &lt; 760px
+      colapsa para stacked automaticamente.
+    </p>
+  </section>
+
+  <!-- ============ INLINE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variant: inline</h2>
+      <small>label à esquerda · denso para settings</small>
+    </div>
+    <div class="preview">
+      <InlineRow client:load />
+    </div>
+    <p class="preview-caption">
+      Compacto. Cada Field vira um grid 2-coluna (label + controle).
+      Em telas &lt; 640px colapsa para 1 coluna.
+    </p>
+  </section>
+
+  <!-- ============ ERRORS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados de erro inline</h2>
+      <small>error sobrescreve hint · aria-invalid + aria-describedby auto</small>
+    </div>
+    <div class="preview">
+      <ErrorsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando você passa <code class="inline">error</code>, o <code class="inline">FormLayout.Field</code>
+      injeta <code class="inline">aria-invalid="true"</code> e <code class="inline">aria-describedby</code>
+      apontando pro &lt;p role="alert"&gt;. Se o filho for um componente custom (Input, Combobox, ...),
+      também injeta <code class="inline">invalid={true}</code>.
+    </p>
+  </section>
+
+  <!-- ============ COMPACT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Density: compact</h2>
+      <small>filtros, sidebars, tabelas de configuração</small>
+    </div>
+    <div class="preview">
+      <CompactFiltersRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveFormLayoutSnippet client:load />
+  </section>
+
+  <!-- ============ API ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>API</h2>
+      <small>compound component</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente</th><th>Props principais</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">FormLayout</td>
+            <td class="type">variant · density · as</td>
+            <td class="desc">Root. Renderiza <code class="inline">&lt;form&gt;</code> por default; passe <code class="inline">as="div"</code> para filtros/settings.</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Header</td>
+            <td class="type">title · description · actions · children</td>
+            <td class="desc">Cabeçalho do formulário com slot para botões secundários (ex: "Histórico", "Excluir").</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Section</td>
+            <td class="type">title · description · aside · children</td>
+            <td class="desc">Agrupador semântico. Em <code class="inline">variant="split"</code>, o cabeçalho fica sticky.</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Row</td>
+            <td class="type">cols · gap</td>
+            <td class="desc">Grid de N colunas (2/3/4/6/12). Colapsa para 1 coluna em mobile.</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Field</td>
+            <td class="type">label · required · optional · hint · error · labelAside · span · htmlFor</td>
+            <td class="desc">Wrapper de um único controle. Injeta <code class="inline">id</code>, <code class="inline">aria-describedby</code>, <code class="inline">aria-invalid</code> e <code class="inline">invalid</code> (em componentes custom) automaticamente.</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Actions</td>
+            <td class="type">align · sticky</td>
+            <td class="desc">Container de botões. <code class="inline">sticky</code> fixa no rodapé do scroll.</td>
+          </tr>
+          <tr>
+            <td class="name">FormLayout.Divider</td>
+            <td class="type">—</td>
+            <td class="desc">Linha horizontal entre seções. <code class="inline">aria-hidden</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ VARIANTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes &amp; densidade</h2>
+      <small>quando escolher cada uma</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Variant</th><th>Quando usar</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">stacked</td>
+            <td class="desc">Default. Cadastros, edições, formulários gerais. Labels acima dos campos.</td>
+          </tr>
+          <tr>
+            <td class="name">split</td>
+            <td class="desc">Páginas de configuração com seções narrativas. Título sticky à esquerda, campos à direita.</td>
+          </tr>
+          <tr>
+            <td class="name">inline</td>
+            <td class="desc">Settings densos com label à esquerda do controle. Denso para listas longas de toggles/dropdowns.</td>
+          </tr>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr><th>Density</th><th>Espaçamento</th><th>Quando usar</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">comfy</td>
+            <td class="type">root gap 32px · row gap 16px</td>
+            <td class="desc">Default. Cadastros e formulários principais.</td>
+          </tr>
+          <tr>
+            <td class="name">compact</td>
+            <td class="type">root gap 20px · row gap 12px</td>
+            <td class="desc">Filtros, sidebars, tabelas de configuração.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/form-layout/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={formLayoutSource}
+      language="tsx"
+      filename="ui_kit/components/form-layout/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Form semântico</b>: root é <code class="inline">&lt;form&gt;</code> por default — submissão com Enter funciona, e atributos <code class="inline">name</code> são preservados pra FormData.</span></li>
+        <li><span><b>Labels associadas</b>: passe <code class="inline">htmlFor</code> no Field e o <code class="inline">id</code> é injetado automaticamente no único filho.</span></li>
+        <li><span><b>Required &amp; optional</b>: indicadores visuais (* / "(opcional)") + leitor de tela ignora o asterisco (<code class="inline">aria-hidden</code>) — a obrigatoriedade real vem do atributo <code class="inline">required</code> do controle ou da validação semântica.</span></li>
+        <li><span><b>Hint &amp; error</b>: ligados via <code class="inline">aria-describedby</code> no controle. Mensagem de erro tem <code class="inline">role="alert"</code> para anúncio imediato.</span></li>
+        <li><span><b>Sections semânticas</b>: <code class="inline">&lt;section&gt;</code> + <code class="inline">&lt;h3&gt;</code> facilita navegação por landmarks.</span></li>
+        <li><span><b>Responsive</b>: split → stacked em &lt; 760px; row → 1 coluna em &lt; 640px. Sem perda de informação em mobile.</span></li>
+        <li><span><b>Sticky actions</b>: usa <code class="inline">backdrop-filter</code> com fallback (`color-mix` translúcido) — botões ficam sempre alcançáveis em formulários longos.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

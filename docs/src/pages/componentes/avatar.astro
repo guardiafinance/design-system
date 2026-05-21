@@ -1,0 +1,254 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  SizesRow,
+  ShapesRow,
+  ColorsRow,
+  StatusRow,
+  FallbackInitials,
+  AvatarGroup,
+} from "../../previews/avatar";
+import { LiveAvatarSnippet } from "../../previews/avatar-live";
+import avatarSource from "@ds/components/avatar/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Avatar"
+  group="Primitivos"
+  storybookId="components-avatar--default"
+  sourcePath="ui_kit/components/avatar"
+  lede='Identidade visual de uma pessoa ou entidade. <b>5 tamanhos</b>, <b>2 formatos</b>, <b>7 cores</b> de fallback e <b>4 status</b>. Usa o <i>compound pattern</i> (<code class="inline">AvatarImage</code>, <code class="inline">AvatarFallback</code>, <code class="inline">AvatarStatus</code>) e inclui o helper <code class="inline">initials()</code> para iniciais automáticas.'
+>
+  <!-- ============ TAMANHOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>xs · sm · md · lg · xl</small>
+    </div>
+    <div class="preview row">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">xs</code> (20) · <code class="inline">sm</code> (28) ·
+      <code class="inline">md</code> (36, default) · <code class="inline">lg</code> (48) ·
+      <code class="inline">xl</code> (64).
+    </p>
+  </section>
+
+  <!-- ============ FORMATOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Formatos</h2>
+      <small>circle · square</small>
+    </div>
+    <div class="preview row">
+      <ShapesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">circle</code> é o default (pessoas). Use
+      <code class="inline">square</code> para contas e entidades.
+    </p>
+  </section>
+
+  <!-- ============ CORES DE FALLBACK ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Cores de fallback</h2>
+      <small>paleta Guardia + signal</small>
+    </div>
+    <div class="preview row">
+      <ColorsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cinco cores de marca (<code class="inline">violet</code>, <code class="inline">orange</code>,
+      <code class="inline">pink</code>, <code class="inline">yellow</code>,
+      <code class="inline">gray</code>) + dois signals para contextos específicos
+      (<code class="inline">green</code>, <code class="inline">blue</code>).
+    </p>
+  </section>
+
+  <!-- ============ STATUS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Status</h2>
+      <small>online · offline · busy · away</small>
+    </div>
+    <div class="preview row">
+      <StatusRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">AvatarStatus</code> aplica <code class="inline">role="status"</code>
+      e <code class="inline">aria-label</code> em PT-BR ("Online", "Offline", "Ocupado", "Ausente").
+      Sobrescreva com <code class="inline">label</code> para contexto ("Em reunião", etc.).
+    </p>
+  </section>
+
+  <!-- ============ INICIAIS AUTOMÁTICAS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Iniciais automáticas</h2>
+      <small>helper initials()</small>
+    </div>
+    <div class="preview row">
+      <FallbackInitials client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">initials("Fernando Seguim")</code> →
+      <code class="inline">"FS"</code>. Nome único usa as duas primeiras letras;
+      múltiplos nomes, primeira + última inicial.
+    </p>
+  </section>
+
+  <!-- ============ GRUPO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupo</h2>
+      <small>sobreposição + contador</small>
+    </div>
+    <div class="preview">
+      <AvatarGroup client:load />
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">-space-x-2</code> para sobrepor +
+      <code class="inline">ring-2 ring-background</code> para destacar a borda
+      entre avatares.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveAvatarSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <h3 style="font-size:13px;font-weight:600;color:var(--violet-500);margin:18px 0 8px;font-family:var(--font-mono);">Avatar</h3>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"xs" | "sm" | "md" | "lg" | "xl"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Diâmetro do avatar.</td>
+          </tr>
+          <tr>
+            <td class="name">shape</td>
+            <td class="type">"circle" | "square"</td>
+            <td class="default">"circle"</td>
+            <td class="desc">Formato do container.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:13px;font-weight:600;color:var(--violet-500);margin:18px 0 8px;font-family:var(--font-mono);">AvatarImage</h3>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">src</td>
+            <td class="type">string</td>
+            <td class="default">—<span class="required">obrigatório</span></td>
+            <td class="desc">URL da imagem.</td>
+          </tr>
+          <tr>
+            <td class="name">alt</td>
+            <td class="type">string</td>
+            <td class="default">""</td>
+            <td class="desc">Texto alternativo — vazio (decorativo) se a imagem for puramente ilustrativa.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:13px;font-weight:600;color:var(--violet-500);margin:18px 0 8px;font-family:var(--font-mono);">AvatarFallback</h3>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">color</td>
+            <td class="type">"violet" | "orange" | "pink" | "yellow" | "green" | "blue" | "gray"</td>
+            <td class="default">"violet"</td>
+            <td class="desc">Cor do fundo. Em <code class="inline">yellow</code> o texto fica violet-900 para AA.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:13px;font-weight:600;color:var(--violet-500);margin:18px 0 8px;font-family:var(--font-mono);">AvatarStatus</h3>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">status</td>
+            <td class="type">"online" | "offline" | "busy" | "away"</td>
+            <td class="default">"online"</td>
+            <td class="desc">Cor do indicador.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">string</td>
+            <td class="default">tradução do status</td>
+            <td class="desc">Substitui o <code class="inline">aria-label</code> padrão em PT-BR.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/avatar/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={avatarSource}
+      language="tsx"
+      filename="ui_kit/components/avatar/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>AvatarImage</b> aceita <code class="inline">alt</code>; default vazio (decorativo).</span></li>
+        <li><span><b>AvatarStatus</b> usa <code class="inline">role="status"</code> + <code class="inline">aria-label</code>.</span></li>
+        <li><span><b>Contraste</b> AA em todas as cores de fallback.</span></li>
+        <li><span><b>Iniciais</b> via <code class="inline">initials()</code> evitam nomes cortados.</span></li>
+        <li><span><b>yellow</b> usa texto violet-900 para atingir 13:1 de contraste.</span></li>
+        <li><span><b>Grupo</b> com <code class="inline">ring-background</code> garante separação visual.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

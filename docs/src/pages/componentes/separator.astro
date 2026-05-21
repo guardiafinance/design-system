@@ -1,0 +1,177 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  LabeledRow,
+  VerticalRow,
+  CardSectionsRow,
+  VariantsRow,
+} from "../../previews/separator";
+import { LiveSeparatorSnippet } from "../../previews/separator-live";
+import separatorSource from "@ds/components/separator/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Separator"
+  group="Primitivos"
+  storybookId="components-separator--default"
+  sourcePath="ui_kit/components/separator"
+  lede='Divisor horizontal ou vertical para agrupar visualmente blocos de conteúdo. Base no <b>Radix Separator</b>, com três aparências (<code class="inline">solid</code>, <code class="inline">dashed</code>, <code class="inline">dotted</code>) e <code class="inline">label</code> opcional centralizado.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Aparências</h2>
+      <small>solid · dashed · dotted</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Aparências usam <code class="inline">background</code> (não <code class="inline">border</code>)
+      para controle sub-pixel e dashes consistentes entre Chrome/Safari/FF.
+    </p>
+  </section>
+
+  <!-- ============ VARIANTES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes lado a lado</h2>
+      <small>contraste visual</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ LABELED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com label</h2>
+      <small>texto centralizado entre linhas</small>
+    </div>
+    <div class="preview">
+      <LabeledRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando <code class="inline">label</code> está presente, o separador é
+      semântico (não decorativo) e expõe <code class="inline">role="separator"</code>
+      com <code class="inline">aria-orientation</code>.
+    </p>
+  </section>
+
+  <!-- ============ VERTICAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Vertical</h2>
+      <small>inline em barras de status</small>
+    </div>
+    <div class="preview">
+      <VerticalRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use vertical para metadados inline (status · contagem · tempo). Tem
+      <code class="inline">min-height: 16px</code> e estica via
+      <code class="inline">align-self: stretch</code>.
+    </p>
+  </section>
+
+  <!-- ============ CARD SECTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em card de seções</h2>
+      <small>uso canônico — divisão de blocos</small>
+    </div>
+    <div class="preview">
+      <CardSectionsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSeparatorSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">orientation</td>
+            <td class="type">"horizontal" | "vertical"</td>
+            <td class="default">"horizontal"</td>
+            <td class="desc">Direção do divisor.</td>
+          </tr>
+          <tr>
+            <td class="name">appearance</td>
+            <td class="type">"solid" | "dashed" | "dotted"</td>
+            <td class="default">"solid"</td>
+            <td class="desc">Estilo da linha. Dashed/dotted usam gradient para consistência cross-browser.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Texto centralizado entre dois traços (horizontal only).</td>
+          </tr>
+          <tr>
+            <td class="name">decorative</td>
+            <td class="type">boolean</td>
+            <td class="default">true (sem label) · false (com label)</td>
+            <td class="desc">Quando <code class="inline">true</code>, é ignorado por leitores de tela.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLDivElement</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/separator/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={separatorSource}
+      language="tsx"
+      filename="ui_kit/components/separator/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Separator</b> garante <code class="inline">role="separator"</code> e <code class="inline">aria-orientation</code> corretos.</span></li>
+        <li><span><b>Decorativo por default</b> — separadores sem label não poluem a árvore de acessibilidade.</span></li>
+        <li><span><b>Com label</b>, é tratado como divisor semântico de seção (<code class="inline">decorative={`{false}`}</code>).</span></li>
+        <li><span><b>Contraste</b> da cor <code class="inline">--border</code> sobre fundo atende AA (3:1) para elementos não-texto.</span></li>
+        <li><span><b>Sem dependência de cor isolada</b> — os três appearances são distinguíveis por padrão visual.</span></li>
+        <li><span><b>Não use</b> separadores como ornamentação ou entre cada item de lista — prefira espaçamento.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

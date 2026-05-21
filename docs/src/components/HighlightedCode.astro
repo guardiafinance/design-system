@@ -1,0 +1,50 @@
+---
+/**
+ * HighlightedCode — pipe de syntax highlighting via Shiki (build-time, zero JS no cliente)
+ * alimentando o <CodeBlock/> do ui_kit, que cuida do wrapper, header e botão copy.
+ *
+ * Uso:
+ *   <HighlightedCode
+ *     code={source}
+ *     language="tsx"
+ *     filename="Button/index.tsx"
+ *     maxHeight="520px"
+ *   />
+ */
+import { codeToHtml } from "shiki";
+import { CodeBlock } from "@ds/components/code-block";
+
+export interface Props {
+  code: string;
+  language?: string;
+  filename?: string;
+  maxHeight?: string;
+  showLineNumbers?: boolean;
+  copyable?: boolean;
+}
+
+const {
+  code,
+  language = "tsx",
+  filename,
+  maxHeight,
+  showLineNumbers,
+  copyable,
+} = Astro.props;
+
+const html = await codeToHtml(code, {
+  lang: language,
+  theme: "github-dark-dimmed",
+});
+---
+
+<CodeBlock
+  client:load
+  code={code}
+  language={language}
+  filename={filename}
+  highlightedHtml={html}
+  maxHeight={maxHeight}
+  showLineNumbers={showLineNumbers}
+  copyable={copyable}
+/>

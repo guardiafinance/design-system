@@ -1,0 +1,217 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  VariantsRow,
+  SizesRow,
+  IconsRow,
+  AgentRow,
+  StatesRow,
+  FullButton,
+} from "../../previews/button";
+import { LiveButtonSnippet } from "../../previews/button-live";
+import buttonSource from "@ds/components/button/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Button"
+  group="Primitivos"
+  storybookId="components-button--default"
+  sourcePath="ui_kit/components/button"
+  lede='Ação primária do sistema. <b>Seis variantes</b> × <b>cinco tamanhos</b> + slots para ícones e estado de <b>loading</b>. Totalmente acessível via primitivos do Radix.'
+>
+  <!-- ============ VARIANTES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>6 tons semânticos</small>
+    </div>
+    <div class="preview row">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">default</code> usa <code class="inline">bg-primary</code> (laranja Guardia) ·
+      <code class="inline">secondary</code> usa <code class="inline">bg-secondary</code> (violeta).
+    </p>
+  </section>
+
+  <!-- ============ TAMANHOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>xs · sm · default · lg · icon</small>
+    </div>
+    <div class="preview row">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ ÍCONES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícones</h2>
+      <small>leadingIcon · trailingIcon</small>
+    </div>
+    <div class="preview row">
+      <IconsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ícones vêm de <code class="inline">lucide-react</code> — size
+      é controlado pelo CSS do Button (<code class="inline">[&_svg]:size-4</code>).
+    </p>
+  </section>
+
+  <!-- ============ AGENTE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Agente</h2>
+      <small>conversar com o Isac</small>
+    </div>
+    <div class="preview row">
+      <AgentRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para CTAs que acionam o agente, use <code class="inline">variant="secondary"</code>
+      (violeta) + ícone <code class="inline">Sparkles</code> — padrão definido em
+      <code class="inline">docs/BRAND.md § AI-First</code>.
+    </p>
+  </section>
+
+  <!-- ============ ESTADOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>loading · disabled · full</small>
+    </div>
+    <div class="preview row">
+      <StatesRow client:load />
+    </div>
+    <div class="preview">
+      <div class="preview-label">full</div>
+      <FullButton client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">loading</code> mostra spinner, seta
+      <code class="inline">aria-busy="true"</code> e desabilita cliques.
+      <code class="inline">data-loading</code> também ativa o cursor <code class="inline">progress</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveButtonSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Tipo</th>
+            <th>Default</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"default" | "secondary" | "destructive" | "outline" | "ghost" | "link"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Tom visual — mapeia para tokens semânticos do DS.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"xs" | "sm" | "default" | "lg" | "icon"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Altura do botão. <code class="inline">icon</code> é quadrado 40×40.</td>
+          </tr>
+          <tr>
+            <td class="name">full</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Expande para 100% da largura disponível.</td>
+          </tr>
+          <tr>
+            <td class="name">loading</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Mostra spinner, desabilita cliques e marca <code class="inline">aria-busy</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">leadingIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda. Oculto enquanto <code class="inline">loading</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">trailingIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à direita. Oculto enquanto <code class="inline">loading</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Delega o elemento renderizado via Radix Slot (útil para virar um <code class="inline">&lt;a&gt;</code> preservando o estilo).</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita interação. Combinado com <code class="inline">loading</code> permanece desabilitado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Além dessas props, aceita qualquer atributo válido de
+      <code class="inline">HTMLButtonElement</code> (<code class="inline">onClick</code>,
+      <code class="inline">type</code>, <code class="inline">aria-*</code>, etc.).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/button/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={buttonSource}
+      language="tsx"
+      filename="ui_kit/components/button/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Foco visível</b> — anel laranja (<code class="inline">ring-ring</code>) em <code class="inline">:focus-visible</code>.</span></li>
+        <li><span><b>aria-busy</b> setado automaticamente em <code class="inline">loading</code>.</span></li>
+        <li><span><b>Keyboard</b> — Tab navega, Enter/Space ativam.</span></li>
+        <li><span><b>asChild</b> preserva a semântica original (link vira role=link).</span></li>
+        <li><span><b>size="icon"</b> exige <code class="inline">aria-label</code> explícito.</span></li>
+        <li><span><b>disabled</b> desliga <code class="inline">pointer-events</code> e reduz opacidade.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

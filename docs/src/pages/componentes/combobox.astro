@@ -1,0 +1,276 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithLeftIconRow,
+  ClearableRow,
+  LongListRow,
+  SizesRow,
+  StatesRow,
+  FormSubmitRow,
+} from "../../previews/combobox";
+import { LiveComboboxSnippet } from "../../previews/combobox-live";
+import comboboxSource from "@ds/components/combobox/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Combobox"
+  group="Forms"
+  storybookId="components-combobox--default"
+  sourcePath="ui_kit/components/combobox"
+  lede='Dropdown com busca para listas longas (clientes, contas, CNAEs). Filtro client-side em <code class="inline">label</code> + <code class="inline">meta</code>, navegação por teclado completa e a11y de listbox.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>uncontrolled · com value externo</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use quando o número de opções ultrapassa o que faz sentido em um
+      <code class="inline">&lt;Select&gt;</code>. Para listas curtas (até ~7 items),
+      prefira o Select.
+    </p>
+  </section>
+
+  <!-- ============ LEFT ICON ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícone</h2>
+      <small>leftIcon · contexto visual</small>
+    </div>
+    <div class="preview">
+      <WithLeftIconRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CLEARABLE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Clearable</h2>
+      <small>botão X aparece quando há valor</small>
+    </div>
+    <div class="preview">
+      <ClearableRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ LONG LIST ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Lista longa com busca</h2>
+      <small>filtro em label + meta</small>
+    </div>
+    <div class="preview">
+      <LongListRow client:load />
+    </div>
+    <p class="preview-caption">
+      Tente buscar por <strong>"acme"</strong> (nome) ou
+      <strong>"45.678"</strong> (CNPJ) — o filtro casa em ambos.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 32 · md 38 (default) · lg 46</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em formulário</h2>
+      <small>name renderiza input hidden</small>
+    </div>
+    <div class="preview">
+      <FormSubmitRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando você passa <code class="inline">name</code>, o componente também
+      renderiza um <code class="inline">&lt;input type="hidden"&gt;</code> com o
+      valor — funciona com <code class="inline">FormData</code> e submissão nativa.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveComboboxSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">options</td>
+            <td class="type">{`{ value, label, meta?, disabled? }[]`}</td>
+            <td class="default">—</td>
+            <td class="desc">Lista de opções. <code class="inline">meta</code> aparece como linha secundária e participa da busca quando string.</td>
+          </tr>
+          <tr>
+            <td class="name">value / defaultValue</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">onChange</td>
+            <td class="type">(value, option?) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback de seleção. <code class="inline">option</code> é <code class="inline">undefined</code> quando o usuário limpa.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Heights 32 / 38 / 46 px.</td>
+          </tr>
+          <tr>
+            <td class="name">placeholder</td>
+            <td class="type">string</td>
+            <td class="default">"Selecione…"</td>
+            <td class="desc">Texto exibido sem valor.</td>
+          </tr>
+          <tr>
+            <td class="name">searchPlaceholder</td>
+            <td class="type">string</td>
+            <td class="default">"Buscar…"</td>
+            <td class="desc">Placeholder do campo de busca.</td>
+          </tr>
+          <tr>
+            <td class="name">leftIcon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda do trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">clearable</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Mostra botão X para limpar quando há valor.</td>
+          </tr>
+          <tr>
+            <td class="name">emptyText</td>
+            <td class="type">string</td>
+            <td class="default">"Nenhum resultado"</td>
+            <td class="desc">Texto quando o filtro não retorna nada.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Border destructive + <code class="inline">aria-invalid</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">name</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Renderiza <code class="inline">&lt;input hidden&gt;</code> para form submission nativo.</td>
+          </tr>
+          <tr>
+            <td class="name">popoverWidth</td>
+            <td class="type">number | string</td>
+            <td class="default">trigger width</td>
+            <td class="desc">Largura customizada do popup.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação completa</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Space / Enter</td><td class="desc">Abre o popup quando o trigger está focado.</td></tr>
+          <tr><td class="name">↓ / ↑</td><td class="desc">Navega entre opções (no campo de busca).</td></tr>
+          <tr><td class="name">Home / End</td><td class="desc">Vai para a primeira / última opção.</td></tr>
+          <tr><td class="name">Enter</td><td class="desc">Seleciona a opção ativa e fecha.</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha sem selecionar.</td></tr>
+          <tr><td class="name">A–Z / 0–9</td><td class="desc">Filtra a lista (busca incremental).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/combobox/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={comboboxSource}
+      language="tsx"
+      filename="ui_kit/components/combobox/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · listbox pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: <code class="inline">role="combobox"</code> + <code class="inline">aria-haspopup="listbox"</code> + <code class="inline">aria-expanded</code> + <code class="inline">aria-controls</code>.</span></li>
+        <li><span><b>Lista</b>: <code class="inline">role="listbox"</code>; cada item é <code class="inline">role="option"</code> com <code class="inline">aria-selected</code>.</span></li>
+        <li><span><b>Foco virtual</b> via <code class="inline">aria-activedescendant</code> — o foco real fica na busca, leitores de tela anunciam o option ativo.</span></li>
+        <li><span><b>Invalid</b>: <code class="inline">aria-invalid="true"</code> + border destructive. Sempre acompanhe de mensagem inline.</span></li>
+        <li><span><b>Outside click + Escape</b>: gerenciado pelo Radix Popover.</span></li>
+        <li><span><b>Auto-focus</b> na busca após abrir; preserva ordem de tab natural.</span></li>
+        <li><span><b>Não use</b> para listas &lt; 7 items — prefira <code class="inline">&lt;Select&gt;</code> que tem teclado mais leve.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

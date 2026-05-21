@@ -1,0 +1,185 @@
+---
+/**
+ * ComponentPreview — layout-base para cada página de componente.
+ *
+ * Visual idêntico às páginas HTML em docs/public/preview/ (colors_and_type.css
+ * do wip) + o CSS do design-system carregado para que o componente React
+ * renderize com os tokens Guardia aplicados.
+ *
+ * A página é servida dentro do iframe do index.astro — por isso não inclui
+ * navegação (topbar / sidebar).
+ */
+import "../../../ui_kit/styles/index.css";
+import { BookOpen, Github, ExternalLink } from "lucide-react";
+
+export interface Props {
+  kicker: string;
+  title: string;
+  lede: string;
+  group: string; // ex: "Primitivos"
+  storybookId?: string; // ex: "primitives-button--default"
+  sourcePath?: string; // default: ui_kit/components/<slug>
+}
+
+const { kicker, title, lede, group, storybookId, sourcePath } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const colorsCssUrl = `${base}/colors_and_type.css`;
+const baseCssUrl = `${base}/preview/_base.css`;
+const storybookRoot = import.meta.env.DEV
+  ? "http://localhost:6006/"
+  : "https://69e15f3b0534f646ac88774b-cpmytvatdp.chromatic.com/";
+const githubRoot = "https://github.com/guardiafinance/design-system/tree/master/";
+const storybookUrl = storybookId ? `${storybookRoot}?path=/docs/${storybookId}` : storybookRoot;
+const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Guardia · {title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href={colorsCssUrl} />
+    <link rel="stylesheet" href={baseCssUrl} />
+    <style is:global>
+      body {
+        padding: 44px 48px 72px;
+        max-width: 1100px;
+      }
+      .hdr { margin-bottom: 28px; }
+      .hdr h1 {
+        font-size: 30px; font-weight: 700; letter-spacing: -0.015em;
+        color: var(--violet-500); margin: 6px 0 4px;
+      }
+      .hdr .lede {
+        font-size: 15px; line-height: 1.6; color: var(--gray-700);
+        max-width: 720px; margin: 14px 0 0;
+      }
+      .hdr .lede b { color: var(--fg); font-weight: 600; }
+      .hdr .hdr-actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+      .hdr .hdr-actions a {
+        font-family: var(--font-mono); font-size: 11.5px;
+        color: var(--violet-700); background: var(--violet-100);
+        padding: 6px 10px; border-radius: var(--radius-sm);
+        text-decoration: none; border: 1px solid transparent;
+        transition: border-color .12s;
+        display: inline-flex; align-items: center; gap: 6px;
+      }
+      .hdr .hdr-actions a:hover { border-color: var(--violet-300); }
+      .hdr .hdr-actions svg { width: 14px; height: 14px; stroke-width: 1.75; }
+      .hdr .hdr-actions .ext { opacity: 0.5; }
+
+      .sec { margin-top: 44px; }
+      .sec-hdr {
+        display: flex; align-items: baseline; gap: 12px;
+        padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        margin-bottom: 18px;
+      }
+      .sec-hdr h2 {
+        margin: 0; font-size: 18px; font-weight: 600;
+        color: var(--fg); letter-spacing: -0.01em;
+      }
+      .sec-hdr small {
+        font-size: 11px; color: var(--gray-500);
+        letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+      }
+
+      /* Blocos de preview — área onde o componente real é renderizado */
+      .preview {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        display: flex; flex-direction: column; gap: 16px;
+        margin-bottom: 12px;
+      }
+      .preview.row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+      .preview.grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+      .preview.bg-subtle { background: var(--gray-50); }
+      .preview-caption {
+        font-size: 11.5px; color: var(--gray-500);
+        font-family: var(--font-mono); letter-spacing: -0.01em;
+      }
+      .preview-label {
+        font-size: 10.5px; font-weight: 600;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--gray-500);
+      }
+
+      /* Código */
+      pre {
+        background: var(--violet-900); color: #EDE4F3;
+        padding: 14px 18px; border-radius: var(--radius-md);
+        overflow-x: auto; font-family: var(--font-mono);
+        font-size: 12.5px; line-height: 1.65;
+        margin: 0 0 10px;
+      }
+      pre .k { color: #F1C08C; }
+      pre .s { color: #D7BFE4; }
+      pre .c { color: #8F7AA6; font-style: italic; }
+      code.inline {
+        font-family: var(--font-mono); font-size: 12px;
+        background: var(--violet-100); color: var(--violet-700);
+        padding: 2px 6px; border-radius: 3px;
+      }
+
+      /* Tabela de props */
+      .props { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+      .props table { width: 100%; border-collapse: collapse; }
+      .props th, .props td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+      .props th { background: #FAF8FC; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--gray-500); }
+      .props tr:last-child td { border-bottom: none; }
+      .props td.name { font-family: var(--font-mono); font-size: 12px; color: var(--violet-700); width: 20%; font-weight: 500; }
+      .props td.type { font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-700); width: 28%; }
+      .props td.default { font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-500); width: 14%; }
+      .props td.desc { color: var(--gray-700); font-size: 12.5px; }
+      .props .required {
+        font-family: var(--font-mono); font-size: 9px; color: var(--signal-red);
+        margin-left: 4px; letter-spacing: 0.05em;
+      }
+
+      /* a11y checklist */
+      .a11y ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+      .a11y li {
+        font-size: 12.5px; color: var(--gray-700);
+        display: flex; align-items: flex-start; gap: 8px;
+        padding: 8px 12px; background: #fff;
+        border: 1px solid var(--border); border-radius: var(--radius-sm);
+      }
+      .a11y li::before {
+        content: "✓"; color: var(--signal-green);
+        font-weight: 700; flex-shrink: 0;
+      }
+      .a11y li b { color: var(--fg); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div class="hdr">
+      <div class="eyebrow">{kicker}</div>
+      <h1>{title}</h1>
+      <p class="lede" set:html={lede}></p>
+      <div class="hdr-actions">
+        <a href={storybookUrl} target="_blank" rel="noreferrer">
+          <BookOpen aria-hidden="true" />
+          <span>Storybook</span>
+          <ExternalLink aria-hidden="true" className="ext" />
+        </a>
+        <a href={sourceUrl} target="_blank" rel="noreferrer">
+          <Github aria-hidden="true" />
+          <span>GitHub</span>
+          <ExternalLink aria-hidden="true" className="ext" />
+        </a>
+      </div>
+    </div>
+    <slot />
+    <p
+      style="margin-top:56px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--gray-500);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;"
+    >
+      {group}
+    </p>
+  </body>
+</html>

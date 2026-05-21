@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Tipografia</title>
+<link rel="stylesheet" href="_base.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,500&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Lastica';
+    src: url('../assets/fonts/Lastica.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  .block { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; background: var(--surface); margin-bottom: 14px; }
+  .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--violet-500); margin-bottom: 10px; }
+  .tag.reserved { color: var(--orange-700); background: var(--orange-100); padding: 3px 8px; border-radius: 999px; }
+  .specimen { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; color: var(--violet-500); }
+  .lastica-specimen { font-family: 'Lastica', 'Helvetica Neue', Arial, sans-serif; letter-spacing: -0.03em; font-weight: 900; }
+  .poppins { font-family: 'Poppins', system-ui, sans-serif; }
+  .roboto { font-family: 'Roboto', system-ui, sans-serif; }
+  .weights { display: flex; flex-wrap: wrap; gap: 14px 24px; margin-top: 14px; }
+  .w { font-size: 15px; color: var(--gray-500); }
+  .note { font-size: 12px; color: var(--gray-500); line-height: 1.5; margin-top: 10px; max-width: 720px; }
+
+  .import-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .import-card {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    min-width: 0;
+  }
+  .import-card h4 {
+    margin: 0 0 6px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--violet-700);
+  }
+  .import-card p {
+    margin: 0 0 10px;
+    font-size: 12.5px; line-height: 1.5;
+    color: var(--gray-700);
+  }
+  pre.code {
+    margin: 0;
+    background: var(--mono-black); color: #E8E1EE;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 11.5px; line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  pre.code .c { color: #8A7A99; font-style: italic; }
+  pre.code .s { color: #FFC30A; }
+  pre.code .k { color: #DB6286; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">TIPOGRAFIA</div>
+  <h1 class="card-title">Lastica · Poppins · Roboto</h1>
+  <p class="card-sub">Lastica é reservada aos logotipos oficiais. Poppins é a fonte corrente em toda comunicação. Roboto é o fallback oficial para ambientes onde Poppins não está disponível.</p>
+
+  <!-- ================ LASTICA ================ -->
+  <div class="block">
+    <span class="tag reserved">Lastica · EXCLUSIVA para logotipos</span>
+    <div class="specimen lastica-specimen">Guardia</div>
+    <div class="note">Sans-serif geométrica criada por Alberto Fontense. Uso limitado à construção dos logotipos, assinatura oficial e aplicações em que a marca aparece como selo. <strong>Nunca em UI, documentos ou corpo de texto.</strong></div>
+
+    <div class="import-grid">
+      <div class="import-card">
+        <h4>Arquivo oficial</h4>
+        <p>TTF disponível em <code>assets/fonts/Lastica.ttf</code>. Uso restrito — consulte a equipe de Brand antes de incluir em qualquer peça.</p>
+      </div>
+      <div class="import-card">
+        <h4>@font-face</h4>
+<pre class="code"><span class="c">/* apenas para renderizar logos */</span>
+<span class="k">@font-face</span> {
+  font-family: <span class="s">'Lastica'</span>;
+  src: url(<span class="s">'assets/fonts/Lastica.ttf'</span>)
+       format(<span class="s">'truetype'</span>);
+  font-display: swap;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================ POPPINS ================ -->
+  <div class="block">
+    <span class="tag">Poppins · corrente (brand)</span>
+    <div class="specimen poppins">A Guardia opera, audita e fecha.</div>
+    <div class="weights poppins">
+      <span class="w" style="font-weight:100">Thin 100</span>
+      <span class="w" style="font-weight:200">ExtraLight 200</span>
+      <span class="w" style="font-weight:300">Light 300</span>
+      <span class="w" style="font-weight:400">Regular 400</span>
+      <span class="w" style="font-weight:500">Medium 500</span>
+      <span class="w" style="font-weight:600">SemiBold 600</span>
+      <span class="w" style="font-weight:700">Bold 700</span>
+      <span class="w" style="font-weight:800">ExtraBold 800</span>
+      <span class="w" style="font-weight:900">Black 900</span>
+      <span class="w" style="font-weight:500;font-style:italic">Itálico</span>
+    </div>
+    <div class="note">9 pesos + itálicos. Uso: documentos, apresentações, propostas, site, produto, e-mails, posts, materiais de marketing.</div>
+
+    <div class="import-grid">
+      <div class="import-card">
+        <h4>Google Fonts · HTML</h4>
+        <p>Recomendado para site e produto. Zero peso de setup, cache CDN global.</p>
+<pre class="code"><span class="c">&lt;!-- &lt;head&gt; --&gt;</span>
+&lt;link rel=<span class="s">"preconnect"</span>
+      href=<span class="s">"https://fonts.googleapis.com"</span>&gt;
+&lt;link href=<span class="s">"https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,400;1,500&amp;display=swap"</span>
+      rel=<span class="s">"stylesheet"</span>&gt;</pre>
+      </div>
+      <div class="import-card">
+        <h4>Google Fonts · CSS @import</h4>
+        <p>Para ambientes sem acesso ao <code>&lt;head&gt;</code>.</p>
+<pre class="code"><span class="c">/* topo do seu CSS */</span>
+<span class="k">@import</span> url(<span class="s">'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,400&amp;display=swap'</span>);
+
+body {
+  font-family: <span class="s">'Poppins'</span>, <span class="s">'Roboto'</span>, sans-serif;
+}</pre>
+      </div>
+      <div class="import-card">
+        <h4>Self-hosted · @font-face</h4>
+        <p>Para apps internas, offline, ou controle total sobre versão. TTFs em <code>assets/fonts/poppins/</code>.</p>
+<pre class="code"><span class="k">@font-face</span> {
+  font-family: <span class="s">'Poppins'</span>;
+  src: url(<span class="s">'./poppins/Poppins-Regular.ttf'</span>)
+       format(<span class="s">'truetype'</span>);
+  font-weight: 400;
+  font-display: swap;
+}
+<span class="c">/* repita p/ cada peso usado */</span></pre>
+      </div>
+      <div class="import-card">
+        <h4>npm · @fontsource (React/Vite/Next)</h4>
+        <p>Bundle otimizado por peso. Importe só os pesos que você usa.</p>
+<pre class="code"><span class="c">// terminal</span>
+npm install @fontsource/poppins
+
+<span class="c">// app.tsx ou layout raiz</span>
+<span class="k">import</span> <span class="s">"@fontsource/poppins/400.css"</span>;
+<span class="k">import</span> <span class="s">"@fontsource/poppins/500.css"</span>;
+<span class="k">import</span> <span class="s">"@fontsource/poppins/600.css"</span>;
+<span class="k">import</span> <span class="s">"@fontsource/poppins/700.css"</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================ ROBOTO ================ -->
+  <div class="block">
+    <span class="tag">Roboto · fallback oficial</span>
+    <div class="specimen roboto">A Guardia opera, audita e fecha.</div>
+    <div class="weights roboto">
+      <span class="w" style="font-weight:300">Light 300</span>
+      <span class="w" style="font-weight:400">Regular 400</span>
+      <span class="w" style="font-weight:500">Medium 500</span>
+      <span class="w" style="font-weight:600">SemiBold 600</span>
+      <span class="w" style="font-weight:700">Bold 700</span>
+    </div>
+    <div class="note">Hierarquia idêntica à Poppins (substituição direta por peso). Uso: e-mails nativos, sistemas restritos à importação de fontes, ambientes onde Poppins não carrega.</div>
+
+    <div class="import-grid">
+      <div class="import-card">
+        <h4>Google Fonts · HTML</h4>
+        <p>Mesma via da Poppins — adicione ao mesmo <code>&lt;link&gt;</code>.</p>
+<pre class="code">&lt;link href=<span class="s">"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap"</span>
+      rel=<span class="s">"stylesheet"</span>&gt;</pre>
+      </div>
+      <div class="import-card">
+        <h4>Cadeia de fallback recomendada</h4>
+        <p>Defina uma vez e use em todo o projeto.</p>
+<pre class="code"><span class="c">/* colors_and_type.css já expõe: */</span>
+:root {
+  <span class="k">--font-sans</span>: <span class="s">'Poppins'</span>,
+                 <span class="s">'Roboto'</span>,
+                 system-ui, sans-serif;
+}
+
+body { font-family: <span class="s">var(--font-sans)</span>; }</pre>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

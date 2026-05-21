@@ -12,3 +12,13 @@ storybook-static
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# Claude Code worktree and plans
+.worktrees/
+.plans/
+
+# Astro generated cache
+docs/.astro/
+
+# Reference bundle (read-only working area, not for commit)
+wip/

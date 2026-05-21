@@ -1,0 +1,6 @@
+# CODEOWNERS for guardiatechnology/design-system
+#
+# Per lex-pr-quality: the repository MUST have a default owner so
+# branch protection auto-requests review on every PR.
+
+* @fernandoseguim

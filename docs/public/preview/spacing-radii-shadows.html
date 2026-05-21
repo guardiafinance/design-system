@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Guardia · Raios e sombras</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .section { margin-bottom: 24px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--violet-500); margin: 0 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .grid-s { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .tile .label { font-family: var(--font-mono); font-size: 11px; color: var(--violet-700); }
+  .tile .val { font-size: 10px; color: var(--gray-500); margin-top: 3px; font-family: var(--font-mono); }
+  .shadow-tile { height: 92px; background: var(--mono-white); border-radius: var(--radius-md); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--gray-500); }
+</style></head><body>
+  <div class="eyebrow">RAIOS · SOMBRAS</div>
+  <h1 class="card-title">Geometria e elevação</h1>
+  <p class="card-sub">Raios pequenos (2–16px) dominam; raios grandes ficam em hero cards. Sombras têm tint violeta (<code>rgba(47,14,64,α)</code>); o brand shadow tem tint laranja e é reservado ao CTA primário.</p>
+
+  <div class="section">
+    <div class="section-title">Raios</div>
+    <div class="grid">
+      <div class="tile" style="border-radius:2px"><div class="label">xs</div><div class="val">2px</div></div>
+      <div class="tile" style="border-radius:3px"><div class="label">sm</div><div class="val">3px</div></div>
+      <div class="tile" style="border-radius:6px"><div class="label">md</div><div class="val">6px</div></div>
+      <div class="tile" style="border-radius:8px"><div class="label">lg</div><div class="val">8px</div></div>
+      <div class="tile" style="border-radius:10px"><div class="label">xl</div><div class="val">10px</div></div>
+      <div class="tile" style="border-radius:14px"><div class="label">2xl</div><div class="val">14px</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sombras · tint violeta</div>
+    <div class="grid-s" style="padding: 18px; background: #F7F5F9; border-radius: 8px;">
+      <div class="shadow-tile" style="box-shadow: var(--shadow-xs)">xs</div>
+      <div class="shadow-tile" style="box-shadow: var(--shadow-sm)">sm</div>
+      <div class="shadow-tile" style="box-shadow: var(--shadow-md)">md</div>
+      <div class="shadow-tile" style="box-shadow: var(--shadow-lg)">lg</div>
+      <div class="shadow-tile" style="box-shadow: var(--shadow-xl)">xl</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sombra brand · reservada ao CTA primário</div>
+    <div style="padding: 28px; background: #FDFDFD; border-radius: 8px; border: 1px solid var(--border);">
+      <button style="background: var(--orange-500); color: #fff; border: 0; padding: 12px 24px; border-radius: 6px; font-family: var(--font-sans); font-weight: 600; font-size: 14px; box-shadow: var(--shadow-brand); cursor: pointer;">Criar conciliação</button>
+    </div>
+  </div>
+</body></html>

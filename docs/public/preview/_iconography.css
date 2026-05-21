@@ -1,0 +1,132 @@
+/* Shared styles for Iconography sub-pages
+ * ----------------------------------------
+ * Loaded after _base.css. Provides grid, icon cards,
+ * section headers and hero/keyicon blocks.
+ */
+
+.icono-wrap { max-width: 1120px; }
+
+.icono-hdr { margin-bottom: 24px; }
+.icono-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gray-500);
+  display: flex; align-items: center; gap: 8px;
+}
+.icono-eyebrow .crumb-sep { color: var(--gray-300); }
+.icono-eyebrow .crumb-up {
+  color: var(--gray-500); text-decoration: none;
+}
+.icono-eyebrow .crumb-up:hover { color: var(--violet-500); }
+
+.icono-title {
+  margin: 6px 0 6px;
+  font-size: 28px; font-weight: 700; letter-spacing: -0.015em;
+  color: var(--violet-500);
+}
+.icono-tag {
+  display: inline-block; font-family: var(--font-mono);
+  font-size: 11px; color: var(--violet-700); background: var(--violet-100);
+  padding: 2px 8px; border-radius: 999px; margin-top: 4px;
+}
+.icono-lede {
+  font-size: 14px; color: var(--gray-700); line-height: 1.55;
+  margin: 14px 0 0; max-width: 760px;
+}
+.icono-lede code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: var(--gray-100); color: var(--violet-700);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+/* Grid of icons */
+.icono-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 8px;
+}
+.icono-cell {
+  background: #fff; border: 1px solid var(--border); border-radius: 6px;
+  padding: 14px 12px 10px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px;
+  transition: border-color .16s var(--ease-standard),
+              background .16s var(--ease-standard);
+}
+.icono-cell:hover { border-color: var(--violet-200); background: #FAF8FC; }
+.icono-cell svg { color: var(--violet-500); stroke-width: 1.75; }
+.icono-cell .label {
+  font-size: 12px; font-weight: 500; color: var(--violet-500);
+  text-align: center; line-height: 1.25;
+}
+.icono-cell .name {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--gray-500); text-align: center;
+}
+.icono-cell .obs {
+  font-size: 10px; color: var(--gray-500); line-height: 1.35;
+  text-align: center; font-style: italic; padding: 0 4px;
+}
+
+/* Category accent variants */
+.icono-cell.accent-orange svg { color: var(--orange-500); }
+.icono-cell.accent-orange { border-color: var(--orange-100); background: #FFFCF8; }
+.icono-cell.accent-violet svg { color: var(--violet-500); }
+.icono-cell.accent-violet { border-color: var(--violet-100); background: #FAF7FC; }
+
+/* Section headers inside a page */
+.icono-section { margin-top: 28px; }
+.icono-section-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px; margin-bottom: 14px;
+}
+.icono-section-name {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--violet-500);
+}
+.icono-section-count {
+  font-family: var(--font-mono); font-size: 11px; color: var(--gray-500);
+}
+.icono-section-desc {
+  font-size: 12px; color: var(--gray-700); line-height: 1.5;
+  margin: -6px 0 14px; max-width: 760px;
+}
+
+/* Hero block for a category page */
+.icono-hero {
+  display: flex; align-items: center; gap: 18px;
+  padding: 18px 20px;
+  background: var(--violet-100);
+  border: 1px solid var(--violet-100);
+  border-radius: 10px;
+  margin: 4px 0 24px;
+}
+.icono-hero .keyicon {
+  width: 56px; height: 56px; flex-shrink: 0;
+  background: #fff; border: 1px solid var(--violet-200);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.icono-hero .keyicon svg { color: var(--violet-500); width: 26px; height: 26px; }
+.icono-hero .keylabel {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--violet-700); margin-top: 3px; display: inline-block;
+}
+.icono-hero h2 {
+  margin: 0 0 3px;
+  font-size: 15px; font-weight: 700; color: var(--violet-500);
+  letter-spacing: -0.01em;
+}
+.icono-hero p {
+  margin: 0; font-size: 12.5px; color: var(--gray-700);
+  line-height: 1.55; max-width: 680px;
+}
+
+/* Orange variant (Guardia core) */
+.icono-hero.core {
+  background: var(--orange-100);
+  border-color: var(--orange-100);
+}
+.icono-hero.core .keyicon { border-color: var(--orange-200); }
+.icono-hero.core .keyicon svg { color: var(--orange-700); }
+.icono-hero.core .keylabel { color: var(--orange-700); }

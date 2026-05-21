@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Componentes React</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { padding: 48px 56px; max-width: 1480px; }
+
+  .page-hdr { margin-bottom: 36px; }
+  .page-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gray-500);
+  }
+  .page-title {
+    margin: 6px 0 4px; font-size: 32px; font-weight: 700;
+    letter-spacing: -0.02em; color: var(--violet-500);
+  }
+  .page-sub {
+    font-size: 14px; color: var(--gray-700); line-height: 1.6;
+    max-width: 760px; margin: 0;
+  }
+  .page-meta {
+    display: flex; gap: 20px; margin-top: 14px;
+    font-size: 12px; color: var(--gray-500);
+  }
+  .page-meta b { color: var(--violet-500); font-weight: 600; }
+
+  .group { margin-top: 40px; }
+  .group-hdr {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .group-num {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--violet-500); background: var(--violet-100);
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .group-title {
+    margin: 0; font-size: 15px; font-weight: 600;
+    letter-spacing: -0.01em; color: var(--fg);
+  }
+  .group-desc {
+    margin: 0; font-size: 12px; color: var(--gray-500);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .c-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: border-color .15s, transform .15s;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .c-card:hover { border-color: var(--violet-300); transform: translateY(-1px); }
+
+  .c-head { display: flex; align-items: center; gap: 10px; }
+  .c-glyph {
+    width: 32px; height: 32px;
+    background: var(--violet-100); color: var(--violet-500);
+    border-radius: var(--radius-sm);
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .c-name { margin: 0; font-size: 14px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+  .c-tag { font-family: var(--font-mono); font-size: 10px; color: var(--gray-500); }
+
+  .c-desc {
+    font-size: 12px; line-height: 1.5; color: var(--gray-700);
+    margin: 0; min-height: 34px;
+  }
+
+  .c-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .c-link {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 8px; border-radius: 4px;
+    text-decoration: none; border: 1px solid var(--border);
+    background: #FAF8FC; color: var(--gray-700);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .c-link:hover { background: var(--violet-100); color: var(--violet-500); border-color: var(--violet-300); }
+  .c-link.primary { background: var(--violet-500); color: #fff; border-color: var(--violet-500); }
+  .c-link.primary:hover { background: var(--violet-700); border-color: var(--violet-700); }
+  .c-link.disabled { opacity: .4; pointer-events: none; }
+
+  /* dense status dot on card header showing if playground exists */
+  .c-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--verde-500); margin-left: auto;
+  }
+  .c-dot.pending { background: var(--gray-300); }
+</style>
+</head>
+<body>
+
+<div class="page-hdr">
+  <div class="page-eyebrow">DESIGN SYSTEM · REACT KIT</div>
+  <h1 class="page-title">Componentes React</h1>
+  <p class="page-sub">
+    Kit neutro de <b>45 componentes</b> em React + TypeScript, organizados em 5 lotes
+    funcionais. Cada um é independente (pasta própria com <code>index.tsx</code>,
+    <code>index.css</code> e, opcionalmente, <code>*.playground.html</code>) e
+    consome apenas os tokens de <code>colors_and_type.css</code>.
+  </p>
+  <div class="page-meta">
+    <span><b>45</b> componentes</span>
+    <span><b>5</b> lotes</span>
+    <span><b>React 18.3.1</b> · TSX via Babel</span>
+    <span><b>CSS isolado</b> por prefixo <code>g-*</code></span>
+  </div>
+</div>
+
+<!-- LOTE 1 · PRIMITIVOS -->
+<section class="group">
+  <div class="group-hdr">
+    <span class="group-num">LOTE 1</span>
+    <h2 class="group-title">Primitivos</h2>
+    <p class="group-desc">átomos de identidade, ação e feedback visual base</p>
+  </div>
+  <div class="grid" id="lote-1"></div>
+</section>
+
+<!-- LOTE 2 · FORMS -->
+<section class="group">
+  <div class="group-hdr">
+    <span class="group-num">LOTE 2</span>
+    <h2 class="group-title">Formulários</h2>
+    <p class="group-desc">controles de entrada e coleta de dados</p>
+  </div>
+  <div class="grid" id="lote-2"></div>
+</section>
+
+<!-- LOTE 3 · OVERLAYS & FEEDBACK -->
+<section class="group">
+  <div class="group-hdr">
+    <span class="group-num">LOTE 3</span>
+    <h2 class="group-title">Overlays &amp; Feedback</h2>
+    <p class="group-desc">camadas flutuantes, mensagens e estados de sistema</p>
+  </div>
+  <div class="grid" id="lote-3"></div>
+</section>
+
+<!-- LOTE 4 · NAVEGAÇÃO -->
+<section class="group">
+  <div class="group-hdr">
+    <span class="group-num">LOTE 4</span>
+    <h2 class="group-title">Navegação</h2>
+    <p class="group-desc">estrutura e movimentação entre áreas</p>
+  </div>
+  <div class="grid" id="lote-4"></div>
+</section>
+
+<!-- LOTE 5 · DATA & CONTEÚDO -->
+<section class="group">
+  <div class="group-hdr">
+    <span class="group-num">LOTE 5</span>
+    <h2 class="group-title">Data &amp; Conteúdo</h2>
+    <p class="group-desc">exibição de dados, métricas e comunicação com agentes</p>
+  </div>
+  <div class="grid" id="lote-5"></div>
+</section>
+
+<script>
+// prettier-ignore
+const COMPONENTS = {
+  1: [
+    ["Button",       "BT", "button.html",        "Ação principal. 6 variantes, 3 tamanhos, ícones e loading.",           true ],
+    ["IconButton",   "IB", "icon-button.html",   "Botão de ação apenas com ícone. 5 variantes e 3 tamanhos.",             true ],
+    ["ButtonGroup",  "BG", "button-group.html",  "Agrupa botões relacionados em barra horizontal.",                       true ],
+    ["Badge",        "BD", "badge.html",         "Indicador compacto com tom semântico. Ponto opcional e remover.",       true ],
+    ["Chip",         "CH", "chip.html",          "Token selecionável/removível para filtros, tags e facets.",             true ],
+    ["Avatar",       "AV", "avatar.html",        "Identidade visual com imagem ou iniciais; 5 tamanhos e status.",        true ],
+    ["Label",        "LB", "label.html",         "Rótulo de campo com obrigatoriedade e descrição auxiliar.",             true ],
+    ["Separator",    "SP", "separator.html",     "Linha divisória horizontal ou vertical, sólida ou tracejada.",          true ],
+    ["Spinner",      "SN", "spinner.html",       "Indicador de carregamento inline. 3 tamanhos, herda cor.",              true ],
+    ["Skeleton",     "SK", "skeleton.html",      "Placeholder animado para conteúdo em carregamento.",                    true ],
+  ],
+  2: [
+    ["Input",        "IN", "input.html",         "Campo de texto com slots de ícone, affix, erro e descrição.",           true ],
+    ["Textarea",     "TA", "textarea.html",      "Campo multi-linha com auto-resize opcional e contador.",                true ],
+    ["Select",       "SE", "select.html",        "Dropdown nativo estilizado. Agrupamento e ícone de status.",            true ],
+    ["Combobox",     "CB", "combobox.html",      "Select com busca. Navegação por teclado e destaques de match.",         true ],
+    ["Checkbox",     "CK", "checkbox.html",      "Caixa de seleção com estado indeterminado e grupos.",                   true ],
+    ["Radio",        "RD", "radio.html",         "Botão de opção exclusiva com grupos verticais/horizontais.",            true ],
+    ["Switch",       "SW", "switch.html",        "Alternador on/off, 2 tamanhos, label e descrição.",                     true ],
+    ["Slider",       "SL", "slider.html",        "Controle de faixa contínua ou por passos, com marcas.",                 true ],
+    ["DatePicker",   "DP", "date-picker.html",   "Seletor de data/intervalo com presets e calendário duplo.",             true ],
+    ["FileUpload",   "FU", "file-upload.html",   "Drop-zone + lista de arquivos com progresso e remoção.",                true ],
+  ],
+  3: [
+    ["Dialog",       "DG", "dialog.html",        "Modal central bloqueante com header/body/footer e trap de foco.",       true ],
+    ["Drawer",       "DR", "drawer.html",        "Painel lateral esquerda/direita para fluxos longos.",                   true ],
+    ["Popover",      "PV", "popover.html",       "Conteúdo flutuante ancorado em trigger; rich content permitido.",       true ],
+    ["Menu",         "MN", "menu.html",          "Lista de ações contextuais com ícones, atalhos e separadores.",         true ],
+    ["Tooltip",      "TT", "tooltip.html",       "Dica curta no hover/focus em 4 posições.",                              true ],
+    ["Toast",        "TS", "toast.html",         "Notificação transiente com 4 tons e ação opcional.",                    true ],
+    ["Alert",        "AL", "alert.html",         "Faixa inline persistente (info/sucesso/atenção/crítico).",              true ],
+    ["EmptyState",   "ES", "empty-state.html",   "Estado vazio com ilustração, copy e CTAs.",                             true ],
+    ["ConfidenceIndicator","CI","confidence-indicator.html","Barra + rótulo de confiança do agente (alto/médio/baixo).", true ],
+  ],
+  4: [
+    ["Tabs",         "TB", "tabs.html",          "Navegação entre seções em linha ou pílulas, com contador.",             true ],
+    ["Breadcrumbs",  "BR", "breadcrumbs.html",   "Trilha hierárquica com truncagem e ícone de home.",                     true ],
+    ["Pagination",   "PG", "pagination.html",    "Paginação numérica ou prev/next com saltos e resumo.",                  true ],
+    ["SidebarNav",   "SB", "sidebar-nav.html",   "Navegação lateral colapsável com grupos e badges.",                     true ],
+    ["TopBar",       "TP", "topbar.html",        "Barra superior com workspace, busca, agentes e perfil.",                true ],
+    ["Command",      "CM", "command.html",       "Palette ⌘K com busca global, grupos e atalhos.",                        true ],
+    ["Accordion",    "AC", "accordion.html",     "Lista de seções expansíveis, single ou multi-open.",                    true ],
+  ],
+  5: [
+    ["Card",         "CD", "card.html",          "Container base para conteúdo com header, body e footer.",               true ],
+    ["MetricCard",   "MC", "metric-card.html",   "KPI com valor grande, delta, sparkline e trend.",                       true ],
+    ["DataTable",    "DT", "data-table.html",    "Tabela com seleção, ordenação, expansão e row-actions.",                true ],
+    ["Chart",        "CT", "chart.html",         "Gráficos (line/area/bar/donut) com axis e legenda.",                    true ],
+    ["Timeline",     "TL", "timeline.html",      "Linha do tempo vertical com eventos e agrupamento por dia.",            true ],
+    ["Progress",     "PR", "progress.html",      "Barra de progresso linear com valor e label.",                          true ],
+    ["AgentCard",    "AG", "agent-card.html",    "Card do agente com nome, avatar, capabilities e status ao vivo.",       true ],
+    ["ChatMessage",  "MS", "chat-message.html",  "Mensagem de chat (user/agent/system) com citações e ações.",            true ],
+    ["Reconciliation","RC","reconciliation.html","Painel split comparando fonte A vs B com diff linha a linha.",          true ],
+  ],
+};
+
+function cardHTML(c) {
+  const [name, glyph, previewFile, desc, hasPlayground] = c;
+  const slug = name.replace(/([A-Z])/g, (_,l,i) => (i? "-": "") + l.toLowerCase());
+  const playgroundPath = `../ui_kits/components/${name}/${name}.playground.html`;
+  const srcPath = `../ui_kits/components/${name}/index.tsx`;
+  const previewPath = `components/${previewFile}`;
+
+  return `
+    <article class="c-card">
+      <div class="c-head">
+        <div class="c-glyph">${glyph}</div>
+        <div>
+          <h3 class="c-name">${name}</h3>
+          <span class="c-tag">&lt;${name} /&gt;</span>
+        </div>
+        <span class="c-dot${hasPlayground ? "" : " pending"}" title="${hasPlayground ? "playground pronto" : "playground pendente"}"></span>
+      </div>
+      <p class="c-desc">${desc}</p>
+      <div class="c-links">
+        <a class="c-link primary${hasPlayground ? "" : " disabled"}" href="${playgroundPath}"${hasPlayground ? "" : ' aria-disabled="true"'}>
+          ${hasPlayground ? "Playground" : "Em breve"}
+        </a>
+        <a class="c-link" href="${previewPath}">Preview CSS</a>
+        <a class="c-link" href="${srcPath}">Código-fonte</a>
+      </div>
+    </article>
+  `;
+}
+
+for (const lote of [1, 2, 3, 4, 5]) {
+  document.getElementById(`lote-${lote}`).innerHTML =
+    COMPONENTS[lote].map(cardHTML).join("");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,855 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Ahrena: Platform-specific artifact application
+#
+# Defines per platform:
+#   1. Transposition: Ahrena pilar -> platform resource (lex/codex -> rules, etc.)
+#   2. Application config: how each artifact is applied (alwaysApply, globs, description)
+#
+# Per lex-platforms-rules: every Lexis and Codex MUST have an entry under cursor.rules
+# with at least description. Default (framework) can be overridden by .ahrena/platforms.yaml.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+cursor:
+  transposition:
+    lex: rules
+    codex: rules
+    kata: skills
+    warrior: agents
+    cry: commands
+
+  rules:
+    _foundation/process/lexis/lex-agent-planning:
+      alwaysApply: true
+      description: "Before any multi-step task, create a Plan sub-issue on GitHub linked to its parent Issue and materialize the provider cache at ./{agent}/plans/plan-{M}-{slug}.md (where {M} is the sub-issue number and {slug} matches the branch). Present to the user and wait for confirmation before executing."
+    _foundation/process/codex/codex-agent-planning:
+      alwaysApply: false
+      description: "When creating or maintaining agent task plans, consult this codex for canonical path resolution, naming convention, full template, and lifecycle states."
+    _foundation/process/lexis/lex-directives:
+      alwaysApply: true
+      description: "Read .ahrena/.directives before producing any artifact. Apply at session start."
+    _foundation/process/lexis/lex-checkpoint:
+      alwaysApply: true
+      description: "Read .checkpoint at session start; save it on demand or at end of session when context changed. Schema is canonical (Session focus, Active plans, Open threads, Notes); must not duplicate plan content."
+    _foundation/process/codex/codex-checkpoint:
+      alwaysApply: false
+      description: "When operating .checkpoint (read, save, troubleshoot), consult this codex for typical usage, schema details, and delineation against lex-agent-planning."
+    _foundation/process/lexis/lex-platforms-rules:
+      alwaysApply: false
+      description: "When creating or publishing a Lexis or Codex, add its rule key to cursor.rules in platforms.yaml with at least description."
+    _foundation/process/lexis/lex-naming:
+      alwaysApply: false
+      description: "When naming files/dirs or placing artifacts, follow naming.prefixes, naming.casing, naming.addressing from .directives."
+    _foundation/process/lexis/lex-no-plans-under-docs:
+      alwaysApply: false
+      description: "When materializing plan files (plan-*.md), only use .claude/plans/, .cursor/plans/ (provider caches, gitignored) or the GitHub Plan sub-issue body. Never under docs/ or any path combining docs/ and plans/."
+    _foundation/process/lexis/lex-agent-focus-on-active-plan:
+      alwaysApply: false
+      description: "When a Plan sub-issue is in status: development with the current session as owner, decline unrelated requests until the Plan reaches status: to review. Three declared exceptions only: critical blocker, question about the Plan, scope adjustment of the Plan."
+    _foundation/process/codex/codex-directives:
+      alwaysApply: false
+      description: "When interpreting paths, language, or naming, use this reference for .directives structure and keys."
+    _foundation/process/codex/codex-paths:
+      alwaysApply: false
+      description: "When referencing or creating framework artifacts, use canonical paths from this codex."
+    _foundation/process/codex/codex-naming:
+      alwaysApply: false
+      description: "When naming files or directories, apply conventions from .directives naming section (prefixes, extensions, casing)."
+    _foundation/process/codex/codex-platforms:
+      alwaysApply: false
+      description: "When configuring platforms or cursor.rules/transposition, use platforms.yaml and this codex."
+    _foundation/authoring/lexis/lex-pilars:
+      alwaysApply: false
+      description: "When choosing artifact type (Lexis, Codex, Kata, Warrior, Cry), apply Pilar rules from this lex."
+    _foundation/authoring/codex/codex-pilars:
+      alwaysApply: false
+      description: "When creating or validating framework artifacts, follow Pilar system and creation flow from this codex."
+    _foundation/authoring/codex/codex-lexis:
+      alwaysApply: false
+      description: "When writing or reviewing a Lexis, follow structure and Law format from this codex."
+    _foundation/authoring/codex/codex-codex:
+      alwaysApply: false
+      description: "When writing or reviewing a Codex, follow structure and reference-manual format from this codex."
+    _foundation/authoring/codex/codex-katas:
+      alwaysApply: false
+      description: "When writing or reviewing a Kata, follow procedure and SKILL format from this codex."
+    _foundation/authoring/codex/codex-warriors:
+      alwaysApply: false
+      description: "When writing or reviewing a Warrior, follow agent definition and scope from this codex."
+    _foundation/authoring/codex/codex-cries:
+      alwaysApply: false
+      description: "When writing or reviewing a Cry, follow command format and invocation from this codex."
+    _foundation/contributing/lexis/lex-small-commits:
+      alwaysApply: false
+      description: "When committing, ensure one logical change per commit; split if multiple purposes."
+    _foundation/contributing/lexis/lex-conventional-commits:
+      alwaysApply: false
+      description: "When writing a commit message, use format type(scope): description (feat, fix, docs, etc.)."
+    _foundation/contributing/lexis/lex-commit-language:
+      alwaysApply: false
+      description: "When writing commit message: subject in English; use [lang] tag in body for local language."
+    _foundation/contributing/lexis/lex-signed-commits:
+      alwaysApply: false
+      description: "When pushing commits or configuring Git, ensure commits are GPG-signed and show Verified."
+    _foundation/contributing/lexis/lex-semantic-version:
+      alwaysApply: false
+      description: "When creating a release or tag, use MAJOR.MINOR.PATCH (SemVer); no other format allowed."
+    _foundation/contributing/lexis/lex-annotated-tags:
+      alwaysApply: false
+      description: "When pushing a tag to a Guardia remote, ensure it is annotated (git tag -a) and GPG-signed (git tag -s); lightweight tags are forbidden."
+    _foundation/contributing/codex/codex-commit-standards:
+      alwaysApply: false
+      description: "When writing or reviewing commit messages, apply footer and body standards from this codex."
+    _foundation/contributing/codex/codex-contributing:
+      alwaysApply: false
+      description: "When opening a PR, reviewing, or merging, follow contribution flow and branch rules from this codex."
+    _foundation/contributing/codex/codex-semantic-version:
+      alwaysApply: false
+      description: "When versioning or defining pre-release/build metadata, use SemVer 2.0 rules from this codex."
+    _foundation/contributing/codex/codex-annotated-tags:
+      alwaysApply: false
+      description: "When creating, signing, or verifying Git tags, follow the operational commands and GPG configuration in this codex (companion to lex-annotated-tags)."
+    _foundation/contributing/lexis/lex-git-branches:
+      alwaysApply: false
+      description: "When creating a branch, use format {type}/{issue-number}-{kebab-slug}; type must be a Conventional Commits type; issue number is mandatory."
+    _foundation/contributing/lexis/lex-issue-first:
+      alwaysApply: false
+      description: "When starting any code change, ensure a GitHub Issue exists first; PR body must include Closes #N or Refs #N."
+    _foundation/contributing/lexis/lex-protected-trunk:
+      alwaysApply: false
+      description: "Trunk branches (main, master, release/*) MUST be protected against direct writes; code reaches trunk only through merged PRs from feature branches."
+    _foundation/contributing/codex/codex-git-workflow:
+      alwaysApply: false
+      description: "When contributing, follow the complete Issue → Branch → Commits → PR → Review → Merge workflow from this codex."
+    _foundation/contributing/lexis/lex-issue-quality:
+      alwaysApply: false
+      description: "When creating or reviewing an issue, ensure it uses an approved template (feature-request, epic, user-story-for-api/frontend, bug, tech-task, plan), has required labels, has a defined Issue Type, answers Why/What/How, and (for non-Epic) carries status: todo at creation. Assignee is NOT a creation requirement — it is captured at todo → development by warrior-athena (second HARD-GATE in this Lex)."
+    _foundation/contributing/lexis/lex-issue-status:
+      alwaysApply: false
+      description: "When applying or transitioning a status:* label, choose the axis based on artifact type: Axis A (dev cycle: todo→development→to review→review→done) for feature/fix Issues/PRs; Axis B (release cycle: to release→release→done) exclusively for the release Issue. Mutex is intra-artifact; cross-axis labeling is a HARD-GATE violation."
+    _foundation/contributing/lexis/lex-issue-type-verified:
+      alwaysApply: false
+      description: "When creating an Issue via CLI/MCP (not via UI template), verify the native type field is populated post-creation and apply manually via gh api -X PATCH when empty. status: todo cannot be applied to a typeless Issue."
+    _foundation/contributing/lexis/lex-pr-quality:
+      alwaysApply: false
+      description: "When creating a PR, mirror issue labels, apply size label, set assignee to author, and request reviewers per CODEOWNERS."
+    _foundation/contributing/lexis/lex-git-worktrees:
+      alwaysApply: false
+      description: "When starting any branch-based task, work inside a dedicated git worktree per .worktrees/{N}-{slug}/ — except for stacked PRs which use a single shared worktree (Rule 5)."
+    _foundation/contributing/codex/codex-labels:
+      alwaysApply: false
+      description: "When creating issues or PRs, consult this codex for the full label taxonomy, GitHub Issue Types, size thresholds, and mirroring rules."
+    _foundation/contributing/codex/codex-git-worktrees:
+      alwaysApply: false
+      description: "When creating a worktree to isolate a branch task, consult this codex for naming conventions, lifecycle, commands, and the shared-worktree exception for stacked PRs."
+    _foundation/contributing/codex/codex-stacked-prs:
+      alwaysApply: false
+      description: "When deciding whether to split a feature into stacked PRs and how to operate the chain, consult this codex for the canonical Decision Checklist and the vanilla git+gh flow."
+    _foundation/i18n/lexis/lex-framework-language:
+      alwaysApply: false
+      description: "When creating or placing i18n artifacts, use language as first path segment (e.g. pt-BR/, en/)."
+    _foundation/i18n/codex/codex-framework-language:
+      alwaysApply: false
+      description: "When organizing artifacts by language, follow framework language structure from this codex."
+    _foundation/quality/lexis/lex-hard-gate-pattern:
+      alwaysApply: false
+      description: "When a Lexis requires flow blocking (forbidden action with non-negotiable preconditions), apply the literal <HARD-GATE> block with subject, action, preconditions, scope, counter-pretexts, and declared exceptions."
+    _foundation/quality/lexis/lex-template-usage:
+      alwaysApply: false
+      description: "When creating a Lexis, Codex, Kata, Warrior, or Cry, start from the official template in .directives paths.samples."
+    _foundation/quality/lexis/lex-tone:
+      alwaysApply: false
+      description: "When drafting framework artifacts or agent communication, apply tone and style from this lex."
+    _foundation/quality/codex/codex-tone:
+      alwaysApply: false
+      description: "When editing documentation or rules, ensure tone consistency using this codex."
+    _foundation/tooling/lexis/lex-terminal-type:
+      alwaysApply: false
+      description: "When running or suggesting shell commands, use terminal type from .ahrena/.directives (bash or PowerShell)."
+    _foundation/tooling/codex/codex-terminal-type:
+      alwaysApply: false
+      description: "When generating command examples in docs, use bash or PowerShell per .directives; see this codex for usage."
+    _foundation/tooling/codex/codex-make:
+      alwaysApply: false
+      description: "When running install, update, sync-cursor, or clean, use Make target or equivalent Python command from this codex."
+    _foundation/tooling/lexis/lex-mcp:
+      alwaysApply: false
+      description: "When an MCP server is active for the current operation, use MCP tool over CLI. All credentials via env vars only. No servers outside mcp.servers in .directives."
+    _foundation/tooling/codex/codex-mcp-github:
+      alwaysApply: false
+      description: "When using GitHub MCP server, use tools (create_issue, create_pull_request, push_files, etc.) and auth from this codex."
+    _foundation/tooling/codex/codex-mcp-notion:
+      alwaysApply: false
+      description: "When using Notion MCP server, use tools (create_page, search, update_page, append_block_children, etc.) and auth from this codex."
+    _foundation/tooling/codex/codex-mcp-figma:
+      alwaysApply: false
+      description: "When using Figma MCP server, use tools (get_file, get_component, get_local_variables, export_node, etc.) and auth from this codex."
+    _foundation/tooling/codex/codex-mcp-slack:
+      alwaysApply: false
+      description: "When using the Slack MCP server (HTTP at mcp.slack.com/mcp, OAuth 2.0), use tools (slack_send_message, slack_read_channel, etc.) and channel resolution from this codex. Primary consumer: codex-notifications."
+    _foundation/tooling/codex/codex-notifications:
+      alwaysApply: false
+      description: "When firing a framework notification (Athena PR timeout, Janus release, Eunomia plans digest), read notifications.provider and notifications.channels.* from .ahrena/.directives and invoke the corresponding MCP tool per this codex. Provider-agnostic; do not name the concrete provider in Lexis/Warriors/Katas."
+    _foundation/process/codex/codex-session-tracking:
+      alwaysApply: false
+      description: "When operating on a plan as a Claude Code session, update the heartbeat file at .ahrena/workflow/sessions/<session-id>.json per this codex; kata-pr-prepare aggregates these into the Session Trace block of the PR body."
+    _foundation/tooling/codex/codex-ahrena-mcp:
+      alwaysApply: false
+      description: "When querying the Ahrena framework via MCP (ahrena_query_lex, ahrena_get_codex, ahrena_search, ahrena_resolve_ref, etc.), consult this codex for tools, parameters, install path, and when to use vs read files directly."
+    _foundation/tooling/codex/codex-git-spice:
+      alwaysApply: false
+      description: "When operating Stacked PRs and stacked_prs.tool=gs, consult this codex for git-spice install, setup, command catalog, vanilla→gs mapping, and force-push semantics."
+    _foundation/tooling/codex/codex-pr-cost-tracking:
+      alwaysApply: false
+      description: "When pr_cost_tracking.enabled is true and a PR is created or updated, consult this codex for data source (Claude Code JSONL logs), ccusage invocation, fallback path, output format, idempotency markers, privacy notes, and known limitations."
+    documentation/i18n/lexis/lex-language:
+      alwaysApply: false
+      description: "When translating technical docs, preserve structure and semantics; apply cross-cutting translation rules."
+    documentation/i18n/lexis/lex-language-ptbr:
+      alwaysApply: false
+      description: "When translating to pt-BR, apply form of address, grammar, and term choices from this lex."
+    documentation/i18n/lexis/lex-language-es:
+      alwaysApply: false
+      description: "When translating to Spanish, apply neutral variant and false-cognate rules from this lex."
+    documentation/i18n/lexis/lex-language-en:
+      alwaysApply: false
+      description: "When translating to English, apply American English and active voice from this lex."
+    documentation/i18n/codex/codex-language:
+      alwaysApply: false
+      description: "When translating docs, use cross-language guide and equivalence rules from this codex."
+    documentation/i18n/codex/codex-language-ptbr:
+      alwaysApply: false
+      description: "When translating to pt-BR, use conventions and term table from this codex."
+    documentation/i18n/codex/codex-language-es:
+      alwaysApply: false
+      description: "When translating to Spanish, use conventions and false-cognate table from this codex."
+    documentation/i18n/codex/codex-language-en:
+      alwaysApply: false
+      description: "When translating to English, use conventions and pitfalls table from this codex."
+    engineering/platform/lexis/lex-auth:
+      alwaysApply: false
+      globs: ["**/openapi/**", "**/oas/**", "**/api/**"]
+      description: "When designing or implementing API access, apply OAuth 2.0/JWT/RBAC per Guardia auth spec."
+    engineering/platform/lexis/lex-entities:
+      alwaysApply: false
+      description: "When designing persistent resources, include entity_id, entity_type, version, created_at, updated_at per spec."
+    engineering/platform/lexis/lex-entity-naming:
+      alwaysApply: false
+      description: "When naming domain entities, follow the Guardia naming conventions: singular PascalCase for types, snake_case for fields, and event.guardia.{module}.{entity_type}.{event_name} for CloudEvents types."
+    engineering/platform/lexis/lex-idempotency:
+      alwaysApply: false
+      description: "When designing state-changing APIs or events, require Idempotency-Key and deduplicate by key/hash."
+    engineering/platform/lexis/lex-restful-apis:
+      alwaysApply: false
+      description: "When designing HTTP endpoints, follow RESTful spec: status codes, payload, headers, pagination."
+    engineering/platform/lexis/lex-error-handling:
+      alwaysApply: false
+      description: "When returning errors, use errors array with code, reason, message; never reveal user existence in auth errors."
+    engineering/platform/lexis/lex-cloudevents:
+      alwaysApply: false
+      description: "When publishing or consuming events, use CloudEvents format with idempotencykey and type catalog."
+    engineering/platform/lexis/lex-feature-design-docs:
+      alwaysApply: false
+      description: "When persisting feature design artifacts (entities, OpenAPI, events, features, metrics), use docs/{context}/{category}/ structure plus feature-agent-map.md at the capability root. Agent design (agents/, dooc/) is governed by the parallel lex-agent-design-docs."
+    engineering/platform/codex/codex-auth:
+      alwaysApply: false
+      description: "When implementing API authentication, use OAuth 2.0, FAPI 2.0, JWT, RBAC from this codex."
+    engineering/platform/codex/codex-entities:
+      alwaysApply: false
+      description: "When modeling persistent entities, use base structure (entity_id, version, timestamps) from this codex."
+    engineering/platform/codex/codex-idempotency:
+      alwaysApply: false
+      description: "When implementing mutations or event handlers, apply idempotency key and dedup rules from this codex."
+    engineering/platform/codex/codex-error-handling:
+      alwaysApply: false
+      description: "When implementing error responses, use standardized structure and Known Errors from this codex."
+    engineering/platform/codex/codex-known-errors:
+      alwaysApply: false
+      description: "When emitting or handling errors, look up the canonical code/reason pair and suggested handling from this catalog."
+    engineering/platform/codex/codex-cloudevents:
+      alwaysApply: false
+      description: "When implementing event publishers/consumers, use CloudEvents structure and type naming from this codex."
+    engineering/platform/codex/codex-restful-apis:
+      alwaysApply: false
+      description: "When designing or integrating REST APIs, apply endpoints and conventions from this codex."
+    engineering/platform/codex/codex-restful-headers:
+      alwaysApply: false
+      description: "When defining or validating HTTP headers (e.g. Idempotency-Key, X-Grd-Trace-Id), use this codex."
+    engineering/platform/codex/codex-restful-pagination:
+      alwaysApply: false
+      description: "When designing list endpoints, use page_size, page_token, order_by per pagination codex."
+    engineering/platform/codex/codex-restful-payload:
+      alwaysApply: false
+      description: "When formatting API responses, use data/errors/pagination structure from this codex."
+    engineering/platform/codex/codex-restful-sorting:
+      alwaysApply: false
+      description: "When adding sort to list endpoints, use order_by and sort params from this codex."
+    engineering/platform/codex/codex-restful-status-codes:
+      alwaysApply: false
+      description: "When choosing HTTP status for a response, use allowed codes and meaning from this codex."
+    engineering/platform/codex/codex-oas-structure:
+      alwaysApply: false
+      description: "When writing or ordering OpenAPI paths, follow operation order and structure from this codex."
+    engineering/platform/codex/codex-feature-design-docs:
+      alwaysApply: false
+      description: "When producing feature design documents (entities, oas, events) under docs/{context}/, follow templates and conventions from this codex."
+    engineering/platform/codex/codex-component-architecture:
+      alwaysApply: false
+      description: "When starting or auditing a Guardia bounded context, consult this parent codex for the canonical physical layout (components/api, agents, jobs, ui, deployment/, docs/), inter-component boundaries, and pointers to the 5 child codices."
+    engineering/platform/codex/codex-component-api:
+      alwaysApply: false
+      globs: ["**/components/api/**"]
+      description: "When working inside components/api/, follow hexagonal layout (adapters/inbound, adapters/outbound, application/ports, application/use_cases, domain), FastAPI/Powertools stack, idempotency middleware, and Result type."
+    engineering/platform/codex/codex-component-agents:
+      alwaysApply: false
+      globs: ["**/components/agents/**"]
+      description: "When working inside components/agents/, follow Orchestrator + Specialists pattern, tool registry, memory port abstraction; system prompt lives in docs/{context}/agents/ (documental axis)."
+    engineering/platform/codex/codex-component-jobs:
+      alwaysApply: false
+      globs: ["**/components/jobs/**"]
+      description: "When working inside components/jobs/, follow Lambda + Powertools stack, Step Functions I/O schemas, idempotency store, BatchProcessor for SQS/Kinesis."
+    engineering/platform/codex/codex-component-ui:
+      alwaysApply: false
+      globs: ["**/components/ui/**"]
+      description: "When working inside components/ui/, follow Next.js App Router + tsup widgets, mandatory @guardia/design-system, typed API client from openapi.yaml."
+    engineering/platform/codex/codex-component-deployment:
+      alwaysApply: false
+      globs: ["**/deployment/**", "**/infra/**"]
+      description: "When working inside deployment/, follow IaC per lex-aws-iac (one tool per bounded context), tagging per lex-aws-cost, security per lex-aws-security, runbooks linked to alarms."
+    engineering/backend/lexis/lex-python-typing:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When writing Python code, require strict type annotations (mypy strict) for all functions and variables."
+    engineering/backend/lexis/lex-python-testing:
+      alwaysApply: false
+      globs: ["**/*.py", "**/test_*.py", "**/*_test.py"]
+      description: "When writing Python tests, use pytest with coverage; no untested public functions."
+    engineering/backend/lexis/lex-python-security:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When writing Python code, follow security rules: no secrets in code, validate inputs, use parameterized queries."
+    engineering/backend/lexis/lex-python-immutability:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When writing Python code, prefer immutable data structures; use frozen dataclasses and tuples."
+    engineering/backend/lexis/lex-python-error-handling:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When writing Python code, no bare except; specific exceptions only; top-level boundary handlers must log original and translate into an Error."
+    engineering/backend/lexis/lex-python-result-type:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When writing Python code, expected fallible operations must return Result[T, Error] from the returns package instead of raising exceptions."
+    engineering/backend/lexis/lex-python-error-object:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When producing Python error values, use a frozen dataclass Error with exactly code, reason, message; subclasses pin code and reason."
+    engineering/backend/codex/codex-python-architecture:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When structuring Python projects, use Clean Architecture layers (domain, application, infrastructure)."
+    engineering/backend/codex/codex-python-fastapi:
+      alwaysApply: false
+      globs: ["**/*.py", "**/routers/**", "**/api/**"]
+      description: "When building FastAPI endpoints, follow route structure, dependency injection, and response models from this codex."
+    engineering/backend/codex/codex-python-sqlalchemy:
+      alwaysApply: false
+      globs: ["**/*.py", "**/models/**", "**/repositories/**"]
+      description: "When using SQLAlchemy, use async sessions, mapped columns, and Alembic migrations per this codex."
+    engineering/backend/codex/codex-python-testing:
+      alwaysApply: false
+      globs: ["**/*.py", "**/test_*.py"]
+      description: "When writing Python tests, use pytest fixtures, factories, and coverage thresholds from this codex."
+    engineering/backend/codex/codex-python-observability:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When adding observability, use OpenTelemetry traces, metrics, and structured logging from this codex."
+    engineering/backend/codex/codex-python-tooling:
+      alwaysApply: false
+      description: "When setting up Python project tooling, use ruff, mypy, pytest, and uv per this codex."
+    engineering/workflow/lexis/lex-issue-driven:
+      alwaysApply: false
+      description: "When using /cry-implement-issue or warrior-athena, enforce Gates 1/2, AC↔test traceability, ADR generation, and docs/ structure."
+    engineering/workflow/codex/codex-issue-workflow:
+      alwaysApply: false
+      description: "When orchestrating Issue-Driven flow, follow 7 phases, 2 gates, MADR format, and delegation to Apollo/Daedalus/Kronos/Hephaestus/Atlas from this codex."
+    engineering/frontend/lexis/lex-frontend-typing:
+      alwaysApply: false
+      globs: ["**/*.ts", "**/*.tsx", "**/*.vue", "**/*.svelte"]
+      description: "When writing frontend code, enforce TypeScript strict mode; no implicit or unjustified any; contracts typed via OAS or Zod."
+    engineering/frontend/lexis/lex-frontend-testing:
+      alwaysApply: false
+      globs: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
+      description: "When writing frontend tests, test user behavior with accessible queries; mock only at external boundaries."
+    engineering/frontend/lexis/lex-frontend-accessibility:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.html"]
+      description: "When building UI, meet WCAG 2.1 AA as minimum; semantic HTML, keyboard navigation, labels, contrast, dynamic content announcements."
+    engineering/frontend/lexis/lex-frontend-security:
+      alwaysApply: false
+      globs: ["**/*.ts", "**/*.tsx", "**/*.vue"]
+      description: "When writing frontend code, prevent XSS, never bundle secrets, validate inputs in two tiers, configure CSP, rel=noopener on external links."
+    engineering/frontend/codex/codex-frontend-architecture:
+      alwaysApply: false
+      description: "When designing frontend structure, follow layer separation, server/client state split, component composition, routing, performance, and i18n from this codex."
+    engineering/devops/lexis/lex-aws-security:
+      alwaysApply: false
+      description: "When provisioning AWS, enforce IAM least privilege, encryption in transit/at rest, Secrets Manager, CloudTrail, public-access blocks on S3/RDS."
+    engineering/devops/lexis/lex-aws-iac:
+      alwaysApply: false
+      description: "When changing AWS infrastructure, use versioned IaC (Terraform/CDK) with remote state; no console changes in production; one tool per project."
+    engineering/devops/lexis/lex-aws-cost:
+      alwaysApply: false
+      description: "When designing AWS architecture, apply cost-allocation tags, configure budgets, justify choices with cost awareness, right-size periodically."
+    engineering/devops/codex/codex-aws-well-architected:
+      alwaysApply: false
+      description: "When designing or reviewing AWS architectures, apply the 6 pillars (Operational, Security, Reliability, Performance, Cost, Sustainability) from this codex."
+    engineering/devops/codex/codex-aws-services:
+      alwaysApply: false
+      description: "When selecting AWS services, use the catalog by use case (compute, storage, DB, messaging, network, security, observability) from this codex."
+    _foundation/quality/lexis/lex-observability-required:
+      alwaysApply: false
+      description: "When adding HTTP endpoint/event consumer/job, emit trace + metric + structured log with correlation ID; no sensitive data in logs."
+    _foundation/quality/lexis/lex-logging-decorator:
+      alwaysApply: false
+      description: "When emitting logs in any language, use centralized bootstrap + decorator/wrapper; inline logger.info/console.log/print/fmt.Println calls in application code are forbidden."
+    engineering/backend/codex/codex-python-logging:
+      alwaysApply: false
+      globs: ["**/*.py"]
+      description: "When configuring logging in Python, use loguru with centralized setup, JSON sink with redaction, and the @logged decorator for instrumentation."
+    _foundation/tooling/codex/codex-mcp-common:
+      alwaysApply: false
+      description: "Shared MCP patterns (auth, config, fallback, failure signals) — preamble consumed by all codex-mcp-{server} references."
+    engineering/skills/lexis/lex-skill-project-structure:
+      alwaysApply: false
+      description: "When creating or editing an external skill project under skills/{slug}/, enforce canonical layout, slug==frontmatter name, and source/build/dist separation."
+    engineering/skills/lexis/lex-skill-package-structure:
+      alwaysApply: false
+      description: "When reviewing a PR that adds or modifies a packaged .skill in .dist/, enforce all 5 criteria (frontmatter, manifest schema, files+sha256, references+source_commit, no orphans). Agnostic to build stack."
+    engineering/skills/codex/codex-skill-anthropic-agent-skills:
+      alwaysApply: false
+      description: "When authoring SKILL.md or validating a skill package, follow the Anthropic Agent Skills spec (frontmatter fields, naming limits, progressive disclosure)."
+    engineering/skills/codex/codex-skill-project-architecture:
+      alwaysApply: false
+      description: "When scaffolding or editing skills/{slug}/, follow the Ahrena project layout and reuse codex-frontend-architecture / codex-python-architecture for widgets and scripts/tools."
+    engineering/skills/codex/codex-skill-tools-and-widgets:
+      alwaysApply: false
+      description: "When defining tools/ (MCP) or widgets/ (React) inside a skill project, follow the Ahrena convention for mcp.config.json, manifest.json, and widget↔script bindings."
+    engineering/agents/lexis/lex-agent-construction-directives:
+      alwaysApply: false
+      description: "When building, reviewing, or promoting an AI agent on the Guardia platform, declare its cognitive stage (pre-operational/operational-concrete/legacy-pov) in the system prompt and enforce the 9-item DoOC HARD-GATE on every pre-operational → operational-concrete promotion."
+    engineering/agents/lexis/lex-system-prompt:
+      alwaysApply: false
+      description: "When authoring or reviewing a Guardia agent system prompt, enforce the 4 mandatory blocks (Identity → Source of Truth → Workflow → Canonical Examples), the 5 critical OWASP LLM Top 10 2025 controls (LLM01, LLM02, LLM06, LLM07, LLM05), the org_id/client_id guardrail, and the 9-precondition HARD-GATE backed by the executable adversarial suite."
+    engineering/agents/codex/codex-agent-construction-directives:
+      alwaysApply: false
+      description: "When architecting an AI agent on the Guardia platform, consult the Piaget analogy, the 6 Construction Directives (Identity, Layered Memory, Concrete Tools, Feedback Loop, Restricted Scope, Rich Context), the cross-tab of differential rigor by stage, and the DoOC evidence formats. Notion is the live source."
+    engineering/agents/codex/codex-system-prompt:
+      alwaysApply: false
+      description: "When authoring, reviewing, or auditing a Guardia agent system prompt, consult the 3 principles, the 4 mandatory blocks with canonical templates, the 5 OWASP LLM Top 10 2025 controls, the org_id/client_id guardrail, writing rules, the review and security checklists, and the executable adversarial suite (scripts/system_prompt_adversarial/). Notion is the live source."
+    engineering/agents/lexis/lex-agent-design-docs:
+      alwaysApply: false
+      description: "When promoting an agent to operational-concrete, enforce the 5-precondition HARD-GATE: 13 files in docs/{context}/agents/{agent}/, dooc/{agent}.md, serves_features populated, reciprocity in feature-agent-map.md, and warrior-metis declared as author."
+    engineering/agents/codex/codex-agent-design-docs:
+      alwaysApply: false
+      description: "When producing agent design documents on the Guardia platform, follow the 15 templates: 13 Hub & Spoke files for agents/{agent}/, dooc/{agent}.md snapshot, and the feature-agent-map.md m:n correlation with the parallel Feature Design axis."
+    engineering/quality/lexis/lex-test-pyramid:
+      alwaysApply: false
+      description: "When authoring test suites, enforce 70/20/10 distribution (unit/integration/E2E); E2E only for critical journeys."
+    engineering/quality/lexis/lex-test-isolation:
+      alwaysApply: false
+      description: "Tests must be deterministic, order-independent, parallelizable; flaky is a P1 bug — no retries as cure."
+    engineering/quality/lexis/lex-dry:
+      alwaysApply: false
+      description: "Domain knowledge must live in a single canonical locus per bounded context; ≥3 occurrences require extraction, ≥2 bounded contexts require an ADR."
+    engineering/quality/lexis/lex-no-silent-tech-debt:
+      alwaysApply: false
+      description: "During an active Plan (status: development), forbid committing code or docs with silent TODO/FIXME/XXX/follow-up markers without a trackable Issue/Plan reference. Tangential findings must be surfaced to the human with 3 explicit options (expand Plan, new Plan, new Issue). Applies prospectively to diffs."
+    engineering/quality/codex/codex-test-strategy:
+      alwaysApply: false
+      description: "When deciding test level/tool/scope, consult decision tree, per-stack tooling, and anti-patterns from this codex."
+    engineering/sre/lexis/lex-slo-required:
+      alwaysApply: false
+      description: "Tier-1/2 services MUST have SLO declared pre go-live; error budget guides priorization of reliability vs. features."
+    engineering/sre/lexis/lex-runbook-for-every-alert:
+      alwaysApply: false
+      description: "Every human-paging alert MUST link to a versioned runbook with symptoms, diagnosis, mitigation, escalation."
+    engineering/sre/codex/codex-incident-response:
+      alwaysApply: false
+      description: "When responding to incidents, follow severity ladder, role assignments, comms templates, and blameless post-mortem from this codex."
+    engineering/data/lexis/lex-migrations-reversible:
+      alwaysApply: false
+      description: "Schema migrations MUST be reversible or documented with rollback plan; destructive DDL requires validated backup + window."
+    engineering/data/lexis/lex-data-retention:
+      alwaysApply: false
+      description: "Every persistent data class MUST declare retention + legal basis; LGPD/GDPR deletion SLA enforced; logs with PII are time-limited."
+    engineering/data/codex/codex-data-modeling:
+      alwaysApply: false
+      description: "When modeling data, follow entity/value object/aggregate patterns, normalization, indexing, and DB-choice guidance from this codex."
+    design/brand/lexis/lex-brand-colors:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "When applying color, use only the official Guardia palette and meet WCAG 2.1 AA; the Yellow 500 + White combination is forbidden."
+    design/brand/lexis/lex-brand-typography:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "When typesetting, use Poppins as the everyday face; Lastica only in official logo files; Roboto as fallback."
+    design/brand/lexis/lex-brand-voice:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "When writing on Guardia's behalf, follow the four voice pillars (direct, strategic, affirmative, clear); say 'agentic accounting', not 'fintech'; avoid buzzwords."
+    design/brand/lexis/lex-brand-logo:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "When placing the Guardia logo, use only official files and pick the right variant per background; never recolor or distort."
+    design/brand/codex/codex-brand-essence:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Reference for Guardia's essence, promise, name meaning, personality, visual fundamentals, and application principles."
+    design/brand/codex/codex-brand-colors:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Reference for the Guardia palette, scales, mono tones, signal colors, and approved/restricted/forbidden WCAG combinations."
+    design/brand/codex/codex-brand-typography:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Reference for Guardia typography: Poppins hierarchy, Lastica for logos, Roboto fallback, and CSS declaration."
+    design/brand/codex/codex-brand-voice:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Reference for Guardia voice: pillars, personality, practical rules, examples, channel applications, and review checklist."
+    design/brand/codex/codex-brand-logo:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Reference for Guardia logo variants and background-based selection."
+    design/system/lexis/lex-design-system-library:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "When building Guardia UI, consume @guardia/design-system; reimplementing primitives or using hardcoded color/type/spacing values is forbidden."
+    design/system/lexis/lex-ai-first-experience:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "When designing Guardia product UI, follow the AI-First pattern: Isac-led conversation + live workspace; no module sidebar as primary architecture."
+    design/system/codex/codex-design-system:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "Reference for Guardia's Design System: principles, scope, governance, sources (Notion/code/Chromatic/Figma), and stack."
+    design/system/codex/codex-design-system-components:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "Reference for consuming, composing, and contributing to @guardia/design-system; component families, examples, tokens, accessibility."
+    design/system/codex/codex-ai-first-experience:
+      alwaysApply: false
+      globs: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "Reference for the AI-First UX pattern (conversation + workspace) with Isac at the center."
+    engineering/mobile/lexis/lex-mobile-platform-parity:
+      alwaysApply: false
+      description: "Mobile features ship in iOS and Android same release; functional parity mandatory; UI follows HIG/Material; deviation needs ADR."
+    engineering/mobile/lexis/lex-mobile-offline-first:
+      alwaysApply: false
+      description: "Mobile apps MUST operate in online/intermittent/offline states; cache reads, queue mutations; never block UI >5s on network."
+    engineering/mobile/codex/codex-mobile-architecture:
+      alwaysApply: false
+      description: "When designing mobile app structure, follow layer separation, state management, offline sync, testing, observability from this codex."
+    product/discovery/lexis/lex-discovery-flow:
+      alwaysApply: false
+      description: "Every Idea in Ahrena MUST be created by warrior-phanes from approved insights with the 5 mandatory content fields; warrior-pitia never changes status without explicit human direction. Carries 2 HARD-GATEs."
+    product/discovery/codex/codex-discovery-artifacts:
+      alwaysApply: false
+      description: "YAML front-matter schema for insights/{NNN}-{slug}.md and ideas/{NNN}-{slug}.md, 9-status state machine, and canonical addressing under docs/discovery/{topic}/."
+
+claude-code:
+  transposition:
+    lex: rules
+    codex: docs
+    kata: skills
+    warrior: agents
+    cry: commands
+
+  rules:
+    _foundation/process/lexis/lex-directives:
+      description: "Read .ahrena/.directives before producing any artifact — language, paths, naming, tone all come from here."
+    _foundation/process/lexis/lex-checkpoint:
+      paths: ["**/.checkpoint"]
+      description: "Read .checkpoint at session start; save it on demand or at end of session when context changed. Schema is canonical (Session focus, Active plans, Open threads, Notes); must not duplicate plan content."
+    _foundation/process/codex/codex-checkpoint:
+      description: "When operating .checkpoint (read, save, troubleshoot), consult this codex for typical usage, schema details, and delineation against lex-agent-planning."
+    _foundation/process/lexis/lex-platforms-rules:
+      description: "When creating or publishing a Lexis or Codex, add its rule key to platforms.yaml cursor.rules."
+    _foundation/process/lexis/lex-naming:
+      description: "When naming files, directories, or artifacts, apply kebab-case and pilar prefix from this lex."
+    _foundation/process/lexis/lex-no-plans-under-docs:
+      description: "When materializing plan files (plan-*.md), only use .claude/plans/, .cursor/plans/ (provider caches, gitignored) or the GitHub Plan sub-issue body. Never under docs/ or any path combining docs/ and plans/."
+    _foundation/process/lexis/lex-agent-focus-on-active-plan:
+      description: "When a Plan sub-issue is in status: development with the current session as owner, decline unrelated requests until the Plan reaches status: to review. Three declared exceptions only: critical blocker, question about the Plan, scope adjustment of the Plan."
+    _foundation/authoring/lexis/lex-pilars:
+      description: "When creating a new framework artifact, choose the correct Pilar type and follow its mandatory sections."
+    _foundation/tooling/lexis/lex-terminal-type:
+      description: "When running or suggesting shell commands, use terminal type from .ahrena/.directives."
+    _foundation/tooling/lexis/lex-mcp:
+      description: "When an MCP server is active for the current operation, use MCP tool over CLI. Credentials via env vars only."
+    engineering/skills/lexis/lex-skill-project-structure:
+      paths: ["skills/**", "**/skills/**"]
+      description: "When creating or editing an external skill project under skills/{slug}/, enforce canonical layout, slug==frontmatter name, and source/build/dist separation."
+    engineering/skills/lexis/lex-skill-package-structure:
+      paths: [".dist/**"]
+      description: "When reviewing a PR that adds or modifies a packaged .skill in .dist/, enforce all 5 criteria (frontmatter, manifest schema, files+sha256, references+source_commit, no orphans). Agnostic to build stack."
+    engineering/agents/lexis/lex-agent-construction-directives:
+      paths: ["docs/**/agents/**", "docs/**/agents-pov/**", "docs/**/system_prompt*.md", "docs/**/system-prompt*.md"]
+      description: "When building, reviewing, or promoting an AI agent on the Guardia platform, declare its cognitive stage in the system prompt and enforce the 9-item DoOC HARD-GATE on pre-operational → operational-concrete promotion."
+    engineering/agents/lexis/lex-system-prompt:
+      paths: ["docs/**/agents/**/system-prompt*.md", "docs/**/agents-pov/**/system-prompt*.md", "docs/**/system_prompt*.md", "docs/**/system-prompt*.md"]
+      description: "When authoring or reviewing a Guardia agent system prompt, enforce the 4 mandatory blocks, the 5 critical OWASP controls, the org_id/client_id guardrail, and the 9-precondition HARD-GATE backed by the executable adversarial suite."
+    engineering/workflow/lexis/lex-issue-driven:
+      paths: [".ahrena/issues/**", ".ahrena/workflow/**"]
+      description: "When running Issue-Driven flow, enforce Gates, AC↔test traceability, ADRs, and docs/ structure."
+    _foundation/contributing/lexis/lex-protected-trunk:
+      paths: [".github/CODEOWNERS", ".github/workflows/**.yml", ".github/workflows/**.yaml"]
+      description: "Trunk branches (main, master, release/*) are protected; never start dev on trunk — always create a feature branch first and reach trunk only via merged PR."
+    engineering/frontend/lexis/lex-frontend-typing:
+      paths: ["**/*.ts", "**/*.tsx", "**/*.vue", "**/*.svelte"]
+      description: "When writing frontend code, TypeScript strict mode and typed contracts are mandatory."
+    engineering/frontend/lexis/lex-frontend-accessibility:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.html"]
+      description: "When building UI, WCAG 2.1 AA compliance is mandatory."
+    engineering/devops/lexis/lex-aws-security:
+      paths: ["**/*.tf", "**/*.hcl", "**/*.cdk.ts", "**/cdk/**", "**/cloudformation/**"]
+      description: "When provisioning AWS, enforce security laws on IAM, encryption, secrets, and public access."
+    _foundation/quality/lexis/lex-observability-required:
+      paths: ["**/*.py", "**/*.ts", "**/*.tsx", "**/*.go", "**/api/**", "**/handlers/**", "**/jobs/**", "**/consumers/**"]
+      description: "Every runtime surface emits trace + metric + structured log with correlation ID."
+    _foundation/quality/lexis/lex-logging-decorator:
+      paths: ["**/*.py", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.go"]
+      description: "Logs come from centralized bootstrap + decorator/wrapper; inline logger.info/console.log/print are forbidden in application code."
+    engineering/backend/codex/codex-python-logging:
+      paths: ["**/*.py"]
+      description: "Python logging uses loguru with centralized setup, JSON sink with redaction, and the @logged decorator."
+    engineering/quality/lexis/lex-test-pyramid:
+      paths: ["**/tests/**", "**/test_*.py", "**/*_test.py", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/__tests__/**"]
+      description: "Test distribution 70/20/10 (unit/integration/E2E); E2E reserved for critical journeys."
+    engineering/quality/lexis/lex-dry:
+      description: "Domain knowledge must live in a single canonical locus per bounded context; ≥3 occurrences require extraction, ≥2 bounded contexts require an ADR."
+    engineering/quality/lexis/lex-no-silent-tech-debt:
+      description: "During an active Plan (status: development), forbid committing code or docs with silent TODO/FIXME/XXX/follow-up markers without a trackable Issue/Plan reference. Tangential findings must be surfaced to the human with 3 explicit options (expand Plan, new Plan, new Issue). Applies prospectively to diffs."
+    engineering/sre/lexis/lex-slo-required:
+      paths: ["docs/slo/**", "**/slo/**", "**/*.slo.yaml"]
+      description: "Tier-1/2 services require SLO pre go-live; error budget guides priorization."
+    engineering/data/lexis/lex-migrations-reversible:
+      paths: ["**/migrations/**", "**/alembic/**", "**/*migration*", "**/*.sql"]
+      description: "Schema migrations reversible or documented; destructive DDL requires backup + window."
+    design/brand/lexis/lex-brand-colors:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "When applying color, use only the official Guardia palette and meet WCAG 2.1 AA; Yellow 500 + White is forbidden."
+    design/brand/lexis/lex-brand-typography:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Poppins is the everyday typeface; Lastica only in official logo files; Roboto as fallback."
+    design/brand/lexis/lex-brand-voice:
+      description: "Voice rules for any Guardia-facing text: direct, strategic, affirmative, clear; 'agentic accounting' positioning; no buzzwords."
+    design/brand/lexis/lex-brand-logo:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss", "**/*.md", "**/*.mdx"]
+      description: "Use only official Guardia logo files and pick the variant matching the background."
+    design/system/lexis/lex-design-system-library:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "All Guardia UI MUST consume @guardia/design-system; reimplementing primitives or using hardcoded design values is forbidden."
+    design/system/lexis/lex-ai-first-experience:
+      paths: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js", "**/*.vue", "**/*.svelte", "**/*.html", "**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "**/*.styl", "**/*.pcss"]
+      description: "Guardia product UI follows the AI-First pattern (Isac-led conversation + live workspace); no module sidebar as primary architecture."
+    engineering/mobile/lexis/lex-mobile-offline-first:
+      paths: ["**/*.swift", "**/*.kt", "**/*.java", "**/*.dart", "**/ios/**", "**/android/**"]
+      description: "Mobile apps operate in 3 network states; cache reads, queue mutations."
+    engineering/mobile/lexis/lex-mobile-platform-parity:
+      paths: ["**/*.swift", "**/*.kt", "**/*.java", "**/*.dart", "**/ios/**", "**/android/**"]
+      description: "Mobile features ship in iOS and Android same release; functional parity mandatory; UI follows HIG/Material; deviation needs ADR."
+    engineering/devops/lexis/lex-aws-iac:
+      paths: ["**/*.tf", "**/*.hcl", "**/*.cdk.ts", "**/cdk/**", "**/cloudformation/**", "**/cf-*.yaml"]
+      description: "When changing AWS infrastructure, use versioned IaC (Terraform/CDK) with remote state; no console changes in production; one tool per project."
+    engineering/devops/lexis/lex-aws-cost:
+      paths: ["**/*.tf", "**/*.hcl", "**/*.cdk.ts", "**/cdk/**", "**/cloudformation/**"]
+      description: "When designing AWS architecture, apply cost-allocation tags, configure budgets, justify choices with cost awareness, right-size periodically."
+    engineering/data/lexis/lex-data-retention:
+      paths: ["**/migrations/**", "**/models/**", "docs/data-retention.yaml"]
+      description: "Every persistent data class MUST declare retention + legal basis; LGPD/GDPR deletion SLA enforced; logs with PII are time-limited."
+    engineering/quality/lexis/lex-test-isolation:
+      paths: ["**/tests/**", "**/test_*.py", "**/*_test.py", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/__tests__/**"]
+      description: "Tests must be deterministic, order-independent, parallelizable; flaky is a P1 bug — no retries as cure."
+    engineering/sre/lexis/lex-runbook-for-every-alert:
+      paths: ["docs/runbooks/**", "**/runbooks/**", "**/alerts/**", "**/*.alerts.yaml"]
+      description: "Every human-paging alert MUST link to a versioned runbook with symptoms, diagnosis, mitigation, escalation."
+    engineering/frontend/lexis/lex-frontend-security:
+      paths: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.vue", "**/*.svelte"]
+      description: "When writing frontend code, prevent XSS, never bundle secrets, validate inputs in two tiers, configure CSP, rel=noopener on external links."
+    engineering/frontend/lexis/lex-frontend-testing:
+      paths: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**"]
+      description: "When writing frontend tests, test user behavior with accessible queries; mock only at external boundaries."
+    engineering/backend/lexis/lex-python-typing:
+      paths: ["**/*.py"]
+      description: "When writing Python code, require strict type annotations (mypy strict) for all functions and variables."
+    engineering/backend/lexis/lex-python-security:
+      paths: ["**/*.py"]
+      description: "When writing Python code, follow security rules: no secrets in code, validate inputs, use parameterized queries."
+    engineering/backend/lexis/lex-python-immutability:
+      paths: ["**/*.py"]
+      description: "When writing Python code, prefer immutable data structures; use frozen dataclasses and tuples."
+    engineering/backend/lexis/lex-python-testing:
+      paths: ["**/*.py", "**/test_*.py", "**/*_test.py"]
+      description: "When writing Python tests, use pytest with coverage; no untested public functions."
+    engineering/backend/lexis/lex-python-error-handling:
+      paths: ["**/*.py"]
+      description: "When writing Python code, no bare except; specific exceptions only; top-level boundary handlers must log original and translate into an Error."
+    engineering/backend/lexis/lex-python-error-object:
+      paths: ["**/*.py"]
+      description: "When producing Python error values, use a frozen dataclass Error with exactly code, reason, message; subclasses pin code and reason."
+    engineering/backend/lexis/lex-python-result-type:
+      paths: ["**/*.py"]
+      description: "When writing Python code, expected fallible operations must return Result[T, Error] from the returns package instead of raising exceptions."
+    engineering/platform/lexis/lex-auth:
+      paths: ["**/auth/**", "**/*auth*.py", "**/*auth*.ts", "**/openapi/**", "**/oas/**", "**/api/**"]
+      description: "When designing or implementing API access, apply OAuth 2.0/JWT/RBAC per Guardia auth spec."
+    engineering/platform/lexis/lex-cloudevents:
+      paths: ["**/events/**", "**/*event*.py", "**/*event*.ts"]
+      description: "When publishing or consuming events, use CloudEvents format with idempotencykey and type catalog."
+    engineering/platform/lexis/lex-entities:
+      paths: ["**/entities/**", "**/*entity*.py", "docs/**/entities/**"]
+      description: "When designing persistent resources, include entity_id, entity_type, version, created_at, updated_at per spec."
+    engineering/platform/lexis/lex-entity-naming:
+      paths: ["**/entities/**", "**/*entity*", "docs/**/entities/**"]
+      description: "When naming domain entities, follow Guardia conventions: singular PascalCase for types, snake_case for fields, event.guardia.{module}.{entity_type}.{event_name} for CloudEvents types."
+    engineering/platform/lexis/lex-error-handling:
+      paths: ["**/*.py", "**/*.ts", "**/api/**", "**/handlers/**"]
+      description: "When returning errors, use errors array with code, reason, message; never reveal user existence in auth errors."
+    engineering/platform/lexis/lex-idempotency:
+      paths: ["**/api/**", "**/*api*.py", "**/*router*.py", "**/events/**"]
+      description: "When designing state-changing APIs or events, require Idempotency-Key and deduplicate by key/hash."
+    engineering/platform/lexis/lex-restful-apis:
+      paths: ["**/api/**", "**/*api*.py", "**/*router*.py", "**/openapi*.yaml", "docs/**/oas/**"]
+      description: "When designing HTTP endpoints, follow RESTful spec: status codes, payload, headers, pagination."
+    engineering/platform/lexis/lex-feature-design-docs:
+      paths: ["docs/**"]
+      description: "When persisting feature design artifacts (entities, OpenAPI, events, features, metrics), use docs/{context}/{category}/ structure plus feature-agent-map.md at the capability root. Agent design (agents/, dooc/) is governed by the parallel lex-agent-design-docs."
+    engineering/agents/lexis/lex-agent-design-docs:
+      paths: ["docs/**/agents/**", "docs/**/dooc/**", "docs/**/feature-agent-map.md"]
+      description: "When promoting an agent to operational-concrete, enforce the 5-precondition HARD-GATE: 13 files in docs/{context}/agents/{agent}/, dooc/{agent}.md, serves_features populated, reciprocity in feature-agent-map.md, and warrior-metis declared as author."
+    _foundation/process/lexis/lex-agent-planning:
+      paths: [".claude/plans/**", ".cursor/plans/**", "**/plan-*.md"]
+      description: "Before any multi-step task, create a Plan sub-issue on GitHub linked to its parent Issue and materialize the provider cache at ./{agent}/plans/plan-{M}-{slug}.md (where {M} is the sub-issue number and {slug} matches the branch). Present to the user and wait for confirmation before executing."
+    _foundation/contributing/lexis/lex-issue-quality:
+      paths: [".github/ISSUE_TEMPLATE/**"]
+      description: "When creating or reviewing an issue, ensure it uses an approved template (feature-request, epic, user-story-for-api/frontend, bug, tech-task, plan), has required labels, has a defined Issue Type, answers Why/What/How, and (for non-Epic) carries status: todo at creation. Assignee is NOT a creation requirement — it is captured at todo → development by warrior-athena (second HARD-GATE in this Lex)."
+    _foundation/contributing/lexis/lex-issue-status:
+      paths: [".github/ISSUE_TEMPLATE/**", ".github/PULL_REQUEST_TEMPLATE.md", ".github/PULL_REQUEST_TEMPLATE/**", "scripts/bootstrap_labels.sh"]
+      description: "When applying or transitioning a status:* label, choose the axis based on artifact type: Axis A (dev cycle: todo→development→to review→review→done) for feature/fix Issues/PRs; Axis B (release cycle: to release→release→done) exclusively for the release Issue. Mutex is intra-artifact; cross-axis labeling is a HARD-GATE violation."
+    _foundation/contributing/lexis/lex-issue-type-verified:
+      paths: [".github/ISSUE_TEMPLATE/**"]
+      description: "When creating an Issue via CLI/MCP (not via UI template), verify the native type field is populated post-creation and apply manually via gh api -X PATCH when empty. status: todo cannot be applied to a typeless Issue."
+    _foundation/contributing/lexis/lex-issue-first:
+      paths: [".github/ISSUE_TEMPLATE/**", ".github/PULL_REQUEST_TEMPLATE.md", ".github/PULL_REQUEST_TEMPLATE/**"]
+      description: "When starting any code change, ensure a GitHub Issue exists first; PR body must include Closes #N or Refs #N."
+    _foundation/contributing/lexis/lex-pr-quality:
+      paths: [".github/PULL_REQUEST_TEMPLATE.md", ".github/PULL_REQUEST_TEMPLATE/**", ".github/CODEOWNERS"]
+      description: "When creating a PR, mirror issue labels, apply size label, set assignee to author, request reviewers per CODEOWNERS, apply status:* label, and include Session Trace section when heartbeat files exist for the branch."
+    _foundation/contributing/lexis/lex-git-branches:
+      paths: [".github/CODEOWNERS", ".github/workflows/**.yml", ".github/workflows/**.yaml"]
+      description: "When creating a branch, use format {type}/{issue-number}-{kebab-slug}; type must be a Conventional Commits type; issue number is mandatory."
+    _foundation/contributing/lexis/lex-git-worktrees:
+      paths: [".github/CODEOWNERS", ".gitignore", ".github/workflows/**.yml"]
+      description: "Every branch-based task by an AI agent must run inside a dedicated git worktree under paths.worktrees; main checkout stays clean."
+    _foundation/contributing/lexis/lex-conventional-commits:
+      paths: ["**/COMMIT_EDITMSG", ".commitlintrc*", ".github/workflows/**commit**.yml", ".github/workflows/**commit**.yaml"]
+      description: "When writing a commit message, use format type(scope): description (feat, fix, docs, etc.)."
+    _foundation/contributing/lexis/lex-commit-language:
+      paths: ["**/COMMIT_EDITMSG", ".commitlintrc*", ".github/workflows/**commit**.yml", ".github/workflows/**commit**.yaml"]
+      description: "When writing commit message: subject in English; use [lang] tag in body for local language."
+    _foundation/contributing/lexis/lex-small-commits:
+      paths: ["**/COMMIT_EDITMSG", ".commitlintrc*"]
+      description: "When committing, ensure one logical change per commit; split if multiple purposes."
+    _foundation/contributing/lexis/lex-signed-commits:
+      paths: ["**/COMMIT_EDITMSG", ".gitconfig", "**/.gitsigners"]
+      description: "When pushing commits or configuring Git, ensure commits are GPG-signed and show Verified."
+    _foundation/contributing/lexis/lex-semantic-version:
+      paths: ["package.json", "**/__version__.py", "**/version.txt", "CHANGELOG*", ".bumpversion*", "pyproject.toml"]
+      description: "When creating a release or tag, use MAJOR.MINOR.PATCH (SemVer); no other format allowed."
+    _foundation/contributing/lexis/lex-annotated-tags:
+      paths: [".github/workflows/validate-tag.yml", ".github/workflows/release.yml", "CHANGELOG*"]
+      description: "When pushing a tag to a Guardia remote, ensure it is annotated (git tag -a) and GPG-signed (git tag -s); lightweight tags are forbidden."
+    product/discovery/lexis/lex-discovery-flow:
+      paths: ["docs/discovery/**"]
+      description: "When producing or modifying insights/ideas, enforce: warrior-phanes promotes only from approved insights with all 5 mandatory Idea fields; warrior-pitia never changes status without explicit human direction."
+
+  docs:
+    _foundation/tooling/codex/codex-mcp-github:
+      description: "When using GitHub MCP server, reference tools (create_issue, create_pull_request, push_files, etc.) from this codex."
+    _foundation/tooling/codex/codex-mcp-notion:
+      description: "When using Notion MCP server, reference tools (create_page, search, update_page, etc.) from this codex."
+    _foundation/tooling/codex/codex-mcp-figma:
+      description: "When using Figma MCP server, reference tools (get_file, get_component, get_local_variables, etc.) from this codex."
+    _foundation/tooling/codex/codex-mcp-slack:
+      description: "When using the Slack MCP server (HTTP at mcp.slack.com/mcp, OAuth 2.0), reference tools (slack_send_message, slack_read_channel, etc.) and channel resolution from this codex. Primary consumer: codex-notifications."
+    _foundation/tooling/codex/codex-notifications:
+      description: "When firing a framework notification (Athena PR timeout, Janus release, Eunomia plans digest), read notifications.provider and notifications.channels.* from .ahrena/.directives and invoke the corresponding MCP tool per this codex. Provider-agnostic; do not name the concrete provider in Lexis/Warriors/Katas."
+    _foundation/process/codex/codex-session-tracking:
+      description: "When operating on a plan as a Claude Code session, update the heartbeat at .ahrena/workflow/sessions/<session-id>.json per this codex; kata-pr-prepare aggregates these into the Session Trace block of the PR body."
+    _foundation/tooling/codex/codex-mcp-common:
+      description: "Shared MCP patterns — consulted alongside any server-specific MCP codex."
+    _foundation/tooling/codex/codex-ahrena-mcp:
+      description: "Reference for the Ahrena MCP server (default-on internal server) — tools, parameters, install path, and usage guidance."
+    engineering/skills/codex/codex-skill-anthropic-agent-skills:
+      description: "When authoring SKILL.md or validating a skill package, follow the Anthropic Agent Skills spec (frontmatter fields, naming limits, progressive disclosure)."
+    engineering/skills/codex/codex-skill-project-architecture:
+      description: "When scaffolding or editing skills/{slug}/, follow the Ahrena project layout and reuse codex-frontend-architecture / codex-python-architecture for widgets and scripts/tools."
+    _foundation/tooling/codex/codex-git-spice:
+      description: "When operating Stacked PRs and stacked_prs.tool=gs, consult this codex for git-spice install, setup, command catalog, vanilla→gs mapping, and force-push semantics."
+    engineering/skills/codex/codex-skill-tools-and-widgets:
+      description: "When defining tools/ (MCP) or widgets/ (React) inside a skill project, follow the Ahrena convention for mcp.config.json, manifest.json, and widget↔script bindings."
+    engineering/agents/codex/codex-agent-construction-directives:
+      description: "When architecting an AI agent on the Guardia platform, consult the Piaget analogy, the 6 Construction Directives, the cross-tab of differential rigor by stage, and the DoOC evidence formats. Notion is the live source."
+    engineering/agents/codex/codex-system-prompt:
+      description: "When authoring, reviewing, or auditing a Guardia agent system prompt, consult the 3 principles, the 4 mandatory blocks with canonical templates, the 5 OWASP LLM Top 10 2025 controls, the org_id/client_id guardrail, writing rules, the review/security checklists, and the executable adversarial suite. Notion is the live source."
+    engineering/agents/codex/codex-agent-design-docs:
+      description: "When producing agent design documents on the Guardia platform, follow the 15 templates: 13 Hub & Spoke files for agents/{agent}/, dooc/{agent}.md snapshot, and the feature-agent-map.md m:n correlation with the parallel Feature Design axis."
+    engineering/workflow/codex/codex-issue-workflow:
+      description: "Reference for the 7-phase Issue-Driven flow, the 2 gates, MADR format, and delegation."
+    engineering/frontend/codex/codex-frontend-architecture:
+      description: "Reference for frontend architecture layers, state management, composition, and performance."
+    engineering/platform/codex/codex-known-errors:
+      description: "Catalog of standardized code/reason pairs across the platform; consulted when emitting or handling errors."
+    engineering/platform/codex/codex-component-architecture:
+      description: "When starting or auditing a Guardia bounded context, consult this parent codex for the canonical physical layout (components/api, agents, jobs, ui, deployment/, docs/), inter-component boundaries, and pointers to the 5 child codices."
+    engineering/platform/codex/codex-component-api:
+      description: "Conventions inside components/api/: hexagonal layout (adapters/inbound, adapters/outbound, application/ports, application/use_cases, domain), FastAPI/Powertools, idempotency middleware, Result type."
+    engineering/platform/codex/codex-component-agents:
+      description: "Conventions inside components/agents/: Orchestrator + Specialists, tool registry, memory port abstraction; system prompt lives in docs/{context}/agents/ (documental axis)."
+    engineering/platform/codex/codex-component-jobs:
+      description: "Conventions inside components/jobs/: Lambda + Powertools, Step Functions I/O schemas, idempotency store, BatchProcessor for SQS/Kinesis."
+    engineering/platform/codex/codex-component-ui:
+      description: "Conventions inside components/ui/: Next.js App Router + tsup widgets, mandatory @guardia/design-system, typed API client from openapi.yaml."
+    engineering/platform/codex/codex-component-deployment:
+      description: "Conventions inside deployment/: IaC per lex-aws-iac (one tool per bounded context), tagging per lex-aws-cost, security per lex-aws-security, runbooks linked to alarms."
+    engineering/devops/codex/codex-aws-well-architected:
+      description: "Reference for the 6 pillars of AWS Well-Architected Framework."
+    engineering/devops/codex/codex-aws-services:
+      description: "Reference catalog of AWS services by use case with alternatives and trade-offs."
+    engineering/quality/codex/codex-test-strategy:
+      description: "Reference for test-level decisions, tooling per stack, and anti-patterns."
+    engineering/sre/codex/codex-incident-response:
+      description: "Reference for severity, roles, comms templates, and blameless post-mortem."
+    engineering/data/codex/codex-data-modeling:
+      description: "Reference for entity/value object/aggregate patterns and DB choice."
+    design/brand/codex/codex-brand-essence:
+      description: "Reference for Guardia's essence, promise, personality, and visual fundamentals."
+    design/brand/codex/codex-brand-colors:
+      description: "Reference for Guardia palette, scales, signal colors, and WCAG combinations."
+    design/brand/codex/codex-brand-typography:
+      description: "Reference for Guardia typography (Poppins, Lastica, Roboto), hierarchy, and CSS declaration."
+    design/brand/codex/codex-brand-voice:
+      description: "Full voice reference: pillars, personality, rules, examples, channels, checklist."
+    design/brand/codex/codex-brand-logo:
+      description: "Reference for Guardia logo variants and per-background selection."
+    design/system/codex/codex-design-system:
+      description: "Reference for the Guardia Design System: principles, governance, sources, and stack."
+    design/system/codex/codex-design-system-components:
+      description: "Guidance for consuming, composing, and contributing to @guardia/design-system."
+    design/system/codex/codex-ai-first-experience:
+      description: "Reference for the AI-First UX pattern with Isac at the center."
+    engineering/mobile/codex/codex-mobile-architecture:
+      description: "Reference for mobile app structure, state, offline sync, testing."
+    product/discovery/codex/codex-discovery-artifacts:
+      description: "Reference for Product Discovery artifacts: insight and Idea front-matter schemas, 9-status state machine, canonical addressing under docs/discovery/{topic}/."

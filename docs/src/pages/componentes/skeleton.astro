@@ -1,0 +1,193 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  VariantsRow,
+  ParagraphRow,
+  ProfileRow,
+  CardRow,
+  CustomDimensionsRow,
+  ListLoadingRow,
+} from "../../previews/skeleton";
+import { LiveSkeletonSnippet } from "../../previews/skeleton-live";
+import skeletonSource from "@ds/components/skeleton/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · PRIMITIVOS"
+  title="Skeleton"
+  group="Primitivos"
+  storybookId="components-skeleton--default"
+  sourcePath="ui_kit/components/skeleton"
+  lede='Placeholder animado para conteúdo carregando. Quatro variantes (<code class="inline">text</code>, <code class="inline">title</code>, <code class="inline">rect</code>, <code class="inline">circle</code>), suporte a <code class="inline">lines</code> para parágrafos e shimmer que respeita <code class="inline">prefers-reduced-motion</code>.'
+>
+  <!-- ============ VARIANTES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>text · title · rect · circle</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">text</code> e <code class="inline">title</code> são linhas;
+      <code class="inline">rect</code> é um bloco genérico;
+      <code class="inline">circle</code> é um avatar.
+    </p>
+  </section>
+
+  <!-- ============ PARÁGRAFO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Parágrafo (multi-line)</h2>
+      <small>lines={`{n}`} — última linha em 70%</small>
+    </div>
+    <div class="preview">
+      <ParagraphRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">lines</code> em vez de empilhar Skeletons manualmente —
+      a última linha fica naturalmente menor (70%) para parecer um parágrafo real.
+    </p>
+  </section>
+
+  <!-- ============ PROFILE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Linha de perfil</h2>
+      <small>circle + duas linhas de texto</small>
+    </div>
+    <div class="preview">
+      <ProfileRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em card</h2>
+      <small>composição rect + title + parágrafo</small>
+    </div>
+    <div class="preview">
+      <CardRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CUSTOM DIMENSIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Dimensões customizadas</h2>
+      <small>width / height</small>
+    </div>
+    <div class="preview">
+      <CustomDimensionsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Aceita number (px) ou string (% / rem / etc). Para shapes não-padrão,
+      combine <code class="inline">variant</code> + <code class="inline">className</code>.
+    </p>
+  </section>
+
+  <!-- ============ LIST LOADING ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Anúncio acessível</h2>
+      <small>role="status" + aria-busy + sr-only label</small>
+    </div>
+    <div class="preview">
+      <ListLoadingRow client:load />
+    </div>
+    <p class="preview-caption">
+      O Skeleton em si é decorativo (<code class="inline">aria-hidden</code>).
+      Para anunciar o estado de carregamento, envolva o grupo em um
+      <code class="inline">role="status"</code> com texto SR-only.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSkeletonSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"text" | "title" | "rect" | "circle"</td>
+            <td class="default">"text"</td>
+            <td class="desc">Forma do placeholder.</td>
+          </tr>
+          <tr>
+            <td class="name">width</td>
+            <td class="type">number | string</td>
+            <td class="default">—</td>
+            <td class="desc">Largura inline (px se number).</td>
+          </tr>
+          <tr>
+            <td class="name">height</td>
+            <td class="type">number | string</td>
+            <td class="default">—</td>
+            <td class="desc">Altura inline (px se number).</td>
+          </tr>
+          <tr>
+            <td class="name">lines</td>
+            <td class="type">number</td>
+            <td class="default">1</td>
+            <td class="desc">Quando <code class="inline">variant="text"</code>, gera N linhas; última em 70%.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLSpanElement</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/skeleton/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={skeletonSource}
+      language="tsx"
+      filename="ui_kit/components/skeleton/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA + AAA motion</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Decorativo por default</b> (<code class="inline">aria-hidden="true"</code>) — leitores de tela ignoram skeletons individuais.</span></li>
+        <li><span><b>Anúncio de loading</b> deve vir do container: <code class="inline">role="status"</code> + <code class="inline">aria-busy="true"</code> + texto SR-only.</span></li>
+        <li><span><b>Shimmer respeita</b> <code class="inline">prefers-reduced-motion</code>: a animação é wrapped em <code class="inline">motion-safe:</code>; em modo reduzido só o gradient permanece visível.</span></li>
+        <li><span><b>Contraste</b> do shimmer usa <code class="inline">--muted</code> sobre <code class="inline">--background</code> — atende AA para elementos não-texto (3:1).</span></li>
+        <li><span><b>Não use</b> Skeleton para conteúdo definitivamente vazio — prefira um Empty State explícito.</span></li>
+        <li><span><b>Tempo de exibição</b> deve ser curto (&lt;1s tipicamente). Para esperas longas, mostre progresso indeterminado ou determinado, não skeleton.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

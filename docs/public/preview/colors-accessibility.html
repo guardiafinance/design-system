@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Acessibilidade</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .group { margin-bottom: 20px; }
+  .group-title {
+    font-size: 12px; font-weight: 600; color: var(--violet-500);
+    letter-spacing: 0.02em; text-transform: uppercase;
+    margin: 0 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 999px; }
+  .dot.ok { background: var(--signal-green); }
+  .dot.warn { background: var(--signal-yellow); }
+  .dot.bad { background: var(--signal-red); }
+  .pairs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pair {
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 130px;
+    border: 1px solid var(--border);
+  }
+  .pair .big { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+  .pair .small { font-size: 12px; margin-top: 6px; opacity: 0.9; }
+  .pair .ratio {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+    align-self: flex-start;
+    background: rgba(255,255,255,0.16);
+    margin-top: 12px;
+  }
+  .pair.on-light .ratio { background: rgba(47,14,64,0.08); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">ACESSIBILIDADE · WCAG 2.1</div>
+  <h1 class="card-title">Combinações aprovadas</h1>
+  <p class="card-sub">AA é piso (texto ≥ 4.5:1; UI ≥ 3:1). AAA é recomendado para leitura prolongada, dashboards e relatórios. Cada par abaixo exibe a razão de contraste real e o nível atingido.</p>
+
+  <div class="group">
+    <div class="group-title"><span class="dot ok"></span>Aprovado para qualquer uso (AA/AAA)</div>
+    <div class="pairs">
+      <div class="pair on-light" style="background:#FFC30A;color:#0E1016">
+        <div>
+          <div class="big">Credencial ativa</div>
+          <div class="small">Amarelo 500 · Preto</div>
+        </div>
+        <span class="ratio">13.06 : 1 · AAA</span>
+      </div>
+      <div class="pair" style="background:#3A3A44;color:#fff">
+        <div>
+          <div class="big">Fechamento mensal</div>
+          <div class="small">Cinza 500 · Branco</div>
+        </div>
+        <span class="ratio">11.24 : 1 · AAA</span>
+      </div>
+      <div class="pair" style="background:#4F186D;color:#DBD0E1">
+        <div>
+          <div class="big">Contabilidade agêntica</div>
+          <div class="small">Violeta 500 · Violeta 100</div>
+        </div>
+        <span class="ratio">7.85 : 1 · AAA</span>
+      </div>
+      <div class="pair" style="background:#DB6286;color:#0E1016">
+        <div>
+          <div class="big">Acolhimento</div>
+          <div class="small">Rosa 500 · Preto</div>
+        </div>
+        <span class="ratio">6.10 : 1 · AA</span>
+      </div>
+      <div class="pair on-light" style="background:#FFF3CE;color:#37104C">
+        <div>
+          <div class="big">Corpo de texto</div>
+          <div class="small">Amarelo 100 · Violeta 700</div>
+        </div>
+        <span class="ratio">≥ 7 : 1 · AAA</span>
+      </div>
+      <div class="pair" style="background:#9C5100;color:#fff">
+        <div>
+          <div class="big">Ação concluída</div>
+          <div class="small">Laranja 700 · Branco</div>
+        </div>
+        <span class="ratio">7.5 : 1 · AAA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title"><span class="dot warn"></span>Restrito a títulos, botões e badges (texto grande)</div>
+    <div class="pairs">
+      <div class="pair" style="background:#E07400;color:#4F186D">
+        <div>
+          <div class="big">Nova transação</div>
+          <div class="small">Laranja 500 · Violeta 500</div>
+        </div>
+        <span class="ratio">3.96 : 1 · texto grande</span>
+      </div>
+      <div class="pair" style="background:#DB6286;color:#fff">
+        <div>
+          <div class="big">Revisar</div>
+          <div class="small">Rosa 500 · Branco</div>
+        </div>
+        <span class="ratio">3.44 : 1 · texto grande</span>
+      </div>
+      <div class="pair" style="background:#E07400;color:#fff">
+        <div>
+          <div class="big">Conciliar</div>
+          <div class="small">Laranja 500 · Branco</div>
+        </div>
+        <span class="ratio">3.15 : 1 · texto grande</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title"><span class="dot bad"></span>Proibido — substituir nas aplicações</div>
+    <div class="pairs">
+      <div class="pair on-light" style="background:#FFC30A;color:#FFFFFF;border:1px dashed #B28807">
+        <div>
+          <div class="big" style="text-shadow:0 0 1px rgba(0,0,0,0.2)">Texto ilegível</div>
+          <div class="small" style="color:#664E04">Amarelo 500 · Branco — 1.61 : 1</div>
+        </div>
+        <span class="ratio" style="background:rgba(255,49,49,0.15);color:#8a1b1b">Usar Violeta 500 ou Cinza 500 no texto</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

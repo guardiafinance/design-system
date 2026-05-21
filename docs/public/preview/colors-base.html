@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guardia · Cores base</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .swatch {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-xs);
+  }
+  .chip {
+    height: 132px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #fff;
+  }
+  .chip .name { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .chip .hex { font-family: var(--font-mono); font-size: 12px; opacity: 0.88; margin-top: 2px; }
+  .meta {
+    padding: 12px 16px 14px;
+  }
+  .meta .meaning {
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.45;
+  }
+  .meta .token {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--violet-700);
+    margin-top: 8px;
+    display: block;
+  }
+  .amarelo { background: var(--yellow-500); color: var(--violet-500); }
+  .laranja { background: var(--orange-500); }
+  .rosa    { background: var(--pink-500); }
+  .violeta { background: var(--violet-500); }
+  .cinza   { background: var(--gray-500); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">CORES</div>
+  <h1 class="card-title">Paleta base — cinco cores Guardia</h1>
+  <p class="card-sub">Cada cor carrega um significado alinhado aos valores culturais da marca. A paleta sustenta site, plataforma, app e materiais comerciais com a mesma identidade.</p>
+
+  <div class="grid">
+    <div class="swatch">
+      <div class="chip amarelo">
+        <div class="name">Amarelo Brilhante</div>
+        <div class="hex">#FFC30A</div>
+      </div>
+      <div class="meta">
+        <div class="meaning">Confiança e Transparência. Otimismo, clareza e acessibilidade.</div>
+        <code class="token">--guardia-yellow</code>
+      </div>
+    </div>
+
+    <div class="swatch">
+      <div class="chip laranja">
+        <div class="name">Laranja Quente</div>
+        <div class="hex">#E07400</div>
+      </div>
+      <div class="meta">
+        <div class="meaning">Eficiência e Agilidade. Energia e dinamismo da operação.</div>
+        <code class="token">--guardia-orange</code>
+      </div>
+    </div>
+
+    <div class="swatch">
+      <div class="chip rosa">
+        <div class="name">Rosa Suave</div>
+        <div class="hex">#DB6286</div>
+      </div>
+      <div class="meta">
+        <div class="meaning">Acolhimento e Inclusão. Empatia, respeito e valorização.</div>
+        <code class="token">--guardia-pink</code>
+      </div>
+    </div>
+
+    <div class="swatch">
+      <div class="chip violeta">
+        <div class="name">Violeta Profundo</div>
+        <div class="hex">#4F186D</div>
+      </div>
+      <div class="meta">
+        <div class="meaning">Profundidade e Excelência. Segurança, conformidade e compromisso.</div>
+        <code class="token">--guardia-violet</code>
+      </div>
+    </div>
+
+    <div class="swatch">
+      <div class="chip cinza">
+        <div class="name">Cinza Báltico</div>
+        <div class="hex">#3A3A44</div>
+      </div>
+      <div class="meta">
+        <div class="meaning">Estabilidade e Integridade. Profissionalismo e neutralidade.</div>
+        <code class="token">--guardia-gray</code>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
