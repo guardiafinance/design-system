@@ -151,3 +151,51 @@ export const Group: Story = {
     </div>
   ),
 };
+
+/**
+ * Forca a story para o tema escuro independentemente do toggle global da
+ * toolbar. Serve como contrato visual: o Avatar mantem WCAG AA das cores
+ * de fallback sobre fundo Mono Black (#0E1016) declarado em lex-brand-colors.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz de fallback colors + sizes + status sobre fundo escuro. Cada cor mantem contraste >= 4.5:1 com o texto branco (>= 3:1 para amarelo com texto Violet 900) conforme tokens de marca.",
+      },
+    },
+  },
+  render: () => (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-wrap items-end gap-4">
+        {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+          <Avatar key={size} size={size}>
+            <AvatarFallback color="violet">FS</AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-3">
+        {(
+          ["violet", "orange", "pink", "yellow", "green", "blue", "gray"] as const
+        ).map((color) => (
+          <Avatar key={color} size="lg">
+            <AvatarFallback color={color}>
+              {color.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      <div className="flex gap-4">
+        {(["online", "offline", "busy", "away"] as const).map((status) => (
+          <Avatar key={status} size="lg">
+            <AvatarFallback color="gray">FS</AvatarFallback>
+            <AvatarStatus status={status} />
+          </Avatar>
+        ))}
+      </div>
+    </div>
+  ),
+};
