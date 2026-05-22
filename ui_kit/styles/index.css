@@ -192,17 +192,22 @@
 /* ────────────────────────────────────────────────────────────────────────
  * SEMANTIC TOKENS — DARK THEME
  * ──────────────────────────────────────────────────────────────────────── */
+/* Dark theme alinhado a Notion > Branding > Cores > Dark Mode.
+   https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b
+   Surfaces na escala Cinza Báltico (Surface Base = Cinza 900 grafite,
+   sem Mono Preto como background). Acao = Laranja 500. Brand de texto
+   sobre dark = Violeta 200 (substitui Violeta 500 que falha contraste). */
 :root[data-theme="dark"],
 .dark {
-  --bg: var(--guardia-violet-900);
-  --bg-subtle: #2A1538;
-  --surface: #2A1538;
-  --fg: var(--guardia-violet-100);
-  --fg-muted: var(--guardia-violet-200);
-  --fg-subtle: var(--guardia-gray-200);
+  --bg: var(--guardia-gray-900);                /* Surface Base #17171B */
+  --bg-subtle: var(--guardia-gray-800);         /* Surface 1 #1E1E24 */
+  --surface: var(--guardia-gray-700);           /* Surface 2 #28282F (cards) */
+  --fg: var(--mono-white);                       /* Texto Primário */
+  --fg-muted: var(--guardia-gray-100);          /* Texto Secundário #D7D7D9 */
+  --fg-subtle: var(--guardia-gray-200);         /* Texto Terciário #A6A6AA */
 
-  --border-guardia: var(--guardia-violet-700);
-  --border-strong: var(--guardia-violet-500);
+  --border-guardia: var(--guardia-gray-700);    /* Divisor sutil = Surface 2 */
+  --border-strong: var(--guardia-gray-500);     /* Divisor forte = Surface 3 */
   --ring-guardia: var(--guardia-orange-500);
 
   --link: var(--guardia-orange-500);
@@ -210,12 +215,12 @@
 
   --action: var(--guardia-orange-500);
   --action-hover: var(--guardia-orange-700);
-  --accent-brand: var(--guardia-violet-100);
-  --accent-brand-hover: var(--guardia-violet-200);
+  --accent-brand: var(--guardia-violet-200);    /* Violeta sobre dark: 200 (#AF97BD) */
+  --accent-brand-hover: var(--guardia-violet-100);
 
-  /* Skeleton (loading placeholders) — dark variants */
-  --skeleton-base: hsl(285 30% 20%);
-  --skeleton-shine: hsl(285 30% 30%);
+  /* Skeleton (loading placeholders) — dark variants alinhados a Cinza */
+  --skeleton-base: var(--guardia-gray-700);
+  --skeleton-shine: var(--guardia-gray-500);
 
   --surface-bg: var(--bg);
   --surface-fg: var(--fg);
@@ -223,43 +228,46 @@
   --color-link: var(--link);
   --color-link-hover: var(--link-hover);
   --button-bg: var(--action);
-  --button-fg: #ffffff;
+  --button-fg: var(--mono-black);                /* Laranja 500 + Mono Preto = 6.2:1 */
   --button-hover-bg: var(--action-hover);
 
-  --background: 285 62% 10%;
-  --foreground: 280 25% 85%;
-  --card: 285 62% 10%;
-  --card-foreground: 280 25% 85%;
-  --popover: 285 62% 10%;
-  --popover-foreground: 280 25% 85%;
-  --primary: 31 100% 44%;                /* orange-500 */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 281 64% 26%;              /* violet-500 */
-  --secondary-foreground: 0 0% 100%;
-  --muted: 285 30% 20%;
-  --muted-foreground: 280 15% 68%;
-  --accent: 31 100% 44%;
-  --accent-foreground: 0 0% 100%;
+  /* ─── shadcn-compat (HSL triples) alinhados a Cinza Báltico ─── */
+  --background: 240 8% 10%;                     /* gray-900 #17171B */
+  --foreground: 0 0% 99%;                        /* mono-white */
+  --card: 240 9% 17%;                            /* gray-700 #28282F (Surface 2) */
+  --card-foreground: 0 0% 99%;
+  --popover: 240 9% 17%;                         /* gray-700 */
+  --popover-foreground: 0 0% 99%;
+  --primary: 31 100% 44%;                        /* orange-500 — ação em dark */
+  --primary-foreground: 225 12% 7%;             /* mono-black */
+  --secondary: 240 9% 17%;                       /* gray-700 surface (era violet-500 que falha contraste) */
+  --secondary-foreground: 0 0% 99%;
+  --muted: 240 9% 13%;                           /* gray-800 #1E1E24 */
+  --muted-foreground: 240 3% 85%;               /* gray-100 #D7D7D9 */
+  --accent: 31 100% 44%;                         /* orange-500 */
+  --accent-foreground: 225 12% 7%;              /* mono-black */
   --destructive: 0 100% 59%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 285 30% 20%;
-  --input: 285 30% 20%;
-  --ring: 31 100% 44%;
+  --destructive-foreground: 0 0% 99%;
+  --border: 240 9% 17%;                          /* gray-700 (Divisor sutil) */
+  --input: 240 9% 17%;                           /* gray-700 */
+  --ring: 31 100% 44%;                           /* orange-500 */
 
-  --sidebar: 281 64% 15%;
-  --sidebar-foreground: 280 25% 85%;
+  --sidebar: 240 9% 13%;                         /* gray-800 sub-area */
+  --sidebar-foreground: 0 0% 99%;
   --sidebar-primary: 31 100% 44%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 285 30% 20%;
-  --sidebar-accent-foreground: 280 25% 85%;
-  --sidebar-border: 285 30% 20%;
+  --sidebar-primary-foreground: 225 12% 7%;
+  --sidebar-accent: 240 8% 25%;                 /* gray-500 hover/selected */
+  --sidebar-accent-foreground: 0 0% 99%;
+  --sidebar-border: 240 9% 17%;
   --sidebar-ring: 31 100% 44%;
 
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  /* Chart palette — Lighthouse signals mantidos em dark conforme diretriz
+     "mesmo dado tem o mesmo significado visual independentemente do tema" */
+  --chart-1: oklch(0.65 0.20 31);                /* orange-500 — destaque/baseline */
+  --chart-2: oklch(0.74 0.18 145);               /* signal-green */
+  --chart-3: oklch(0.61 0.20 264);               /* signal-blue */
+  --chart-4: oklch(0.88 0.16 95);                /* signal-yellow */
+  --chart-5: oklch(0.66 0.26 23);                /* signal-red */
 }
 
 /* ────────────────────────────────────────────────────────────────────────

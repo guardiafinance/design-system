@@ -33,9 +33,15 @@ jobs:
         run: npm ci
 
       - name: Publish to Chromatic
-        uses: chromaui/action@v11
+        # v11 embarcava Chromatic CLI 11.29.0 (significantly outdated per
+        # alerta do build); v17 traz Chromatic CLI v17.0.0.
+        uses: chromaui/action@v17
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
-          autoAcceptChanges: master
+          # PR do unico maintainer (fernandoseguim) auto-aceita diffs em
+          # qualquer branch — voce controla 100% do que entra; PR de
+          # qualquer outro autor (contribuidor externo, bot nao listado)
+          # cai no comportamento conservador (so auto-aceita em master).
+          autoAcceptChanges: ${{ github.actor == 'fernandoseguim' && '*' || 'master' }}
           onlyChanged: true

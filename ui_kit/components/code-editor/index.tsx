@@ -168,7 +168,7 @@ const CodeEditor = React.forwardRef<HTMLTextAreaElement, CodeEditorProps>(
     return (
       <div
         className={cn(
-          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm transition-colors",
+          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm transition-colors dark:bg-[#17171b]",
           !readOnly && "focus-within:border-ring",
           readOnly && "opacity-90",
           className,
@@ -239,7 +239,7 @@ const CodeEditor = React.forwardRef<HTMLTextAreaElement, CodeEditorProps>(
             placeholder={placeholder}
             aria-label={props["aria-label"] ?? "Editor de código"}
             className={cn(
-              "block w-full flex-1 bg-transparent px-4 py-4 font-mono text-[12.5px] leading-relaxed text-[#ede4f3] outline-none placeholder:text-white/30",
+              "block w-full flex-1 bg-transparent px-4 py-4 font-mono text-[12.5px] leading-relaxed text-[#dbd0e1] outline-none placeholder:text-white/30",
               !showLineNumbers && "pl-4",
               showLineNumbers && "pl-0",
             )}

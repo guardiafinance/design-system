@@ -64,7 +64,7 @@ const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
       <div
         ref={ref}
         className={cn(
-          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm",
+          "group relative overflow-hidden rounded-md border border-border bg-[#1f092b] text-sm dark:bg-[#17171b]",
           className,
         )}
         data-language={language}
@@ -110,13 +110,13 @@ const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
 
         {highlightedHtml ? (
           <div
-            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#ede4f3] [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-4"
+            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1] [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-4"
             style={maxHeight ? { maxHeight } : undefined}
             dangerouslySetInnerHTML={{ __html: highlightedHtml }}
           />
         ) : (
           <pre
-            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#ede4f3]"
+            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1]"
             style={maxHeight ? { maxHeight } : undefined}
           >
             <code className="block px-4 py-4">
