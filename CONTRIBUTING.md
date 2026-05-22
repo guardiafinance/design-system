@@ -60,11 +60,14 @@ Fluxo recomendado:
 1. Faça a mudança visual no componente (sem rodar `test-storybook:update` local).
 2. Push do PR. CI vai falhar no job `Visual regression + a11y` — esperado.
 3. Abra o run falhado, baixe o artifact `visual-diffs-*` (PNGs base/current/diff em `__diff_output__/`), confira se o diff é intencional.
-4. Se intencional: na aba **Actions**, dispare manualmente o workflow **Regenerate Visual Baselines** apontando para sua branch.
-5. O workflow gera baselines no Ubuntu e empurra um commit assinado pelo GitHub (`chore(visual): regenerate baselines on ubuntu`).
-6. Volte ao run de CI falhado e clique **Re-run failed jobs**. Validação roda contra as novas baselines.
+4. Se intencional: aplique a label **`regenerate-baselines`** no PR (`gh pr edit <N> --add-label regenerate-baselines` ou via UI).
+5. O CI re-triggea (evento `labeled`), o job visual roda em modo regeneração (gera baselines no Ubuntu, pusha como commit assinado pelo GitHub via Git Database API).
+6. Remova a label (`gh pr edit <N> --remove-label regenerate-baselines`).
+7. Abra o run de CI anterior e clique **Re-run failed jobs**. Validação roda contra as novas baselines.
 
-Não tem `Re-run failed jobs`? GitHub Actions não re-triggea automaticamente CI quando o push vem do próprio workflow com GITHUB_TOKEN (loop prevention). Re-run manual é a saída.
+Por que re-run manual? GitHub Actions não re-triggea automaticamente CI quando o push vem do próprio workflow com GITHUB_TOKEN (loop prevention). O re-run manual é a saída.
+
+**Restrição**: regeneração via label **só funciona em PRs do mesmo repositório**. Forks rodam o workflow com permissões reduzidas — o push de commit assinado falha por design. Contribuidores externos pedem pra um maintainer aplicar a label e gerar as baselines.
 
 Fluxo local (só pra desenvolvimento iterativo, **não pra commit**):
 
@@ -73,7 +76,7 @@ npm run storybook                  # → http://localhost:6006
 npm run test-storybook:update      # gera baselines locais (macOS)
 ```
 
-Use isso pra ver o que mudou rapidamente. Não commite essas baselines — o `regenerate-baselines` workflow vai sobrescrever no Ubuntu.
+Use isso pra ver o que mudou rapidamente. Não commite essas baselines — a regeneração via label vai sobrescrever no Ubuntu.
 
 ### Como funciona
 
