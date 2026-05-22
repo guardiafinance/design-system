@@ -28,8 +28,12 @@ const preview: Preview = {
     backgrounds: {
       default: "light",
       values: [
+        // Valores literais: o addon de backgrounds aplica via inline style
+        // no body do iframe, fora do escopo das variaveis CSS. Espelham
+        // --bg em cada tema: Mono Branco light, Cinza 900 dark (Surface
+        // Base per Notion > Branding > Cores > Dark Mode).
         { name: "light", value: "#FDFDFD" },
-        { name: "dark", value: "#0E1016" },
+        { name: "dark", value: "#17171B" },
       ],
     },
   },
@@ -58,8 +62,8 @@ const preview: Preview = {
             <div
               data-storybook-bg={theme}
               style={{
-                background: theme === "dark" ? "#0E1016" : "#FDFDFD",
-                color: theme === "dark" ? "#FDFDFD" : "#0E1016",
+                background: "var(--bg)",
+                color: "var(--fg)",
                 minHeight: "100vh",
                 padding: "1.5rem",
               }}
