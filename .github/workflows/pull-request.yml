@@ -34,3 +34,57 @@ jobs:
 
       - name: Validate package can be packed
         run: npm pack --dry-run
+
+  visual-and-a11y:
+    name: Visual regression + a11y
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Cacheia browser binaries do Playwright entre runs. Key amarrada ao
+      # package-lock garante invalidacao quando a versao de playwright sobe.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build Storybook static
+        run: npm run build-storybook
+
+      # --ci flag propaga pro jest-image-snapshot e faz falhar em baseline
+      # ausente em vez de criar (comportamento default seria gerar a baseline
+      # silenciosamente no primeiro run, mascarando regressoes).
+      - name: Run visual + a11y tests
+        run: npm run test-storybook:ci
+
+      - name: Upload visual diff artifact on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs-${{ github.run_id }}
+          path: |
+            __image_snapshots__/__diff_output__/
+            storybook-static/
+          retention-days: 14
+          if-no-files-found: ignore
