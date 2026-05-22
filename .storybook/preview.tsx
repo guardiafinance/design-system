@@ -1,25 +1,25 @@
 import type { Preview } from "@storybook/react";
-import React, { useEffect } from "react";
-import { ThemeProvider, useTheme } from "../ui_kit/theme/theme-provider";
+import React from "react";
 import "../ui_kit/styles/index.css";
 
 /**
- * Ponte entre o global `theme` do Storybook toolbar e o `ThemeProvider`.
- * Reaplica `setTheme` sempre que o usuário troca via toolbar para que a
- * preview reflita a escolha sem reload.
+ * Aplica o tema sincronamente no <html> antes de o React renderizar.
+ *
+ * Por que sem ThemeProvider:
+ *   ThemeProvider usa useState() lendo localStorage no init, e o
+ *   StorybookThemeBridge anterior reagia ao toolbar via useEffect
+ *   APÓS o mount. Isso gerava duas pinturas (frame 1 com tema do
+ *   storage, frame 2 com tema do toolbar) que o Chromatic detectava
+ *   como "unstable tests" — as duas screenshots de comparação
+ *   caíam em frames diferentes da sequência.
+ *
+ * Aqui o setAttribute roda na fase de render do decorator (antes
+ * do paint), garantindo que a primeira pintura já carregue o
+ * data-theme correto. Determinístico por construção.
  */
-function StorybookThemeBridge({
-  themeGlobal,
-  children,
-}: {
-  themeGlobal: "light" | "dark";
-  children: React.ReactNode;
-}) {
-  const { setTheme } = useTheme();
-  useEffect(() => {
-    setTheme(themeGlobal);
-  }, [themeGlobal, setTheme]);
-  return <>{children}</>;
+function applyThemeSync(theme: "light" | "dark"): void {
+  if (typeof document === "undefined") return;
+  document.documentElement.setAttribute("data-theme", theme);
 }
 
 const preview: Preview = {
@@ -56,22 +56,19 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const theme = (context.globals.theme ?? "light") as "light" | "dark";
+      applyThemeSync(theme);
       return (
-        <ThemeProvider defaultTheme={theme} storageKey="sb-theme">
-          <StorybookThemeBridge themeGlobal={theme}>
-            <div
-              data-storybook-bg={theme}
-              style={{
-                background: "var(--bg)",
-                color: "var(--fg)",
-                minHeight: "100vh",
-                padding: "1.5rem",
-              }}
-            >
-              <Story />
-            </div>
-          </StorybookThemeBridge>
-        </ThemeProvider>
+        <div
+          data-storybook-bg={theme}
+          style={{
+            background: "var(--bg)",
+            color: "var(--fg)",
+            minHeight: "100vh",
+            padding: "1.5rem",
+          }}
+        >
+          <Story />
+        </div>
       );
     },
   ],
