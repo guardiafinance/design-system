@@ -47,11 +47,18 @@ const PaginationLink = ({
   size = "default",
   children,
   onClick,
+  href,
   ...props
 }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
     aria-disabled={disabled}
+    href={href}
+    /* role="button" quando o consumidor nao passa href — o componente vira
+       interativo apenas via onClick. Quando ha href, <a> e interativo
+       nativamente. */
+    role={!href ? "button" : undefined}
+    tabIndex={disabled ? -1 : 0}
     className={cn(
       buttonVariants({
         variant: isActive ? "outline" : "ghost",
@@ -64,6 +71,12 @@ const PaginationLink = ({
       className
     )}
     onClick={disabled ? (e) => e.preventDefault() : onClick}
+    onKeyDown={(e) => {
+      if ((e.key === "Enter" || e.key === " ") && !disabled && onClick) {
+        e.preventDefault();
+        onClick(e as unknown as React.MouseEvent<HTMLAnchorElement>);
+      }
+    }}
     {...props}
   >
     {children}

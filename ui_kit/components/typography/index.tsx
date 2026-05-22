@@ -258,7 +258,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
-    ({ className, variant = "default", ...props }, ref) => (
+    ({ className, variant = "default", children, ...props }, ref) => (
         <a
             ref={ref}
             className={cn(
@@ -267,7 +267,9 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
                 className
             )}
             {...props}
-        />
+        >
+            {children}
+        </a>
     )
 );
 Link.displayName = "Link";

@@ -24,6 +24,19 @@ export default ts.config(
     js.configs.recommended,
     ...ts.configs.recommended,
     {
+        // Arquivos de configuracao em CommonJS (.cjs) — Storybook, PostCSS.
+        // Permite require/module/__dirname/process e desliga a regra
+        // typescript-eslint que so faz sentido em modulos ESM.
+        files: ["**/*.cjs"],
+        languageOptions: {
+            sourceType: "commonjs",
+            globals: { ...globals.node },
+        },
+        rules: {
+            "@typescript-eslint/no-require-imports": "off",
+        },
+    },
+    {
         files: ["ui_kit/**/*.{ts,tsx}", ".storybook/**/*.{ts,tsx}"],
         languageOptions: {
             ecmaVersion: "latest",

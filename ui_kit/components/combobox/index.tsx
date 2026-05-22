@@ -269,6 +269,12 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                 tabIndex={-1}
                 aria-label="Limpar seleção"
                 onClick={clear}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    clear(e as unknown as React.MouseEvent);
+                  }
+                }}
                 onMouseDown={(e) => e.preventDefault()}
                 className="inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted hover:bg-muted hover:text-fg"
               >

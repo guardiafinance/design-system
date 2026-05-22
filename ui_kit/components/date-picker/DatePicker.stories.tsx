@@ -42,7 +42,7 @@ export const WithDefaultValue: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function ControlledStory() {
     const [date, setDate] = useState<Date | null>(new Date(2025, 0, 7));
     return (
       <div className="flex flex-col gap-2">

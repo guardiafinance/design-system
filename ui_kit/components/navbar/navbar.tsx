@@ -236,7 +236,7 @@ function NavbarInternal({
                                 className="min-h-8 min-w-8 h-8 w-8 rounded-full object-cover"
                             />
                         </When>
-                        <When condition={!Boolean(settings.user?.avatar)}>
+                        <When condition={!settings.user?.avatar}>
                             <div className="min-h-8 min-w-8 h-8 w-8 flex items-center justify-center rounded-full bg-brand-fgLight/20 text-brand-fgLight text-sm font-semibold">
                                 {settings.user?.initials || settings.user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
                             </div>

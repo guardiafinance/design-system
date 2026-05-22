@@ -185,7 +185,7 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
             type="button"
             aria-haspopup="dialog"
             aria-label={ariaLabel}
-            aria-invalid={invalid || undefined}
+            data-invalid={invalid || undefined}
             disabled={disabled}
             className={cn(triggerVariants({ size }), className)}
           >
@@ -209,6 +209,12 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 tabIndex={-1}
                 aria-label="Limpar data"
                 onClick={clear}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    clear(e as unknown as React.MouseEvent);
+                  }
+                }}
                 onMouseDown={(e) => e.preventDefault()}
                 className="inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted hover:bg-muted hover:text-fg"
               >
