@@ -39,5 +39,9 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
-          autoAcceptChanges: master
+          # PR do unico maintainer (fernandoseguim) auto-aceita diffs em
+          # qualquer branch — voce controla 100% do que entra; PR de
+          # qualquer outro autor (contribuidor externo, bot nao listado)
+          # cai no comportamento conservador (so auto-aceita em master).
+          autoAcceptChanges: ${{ github.actor == 'fernandoseguim' && '*' || 'master' }}
           onlyChanged: true
