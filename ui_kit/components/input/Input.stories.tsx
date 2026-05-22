@@ -90,6 +90,15 @@ export const Sizes: Story = {
 
 export const States: Story = {
   decorators: [],
+  parameters: {
+    a11y: {
+      // WHY: showcase includes the disabled state, whose `bg-muted` + dimmed
+      // text deliberately undercuts the 4.5:1 normal-text threshold to
+      // communicate "non-interactive". Disabled controls are exempt from
+      // WCAG 1.4.3 by spec; axe applies the rule uniformly anyway.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   render: () => (
     <div className="flex w-72 flex-col gap-3">
       <Input placeholder="Default" />

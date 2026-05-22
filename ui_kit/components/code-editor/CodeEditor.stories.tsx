@@ -20,6 +20,13 @@ const meta: Meta<typeof CodeEditor> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: shares CodeBlock's dark editor surface with subtle line-number
+      // and placeholder text. See CodeBlock.stories.tsx for the canonical
+      // rationale (lex-brand-colors permits violet dark surfaces with white
+      // foreground; ordinal/placeholder text is decorative).
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:

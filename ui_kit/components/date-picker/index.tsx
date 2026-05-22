@@ -176,53 +176,68 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
 
     const iconPx = size === "sm" ? 14 : size === "lg" ? 18 : 16;
 
+    const showClear = Boolean(clearable && current && !disabled);
+
     return (
       <Popover.Root open={open} onOpenChange={setOpen}>
-        <Popover.Trigger asChild>
-          <button
-            ref={ref}
-            id={triggerId}
-            type="button"
-            aria-haspopup="dialog"
-            aria-label={ariaLabel}
-            data-invalid={invalid || undefined}
-            disabled={disabled}
-            className={cn(triggerVariants({ size }), className)}
-          >
-            <CalendarIcon
-              width={iconPx}
-              height={iconPx}
-              aria-hidden="true"
-              className="shrink-0 text-fg-muted"
-            />
-            <span
+        {/* WHY: clear button lives OUTSIDE the trigger as an absolutely
+            positioned sibling. Nesting a real <button> (or role="button"
+            span) inside the trigger button triggers axe's nested-interactive
+            rule (WCAG 4.1.2). A relative wrapper preserves layout; an
+            aria-hidden spacer inside the trigger reserves the visual slot. */}
+        <div className="relative flex w-full">
+          <Popover.Trigger asChild>
+            <button
+              ref={ref}
+              id={triggerId}
+              type="button"
+              aria-haspopup="dialog"
+              aria-label={ariaLabel}
+              data-invalid={invalid || undefined}
+              disabled={disabled}
+              className={cn(triggerVariants({ size }), className)}
+            >
+              <CalendarIcon
+                width={iconPx}
+                height={iconPx}
+                aria-hidden="true"
+                className="shrink-0 text-fg-muted"
+              />
+              <span
+                className={cn(
+                  "flex-1 overflow-hidden text-ellipsis whitespace-nowrap tabular-nums",
+                  !current && "text-fg-muted",
+                )}
+              >
+                {current ? fmtBR(current) : placeholder}
+              </span>
+              {showClear && (
+                <span
+                  aria-hidden="true"
+                  className="inline-flex h-4 w-4 shrink-0"
+                />
+              )}
+            </button>
+          </Popover.Trigger>
+          {showClear && (
+            <button
+              type="button"
+              aria-label="Limpar data"
+              onClick={clear}
+              onMouseDown={(e) => e.preventDefault()}
               className={cn(
-                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap tabular-nums",
-                !current && "text-fg-muted",
+                "absolute top-1/2 -translate-y-1/2 inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted",
+                "hover:bg-muted hover:text-fg",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                size === "sm" && "right-[10px]",
+                size === "md" && "right-[12px]",
+                size === "lg" && "right-[14px]",
               )}
             >
-              {current ? fmtBR(current) : placeholder}
-            </span>
-            {clearable && current && !disabled && (
-              <span
-                role="button"
-                tabIndex={-1}
-                aria-label="Limpar data"
-                onClick={clear}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    clear(e as unknown as React.MouseEvent);
-                  }
-                }}
-                onMouseDown={(e) => e.preventDefault()}
-                className="inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted hover:bg-muted hover:text-fg"
-              >
-                <X width={12} height={12} aria-hidden="true" />
-              </span>
-            )}
-          </button>
-        </Popover.Trigger>
+              <X width={12} height={12} aria-hidden="true" />
+            </button>
+          )}
+        </div>
 
         {/* Hidden input p/ form submission (ISO) */}
         {name && <input type="hidden" name={name} value={toISODate(current)} />}

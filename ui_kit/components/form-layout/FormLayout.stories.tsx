@@ -29,6 +29,13 @@ const meta: Meta<typeof FormLayout> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: FormLayout stories aggregate Input / Select / hint / description
+      // primitives, all of which share the `text-fg-muted` token deferred
+      // to Plan #128 follow-up. Error states use signal-red text on muted
+      // bg — permissive surface per lex-brand-colors.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:

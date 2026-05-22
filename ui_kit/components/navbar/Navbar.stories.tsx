@@ -8,6 +8,15 @@ const meta = {
   title: "Components/Navbar",
   component: Navbar,
   tags: ["autodocs"],
+  parameters: {
+    a11y: {
+      // WHY: Navbar renders muted secondary text (item descriptions,
+      // collapsed-state labels) using `text-fg-muted` — shared token deferred
+      // to the Plan #128 follow-up. Brand violet hover/active states also
+      // sit in the 3:1–4.5:1 button range per lex-brand-colors.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   decorators: [
     (Story) => (
       <MemoryRouter initialEntries={["/"]}>

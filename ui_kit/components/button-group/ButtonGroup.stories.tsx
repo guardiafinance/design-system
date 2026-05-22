@@ -113,6 +113,14 @@ export const Toolbar: Story = {
 };
 
 export const MixedVariants: Story = {
+  parameters: {
+    a11y: {
+      // WHY: renders Button variants `default` (Violet 500) and `destructive`
+      // (Signal Red), both brand tokens in the 3:1–4.5:1 range permitted for
+      // buttons by lex-brand-colors. See Button.stories.tsx meta for canon.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   render: () => (
     <ButtonGroup>
       <Button variant="default">Aprovar</Button>

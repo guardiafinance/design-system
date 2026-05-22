@@ -8,6 +8,13 @@ const meta: Meta<typeof Skeleton> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: Skeleton is purely decorative loading state. Its low-contrast
+      // gray-on-gray surface is intentional — communicates "structure
+      // pending" without competing with real content once loaded. WCAG 1.4.3
+      // applies to "text"; skeleton placeholders carry no informational text.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:

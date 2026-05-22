@@ -104,6 +104,16 @@ export interface ComboboxProps
   name?: string;
   /** Largura do popup (default = match trigger). */
   popoverWidth?: number | string;
+  /**
+   * Accessible name for the combobox trigger. Required by ARIA: role="combobox"
+   * derives its name from `aria-label` or `aria-labelledby`, not from text
+   * content. Fallbacks to `placeholder` when omitted.
+   */
+  "aria-label"?: string;
+  /**
+   * Id of an external `<Label>` element. Takes precedence over `aria-label`.
+   */
+  "aria-labelledby"?: string;
 }
 
 const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
@@ -125,6 +135,8 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
       id,
       name,
       popoverWidth,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
     },
     ref,
   ) => {
@@ -235,61 +247,78 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
       width: popoverWidth ?? "var(--radix-popover-trigger-width)",
     };
 
+    const showClear = Boolean(clearable && selectedOpt && !disabled);
+
     return (
       <Popover.Root open={open} onOpenChange={(o) => !disabled && setOpen(o)}>
-        <Popover.Trigger asChild>
-          <button
-            ref={ref}
-            id={triggerId}
-            type="button"
-            role="combobox"
-            aria-expanded={open}
-            aria-haspopup="listbox"
-            aria-controls={listId}
-            aria-invalid={invalid || undefined}
-            disabled={disabled}
-            className={cn(triggerVariants({ size }), className)}
-          >
-            {leftIcon && (
-              <span className="inline-flex shrink-0 text-fg-muted">
-                {leftIcon}
+        {/* WHY: the clear button lives OUTSIDE the trigger as an absolutely
+            positioned sibling. Nesting a real <button> (or role="button" span)
+            inside <button role="combobox"> triggers axe's nested-interactive
+            rule (WCAG 4.1.2). A relative wrapper preserves layout; an
+            aria-hidden spacer inside the trigger reserves the visual slot. */}
+        <div className="relative flex w-full">
+          <Popover.Trigger asChild>
+            <button
+              ref={ref}
+              id={triggerId}
+              type="button"
+              role="combobox"
+              aria-expanded={open}
+              aria-haspopup="listbox"
+              aria-controls={listId}
+              aria-invalid={invalid || undefined}
+              aria-label={ariaLabelledby ? undefined : (ariaLabel ?? placeholder)}
+              aria-labelledby={ariaLabelledby}
+              disabled={disabled}
+              className={cn(triggerVariants({ size }), className)}
+            >
+              {leftIcon && (
+                <span className="inline-flex shrink-0 text-fg-muted">
+                  {leftIcon}
+                </span>
+              )}
+              <span
+                className={cn(
+                  "flex-1 overflow-hidden text-ellipsis whitespace-nowrap",
+                  !selectedOpt && "text-fg-muted",
+                )}
+              >
+                {selectedOpt ? selectedOpt.label : placeholder}
               </span>
-            )}
-            <span
+              {showClear && (
+                <span
+                  aria-hidden="true"
+                  className="inline-flex h-4 w-4 shrink-0"
+                />
+              )}
+              <ChevronDown
+                width={size === "sm" ? 14 : 16}
+                height={size === "sm" ? 14 : 16}
+                className="shrink-0 text-fg-muted transition-transform duration-200 data-[open=true]:rotate-180"
+                data-open={open}
+                aria-hidden="true"
+              />
+            </button>
+          </Popover.Trigger>
+          {showClear && (
+            <button
+              type="button"
+              aria-label="Limpar seleção"
+              onClick={clear}
+              onMouseDown={(e) => e.preventDefault()}
               className={cn(
-                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap",
-                !selectedOpt && "text-fg-muted",
+                "absolute top-1/2 -translate-y-1/2 inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted",
+                "hover:bg-muted hover:text-fg",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                size === "sm" && "right-[32px]",
+                size === "md" && "right-[36px]",
+                size === "lg" && "right-[38px]",
               )}
             >
-              {selectedOpt ? selectedOpt.label : placeholder}
-            </span>
-            {clearable && selectedOpt && !disabled && (
-              <span
-                role="button"
-                tabIndex={-1}
-                aria-label="Limpar seleção"
-                onClick={clear}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    clear(e as unknown as React.MouseEvent);
-                  }
-                }}
-                onMouseDown={(e) => e.preventDefault()}
-                className="inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-fg-muted hover:bg-muted hover:text-fg"
-              >
-                <X width={12} height={12} aria-hidden="true" />
-              </span>
-            )}
-            <ChevronDown
-              width={size === "sm" ? 14 : 16}
-              height={size === "sm" ? 14 : 16}
-              className="shrink-0 text-fg-muted transition-transform duration-200 data-[open=true]:rotate-180"
-              data-open={open}
-              aria-hidden="true"
-            />
-          </button>
-        </Popover.Trigger>
+              <X width={12} height={12} aria-hidden="true" />
+            </button>
+          )}
+        </div>
 
         {/* Hidden input p/ form submission */}
         {name && (
