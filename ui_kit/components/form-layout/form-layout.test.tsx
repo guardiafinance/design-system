@@ -123,7 +123,7 @@ describe("FormLayout.Section", () => {
   it("aside aparece no canto da seção", () => {
     render(
       <FormLayout>
-        <FormLayout.Section title="X" aside={<a href="#">link</a>}>
+        <FormLayout.Section title="X" aside={<a href="/aside-link">link</a>}>
           <div>y</div>
         </FormLayout.Section>
       </FormLayout>,

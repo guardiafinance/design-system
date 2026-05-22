@@ -59,8 +59,7 @@ Avatar.displayName = "Avatar";
 
 /* ───────── Image ───────── */
 
-export interface AvatarImageProps
-  extends React.ImgHTMLAttributes<HTMLImageElement> {}
+export type AvatarImageProps = React.ImgHTMLAttributes<HTMLImageElement>;
 
 /**
  * AvatarImage — imagem do avatar com error state.

@@ -91,11 +91,15 @@ describe("DatePicker", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("invalid aplica aria-invalid", () => {
+  it("invalid aplica data-invalid", () => {
+    // Lex jsx-a11y/role-supports-aria-props proíbe aria-invalid em role=button
+    // (implícito em <button>); o trigger usa data-invalid como hook de estilo
+    // e o aviso a11y para invalid fica no Field/Form layer (aria-describedby
+    // apontando para a mensagem de erro).
     render(<DatePicker invalid />);
     expect(
       screen.getByRole("button", { name: "Selecionar data" }),
-    ).toHaveAttribute("aria-invalid", "true");
+    ).toHaveAttribute("data-invalid", "true");
   });
 
   it("name renderiza input hidden em formato ISO", () => {

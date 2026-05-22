@@ -207,7 +207,7 @@ export const ButtonWithUploader: Story = {
  * onReject custom: receba as rejeições e mostre fora da lista interna.
  */
 export const RejectCallback: Story = {
-  render: () => {
+  render: function RejectCallbackStory() {
     const [rejections, setRejections] = useState<FileRejection[]>([]);
     return (
       <div className="flex flex-col gap-3">
