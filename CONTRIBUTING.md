@@ -53,14 +53,27 @@ npm run test-storybook:ci      # build static + serve + run; falha em baseline a
 
 ### Atualizar baselines (após mudança intencional)
 
-1. Rode `npm run test-storybook:update`.
-2. Confira o diff de PNGs no `git status`/`git diff` — cada PNG modificado representa uma mudança visual intencional.
-3. Commit das baselines junto com a mudança que as causou:
+**Cross-platform drift**: font rendering e antialiasing diferem entre macOS e Ubuntu. Baselines geradas em dev local (macOS) **não passam** no CI (Ubuntu). O CI é a source of truth para os PNGs em `__image_snapshots__/`.
+
+Fluxo recomendado:
+
+1. Faça a mudança visual no componente (sem rodar `test-storybook:update` local).
+2. Push do PR. CI vai falhar no job `Visual regression + a11y` — esperado.
+3. Abra o run falhado, baixe o artifact `visual-diffs-*` (PNGs base/current/diff em `__diff_output__/`), confira se o diff é intencional.
+4. Se intencional: na aba **Actions**, dispare manualmente o workflow **Regenerate Visual Baselines** apontando para sua branch.
+5. O workflow gera baselines no Ubuntu e empurra um commit assinado pelo GitHub (`chore(visual): regenerate baselines on ubuntu`).
+6. Volte ao run de CI falhado e clique **Re-run failed jobs**. Validação roda contra as novas baselines.
+
+Não tem `Re-run failed jobs`? GitHub Actions não re-triggea automaticamente CI quando o push vem do próprio workflow com GITHUB_TOKEN (loop prevention). Re-run manual é a saída.
+
+Fluxo local (só pra desenvolvimento iterativo, **não pra commit**):
 
 ```bash
-git add __image_snapshots__/
-git commit -m "chore(visual): update baselines after <component> review"
+npm run storybook                  # → http://localhost:6006
+npm run test-storybook:update      # gera baselines locais (macOS)
 ```
+
+Use isso pra ver o que mudou rapidamente. Não commite essas baselines — o `regenerate-baselines` workflow vai sobrescrever no Ubuntu.
 
 ### Como funciona
 
