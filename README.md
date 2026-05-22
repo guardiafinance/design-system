@@ -112,8 +112,7 @@ Ou use `<ThemeToggle />` / `<ThemeProvider />`.
 
 👉 Explorar:
 - **Docs (Astro)** — [guardiafinance.github.io/design-system](https://guardiafinance.github.io/design-system)
-- **Storybook (Chromatic)** — [69e15f3b0534f646ac88774b-cpmytvatdp.chromatic.com](https://69e15f3b0534f646ac88774b-cpmytvatdp.chromatic.com/)
-- **Chromatic Library** (visual review) — [chromatic.com/library?appId=69e15f3b0534f646ac88774b](https://www.chromatic.com/library?appId=69e15f3b0534f646ac88774b)
+- **Storybook (GitHub Pages)** — [guardiafinance.github.io/design-system/storybook](https://guardiafinance.github.io/design-system/storybook)
 
 ## 🛠 Desenvolvimento
 
@@ -181,14 +180,24 @@ npm run build              # → docs/dist
 
 ## 🧪 Testes
 
-Rodamos [Vitest](https://vitest.dev) em ambiente jsdom com
-[Testing Library](https://testing-library.com). Setup em `vitest.setup.ts`:
+Três camadas, todas no CI em PR:
+
+1. **Unit** — [Vitest](https://vitest.dev) em jsdom + Testing Library. Setup em `vitest.setup.ts`.
+2. **Visual regression + a11y** — `@storybook/test-runner` (Playwright) + `jest-image-snapshot` + axe-core. 53 stories × 2 temas (light/dark) = 426 snapshots. Baselines em `__image_snapshots__/` commitadas no repo.
+3. **Build** — `rslib build` + `npm pack --dry-run`.
 
 ```bash
-npm run test               # roda tudo uma vez
-npm run test:watch         # watch + UI
-npm run test:coverage      # coverage report (threshold 70%)
+npm run test                       # unit
+npm run test:watch                 # watch + UI
+npm run test:coverage              # coverage report (threshold 70%)
+
+npm run storybook                  # → http://localhost:6006
+npm run test-storybook             # visual + a11y contra dev server
+npm run test-storybook:update      # atualiza baselines (-u)
+npm run test-storybook:ci          # build static + serve + run (modo CI)
 ```
+
+Fluxo completo de visual regression e how-to em [CONTRIBUTING.md](./CONTRIBUTING.md#visual-regression--a11y-test-storybook).
 
 ## 🚢 Publicação
 
@@ -197,7 +206,6 @@ A publicação é feita pelo workflow `publish.yml`:
 1. Bump de versão em um PR.
 2. Ao mergear em `master`, o CI publica `@guardiafinance/design-system@x.y.z`
    no GitHub Packages.
-3. Chromatic tira snapshots visuais em cada PR.
 
 ## 🤝 Contribuição
 
@@ -205,7 +213,7 @@ Consulte [CONTRIBUTING.md](./CONTRIBUTING.md) — resumo:
 
 - Branch de feature a partir de `master`.
 - `npm run lint && npm run test && npm run typecheck` antes do push.
-- PR com descrição, screenshots do Storybook/Chromatic quando pertinente.
+- PR com descrição; baselines visuais atualizadas via `npm run test-storybook:update` quando a mudança altera UI.
 - Patches que afetam a API pública precisam de nota no `CHANGELOG.md`.
 
 ## 📄 Licença
