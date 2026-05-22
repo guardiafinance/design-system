@@ -148,11 +148,17 @@ const Chip = React.forwardRef<HTMLSpanElement, ChipProps>(
           )}
           {...props}
         >
+          {/* WHY: forward consumer's `onKeyDown` to the inner button — it is
+              now the focusable target in split-interactive mode, so keyboard
+              handlers attached by consumers must land here (focus / blur
+              already bubble in React, but key events on a focusable child
+              would only synthesize on the child). */}
           <button
             type="button"
             aria-pressed={selected}
             disabled={disabled}
             onClick={handleSelect}
+            onKeyDown={onKeyDown as React.KeyboardEventHandler<HTMLButtonElement> | undefined}
             className={cn(
               "-mx-2.5 -my-1 inline-flex items-center gap-1.5 self-stretch px-2.5 py-1",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

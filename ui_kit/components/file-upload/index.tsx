@@ -460,6 +460,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
         accept={accept}
         multiple={multiple}
         disabled={disabled}
+        aria-label={multiple ? "Selecionar arquivos" : "Selecionar arquivo"}
         aria-describedby={hint || maxSize ? hintId : undefined}
         onChange={(e) => {
           handleFiles(e.target.files);
@@ -467,6 +468,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
           e.target.value = "";
         }}
         className="sr-only"
+        tabIndex={-1}
       />
     );
 
@@ -492,6 +494,11 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
       <div className={cn("flex flex-col gap-2.5", className)}>
         {variant === "button" ? (
           <div className="flex flex-col gap-1">
+            {/* WHY: file input lives OUTSIDE the button as a sibling. Nesting
+                an <input> inside a <button> triggers axe's nested-interactive
+                rule (both elements are interactive). Click on the button
+                programmatically opens the file picker via the input ref. */}
+            {fileInput}
             <button
               type="button"
               onClick={() => internalInputRef.current?.click()}
@@ -507,7 +514,6 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                 buttonClasses[buttonSize],
               )}
             >
-              {fileInput}
               <span
                 aria-hidden="true"
                 className="inline-flex shrink-0 text-guardia-violet-500"
