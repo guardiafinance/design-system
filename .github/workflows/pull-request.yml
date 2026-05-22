@@ -12,7 +12,12 @@ on:
     types: [opened, synchronize, reopened, labeled]
 
 env:
-  NODE_VERSION: '22'
+  # Node 24 (current LTS). O test-runner do Storybook chama Jest com
+  # serverRequire (CJS) sobre `.storybook/test-runner.ts`, que vira ESM
+  # por causa do `"type": "module"` no package.json. Jest so consegue
+  # `require(ESM)` em Node >= 24.9 (vm.SourceTextModule sincrono).
+  # Node 22 nao expoe essas APIs e o job falha com "Must use import".
+  NODE_VERSION: '24'
 
 jobs:
   build:
