@@ -1,12 +1,23 @@
 name: Build and Test
 
+# Triggers:
+#   opened/synchronize/reopened — default PR CI flow
+#   labeled                      — habilita o branch de regeneracao de baselines
+#                                  quando o PR recebe a label `regenerate-baselines`
+
 on:
   pull_request:
     branches:
       - master
+    types: [opened, synchronize, reopened, labeled]
 
 env:
-  NODE_VERSION: '22'
+  # Node 24 (current LTS). O test-runner do Storybook chama Jest com
+  # serverRequire (CJS) sobre `.storybook/test-runner.ts`, que vira ESM
+  # por causa do `"type": "module"` no package.json. Jest so consegue
+  # `require(ESM)` em Node >= 24.9 (vm.SourceTextModule sincrono).
+  # Node 22 nao expoe essas APIs e o job falha com "Must use import".
+  NODE_VERSION: '24'
 
 jobs:
   build:
@@ -34,3 +45,93 @@ jobs:
 
       - name: Validate package can be packed
         run: npm pack --dry-run
+
+  visual-and-a11y:
+    name: Visual regression + a11y
+    runs-on: ubuntu-latest
+    # Permite push de commit assinado via Git Database API quando rodando
+    # em modo regeneracao (label `regenerate-baselines`). Sem efeito no
+    # modo validacao — script de push so e chamado quando a label esta
+    # presente, e a expressao de seguranca abaixo bloqueia PRs de forks.
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Cacheia browser binaries do Playwright entre runs. Key amarrada ao
+      # package-lock garante invalidacao quando a versao de playwright sobe.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build Storybook static
+        run: npm run build-storybook
+
+      # Validacao padrao: --ci faz jest-image-snapshot falhar em baseline
+      # ausente, em vez de gerar silenciosamente.
+      - name: Run visual + a11y tests (validate)
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') }}
+        run: npm run test-storybook:ci
+
+      # Modo regeneracao: dispara quando a PR tem a label
+      # `regenerate-baselines`. Roda test-storybook com -u (sem --ci),
+      # que sobrescreve as baselines com renderizacao do Ubuntu, e
+      # pusha o commit assinado pelo GitHub via Git Database API.
+      #
+      # Restricao: PRs de forks rodam com GITHUB_TOKEN sem write
+      # contents (politica padrao do GH Actions), entao o push falha
+      # de forma segura. Apenas PRs do mesmo repositorio conseguem
+      # regenerar baselines.
+      - name: Regenerate baselines (label-triggered)
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') && github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          npx concurrently -k -s first -n SB,TEST -c magenta,blue \
+            "npx http-server storybook-static -p 6006 -s" \
+            "npx wait-on tcp:6006 && npx test-storybook --url http://localhost:6006 -u"
+
+      - name: Push regenerated baselines (label-triggered)
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+        run: node scripts/push-baselines.mjs
+
+      - name: Hint to validate after regeneration
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') }}
+        run: |
+          echo "::notice::Baselines regeneradas e pushadas. Remova a label `regenerate-baselines` e clique 'Re-run failed jobs' no run anterior pra validar contra as novas baselines."
+
+      - name: Upload visual diff artifact on failure
+        if: failure() && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs-${{ github.run_id }}
+          path: |
+            __image_snapshots__/__diff_output__/
+            storybook-static/
+          retention-days: 14
+          if-no-files-found: ignore

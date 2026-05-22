@@ -37,6 +37,16 @@ export default ts.config(
         },
     },
     {
+        // Scripts ESM rodados pelo Node (CI helpers, generators) —
+        // precisam de globals.node para process/console/fetch.
+        files: ["scripts/**/*.{mjs,js}"],
+        languageOptions: {
+            ecmaVersion: "latest",
+            sourceType: "module",
+            globals: { ...globals.node },
+        },
+    },
+    {
         files: ["ui_kit/**/*.{ts,tsx}", ".storybook/**/*.{ts,tsx}"],
         languageOptions: {
             ecmaVersion: "latest",
