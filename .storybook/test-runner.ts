@@ -3,6 +3,16 @@ import { getStoryContext } from "@storybook/test-runner";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
 import { injectAxe, checkA11y } from "axe-playwright";
 
+// Canonical kebab + snapshot-path derivation, shared with the migration
+// script (`scripts/migrate-visual-baselines.mjs`) to keep both consumers
+// resolving to the same path. Native ESM `.mjs` import — both Storybook's
+// test-runner (Jest+Playwright pipeline) and TypeScript with
+// `moduleResolution: bundler` resolve it without extra config.
+import {
+  snapshotDirForStory,
+  toKebab,
+} from "./lib/snapshot-paths.mjs";
+
 /**
  * Substitui o gate Chromatic (free plan esgotado) por uma stack OSS:
  * - Visual regression via jest-image-snapshot, baseline commitado em
@@ -23,9 +33,32 @@ import { injectAxe, checkA11y } from "axe-playwright";
  *   Se um futuro componente passar a depender de `useTheme()` do React
  *   para logica condicional, esse hook precisa ser revisitado para
  *   alternar via Storybook channel (`updateGlobals`).
+ *
+ * Layout de baselines (Plan #132):
+ *   __image_snapshots__/<titleSegment-kebab>/.../<theme>/<variant-kebab>.png
+ *
+ *   Title "Components/MultiSelect" + variant "Default" produz:
+ *     __image_snapshots__/components/multi-select/dark/default.png
+ *
+ *   Subdivisao por title + tema mantem o reviewer numa pasta scannable
+ *   em vez de 426+ PNGs flat. O variant fica como leaf identifier.
  */
 
 const SNAPSHOTS_DIR = `${process.cwd()}/__image_snapshots__`;
+
+/**
+ * Diretorio onde diffs de falhas visuais sao escritos. Sub-hierarquia
+ * espelha a do baseline (`<diff_output>/{titleSegments}/{theme}/`) pra
+ * evitar colisao quando duas stories de componentes diferentes
+ * compartilham o mesmo `variant` (ex.: "default", "large"). Sem essa
+ * sub-hierarquia, `default-diff.png` de Calendar sobrescreve o
+ * `default-diff.png` de Avatar.
+ *
+ * Mantido FORA da arvore de baselines (irmao em `__image_snapshots__/`),
+ * preservando a separacao baselines (commitadas) x diffs (artefato CI).
+ * O workflow `upload-artifact@v4` empacota a pasta inteira recursivamente.
+ */
+const DIFF_OUTPUT_DIR = `${SNAPSHOTS_DIR}/__diff_output__`;
 
 /**
  * Diff visual aceito: ate 0.2% de pixels divergentes por story. Cobre
@@ -115,6 +148,8 @@ const config: TestRunnerConfig = {
       axeRulesMap[rule.id] = { enabled: rule.enabled };
     }
 
+    const variantSlug = toKebab(storyContext.name);
+
     for (const theme of THEMES) {
       await page.evaluate((t) => {
         document.documentElement.setAttribute("data-theme", t);
@@ -130,9 +165,17 @@ const config: TestRunnerConfig = {
           toMatchImageSnapshot: (opts: object) => void;
         }
       ).toMatchImageSnapshot({
-        customSnapshotsDir: SNAPSHOTS_DIR,
-        customDiffDir: `${SNAPSHOTS_DIR}/__diff_output__`,
-        customSnapshotIdentifier: `${context.id}--${theme}`,
+        customSnapshotsDir: snapshotDirForStory(
+          SNAPSHOTS_DIR,
+          storyContext.title,
+          theme,
+        ),
+        customDiffDir: snapshotDirForStory(
+          DIFF_OUTPUT_DIR,
+          storyContext.title,
+          theme,
+        ),
+        customSnapshotIdentifier: variantSlug,
         failureThreshold: FAILURE_THRESHOLD,
         failureThresholdType: "percent",
       });
