@@ -23,7 +23,16 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: function CalendarStory() {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    // WHY: pinned date in a past month keeps the visual snapshot
+    // deterministic. `new Date()` drifts as the day boundary crosses
+    // between baseline capture and CI validation; Calendar's "today"
+    // highlight covers a full cell (~2k pixels) which blows the 0.2%
+    // diff threshold. Selecting June 2020 puts the displayed month
+    // outside any reasonable future "today", so the highlight never
+    // overlaps the snapshot.
+    const [date, setDate] = useState<Date | undefined>(
+      new Date(2020, 5, 15),
+    );
     return (
       <Calendar
         mode="single"
