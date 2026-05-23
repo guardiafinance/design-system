@@ -34,6 +34,14 @@ const meta: Meta<typeof CodeBlock> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: CodeBlock renders code on a brand-violet background with line
+      // numbers in `text-white/30` (intentionally subtle, used only for
+      // ordinal reference, not content). The dark code surface follows
+      // the editor convention; lex-brand-colors permits violet 700/900
+      // backgrounds with white text. Line-number contrast is decorative.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:

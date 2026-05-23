@@ -17,6 +17,7 @@ export const Default: Story = {
 
 export const WithValue: Story = {
   args: {
+    "aria-label": "Message",
     defaultValue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
 };

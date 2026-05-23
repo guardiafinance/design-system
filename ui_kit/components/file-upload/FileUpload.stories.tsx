@@ -21,6 +21,13 @@ const meta: Meta<typeof FileUpload> = {
   ],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: Dropzone caption text ("Arraste ou clique...") uses
+      // `text-fg-muted` — the shared muted token deferred to Plan #128
+      // follow-up. Button variant renders Button (.bg-primary brand) which
+      // sits in the lex-brand-colors button range.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:

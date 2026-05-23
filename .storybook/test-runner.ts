@@ -1,4 +1,5 @@
 import type { TestRunnerConfig } from "@storybook/test-runner";
+import { getStoryContext } from "@storybook/test-runner";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
 import { injectAxe, checkA11y } from "axe-playwright";
 
@@ -88,6 +89,32 @@ const config: TestRunnerConfig = {
     // Axe e injetado uma vez por story (cobre ambos os temas).
     await injectAxe(page);
 
+    // Per-story opt-out: stories may declare `parameters.a11y.config.rules`
+    // to disable specific axe rules with WHY documentation. Used when the
+    // story intentionally showcases tokens that fall in the 3:1–4.5:1 brand
+    // range (see `lex-brand-colors`) and consumers MUST apply them only to
+    // titles/buttons/badges in product surfaces.
+    //
+    // The test-runner's postVisit `context` strips user-defined parameters;
+    // `getStoryContext(page, context)` round-trips through the iframe channel
+    // and returns the full Storybook story context with all parameters intact.
+    type AxeRuleOverride = { id: string; enabled: boolean };
+    type StoryA11yParameters = {
+      a11y?: {
+        disable?: boolean;
+        config?: { rules?: AxeRuleOverride[] };
+      };
+    };
+    const storyContext = await getStoryContext(page, context);
+    const a11yParams = (storyContext.parameters ?? {}) as StoryA11yParameters;
+    const a11yDisabled = a11yParams.a11y?.disable === true;
+    const ruleOverrides = a11yParams.a11y?.config?.rules ?? [];
+    // axe-core's RunOptions.rules accepts a `{ [ruleId]: { enabled } }` map.
+    const axeRulesMap: Record<string, { enabled: boolean }> = {};
+    for (const rule of ruleOverrides) {
+      axeRulesMap[rule.id] = { enabled: rule.enabled };
+    }
+
     for (const theme of THEMES) {
       await page.evaluate((t) => {
         document.documentElement.setAttribute("data-theme", t);
@@ -110,26 +137,16 @@ const config: TestRunnerConfig = {
         failureThresholdType: "percent",
       });
 
-      // WHY: rollout em duas fases. A primeira execucao do test-runner contra
-      // o catalogo atual de stories surfou 64 violacoes a11y reais (regras
-      // button-name, label, color-contrast, nested-interactive,
-      // scrollable-region-focusable). Plan #128 ataca cada violacao no nivel
-      // certo (componente vs story isolation). Enquanto #128 nao mergeia,
-      // o axe roda em modo soft (skipFailures = true): violations sao
-      // logadas no output do CI mas nao falham o build. Apos #128 mergear,
-      // o flag MUST flipar para false e este comentario MUST ser removido.
-      await checkA11y(
-        page,
-        "#storybook-root",
-        {
+      if (!a11yDisabled) {
+        await checkA11y(page, "#storybook-root", {
           detailedReport: true,
           detailedReportOptions: { html: false },
           axeOptions: {
             runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
+            rules: axeRulesMap,
           },
-        },
-        /* skipFailures */ true,
-      );
+        });
+      }
     }
   },
 };

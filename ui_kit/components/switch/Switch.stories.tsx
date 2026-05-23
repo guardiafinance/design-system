@@ -16,7 +16,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: { "aria-label": "Airplane mode" },
+};
 
 export const WithLabel: Story = {
   render: () => (
@@ -28,9 +30,9 @@ export const WithLabel: Story = {
 };
 
 export const Brand: Story = {
-  args: { variant: "brand" },
+  args: { variant: "brand", "aria-label": "Airplane mode" },
 };
 
 export const Small: Story = {
-  args: { size: "sm" },
+  args: { size: "sm", "aria-label": "Airplane mode" },
 };

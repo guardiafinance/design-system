@@ -9,17 +9,10 @@ import { cn } from "@/lib/utils";
  *
  * Três modos (combinam):
  *  1. Filtro (toggle)    → passe `onSelect` + `selected`.
- *     Chip externo ganha `role="button"` + `aria-pressed`.
  *  2. Tag removível      → passe `onRemove`.
- *     Botão ×  nested com `aria-label="Remover"`.
- *  3. Só visual          → sem handlers, apenas como rótulo.
- *
- * Eixos:
- *   size  "sm" (default) · "md"
- *
- * Sempre renderiza um <span> externo. Quando `onSelect` está presente,
- * recebe `role="button"` + teclado (Enter/Space). Quando há `onRemove`,
- * um <button> nested trata o clique e não propaga para o chip.
+ *  3. Filtro + remoção   → passe ambos; split-button para evitar
+ *                          nested-interactive (axe / WCAG 4.1.2).
+ *  4. Só visual          → sem handlers, apenas como rótulo.
  */
 const chipVariants = cva(
   [
@@ -97,6 +90,11 @@ const Chip = React.forwardRef<HTMLSpanElement, ChipProps>(
     ref,
   ) => {
     const interactive = typeof onSelect === "function";
+    const removable = typeof onRemove === "function";
+    // WHY: when both handlers exist we render two sibling <button>s inside a
+    // non-interactive <span>. A `role="button"` span wrapping a real <button>
+    // triggers axe's nested-interactive rule (WCAG 4.1.2).
+    const splitInteractive = interactive && removable;
 
     const handleSelect = () => {
       if (disabled || !onSelect) return;
@@ -105,12 +103,77 @@ const Chip = React.forwardRef<HTMLSpanElement, ChipProps>(
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
       onKeyDown?.(e);
-      if (!interactive || disabled) return;
+      if (!interactive || splitInteractive || disabled) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         handleSelect();
       }
     };
+
+    const outerInteractive = interactive && !splitInteractive;
+
+    const removeButton = removable ? (
+      <button
+        type="button"
+        aria-label="Remover"
+        disabled={disabled}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!disabled) onRemove?.();
+        }}
+        className={cn(
+          "-mr-1 inline-flex size-4 items-center justify-center rounded-full transition-colors",
+          "hover:bg-black/10",
+          selected && "hover:bg-white/20",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          disabled && "cursor-not-allowed",
+        )}
+      >
+        <X className="size-3" aria-hidden="true" />
+      </button>
+    ) : null;
+
+    if (splitInteractive) {
+      return (
+        <span
+          ref={ref}
+          data-slot="chip"
+          data-selected={selected || undefined}
+          data-disabled={disabled || undefined}
+          aria-disabled={disabled || undefined}
+          className={cn(
+            chipVariants({ size, selected, interactive: false, disabled }),
+            "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
+            className,
+          )}
+          {...props}
+        >
+          {/* WHY: forward consumer's `onKeyDown` to the inner button — it is
+              now the focusable target in split-interactive mode, so keyboard
+              handlers attached by consumers must land here (focus / blur
+              already bubble in React, but key events on a focusable child
+              would only synthesize on the child). */}
+          <button
+            type="button"
+            aria-pressed={selected}
+            disabled={disabled}
+            onClick={handleSelect}
+            onKeyDown={onKeyDown as React.KeyboardEventHandler<HTMLButtonElement> | undefined}
+            className={cn(
+              "-mx-2.5 -my-1 inline-flex items-center gap-1.5 self-stretch px-2.5 py-1",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "rounded-full",
+              !disabled && "cursor-pointer",
+              disabled && "cursor-not-allowed",
+            )}
+          >
+            {leadingIcon}
+            <span>{children}</span>
+          </button>
+          {removeButton}
+        </span>
+      );
+    }
 
     return (
       <span
@@ -118,14 +181,14 @@ const Chip = React.forwardRef<HTMLSpanElement, ChipProps>(
         data-slot="chip"
         data-selected={selected || undefined}
         data-disabled={disabled || undefined}
-        role={interactive ? "button" : undefined}
-        tabIndex={interactive && !disabled ? 0 : undefined}
-        aria-pressed={interactive ? selected : undefined}
+        role={outerInteractive ? "button" : undefined}
+        tabIndex={outerInteractive && !disabled ? 0 : undefined}
+        aria-pressed={outerInteractive ? selected : undefined}
         aria-disabled={disabled || undefined}
-        onClick={interactive ? handleSelect : undefined}
+        onClick={outerInteractive ? handleSelect : undefined}
         onKeyDown={handleKeyDown}
         className={cn(
-          chipVariants({ size, selected, interactive, disabled }),
+          chipVariants({ size, selected, interactive: outerInteractive, disabled }),
           "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
           className,
         )}
@@ -133,26 +196,7 @@ const Chip = React.forwardRef<HTMLSpanElement, ChipProps>(
       >
         {leadingIcon}
         <span>{children}</span>
-        {onRemove && (
-          <button
-            type="button"
-            aria-label="Remover"
-            disabled={disabled}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!disabled) onRemove();
-            }}
-            className={cn(
-              "-mr-1 inline-flex size-4 items-center justify-center rounded-full transition-colors",
-              "hover:bg-black/10",
-              selected && "hover:bg-white/20",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              disabled && "cursor-not-allowed",
-            )}
-          >
-            <X className="size-3" aria-hidden="true" />
-          </button>
-        )}
+        {removeButton}
       </span>
     );
   },

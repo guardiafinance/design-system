@@ -17,9 +17,13 @@ export interface StylizedSelectTriggerProps extends React.ComponentPropsWithoutR
 const StylizedSelectTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
     StylizedSelectTriggerProps
->(({ className, children, label, ...props }, ref) => (
+>(({ className, children, label, "aria-label": ariaLabel, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
+        // WHY: Radix Select.Trigger renders role="combobox" — accessible name
+        // MUST come from aria-label / aria-labelledby (text content does not
+        // count for combobox role). Fall back to the visible `label` prop.
+        aria-label={ariaLabel ?? label}
         className={cn(
             "stylized-select-trigger flex h-7 w-full items-center justify-start rounded-full border-0 bg-muted px-3 py-1 text-xs font-semibold text-foreground ring-offset-background transition-colors duration-200 data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 hover:bg-muted/80",
             className

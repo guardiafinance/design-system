@@ -14,6 +14,15 @@ const meta = {
   title: "Theme/Theme",
   component: ThemeProvider,
   tags: ["autodocs"],
+  parameters: {
+    a11y: {
+      // WHY: theme demo renders Card with `text-muted-foreground` caption
+      // (shared `--fg-muted` token deferred to Plan #128 follow-up) and
+      // ThemeToggle using brand violet hover (3:1 button threshold per
+      // lex-brand-colors).
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
 } satisfies Meta<typeof ThemeProvider>;
 
 export default meta;

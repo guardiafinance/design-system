@@ -110,14 +110,20 @@ const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
 
         {highlightedHtml ? (
           <div
-            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1] [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-4"
+            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-4"
             style={maxHeight ? { maxHeight } : undefined}
+            tabIndex={maxHeight ? 0 : undefined}
+            role={maxHeight ? "region" : undefined}
+            aria-label={maxHeight ? (filename ?? language ?? "Code") : undefined}
             dangerouslySetInnerHTML={{ __html: highlightedHtml }}
           />
         ) : (
           <pre
-            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1]"
+            className="overflow-auto font-mono text-[12.5px] leading-relaxed text-[#dbd0e1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             style={maxHeight ? { maxHeight } : undefined}
+            tabIndex={maxHeight ? 0 : undefined}
+            role={maxHeight ? "region" : undefined}
+            aria-label={maxHeight ? (filename ?? language ?? "Code") : undefined}
           >
             <code className="block px-4 py-4">
               {showLineNumbers ? renderWithLineNumbers(code) : code}

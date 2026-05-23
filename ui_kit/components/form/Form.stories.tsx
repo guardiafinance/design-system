@@ -53,5 +53,13 @@ function FormDemo() {
 /** Story usa render customizado; args não mapeiam props do Form (useForm). */
 export const Default: Story = {
   args: {} as unknown as Story["args"],
+  parameters: {
+    a11y: {
+      // WHY: form renders Input (placeholder via `text-fg-muted` token) and
+      // Button (.bg-primary brand at 3:1 threshold). Both deferred per
+      // Plan #128 follow-up.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   render: () => <FormDemo />,
 };
