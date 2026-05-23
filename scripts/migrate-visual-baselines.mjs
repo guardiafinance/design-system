@@ -30,6 +30,13 @@ import {
 } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
+// Canonical kebab + snapshot-path derivation, shared with the test-runner
+// (`.storybook/test-runner.ts`). Same module, single source of truth.
+import {
+  snapshotDirForStory,
+  toKebab,
+} from "../.storybook/lib/snapshot-paths.mjs";
+
 const ROOT = process.cwd();
 const BASELINES_DIR = join(ROOT, "__image_snapshots__");
 const INDEX_JSON = join(ROOT, "storybook-static", "index.json");
@@ -56,26 +63,11 @@ if (Object.keys(entries).length === 0) {
   process.exit(1);
 }
 
-/**
- * Kebab-case compativel com o Storybook (mesma transformacao aplicada
- * pelo `@storybook/csf` toId). Mantida em paralelo com a definicao em
- * `.storybook/test-runner.ts` — qualquer ajuste num lado exige ajuste
- * no outro. Validacao acontece via teste de paridade: cada storyId
- * existente no manifest tem que produzir um path do migrate igual ao
- * path que o runner geraria.
- */
-function toKebab(s) {
-  return s
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 function newPathFor(title, name, theme) {
-  const titleSegments = title.split("/").map(toKebab).filter(Boolean);
-  return join(BASELINES_DIR, ...titleSegments, theme, `${toKebab(name)}.png`);
+  return join(
+    snapshotDirForStory(BASELINES_DIR, title, theme),
+    `${toKebab(name)}.png`,
+  );
 }
 
 function sha256(file) {

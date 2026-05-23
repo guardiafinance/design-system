@@ -3,6 +3,16 @@ import { getStoryContext } from "@storybook/test-runner";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
 import { injectAxe, checkA11y } from "axe-playwright";
 
+// Canonical kebab + snapshot-path derivation, shared with the migration
+// script (`scripts/migrate-visual-baselines.mjs`) to keep both consumers
+// resolving to the same path. Native ESM `.mjs` import — both Storybook's
+// test-runner (Jest+Playwright pipeline) and TypeScript with
+// `moduleResolution: bundler` resolve it without extra config.
+import {
+  snapshotDirForStory,
+  toKebab,
+} from "./lib/snapshot-paths.mjs";
+
 /**
  * Substitui o gate Chromatic (free plan esgotado) por uma stack OSS:
  * - Visual regression via jest-image-snapshot, baseline commitado em
@@ -37,30 +47,18 @@ import { injectAxe, checkA11y } from "axe-playwright";
 const SNAPSHOTS_DIR = `${process.cwd()}/__image_snapshots__`;
 
 /**
- * Kebab-case compativel com Storybook (mesma transformacao aplicada pelo
- * `@storybook/csf` toId quando gera o storyId). Mantem alinhada a derivacao
- * de paths no runner com o nome de saida do script de migracao
- * `scripts/migrate-visual-baselines.mjs`.
+ * Diretorio onde diffs de falhas visuais sao escritos. Sub-hierarquia
+ * espelha a do baseline (`<diff_output>/{titleSegments}/{theme}/`) pra
+ * evitar colisao quando duas stories de componentes diferentes
+ * compartilham o mesmo `variant` (ex.: "default", "large"). Sem essa
+ * sub-hierarquia, `default-diff.png` de Calendar sobrescreve o
+ * `default-diff.png` de Avatar.
+ *
+ * Mantido FORA da arvore de baselines (irmao em `__image_snapshots__/`),
+ * preservando a separacao baselines (commitadas) x diffs (artefato CI).
+ * O workflow `upload-artifact@v4` empacota a pasta inteira recursivamente.
  */
-function toKebab(s: string): string {
-  return s
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-/**
- * Diretorio de snapshot para uma story em determinado tema. Quebra
- * `context.title` por "/", kebab-caseia cada segmento e usa o tema como
- * leaf directory; o `customSnapshotIdentifier` (variant) sera o nome do
- * arquivo dentro desse diretorio.
- */
-function snapshotDirForStory(title: string, theme: string): string {
-  const titleSegments = title.split("/").map(toKebab).filter(Boolean);
-  return `${SNAPSHOTS_DIR}/${titleSegments.join("/")}/${theme}`;
-}
+const DIFF_OUTPUT_DIR = `${SNAPSHOTS_DIR}/__diff_output__`;
 
 /**
  * Diff visual aceito: ate 0.2% de pixels divergentes por story. Cobre
@@ -167,8 +165,16 @@ const config: TestRunnerConfig = {
           toMatchImageSnapshot: (opts: object) => void;
         }
       ).toMatchImageSnapshot({
-        customSnapshotsDir: snapshotDirForStory(storyContext.title, theme),
-        customDiffDir: `${SNAPSHOTS_DIR}/__diff_output__`,
+        customSnapshotsDir: snapshotDirForStory(
+          SNAPSHOTS_DIR,
+          storyContext.title,
+          theme,
+        ),
+        customDiffDir: snapshotDirForStory(
+          DIFF_OUTPUT_DIR,
+          storyContext.title,
+          theme,
+        ),
         customSnapshotIdentifier: variantSlug,
         failureThreshold: FAILURE_THRESHOLD,
         failureThresholdType: "percent",
