@@ -23,9 +23,44 @@ import { injectAxe, checkA11y } from "axe-playwright";
  *   Se um futuro componente passar a depender de `useTheme()` do React
  *   para logica condicional, esse hook precisa ser revisitado para
  *   alternar via Storybook channel (`updateGlobals`).
+ *
+ * Layout de baselines (Plan #132):
+ *   __image_snapshots__/<titleSegment-kebab>/.../<theme>/<variant-kebab>.png
+ *
+ *   Title "Components/MultiSelect" + variant "Default" produz:
+ *     __image_snapshots__/components/multi-select/dark/default.png
+ *
+ *   Subdivisao por title + tema mantem o reviewer numa pasta scannable
+ *   em vez de 426+ PNGs flat. O variant fica como leaf identifier.
  */
 
 const SNAPSHOTS_DIR = `${process.cwd()}/__image_snapshots__`;
+
+/**
+ * Kebab-case compativel com Storybook (mesma transformacao aplicada pelo
+ * `@storybook/csf` toId quando gera o storyId). Mantem alinhada a derivacao
+ * de paths no runner com o nome de saida do script de migracao
+ * `scripts/migrate-visual-baselines.mjs`.
+ */
+function toKebab(s: string): string {
+  return s
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * Diretorio de snapshot para uma story em determinado tema. Quebra
+ * `context.title` por "/", kebab-caseia cada segmento e usa o tema como
+ * leaf directory; o `customSnapshotIdentifier` (variant) sera o nome do
+ * arquivo dentro desse diretorio.
+ */
+function snapshotDirForStory(title: string, theme: string): string {
+  const titleSegments = title.split("/").map(toKebab).filter(Boolean);
+  return `${SNAPSHOTS_DIR}/${titleSegments.join("/")}/${theme}`;
+}
 
 /**
  * Diff visual aceito: ate 0.2% de pixels divergentes por story. Cobre
@@ -115,6 +150,8 @@ const config: TestRunnerConfig = {
       axeRulesMap[rule.id] = { enabled: rule.enabled };
     }
 
+    const variantSlug = toKebab(storyContext.name);
+
     for (const theme of THEMES) {
       await page.evaluate((t) => {
         document.documentElement.setAttribute("data-theme", t);
@@ -130,9 +167,9 @@ const config: TestRunnerConfig = {
           toMatchImageSnapshot: (opts: object) => void;
         }
       ).toMatchImageSnapshot({
-        customSnapshotsDir: SNAPSHOTS_DIR,
+        customSnapshotsDir: snapshotDirForStory(storyContext.title, theme),
         customDiffDir: `${SNAPSHOTS_DIR}/__diff_output__`,
-        customSnapshotIdentifier: `${context.id}--${theme}`,
+        customSnapshotIdentifier: variantSlug,
         failureThreshold: FAILURE_THRESHOLD,
         failureThresholdType: "percent",
       });

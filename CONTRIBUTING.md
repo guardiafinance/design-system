@@ -22,6 +22,31 @@ npm run init:env    # configura git hooks locais
 
 A migração do Chromatic deixou o gate visual + a11y na stack `@storybook/test-runner` (Playwright) + `jest-image-snapshot` + axe-core. Baselines em `__image_snapshots__/` são commitadas no repo (Git como source of truth).
 
+### Layout de baselines
+
+Subdividido por title + tema, com o variant como leaf:
+
+```
+__image_snapshots__/
+├── components/
+│   ├── multi-select/
+│   │   ├── dark/
+│   │   │   ├── default.png
+│   │   │   └── with-default-value.png
+│   │   └── light/
+│   │       ├── default.png
+│   │       └── with-default-value.png
+│   └── button/
+│       ├── dark/...
+│       └── light/...
+└── theme/
+    └── theme/
+        ├── dark/...
+        └── light/...
+```
+
+A estrutura vem de `context.title` (split por `/`, cada segmento kebab-case) + tema + `context.name` (kebab-case). Em PR que mexe num único componente, o reviewer scrolla um diretório com 4–10 PNGs em vez de 426+ arquivos em pasta flat.
+
 ### Setup local
 
 Playwright Chromium é instalado uma vez por máquina:
@@ -84,11 +109,22 @@ Cada story é capturada em dois temas (light + dark) via `data-theme` alternado 
 
 Animações CSS são congeladas durante a captura (`animation-play-state: paused`) para garantir determinismo entre runs.
 
-### A11y em modo soft (temporário)
+### A11y em hard mode
 
-Hoje o axe roda com `skipFailures: true`: violações são logadas no output do CI mas **não falham o build**. Esse modo soft é um rollout em duas fases — a primeira execução do gate surfou 64 violações reais que estão sendo atacadas no Plan #128.
+O axe roda em hard mode: violações WCAG 2.1 A + AA bloqueiam o build como qualquer diff visual. Stories que precisam derrogar uma regra específica (por exemplo, showcases de tokens de marca que caem no range 3:1–4.5:1 do `lex-brand-colors` e só são aplicáveis a títulos/buttons/badges em superfícies de produto) declaram override por story:
 
-Após Plan #128 mergear, o flag flipa para `false` (hard mode) e violações a11y bloqueiam o PR como qualquer diff visual.
+```ts
+export const MyShowcase: Story = {
+  parameters: {
+    a11y: {
+      // WHY: explicação direta da razão + referência ao lex que governa o uso
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
+};
+```
+
+Stories que não devem ser auditadas no axe (raríssimo — só componentes intrinsecamente sem semântica avaliável) declaram `parameters.a11y.disable: true` com comentário WHY adjacente.
 
 ### Stories que não devem ser snapshotadas
 
