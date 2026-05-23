@@ -76,6 +76,18 @@ npm run test-storybook:update  # atualiza baselines (-u)
 npm run test-storybook:ci      # build static + serve + run; falha em baseline ausente
 ```
 
+### Diff report HTML local
+
+Quando o gate visual falha (local ou CI), você pode gerar um `index.html` navegável que mostra `baseline | received | diff` lado a lado por story+tema:
+
+```bash
+node scripts/generate-diff-report.mjs
+# → __image_snapshots__/__diff_output__/index.html
+open __image_snapshots__/__diff_output__/index.html  # macOS
+```
+
+No CI o report é gerado automaticamente quando há falha e fica dentro do artifact `visual-diffs-${run_id}`. A decisão de tooling (script custom vs OSS) está registrada em [docs/adr/ADR-001-visual-diff-report-tooling.md](docs/adr/ADR-001-visual-diff-report-tooling.md).
+
 ### Atualizar baselines (após mudança intencional)
 
 **Cross-platform drift**: font rendering e antialiasing diferem entre macOS e Ubuntu. Baselines geradas em dev local (macOS) **não passam** no CI (Ubuntu). O CI é a source of truth para os PNGs em `__image_snapshots__/`.
@@ -84,7 +96,7 @@ Fluxo recomendado:
 
 1. Faça a mudança visual no componente (sem rodar `test-storybook:update` local).
 2. Push do PR. CI vai falhar no job `Visual regression + a11y` — esperado.
-3. Abra o run falhado, baixe o artifact `visual-diffs-*` (PNGs base/current/diff em `__diff_output__/`), confira se o diff é intencional.
+3. Abra o run falhado, baixe o artifact `visual-diffs-*` e abra `__diff_output__/index.html` no browser — relatório navegável com `baseline | received | diff` lado a lado por story+tema. Confira se o diff é intencional. (Os PNGs soltos seguem no zip caso queira inspecionar individualmente; o HTML é só conveniência.)
 4. Se intencional: aplique a label **`regenerate-baselines`** no PR (`gh pr edit <N> --add-label regenerate-baselines` ou via UI).
 5. O CI re-triggea (evento `labeled`), o job visual roda em modo regeneração (gera baselines no Ubuntu, pusha como commit assinado pelo GitHub via Git Database API).
 6. Remova a label (`gh pr edit <N> --remove-label regenerate-baselines`).
