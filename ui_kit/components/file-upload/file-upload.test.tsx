@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import {
   FileUpload,
   formatBytes,
@@ -127,11 +128,67 @@ describe("FileUpload — base", () => {
     expect(container.querySelector("label")!.className).toMatch(/p-3/);
   });
 
-  it("dropzone aplica classe de drag durante dragEnter", () => {
+  it("dropzone aplica classe de drag (border-action) durante dragEnter", () => {
     const { container } = render(<FileUpload />);
     const label = container.querySelector("label")!;
     fireEvent.dragEnter(label);
-    expect(label.className).toMatch(/border-guardia-violet-500/);
+    expect(label.className).toMatch(/border-action/);
+    expect(label.className).toMatch(/bg-bg-hover/);
+    expect(label.className).not.toMatch(/guardia-violet-(100|200|500|700)/);
+  });
+});
+
+describe("FileUpload — brand-aware tokens", () => {
+  it("dropzone hover usa bg-bg-hover + border-action (sem palette literal)", () => {
+    const { container } = render(<FileUpload />);
+    const label = container.querySelector("label")!;
+    expect(label.className).toMatch(/hover:bg-bg-hover/);
+    expect(label.className).toMatch(/hover:border-action/);
+    expect(label.className).not.toMatch(/hover:bg-guardia-violet-100/);
+    expect(label.className).not.toMatch(/hover:border-guardia-violet-(200|500)/);
+  });
+
+  it("variant=button hover usa bg-bg-hover + border-action", () => {
+    render(<FileUpload variant="button" />);
+    const button = screen.getByRole("button");
+    expect(button.className).toMatch(/hover:bg-bg-hover/);
+    expect(button.className).toMatch(/hover:border-action/);
+    expect(button.className).not.toMatch(/hover:bg-guardia-violet-100/);
+    expect(button.className).not.toMatch(/hover:border-guardia-violet-500/);
+  });
+
+  it("variant=button icon usa text-action (sem guardia-violet hardcoded)", () => {
+    render(<FileUpload variant="button" />);
+    const icon = screen.getByRole("button").querySelector("span[aria-hidden]")!;
+    expect(icon.className).toMatch(/\btext-action\b/);
+    expect(icon.className).not.toMatch(/text-guardia-violet-500/);
+  });
+
+  it("uploading badge usa bg-bg-hover + text-action", () => {
+    const { container } = render(
+      <FileUpload
+        files={[
+          { name: "a.zip", size: 100, status: "uploading", progress: 10 },
+        ]}
+      />,
+    );
+    const badge = container.querySelector("li[data-status='uploading'] span[aria-hidden]")!;
+    expect(badge.className).toMatch(/bg-bg-hover/);
+    expect(badge.className).toMatch(/\btext-action\b/);
+    expect(badge.className).not.toMatch(/guardia-violet-(100|500)/);
+  });
+
+  it("progressbar fill usa bg-action (sem guardia-violet hardcoded)", () => {
+    const { container } = render(
+      <FileUpload
+        files={[
+          { name: "a.zip", size: 100, status: "uploading", progress: 33 },
+        ]}
+      />,
+    );
+    const fill = container.querySelector("[role='progressbar'] > span")!;
+    expect(fill.className).toMatch(/\bbg-action\b/);
+    expect(fill.className).not.toMatch(/bg-guardia-violet-500/);
   });
 });
 
@@ -617,5 +674,71 @@ describe("FileUpload — auto-upload", () => {
     expect(
       container.querySelector("li[data-status='error']"),
     ).toBeInTheDocument();
+  });
+});
+
+describe("FileUpload — a11y", () => {
+  it("dropzone variant: no WCAG 2.1 AA violations in light + dark", async () => {
+    const { container } = render(
+      <FileUpload hint="PDF até 10 MB" maxSize={10 * 1024 * 1024} />,
+    );
+    await axeInThemes(container);
+  });
+
+  it("button variant: no WCAG 2.1 AA violations in light + dark", async () => {
+    const { container } = render(
+      <FileUpload variant="button" hint="PDF até 5 MB" />,
+    );
+    await axeInThemes(container);
+  });
+
+  it("file list (done): no WCAG 2.1 AA violations in light + dark", async () => {
+    const onRemove = vi.fn();
+    const { container } = render(
+      <FileUpload
+        files={[{ name: "extrato.pdf", size: 2048, status: "done" }]}
+        onRemove={onRemove}
+      />,
+    );
+    await axeInThemes(container);
+  });
+
+  it("file list (uploading + progressbar): no WCAG 2.1 AA violations in light + dark", async () => {
+    const { container } = render(
+      <FileUpload
+        files={[
+          {
+            name: "big.zip",
+            size: 5 * 1024 * 1024,
+            status: "uploading",
+            progress: 42,
+          },
+        ]}
+      />,
+    );
+    await axeInThemes(container);
+  });
+
+  it("file list (error): no WCAG 2.1 AA violations in light + dark", async () => {
+    const { container } = render(
+      <FileUpload
+        files={[
+          {
+            name: "bad.pdf",
+            size: 100,
+            status: "error",
+            error: "Tipo não permitido",
+          },
+        ]}
+      />,
+    );
+    await axeInThemes(container);
+  });
+
+  it("disabled dropzone: no WCAG 2.1 AA violations in light + dark", async () => {
+    const { container } = render(
+      <FileUpload disabled hint="Upload temporariamente desativado" />,
+    );
+    await axeInThemes(container);
   });
 });
