@@ -404,6 +404,12 @@
    * Pairs with `bg-bg-hover` utility (violet-100 light / gray-700 dark). */
   --color-bg-hover: var(--bg-hover);
 
+  /* Contrast-safe foreground for surfaces painted with `--action`.
+   * Light: white over violet-500 (7.04:1 AAA).
+   * Dark:  mono-black over orange-500 (6.2:1 AA).
+   * Use with `text-button-fg` whenever the background is `bg-action`. */
+  --color-button-fg: var(--button-fg);
+
   /* ─── Brand palette exposed as utilities (bg-guardia-orange-500 etc.) ─── */
   --color-guardia-yellow-100: var(--guardia-yellow-100);
   --color-guardia-yellow-200: var(--guardia-yellow-200);
