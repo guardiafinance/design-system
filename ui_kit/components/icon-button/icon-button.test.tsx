@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { IconButton } from "./index";
 
 const Icon = () => (
@@ -192,5 +193,79 @@ describe("<IconButton />", () => {
     );
     expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
+  });
+
+  describe("brand-aware hover tokens (per #125)", () => {
+    it("outline variant uses bg-bg-hover + border-action on hover", () => {
+      render(
+        <IconButton aria-label="x" variant="outline" data-testid="b">
+          <Icon />
+        </IconButton>,
+      );
+      const b = screen.getByTestId("b");
+      expect(b.className).toMatch(/hover:bg-bg-hover/);
+      expect(b.className).toMatch(/hover:border-action/);
+      expect(b.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+
+    it("ghost variant uses bg-bg-hover + text-action-hover on hover", () => {
+      render(
+        <IconButton aria-label="x" variant="ghost" data-testid="b">
+          <Icon />
+        </IconButton>,
+      );
+      const b = screen.getByTestId("b");
+      expect(b.className).toMatch(/hover:bg-bg-hover/);
+      expect(b.className).toMatch(/hover:text-action-hover/);
+      expect(b.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+  });
+
+  describe("a11y", () => {
+    it("has no WCAG 2.1 AA violations in light + dark (ghost — default)", async () => {
+      const { container } = render(
+        <IconButton aria-label="Salvar">
+          <Icon />
+        </IconButton>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (interactive variants)", async () => {
+      const { container } = render(
+        <div>
+          <IconButton aria-label="default" variant="default">
+            <Icon />
+          </IconButton>
+          <IconButton aria-label="secondary" variant="secondary">
+            <Icon />
+          </IconButton>
+          <IconButton aria-label="destructive" variant="destructive">
+            <Icon />
+          </IconButton>
+          <IconButton aria-label="outline" variant="outline">
+            <Icon />
+          </IconButton>
+          <IconButton aria-label="ghost" variant="ghost">
+            <Icon />
+          </IconButton>
+        </div>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark when disabled/loading", async () => {
+      const { container } = render(
+        <div>
+          <IconButton aria-label="desabilitado" disabled>
+            <Icon />
+          </IconButton>
+          <IconButton aria-label="carregando" loading>
+            <Icon />
+          </IconButton>
+        </div>,
+      );
+      await axeInThemes(container);
+    });
   });
 });

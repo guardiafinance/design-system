@@ -44,9 +44,9 @@ const iconButtonVariants = cva(
         destructive:
           "bg-transparent text-destructive hover:bg-destructive/10",
         outline:
-          "bg-background text-foreground border-border-strong hover:bg-guardia-violet-100 hover:border-guardia-violet-500",
+          "bg-background text-foreground border-border-strong hover:bg-bg-hover hover:border-action",
         ghost:
-          "bg-transparent text-foreground hover:bg-guardia-violet-100 hover:text-guardia-violet-700",
+          "bg-transparent text-foreground hover:bg-bg-hover hover:text-action-hover",
       },
       size: {
         sm: "h-7 w-7 [&_svg]:size-3.5",
