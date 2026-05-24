@@ -25,7 +25,7 @@
  *   node scripts/generate-diff-report.mjs
  *   node scripts/generate-diff-report.mjs --output custom/path/index.html
  */
-import { existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, posix, relative } from "node:path";
 
 const ROOT = process.cwd();
@@ -47,15 +47,16 @@ if (!existsSync(DIFF_OUTPUT_DIR)) {
 
 /**
  * Caminha recursivo retornando arquivos com path absoluto.
+ * `withFileTypes: true` devolve o tipo no Dirent, evitando um statSync
+ * por entrada (especialmente relevante quando o catalogo cresce).
  */
 function walk(dir) {
   const out = [];
-  for (const entry of readdirSync(dir)) {
-    const abs = join(dir, entry);
-    const s = statSync(abs);
-    if (s.isDirectory()) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const abs = join(dir, entry.name);
+    if (entry.isDirectory()) {
       out.push(...walk(abs));
-    } else if (s.isFile()) {
+    } else if (entry.isFile()) {
       out.push(abs);
     }
   }
@@ -219,7 +220,10 @@ function renderHtml(grouped, total) {
 <title>Visual regression diff report (${total})</title>
 <style>
   :root {
-    --bg: #0e1016;
+    /* Gray 900 (#17171b) para fundo da pagina e Mono Black (#0e1016)
+     * reservado a texto/icone seguem a hierarquia de superficie do
+     * design system em dark mode. */
+    --bg: #17171b;
     --bg-elev: #1a1d29;
     --fg: #fdfdfd;
     --fg-muted: #9ca3af;
@@ -270,7 +274,7 @@ function renderEmpty() {
   return `<!doctype html>
 <html lang="pt-BR">
 <head><meta charset="utf-8"><title>Visual regression diff report (0)</title></head>
-<body style="font-family:-apple-system,Roboto,sans-serif;padding:2rem;background:#0e1016;color:#fdfdfd;">
+<body style="font-family:-apple-system,Roboto,sans-serif;padding:2rem;background:#17171b;color:#fdfdfd;">
 <h1>Visual regression diff report</h1>
 <p>0 failing snapshots — gate visual passou.</p>
 </body>
