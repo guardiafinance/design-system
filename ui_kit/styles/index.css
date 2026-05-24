@@ -406,6 +406,15 @@
    * Pairs with `bg-bg-hover` utility (violet-100 light / gray-700 dark). */
   --color-bg-hover: var(--bg-hover);
 
+  /* Brand-aware link color, mapped for `text-link` / `text-link-hover`
+   * utilities. Used for inline links inside body text where the resting
+   * tone has to read darker than `--fg` (light) and stay visible against
+   * mono-white body (dark).
+   *   Light: violet-700 over white (10.04:1 AAA over `--bg`).
+   *   Dark:  orange-500 over gray-900 (5.5:1 AA over `--bg`). */
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+
   /* Contrast-safe foreground for surfaces painted with `--action` / `--action-hover`.
    *
    * `--color-button-fg` (resting state, over `bg-action`):

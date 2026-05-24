@@ -581,7 +581,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                 {title ?? (
                   <>
                     Arraste arquivos aqui ou{" "}
-                    <span className="font-semibold text-[var(--link)] underline underline-offset-2">
+                    <span className="font-semibold text-link underline underline-offset-2">
                       {linkLabel}
                     </span>
                   </>
