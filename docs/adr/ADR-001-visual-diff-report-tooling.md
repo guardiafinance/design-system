@@ -18,7 +18,9 @@ Plan #133 (escopo B de #130) ataca essa ergonomia: gerar um relatório HTML nave
 
 ## Decisão
 
-Adotar um **script custom em ESM puro** (`scripts/generate-diff-report.mjs`, ~200 linhas, zero deps externas) que:
+**Script custom em ESM puro lendo o output do `jest-image-snapshot`** — escolhido contra `reg-publish-github-action` e `lost-pixel` por zero deps novas e alinhamento com a hierarquia de baselines de Plan #132.
+
+`scripts/generate-diff-report.mjs` (~200 linhas, zero deps externas):
 
 1. Caminha recursivamente em `__image_snapshots__/__diff_output__/` (estrutura hierárquica derivada de Plan #132)
 2. Para cada `*-diff.png` encontrado, localiza o `*-received.png` correspondente (gerado via `storeReceivedOnFailure: true` no test-runner) e a baseline em `__image_snapshots__/{title}/{theme}/{variant}.png`

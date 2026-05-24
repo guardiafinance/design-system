@@ -26,11 +26,16 @@
  *   node scripts/generate-diff-report.mjs --output custom/path/index.html
  */
 import { existsSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join, posix, relative } from "node:path";
+import { dirname, join, relative } from "node:path";
 
 const ROOT = process.cwd();
 const BASELINES_DIR = join(ROOT, "__image_snapshots__");
 const DIFF_OUTPUT_DIR = join(BASELINES_DIR, "__diff_output__");
+
+// Themes ativados em `.storybook/test-runner.ts`. Usado como allowlist
+// pelo parser pra rejeitar paths fora da hierarquia esperada (em vez de
+// silenciosamente mapear o penultimo segmento como theme).
+const THEMES = new Set(["light", "dark"]);
 
 const argIdx = process.argv.indexOf("--output");
 const OUTPUT_HTML = argIdx > 0 && process.argv[argIdx + 1]
@@ -92,6 +97,16 @@ function entryFor(diffAbs) {
   const titleSegments = relFromDiff.slice(0, -2);
   const variant = filename.replace(/-diff\.png$/, "");
 
+  // Guard contra paths fora da hierarquia esperada (titleSegments/{light|dark}/...).
+  // Sem isso, um PNG transitorio como `foo/bar/x-diff.png` mapearia silenciosamente
+  // `bar` para theme e o report renderizaria um card enganoso.
+  if (!THEMES.has(theme)) {
+    process.stderr.write(
+      `! Skipping ${relFromDiff.join("/")}: penultimate segment "${theme}" is not in THEMES (${[...THEMES].join(", ")}).\n`,
+    );
+    return null;
+  }
+
   const baselineAbs = join(
     BASELINES_DIR,
     ...titleSegments,
@@ -106,7 +121,10 @@ function entryFor(diffAbs) {
   );
 
   const outputDir = dirname(OUTPUT_HTML);
-  const toRel = (abs) => posix.normalize(relative(outputDir, abs).split(/[\\/]/).join("/"));
+  // `relative()` ja usa o separador da plataforma; split+join normaliza para
+  // POSIX (`/`) que e o que o HTML precisa. Sem posix.normalize: redundante
+  // num path relativo ja canonico.
+  const toRel = (abs) => relative(outputDir, abs).split(/[\\/]/).join("/");
 
   return {
     titleSegments,
