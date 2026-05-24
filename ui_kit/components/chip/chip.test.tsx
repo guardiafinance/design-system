@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { Chip } from "./index";
 
 describe("<Chip />", () => {
@@ -141,5 +142,94 @@ describe("<Chip />", () => {
     const ref = { current: null as HTMLSpanElement | null };
     render(<Chip ref={ref}>x</Chip>);
     expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  describe("brand-aware tokens (per #125)", () => {
+    it("selected variant uses bg-action + text-button-fg with action-hover on hover", () => {
+      render(
+        <Chip selected onSelect={() => {}} data-testid="c">
+          Selected
+        </Chip>,
+      );
+      const c = screen.getByTestId("c");
+      expect(c.className).toMatch(/bg-action(?!-hover)/);
+      expect(c.className).toMatch(/border-action(?!-hover)/);
+      expect(c.className).toMatch(/text-button-fg(?!-hover)/);
+      expect(c.className).toMatch(/hover:bg-action-hover/);
+      expect(c.className).toMatch(/hover:border-action-hover/);
+      // WHY: dark mode hover swaps fg to white — mono-black over orange-700 = 3.2:1 (fails AA).
+      expect(c.className).toMatch(/hover:text-button-fg-hover/);
+      expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(c.className).not.toMatch(/\btext-white\b/);
+    });
+
+    it("unselected variant uses bg-bg-hover + border-action on hover", () => {
+      render(
+        <Chip onSelect={() => {}} data-testid="c">
+          Unselected
+        </Chip>,
+      );
+      const c = screen.getByTestId("c");
+      expect(c.className).toMatch(/hover:bg-bg-hover/);
+      expect(c.className).toMatch(/hover:border-action(?!-hover)/);
+      expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+  });
+
+  describe("a11y", () => {
+    it("has no WCAG 2.1 AA violations in light + dark (unselected interactive)", async () => {
+      const { container } = render(<Chip onSelect={() => {}}>Filter</Chip>);
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (selected interactive)", async () => {
+      const { container } = render(
+        <Chip selected onSelect={() => {}}>
+          Selected filter
+        </Chip>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (removable + selected)", async () => {
+      const { container } = render(
+        <Chip selected onSelect={() => {}} onRemove={() => {}}>
+          Both
+        </Chip>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark when disabled", async () => {
+      const { container } = render(
+        <Chip onSelect={() => {}} disabled>
+          Disabled
+        </Chip>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (removable + unselected)", async () => {
+      const { container } = render(
+        <Chip onRemove={() => {}}>Removable tag</Chip>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (selected + leadingIcon)", async () => {
+      // WHY: icons inherit currentColor — covers non-text contrast (WCAG 1.4.11, 3:1 min)
+      // on top of the brand-aware fg/bg pair in selected state across both themes.
+      const Icon = () => (
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+          <circle cx="8" cy="8" r="6" fill="currentColor" />
+        </svg>
+      );
+      const { container } = render(
+        <Chip selected onSelect={() => {}} leadingIcon={<Icon />}>
+          With icon
+        </Chip>,
+      );
+      await axeInThemes(container);
+    });
   });
 });
