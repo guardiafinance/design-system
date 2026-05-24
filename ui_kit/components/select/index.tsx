@@ -278,6 +278,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             sideOffset={4}
             align="start"
             style={popoverStyle}
+            aria-labelledby={triggerId}
             className={cn(
               "z-50 flex max-h-80 flex-col overflow-hidden",
               "rounded-lg border border-border bg-background shadow-lg",
@@ -291,6 +292,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
               id={listId}
               role="listbox"
               tabIndex={-1}
+              aria-labelledby={triggerId}
               onKeyDown={onListKeyDown}
               className="flex-1 overflow-y-auto p-1 outline-none"
             >

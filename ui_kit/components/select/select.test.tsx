@@ -166,6 +166,25 @@ describe("Select", () => {
     expect(screen.getByTestId("li")).toBeInTheDocument();
   });
 
+  it("listbox tem accessible name via aria-labelledby (aponta para o trigger)", async () => {
+    render(<Select options={PLANOS} aria-label="Plano" />);
+    const trigger = screen.getByRole("combobox");
+    await userEvent.click(trigger);
+    const listbox = await screen.findByRole("listbox");
+    expect(listbox).toHaveAttribute("aria-labelledby", trigger.id);
+  });
+
+  it("Popover.Content tem accessible name via aria-labelledby (aponta para o trigger)", async () => {
+    render(<Select options={PLANOS} aria-label="Plano" />);
+    const trigger = screen.getByRole("combobox");
+    await userEvent.click(trigger);
+    await screen.findByRole("listbox");
+    expect(screen.getByRole("dialog")).toHaveAttribute(
+      "aria-labelledby",
+      trigger.id,
+    );
+  });
+
   it("aria-controls aponta para o listbox", async () => {
     render(<Select options={PLANOS} />);
     const trigger = screen.getByRole("combobox");
@@ -304,12 +323,14 @@ describe("Select", () => {
     it("has no WCAG 2.1 AA violations in light + dark (listbox aberto + selecionado)", async () => {
       render(<Select options={PLANOS} defaultValue="business" />);
       await userEvent.click(screen.getByRole("combobox"));
-      /* Scope no listbox (filho do Popover.Content do Radix). O dialog
-       * wrapper do Radix renderiza no portal — o axe nele exigiria
-       * acessible-name de dialog, comportamento estrutural do Radix
-       * fora do escopo desta migração de tokens (#141). */
-      const listbox = await screen.findByRole("listbox");
-      await axeInThemes(listbox);
+      /* Scope no Popover.Content (dialog wrapper do Radix) — tem o
+       * `bg-background` necessário para axe computar contraste real
+       * dos options. Ambos o dialog e o listbox interno ganharam
+       * `aria-labelledby={triggerId}` no index.tsx, satisfazendo
+       * `aria-dialog-name`. */
+      await screen.findByRole("listbox");
+      const popoverContent = screen.getByRole("dialog");
+      await axeInThemes(popoverContent);
     });
 
     it("has no WCAG 2.1 AA violations in light + dark (invalid)", async () => {
