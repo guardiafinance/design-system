@@ -61,11 +61,11 @@ const triggerVariants = cva(
     "border border-border-strong rounded-md",
     "text-left cursor-pointer",
     "transition-[border-color,box-shadow] duration-150",
-    /* Hover (não disabled): border violet-500 (300 não existe na nossa ramp) */
-    "hover:border-guardia-violet-500 disabled:hover:border-border-strong",
+    /* Hover (não disabled): border action (violet-500 light / orange-500 dark) */
+    "hover:border-action disabled:hover:border-border-strong",
     /* Focus / open: ring laranja */
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "data-[state=open]:border-guardia-violet-500 data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
+    "data-[state=open]:border-action data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
     /* Invalid */
     "aria-[invalid=true]:border-destructive aria-[invalid=true]:hover:border-destructive",
     "aria-[invalid=true]:focus-visible:ring-destructive aria-[invalid=true]:data-[state=open]:ring-destructive",
@@ -384,16 +384,19 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                       "rounded-md px-2.5 py-1.5 text-left text-[13.5px]",
                       "transition-colors duration-100",
                       "disabled:cursor-not-allowed disabled:opacity-50",
-                      /* Active (foco via teclado/mouse) — só aplica se não selecionado */
+                      /* Active (foco via teclado/mouse) — só aplica se não selecionado.
+                         --bg-hover é violet-100 light / gray-700 dark; /60 mantém o "halo" suave em ambos os temas. */
                       isActive &&
                         !isSelected &&
-                        "bg-guardia-violet-100/50",
-                      /* Selected */
+                        "bg-bg-hover/60",
+                      /* Selected — pattern do Chip: bg-action + text-button-fg.
+                         action: violet-500 light / orange-500 dark.
+                         button-fg: white light / mono-black dark (par AA-safe). */
                       isSelected &&
-                        "bg-guardia-violet-100 text-guardia-violet-700",
+                        "bg-action text-button-fg",
                       isSelected &&
                         isActive &&
-                        "bg-guardia-violet-100 text-guardia-violet-700",
+                        "bg-action text-button-fg",
                     )}
                   >
                     <span className="flex min-w-0 flex-col items-start gap-0.5">
@@ -402,7 +405,8 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                         <span
                           className={cn(
                             "text-xs text-fg-muted",
-                            isSelected && "text-guardia-violet-700/85",
+                            /* Meta secundária do option selecionado: button-fg/85 preserva hierarquia visual. */
+                            isSelected && "text-button-fg/85",
                           )}
                         >
                           {opt.meta}
