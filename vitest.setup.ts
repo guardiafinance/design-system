@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
+import { toHaveNoViolations } from 'jest-axe';
+
+// jest-axe matcher para WCAG asserts nos testes de componente (Tech Task #125).
+// Estende `expect` no setup pra `toHaveNoViolations()` ficar disponivel sem
+// import por teste. Helper de tema vive em `ui_kit/test-utils/a11y.ts`.
+expect.extend(toHaveNoViolations);
 
 // Clean up the DOM after every test
 afterEach(() => {
