@@ -13,7 +13,7 @@ npm run init:env    # configura git hooks locais
 ## Fluxo de PR
 
 1. Crie a issue (templates em `.github/ISSUE_TEMPLATE/`).
-2. Branch `{type}/{N}-{slug}` a partir de `master`.
+2. Branch `{type}/{N}-{slug}` a partir de `main`.
 3. Implemente, mantendo commits atômicos com Conventional Commits.
 4. Antes do push: `npm run lint && npm run test && npm run typecheck && npm run build`.
 5. Abra o PR referenciando a issue via `Closes #N` ou `Refs #N`.
