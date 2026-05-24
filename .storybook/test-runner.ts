@@ -57,6 +57,14 @@ const SNAPSHOTS_DIR = `${process.cwd()}/__image_snapshots__`;
  * Mantido FORA da arvore de baselines (irmao em `__image_snapshots__/`),
  * preservando a separacao baselines (commitadas) x diffs (artefato CI).
  * O workflow `upload-artifact@v4` empacota a pasta inteira recursivamente.
+ *
+ * O `scripts/generate-diff-report.mjs` (Plan #133) consome a estrutura
+ * abaixo para produzir `index.html` navegavel com base | received | diff
+ * lado a lado por story+tema:
+ *
+ *   __diff_output__/{titleSegments}/{theme}/<variant>-diff.png      (composite)
+ *   __diff_output__/{titleSegments}/{theme}/<variant>-received.png  (atual, via storeReceivedOnFailure)
+ *   __image_snapshots__/{titleSegments}/{theme}/<variant>.png       (baseline commitada)
  */
 const DIFF_OUTPUT_DIR = `${SNAPSHOTS_DIR}/__diff_output__`;
 
@@ -171,6 +179,18 @@ const config: TestRunnerConfig = {
           theme,
         ),
         customDiffDir: snapshotDirForStory(
+          DIFF_OUTPUT_DIR,
+          storyContext.title,
+          theme,
+        ),
+        // Quando ha diff, escreve tambem o `*-received.png` (current render)
+        // junto do diff composite. Permite que o report HTML mostre as 3
+        // imagens (base | received | diff) lado a lado em vez de so o
+        // composite gerado pelo jest-image-snapshot. customReceivedDir
+        // espelha a hierarquia do diff (sub-pasta `__received_output__`
+        // dentro do mesmo titleSegments/theme).
+        storeReceivedOnFailure: true,
+        customReceivedDir: snapshotDirForStory(
           DIFF_OUTPUT_DIR,
           storyContext.title,
           theme,

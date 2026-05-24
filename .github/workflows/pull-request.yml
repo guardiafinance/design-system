@@ -125,6 +125,14 @@ jobs:
         run: |
           echo "::notice::Baselines regeneradas e pushadas. Remova a label `regenerate-baselines` e clique 'Re-run failed jobs' no run anterior pra validar contra as novas baselines."
 
+      # Gera index.html navegavel com base | received | diff lado a lado
+      # por story+tema. Lido pelo reviewer abrindo o HTML do artifact, em
+      # vez de baixar zip de PNGs soltas (Plan #133). Script zero-deps,
+      # consome a hierarquia de __diff_output__/ produzida pelo test-runner.
+      - name: Generate diff report (HTML)
+        if: failure() && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
+        run: node scripts/generate-diff-report.mjs
+
       - name: Upload visual diff artifact on failure
         if: failure() && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
         uses: actions/upload-artifact@v4
@@ -135,3 +143,8 @@ jobs:
             storybook-static/
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Hint to open the HTML report
+        if: failure() && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
+        run: |
+          echo "::notice::Baixe o artifact 'visual-diffs-${{ github.run_id }}' e abra '__diff_output__/index.html' no browser pra ver base | received | diff lado a lado."
