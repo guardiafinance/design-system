@@ -228,8 +228,9 @@ describe("DatePicker", () => {
       const day15Button = screen
         .getAllByRole("button")
         .find((b) => b.textContent?.trim() === "15");
-      expect(day15Button).toBeDefined();
-      const gridcell = day15Button!.closest("td");
+      expect(day15Button).not.toBeUndefined();
+      const gridcell = day15Button?.closest("td");
+      expect(gridcell).not.toBeNull();
       expect(gridcell?.className ?? "").toMatch(/bg-action/);
       expect(gridcell?.className ?? "").toMatch(/text-button-fg/);
       expect(gridcell?.className ?? "").not.toMatch(/guardia-violet-500/);
