@@ -222,7 +222,7 @@ describe("<IconButton />", () => {
   });
 
   describe("a11y", () => {
-    it("no viola WCAG 2.1 AA em light + dark (ghost — default)", async () => {
+    it("has no WCAG 2.1 AA violations in light + dark (ghost — default)", async () => {
       const { container } = render(
         <IconButton aria-label="Salvar">
           <Icon />
@@ -231,7 +231,7 @@ describe("<IconButton />", () => {
       await axeInThemes(container);
     });
 
-    it("no viola WCAG 2.1 AA em light + dark (variantes interativas)", async () => {
+    it("has no WCAG 2.1 AA violations in light + dark (interactive variants)", async () => {
       const { container } = render(
         <div>
           <IconButton aria-label="default" variant="default">
@@ -254,7 +254,7 @@ describe("<IconButton />", () => {
       await axeInThemes(container);
     });
 
-    it("no viola WCAG 2.1 AA em light + dark quando disabled/loading", async () => {
+    it("has no WCAG 2.1 AA violations in light + dark when disabled/loading", async () => {
       const { container } = render(
         <div>
           <IconButton aria-label="desabilitado" disabled>

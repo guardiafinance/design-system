@@ -221,7 +221,7 @@
   --accent-brand: var(--guardia-violet-200);    /* Violeta sobre dark: 200 (#AF97BD) */
   --accent-brand-hover: var(--guardia-violet-100);
 
-  /* Surface hover em dark: Surface 2 (gray-700) — discreto e legível */
+  /* Surface hover in dark: Surface 2 (gray-700) — subtle and legible */
   --bg-hover: var(--guardia-gray-700);
 
   /* Skeleton (loading placeholders) — dark variants alinhados a Cinza */
