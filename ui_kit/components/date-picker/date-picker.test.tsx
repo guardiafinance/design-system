@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { DatePicker, formatDateBR } from "./index";
 
 describe("formatDateBR", () => {
@@ -202,6 +203,101 @@ describe("DatePicker", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("brand-aware tokens", () => {
+    it("trigger usa border-action no hover + estado aberto (sem guardia-violet hardcoded)", () => {
+      render(<DatePicker />);
+      const trigger = screen.getByRole("button", { name: "Selecionar data" });
+      expect(trigger.className).toMatch(/hover:border-action/);
+      expect(trigger.className).toMatch(/data-\[state=open\]:border-action/);
+      expect(trigger.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+
+    it("dia selecionado renderiza com bg-action + text-button-fg", async () => {
+      const user = userEvent.setup();
+      render(<DatePicker defaultValue={new Date(2025, 5, 15)} />);
+      await user.click(
+        screen.getByRole("button", { name: "Selecionar data" }),
+      );
+      await screen.findByRole("dialog");
+      /* DayPicker aplica a classe `selected` no <td> (gridcell), que carrega
+         `bg-action` + `text-button-fg` via [&_button] selector. Asserts no
+         próprio gridcell. */
+      const day15Button = screen
+        .getAllByRole("button")
+        .find((b) => b.textContent?.trim() === "15");
+      expect(day15Button).toBeDefined();
+      const gridcell = day15Button!.closest("td");
+      expect(gridcell?.className ?? "").toMatch(/bg-action/);
+      expect(gridcell?.className ?? "").toMatch(/text-button-fg/);
+      expect(gridcell?.className ?? "").not.toMatch(/guardia-violet-500/);
+      expect(gridcell?.className ?? "").not.toMatch(/\btext-white\b/);
+    });
+
+    it("botão 'Hoje' usa text-action + hover:bg-bg-hover (sem guardia-violet hardcoded)", async () => {
+      render(<DatePicker />);
+      await userEvent.click(
+        screen.getByRole("button", { name: "Selecionar data" }),
+      );
+      const today = await screen.findByRole("button", { name: "Hoje" });
+      expect(today.className).toMatch(/text-action/);
+      expect(today.className).toMatch(/hover:bg-bg-hover/);
+      expect(today.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+  });
+
+  describe("a11y", () => {
+    it("não tem violações WCAG 2.1 AA em light + dark (trigger vazio)", async () => {
+      const { container } = render(<DatePicker />);
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (com valor + clear)", async () => {
+      const { container } = render(
+        <DatePicker
+          defaultValue={new Date(2025, 5, 15)}
+          aria-label="Data de vencimento"
+        />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (invalid)", async () => {
+      const { container } = render(
+        <DatePicker invalid aria-label="Data de vencimento" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (disabled)", async () => {
+      const { container } = render(
+        <DatePicker disabled aria-label="Data de vencimento" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (dialog aberto com dia selecionado)", async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <DatePicker defaultValue={new Date(2025, 5, 15)} />,
+      );
+      await user.click(
+        screen.getByRole("button", { name: "Selecionar data" }),
+      );
+      await screen.findByRole("dialog");
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (dialog aberto sem valor)", async () => {
+      const user = userEvent.setup();
+      const { container } = render(<DatePicker />);
+      await user.click(
+        screen.getByRole("button", { name: "Selecionar data" }),
+      );
+      await screen.findByRole("dialog");
+      await axeInThemes(container);
     });
   });
 });
