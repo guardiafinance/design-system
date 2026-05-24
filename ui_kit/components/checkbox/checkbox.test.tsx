@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { Checkbox } from "./index";
 
 describe("Checkbox", () => {
@@ -100,12 +101,29 @@ describe("Checkbox", () => {
     expect(screen.getByRole("checkbox")).toHaveAttribute("id", "my-cb");
   });
 
-  it("classes do indicator: violet-500 fill em checked", () => {
+  it("brand-aware classes: bg-action + text-button-fg em checked", () => {
     render(<Checkbox checked />);
     const cb = screen.getByRole("checkbox");
-    expect(cb.className).toMatch(
-      /data-\[state=checked\]:bg-guardia-violet-500/,
-    );
+    expect(cb.className).toMatch(/data-\[state=checked\]:bg-action/);
+    expect(cb.className).toMatch(/data-\[state=checked\]:border-action/);
+    expect(cb.className).toMatch(/data-\[state=checked\]:text-button-fg/);
+    expect(cb.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    expect(cb.className).not.toMatch(/\btext-white\b/);
+  });
+
+  it("brand-aware classes: bg-action + text-button-fg em indeterminate", () => {
+    render(<Checkbox indeterminate />);
+    const cb = screen.getByRole("checkbox");
+    expect(cb.className).toMatch(/data-\[state=indeterminate\]:bg-action/);
+    expect(cb.className).toMatch(/data-\[state=indeterminate\]:border-action/);
+    expect(cb.className).toMatch(/data-\[state=indeterminate\]:text-button-fg/);
+  });
+
+  it("brand-aware hover: border-action (sem guardia-violet hardcoded)", () => {
+    render(<Checkbox />);
+    const cb = screen.getByRole("checkbox");
+    expect(cb.className).toMatch(/hover:border-action/);
+    expect(cb.className).not.toMatch(/hover:border-guardia-violet-500/);
   });
 
   it("focus-visible:ring laranja com offset", () => {
@@ -139,5 +157,52 @@ describe("Checkbox", () => {
     );
     const wrapper = screen.getByRole("checkbox").closest("label");
     expect(wrapper).toHaveClass("my-wrap");
+  });
+
+  describe("a11y", () => {
+    it("has no WCAG 2.1 AA violations in light + dark (unchecked + label)", async () => {
+      const { container } = render(
+        <Checkbox label="Aceito os termos" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (checked + label)", async () => {
+      const { container } = render(
+        <Checkbox checked label="Notificações por email" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (indeterminate + label)", async () => {
+      const { container } = render(
+        <Checkbox indeterminate label="Selecionar todos" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (label + description)", async () => {
+      const { container } = render(
+        <Checkbox
+          label="Email diário"
+          description="Receba um resumo das atividades"
+        />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (invalid)", async () => {
+      const { container } = render(
+        <Checkbox invalid label="Campo obrigatório" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (disabled)", async () => {
+      const { container } = render(
+        <Checkbox disabled label="Indisponível" />,
+      );
+      await axeInThemes(container);
+    });
   });
 });
