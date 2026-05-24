@@ -146,6 +146,7 @@
   --color-link-hover: var(--link-hover);
   --button-bg: var(--action);
   --button-fg: #ffffff;
+  --button-fg-hover: #ffffff;
   --button-hover-bg: var(--action-hover);
 
   /* ─── shadcn-compat (HSL triples) ─── */
@@ -235,6 +236,7 @@
   --color-link-hover: var(--link-hover);
   --button-bg: var(--action);
   --button-fg: var(--mono-black);                /* Laranja 500 + Mono Preto = 6.2:1 */
+  --button-fg-hover: var(--mono-white);          /* Laranja 700 + Mono White = 5.75:1 (AA); mono-black falharia (3.2:1) */
   --button-hover-bg: var(--action-hover);
 
   /* ─── shadcn-compat (HSL triples) alinhados a Cinza Báltico ─── */
@@ -404,11 +406,20 @@
    * Pairs with `bg-bg-hover` utility (violet-100 light / gray-700 dark). */
   --color-bg-hover: var(--bg-hover);
 
-  /* Contrast-safe foreground for surfaces painted with `--action`.
-   * Light: white over violet-500 (7.04:1 AAA).
-   * Dark:  mono-black over orange-500 (6.2:1 AA).
-   * Use with `text-button-fg` whenever the background is `bg-action`. */
+  /* Contrast-safe foreground for surfaces painted with `--action` / `--action-hover`.
+   *
+   * `--color-button-fg` (resting state, over `bg-action`):
+   *   Light: white over violet-500 (7.04:1 AAA).
+   *   Dark:  mono-black over orange-500 (6.2:1 AA).
+   *
+   * `--color-button-fg-hover` (hover state, over `bg-action-hover`):
+   *   Light: white over violet-700 (13:1 AAA — same value as button-fg).
+   *   Dark:  white over orange-700 (5.75:1 AA — mono-black would drop to 3.2:1 and fail AA).
+   *
+   * Pair them together when migrating a filled action surface:
+   *   bg-action text-button-fg hover:bg-action-hover hover:text-button-fg-hover */
   --color-button-fg: var(--button-fg);
+  --color-button-fg-hover: var(--button-fg-hover);
 
   /* ─── Brand palette exposed as utilities (bg-guardia-orange-500 etc.) ─── */
   --color-guardia-yellow-100: var(--guardia-yellow-100);

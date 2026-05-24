@@ -28,7 +28,7 @@ const chipVariants = cva(
         md: "h-8 px-3 text-[13px] font-medium",
       },
       selected: {
-        true: "bg-action border-action text-button-fg hover:bg-action-hover hover:border-action-hover",
+        true: "bg-action border-action text-button-fg hover:bg-action-hover hover:border-action-hover hover:text-button-fg-hover",
         false:
           "bg-background border-border-strong text-foreground hover:bg-bg-hover hover:border-action",
       },
