@@ -42,11 +42,11 @@ const boxVariants = cva(
     "rounded-sm border-[1.5px] bg-background text-transparent",
     "border-border-strong",
     "transition-[background-color,border-color,color,box-shadow] duration-150",
-    /* Hover (não disabled): border violet-500 */
-    "hover:border-guardia-violet-500",
-    /* Checked / Indeterminate: violet-500 fill + check branco */
-    "data-[state=checked]:bg-guardia-violet-500 data-[state=checked]:border-guardia-violet-500 data-[state=checked]:text-white",
-    "data-[state=indeterminate]:bg-guardia-violet-500 data-[state=indeterminate]:border-guardia-violet-500 data-[state=indeterminate]:text-white",
+    /* Hover (não disabled): border action (violet light / orange dark) */
+    "hover:border-action",
+    /* Checked / Indeterminate: action fill + button-fg icon (white light / mono-black dark, AA-safe) */
+    "data-[state=checked]:bg-action data-[state=checked]:border-action data-[state=checked]:text-button-fg",
+    "data-[state=indeterminate]:bg-action data-[state=indeterminate]:border-action data-[state=indeterminate]:text-button-fg",
     /* Focus-visible: ring laranja com offset */
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     /* Invalid: border red (override hover) */
