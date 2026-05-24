@@ -204,14 +204,14 @@ Fluxo completo de visual regression e how-to em [CONTRIBUTING.md](./CONTRIBUTING
 A publicação é feita pelo workflow `publish.yml`:
 
 1. Bump de versão em um PR.
-2. Ao mergear em `master`, o CI publica `@guardiafinance/design-system@x.y.z`
+2. Ao mergear em `main`, o CI publica `@guardiafinance/design-system@x.y.z`
    no GitHub Packages.
 
 ## 🤝 Contribuição
 
 Consulte [CONTRIBUTING.md](./CONTRIBUTING.md) — resumo:
 
-- Branch de feature a partir de `master`.
+- Branch de feature a partir de `main`.
 - `npm run lint && npm run test && npm run typecheck` antes do push.
 - PR com descrição; baselines visuais atualizadas via `npm run test-storybook:update` quando a mudança altera UI.
 - Patches que afetam a API pública precisam de nota no `CHANGELOG.md`.
