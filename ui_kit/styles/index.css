@@ -387,6 +387,13 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
+  /* Brand-aware action token, mapped for `bg-action` / `border-action` /
+   * `text-action` utilities. Pairs with `--action-hover` (mapped below)
+   * so consumers can `hover:bg-action-hover` without arbitrary values.
+   * Token semantics: violet-500 (light) / orange-500 (dark) — see #125. */
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+
   /* ─── Brand palette exposed as utilities (bg-guardia-orange-500 etc.) ─── */
   --color-guardia-yellow-100: var(--guardia-yellow-100);
   --color-guardia-yellow-200: var(--guardia-yellow-200);

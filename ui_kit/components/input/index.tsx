@@ -55,7 +55,11 @@ const wrapperVariants = cva(
         lg: "h-[46px] px-3.5 text-[15px]",
       },
       state: {
-        default: "border-border-strong hover:border-guardia-violet-500",
+        // `action` brand-aware: violet-500 em light, orange-500 em dark
+        // (per [Notion > Branding > Cores > Dark Mode](https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b)),
+        // garantindo contraste WCAG AA nos dois temas. Substitui o literal
+        // `hover:border-guardia-violet-500` que ignorava o tema.
+        default: "border-border-strong hover:border-action",
         error:
           "border-destructive hover:border-destructive focus-within:ring-destructive",
         success:

@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Input } from "./index";
+import { axeInThemes } from "@/test-utils/a11y";
 
 describe("Input", () => {
   it("renderiza um <input> dentro de um wrapper <div>", () => {
@@ -137,5 +138,50 @@ describe("Input", () => {
     );
     expect(container.firstChild).toHaveClass("a");
     expect(container.firstChild).toHaveClass("b");
+  });
+
+  // Cobertura a11y per Tech Task #125 — todo componente do design system
+  // valida `toHaveNoViolations()` em light + dark. O helper `axeInThemes`
+  // alterna `data-theme` no <html> antes de cada checagem.
+  describe("a11y", () => {
+    it("nao tem violacoes WCAG em light + dark (default state, com label)", async () => {
+      // Form input requer label associado per lex-frontend-accessibility §4.1.
+      // <Input> nao injeta label sozinho — o consumidor sempre embala em
+      // FormLayout/<Label>. Replicamos a embalagem minima aqui.
+      const { container } = render(
+        <>
+          <label htmlFor="name">Nome</label>
+          <Input id="name" placeholder="Seu nome" />
+        </>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("nao tem violacoes WCAG em light + dark (state=error, aria-invalid)", async () => {
+      const { container } = render(
+        <>
+          <label htmlFor="email">E-mail</label>
+          <Input
+            id="email"
+            type="email"
+            state="error"
+            aria-invalid="true"
+            aria-describedby="email-err"
+          />
+          <span id="email-err">E-mail inválido</span>
+        </>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("nao tem violacoes WCAG em light + dark (state=success)", async () => {
+      const { container } = render(
+        <>
+          <label htmlFor="code">Código</label>
+          <Input id="code" state="success" defaultValue="OK" />
+        </>,
+      );
+      await axeInThemes(container);
+    });
   });
 });
