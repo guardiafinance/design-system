@@ -70,8 +70,8 @@ const markVariants = cva(
     "rounded-full border-[1.5px] bg-background",
     "border-border-strong",
     "transition-[background-color,border-color,box-shadow] duration-150",
-    "hover:border-guardia-violet-500",
-    "data-[state=checked]:border-guardia-violet-500",
+    "hover:border-action",
+    "data-[state=checked]:border-action",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     "aria-[invalid=true]:border-destructive aria-[invalid=true]:hover:border-destructive",
     "disabled:cursor-not-allowed disabled:opacity-55",
@@ -161,7 +161,7 @@ const Radio = React.forwardRef<
           <span
             aria-hidden="true"
             style={{ width: dotPx, height: dotPx }}
-            className="block rounded-full bg-guardia-violet-500"
+            className="block rounded-full bg-action"
           />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
