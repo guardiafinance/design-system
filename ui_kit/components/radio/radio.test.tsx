@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { Radio, RadioGroup } from "./index";
 
 function setup(props: Partial<React.ComponentProps<typeof RadioGroup>> = {}) {
@@ -239,5 +240,74 @@ describe("Radio", () => {
       </RadioGroup>,
     );
     expect(screen.getByRole("radio").closest("label")).toHaveClass("my-wrap");
+  });
+
+  describe("brand-aware tokens (per #125)", () => {
+    it("mark uses border-action on hover + checked (no guardia-violet hardcoded)", () => {
+      render(
+        <RadioGroup>
+          <Radio value="x" />
+        </RadioGroup>,
+      );
+      const r = screen.getByRole("radio");
+      expect(r.className).toMatch(/hover:border-action/);
+      expect(r.className).toMatch(/data-\[state=checked\]:border-action/);
+      expect(r.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    });
+
+    it("indicator dot uses bg-action (themed: violet light / orange dark)", () => {
+      const { container } = render(
+        <RadioGroup defaultValue="x">
+          <Radio value="x" />
+        </RadioGroup>,
+      );
+      // Indicator only renders inside Radix Indicator when checked
+      const dot = container.querySelector('[role="radio"] span[aria-hidden="true"]');
+      expect(dot).not.toBeNull();
+      expect(dot!.className).toMatch(/\bbg-action\b/);
+      expect(dot!.className).not.toMatch(/bg-guardia-violet-500/);
+    });
+  });
+
+  describe("a11y", () => {
+    it("has no WCAG 2.1 AA violations in light + dark (group, no selection)", async () => {
+      const { container } = render(
+        <RadioGroup aria-label="Frequência">
+          <Radio value="now" label="Imediato" description="Agora" />
+          <Radio value="daily" label="Diário" description="Uma vez por dia" />
+          <Radio value="weekly" label="Semanal" />
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (group with default selection)", async () => {
+      const { container } = render(
+        <RadioGroup aria-label="Frequência" defaultValue="daily">
+          <Radio value="now" label="Imediato" />
+          <Radio value="daily" label="Diário" />
+          <Radio value="weekly" label="Semanal" />
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (invalid)", async () => {
+      const { container } = render(
+        <RadioGroup aria-label="Opção">
+          <Radio value="x" invalid label="Campo obrigatório" />
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (disabled)", async () => {
+      const { container } = render(
+        <RadioGroup aria-label="Opção">
+          <Radio value="x" disabled label="Indisponível" />
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
   });
 });
