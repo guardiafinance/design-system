@@ -23,19 +23,20 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: function CalendarStory() {
-    // WHY: pinned date in a past month keeps the visual snapshot
-    // deterministic. `new Date()` drifts as the day boundary crosses
-    // between baseline capture and CI validation; Calendar's "today"
-    // highlight covers a full cell (~2k pixels) which blows the 0.2%
-    // diff threshold. Selecting June 2020 puts the displayed month
-    // outside any reasonable future "today", so the highlight never
-    // overlaps the snapshot.
-    const [date, setDate] = useState<Date | undefined>(
-      new Date(2020, 5, 15),
-    );
+    // WHY: both `selected` AND `defaultMonth` need to be pinned to keep
+    // the snapshot deterministic. `selected` alone only marks the day —
+    // react-day-picker still defaults the *displayed* month to today,
+    // so the "today" cell highlight drifts as the day boundary crosses
+    // between baseline capture and CI validation (Calendar's highlight
+    // covers ~2k pixels, blowing the 0.2% threshold). Pinning
+    // `defaultMonth` to June 2020 puts the rendered grid outside any
+    // reasonable future "today" — no cell overlap, no daily drift.
+    const PINNED = new Date(2020, 5, 15);
+    const [date, setDate] = useState<Date | undefined>(PINNED);
     return (
       <Calendar
         mode="single"
+        defaultMonth={PINNED}
         selected={date}
         onSelect={setDate}
         className="rounded-md border"
