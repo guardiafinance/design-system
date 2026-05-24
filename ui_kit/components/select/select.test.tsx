@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { Select, type SelectOption } from "./index";
 
 const PLANOS: SelectOption[] = [
@@ -231,6 +232,98 @@ describe("Select", () => {
     await waitFor(() => {
       const id = trigger.getAttribute("aria-activedescendant");
       expect(id).toMatch(/-opt-2$/);
+    });
+  });
+
+  describe("brand-aware tokens (Tech Task #125)", () => {
+    it("trigger usa border-action no hover (sem guardia-violet hardcoded)", () => {
+      render(<Select options={PLANOS} />);
+      const trigger = screen.getByRole("combobox");
+      expect(trigger.className).toMatch(/hover:border-action/);
+      expect(trigger.className).not.toMatch(/hover:border-guardia-violet-500/);
+    });
+
+    it("trigger usa border-action quando aberto (data-state=open)", () => {
+      render(<Select options={PLANOS} />);
+      const trigger = screen.getByRole("combobox");
+      expect(trigger.className).toMatch(/data-\[state=open\]:border-action/);
+      expect(trigger.className).not.toMatch(
+        /data-\[state=open\]:border-guardia-violet-500/,
+      );
+    });
+
+    it("option selecionada usa bg-bg-hover + text-action (sem guardia-violet hardcoded)", async () => {
+      render(<Select options={PLANOS} defaultValue="pro" />);
+      await userEvent.click(screen.getByRole("combobox"));
+      const proOpt = screen
+        .getAllByText("Pro")
+        .map((el) => el.closest("[role=option]"))
+        .find((el): el is HTMLElement => el != null)!;
+      expect(proOpt.className).toMatch(/bg-bg-hover/);
+      expect(proOpt.className).toMatch(/text-action/);
+      expect(proOpt.className).not.toMatch(/bg-guardia-violet-100/);
+      expect(proOpt.className).not.toMatch(/text-guardia-violet-700/);
+    });
+
+    it("option ativa (não selecionada) usa bg-bg-hover/50 (sem guardia-violet hardcoded)", async () => {
+      const user = userEvent.setup();
+      /* defaultValue=pro mantém Starter como ativo via hover/keyboard */
+      render(<Select options={PLANOS} defaultValue="pro" />);
+      const trigger = screen.getByRole("combobox");
+      await user.click(trigger);
+      const listbox = await screen.findByRole("listbox");
+      listbox.focus();
+      /* Move o foco ativo para Starter (índice 0) — não-selecionado */
+      await user.keyboard("{Home}");
+      await waitFor(() => {
+        const id = trigger.getAttribute("aria-activedescendant");
+        expect(id).toMatch(/-opt-0$/);
+      });
+      const starter = screen
+        .getAllByText("Starter")
+        .map((el) => el.closest("[role=option]"))
+        .find((el): el is HTMLElement => el != null)!;
+      expect(starter.className).toMatch(/bg-bg-hover\/50/);
+      expect(starter.className).not.toMatch(/bg-guardia-violet-100\/50/);
+    });
+  });
+
+  describe("a11y", () => {
+    it("has no WCAG 2.1 AA violations in light + dark (trigger fechado)", async () => {
+      const { container } = render(<Select options={PLANOS} />);
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (trigger com valor selecionado)", async () => {
+      const { container } = render(
+        <Select options={PLANOS} defaultValue="pro" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (listbox aberto + selecionado)", async () => {
+      render(<Select options={PLANOS} defaultValue="business" />);
+      await userEvent.click(screen.getByRole("combobox"));
+      /* Scope no listbox (filho do Popover.Content do Radix). O dialog
+       * wrapper do Radix renderiza no portal — o axe nele exigiria
+       * acessible-name de dialog, comportamento estrutural do Radix
+       * fora do escopo desta migração de tokens (#141). */
+      const listbox = await screen.findByRole("listbox");
+      await axeInThemes(listbox);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (invalid)", async () => {
+      const { container } = render(
+        <Select options={PLANOS} invalid aria-label="Plano" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (disabled)", async () => {
+      const { container } = render(
+        <Select options={PLANOS} disabled aria-label="Plano" />,
+      );
+      await axeInThemes(container);
     });
   });
 });

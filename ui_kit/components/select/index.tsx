@@ -52,9 +52,9 @@ const triggerVariants = cva(
     "border border-border-strong rounded-md",
     "text-left cursor-pointer",
     "transition-[border-color,box-shadow] duration-150",
-    "hover:border-guardia-violet-500 disabled:hover:border-border-strong",
+    "hover:border-action disabled:hover:border-border-strong",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "data-[state=open]:border-guardia-violet-500 data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
+    "data-[state=open]:border-action data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
     "aria-[invalid=true]:border-destructive aria-[invalid=true]:hover:border-destructive",
     "aria-[invalid=true]:focus-visible:ring-destructive aria-[invalid=true]:data-[state=open]:ring-destructive",
     "disabled:cursor-not-allowed disabled:opacity-70 disabled:bg-muted",
@@ -318,9 +318,8 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                       "rounded-md px-2.5 py-1.5 text-left text-[13.5px]",
                       "transition-colors duration-100",
                       "disabled:cursor-not-allowed disabled:opacity-50",
-                      isActive && !isSelected && "bg-guardia-violet-100/50",
-                      isSelected &&
-                        "bg-guardia-violet-100 text-guardia-violet-700",
+                      isActive && !isSelected && "bg-bg-hover/50",
+                      isSelected && "bg-bg-hover text-action",
                     )}
                   >
                     <span className="flex-1 font-medium">{opt.label}</span>
