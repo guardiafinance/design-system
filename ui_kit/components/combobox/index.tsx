@@ -391,11 +391,9 @@ const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                         "bg-bg-hover/60",
                       /* Selected — pattern do Chip: bg-action + text-button-fg.
                          action: violet-500 light / orange-500 dark.
-                         button-fg: white light / mono-black dark (par AA-safe). */
+                         button-fg: white light / mono-black dark (par AA-safe).
+                         Selected vence Active visualmente: mesmo isActive, mantém bg-action sólido. */
                       isSelected &&
-                        "bg-action text-button-fg",
-                      isSelected &&
-                        isActive &&
                         "bg-action text-button-fg",
                     )}
                   >
