@@ -121,6 +121,9 @@
   --accent-brand: var(--guardia-orange-500);
   --accent-brand-hover: var(--guardia-orange-700);
 
+  /* Surface hover for ghost/outline interactive elements — soft brand tint */
+  --bg-hover: var(--guardia-violet-100);
+
   /* State */
   --success: var(--signal-green);
   --success-soft: #D6F5E6;
@@ -217,6 +220,9 @@
   --action-hover: var(--guardia-orange-700);
   --accent-brand: var(--guardia-violet-200);    /* Violeta sobre dark: 200 (#AF97BD) */
   --accent-brand-hover: var(--guardia-violet-100);
+
+  /* Surface hover em dark: Surface 2 (gray-700) — discreto e legível */
+  --bg-hover: var(--guardia-gray-700);
 
   /* Skeleton (loading placeholders) — dark variants alinhados a Cinza */
   --skeleton-base: var(--guardia-gray-700);
@@ -393,6 +399,10 @@
    * Token semantics: violet-500 (light) / orange-500 (dark) — see #125. */
   --color-action: var(--action);
   --color-action-hover: var(--action-hover);
+
+  /* Soft brand-tinted hover surface for ghost/outline interactive variants.
+   * Pairs with `bg-bg-hover` utility (violet-100 light / gray-700 dark). */
+  --color-bg-hover: var(--bg-hover);
 
   /* ─── Brand palette exposed as utilities (bg-guardia-orange-500 etc.) ─── */
   --color-guardia-yellow-100: var(--guardia-yellow-100);
