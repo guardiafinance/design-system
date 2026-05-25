@@ -36,7 +36,10 @@ const chipVariants = cva(
       },
       interactive: {
         true: "cursor-pointer",
-        false: "cursor-default hover:bg-background hover:border-border-strong",
+        // WHY: hover-neutralization moved to the compound variant below so it
+        // applies ONLY to `selected: false`. See ADR-002 — `interactive: false`
+        // with `selected: true` MUST keep the action surface stable on hover.
+        false: "cursor-default",
       },
       disabled: {
         true: "opacity-50 cursor-not-allowed",
@@ -44,7 +47,9 @@ const chipVariants = cva(
       },
     },
     compoundVariants: [
-      // Chip não-interativo e não selecionado → neutraliza hover
+      // Chip não-interativo e não selecionado → neutraliza hover do estado
+      // padrão (resting). Os outros 3 cantos da matriz são governados pelos
+      // variants `selected`/`interactive` diretamente, conforme ADR-002.
       {
         interactive: false,
         selected: false,

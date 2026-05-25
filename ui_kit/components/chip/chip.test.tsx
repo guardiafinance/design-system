@@ -164,6 +164,25 @@ describe("<Chip />", () => {
       expect(c.className).not.toMatch(/\btext-white\b/);
     });
 
+    it("non-interactive selected variant keeps action surface stable on hover", () => {
+      // WHY: ADR-002 governs the `selected: true ∧ interactive: false` cell of
+      // the variant matrix too. Without this guard, hover would override
+      // `bg-action` with `bg-background` (JSDoc Mode 4 and split-interactive
+      // Mode 3 both hit this path).
+      // See docs/adr/ADR-002-hover-on-action-surfaces.md.
+      render(
+        <Chip selected data-testid="c">
+          Selected (non-interactive)
+        </Chip>,
+      );
+      const c = screen.getByTestId("c");
+      expect(c.className).toMatch(/bg-action(?!-hover)/);
+      expect(c.className).toMatch(/border-action(?!-hover)/);
+      expect(c.className).toMatch(/text-button-fg(?!-hover)/);
+      expect(c.className).not.toMatch(/hover:bg-background/);
+      expect(c.className).not.toMatch(/hover:border-border-strong/);
+    });
+
     it("unselected variant uses bg-bg-hover + border-action on hover", () => {
       render(
         <Chip onSelect={() => {}} data-testid="c">
