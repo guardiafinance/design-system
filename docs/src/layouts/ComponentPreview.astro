@@ -91,6 +91,10 @@ const sourceUrl = `${githubRoot}${sourcePath ?? "ui_kit/components"}`;
         border-radius: var(--radius-md);
         padding: 24px;
         display: flex; flex-direction: column; gap: 16px;
+        /* WHY: sem align-items, o default `stretch` esticava componentes
+           inline-flex (Chip, Badge, Button) para 100% do cross-axis,
+           virando cápsulas longas em vez de pílulas com largura natural. */
+        align-items: flex-start;
         margin-bottom: 12px;
       }
       .preview.row { flex-direction: row; flex-wrap: wrap; align-items: center; }
