@@ -26,9 +26,16 @@ export function ThemeProvider({
     storageKey = "ui-theme",
     ...props
 }: ThemeProviderProps) {
-    const [theme, setTheme] = useState<Theme>(
-        () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-    )
+    // WHY: localStorage is read in useEffect (post-mount), never in the useState
+    // initializer, so SSR / static prerender (Next.js `output: "export"`, RSC)
+    // never touches a browser-only global. First paint shows `defaultTheme`; the
+    // persisted value applies after hydration.
+    const [theme, setTheme] = useState<Theme>(defaultTheme)
+
+    useEffect(() => {
+        const stored = window.localStorage.getItem(storageKey) as Theme | null
+        if (stored) setTheme(stored)
+    }, [storageKey])
 
     useEffect(() => {
         const root = window.document.documentElement
@@ -51,7 +58,7 @@ export function ThemeProvider({
     const value = {
         theme,
         setTheme: (theme: Theme) => {
-            localStorage.setItem(storageKey, theme)
+            window.localStorage.setItem(storageKey, theme)
             setTheme(theme)
         },
     }
