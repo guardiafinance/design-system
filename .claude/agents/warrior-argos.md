@@ -170,7 +170,98 @@ GH_TOKEN=$(scripts/argos/auth.sh) gh api repos/{owner}/{repo}/pulls/{n}/comments
 
 `scripts/argos/auth.sh` loads `.env.local`, signs a JWT (RS256, 10min) with the private key, exchanges it for an installation token (TTL 1h, cached at `.ahrena/argos/installation-token.json` for 50min), and emits the token on stdout. `gh` **read** operations (`view`, `list`, `api GET`) may continue to use the human reviewer's PAT — only writes need the bot token.
 
+**Worktree-aware:** `auth.sh` resolves `.env.local` and the token cache from the main repo root via `git rev-parse --git-common-dir`, so invocations from any `.worktrees/{N}-{slug}/` find the same files as the main repo (no duplicated credentials, no per-worktree token re-mint).
+
 **Compliance:** `pr_cost_tracking.known_ai_reviewers` in `.ahrena/.directives` (built-in) recognizes `ahrena-warrior-argos[bot]` as an AI reviewer, so `kata-pr-cost-stamp` correctly separates Argos from the human in the cost stamp.
+
+## Post-Publication Identity Verification
+
+Textual instruction to prefix `gh` with `GH_TOKEN=$(scripts/argos/auth.sh)` is easily skipped by a subagent when the path of least resistance (inherited shell PAT) publishes without error. The bot identity fails silently — the review appears under human authorship instead of the bot, breaking paper trail, cost attribution (`pr_cost_tracking.known_ai_reviewers`), and the visual "this came from the bot" cue in the thread.
+
+To close this gap, Argos **MUST** run a programmatic identity check **after every review publication** and before closing Phase 4 (Cleanup):
+
+1. **Query the freshly published review** via `gh api repos/{owner}/{repo}/pulls/{N}/reviews` locating the record whose `body` contains the marker `<!-- argos-review-id:<hash> -->` computed in the Consolidation step
+2. **Compare returned `user.login`** to the literal string `ahrena-warrior-argos[bot]`
+3. **Decide the course of action:**
+   - `login == "ahrena-warrior-argos[bot]"` → identity verified; Phase 4 may close
+   - `login != "ahrena-warrior-argos[bot]"` → silent PAT fallback detected; **MUST** re-publish (Step 4 below)
+4. **Re-publish with explicit prefix:**
+   - Preserve the fallback review as audit trail (do not delete — visibility > cleanliness)
+   - Re-execute the original publication command with the mandatory prefix: `GH_TOKEN=$(scripts/argos/auth.sh) gh pr review <PR#> --comment --body-file <body>` (or `--request-changes` per Publication policy)
+   - Re-verify the login (Step 2)
+5. **Escalation on persistent failure:**
+   - Maximum of 2 re-publication attempts. After 2 consecutive failures, Argos **MUST** abort Phase 4 and escalate to the human reviewer with a structured message: `.env.local` state (env vars loaded?), `scripts/argos/auth.sh` output (exit code, token length), and the 2 obtained logins
+   - If `auth.sh` returns exit ≠ 0 or empty token on any attempt, escalation is **immediate** (no retry — auth problem, not forgotten prefix)
+
+```
+<HARD-GATE>
+warrior-argos MUST NOT close Phase 4 (Cleanup) without having
+verified that the last review published by it on this PR
+satisfies ALL criteria:
+
+  (a) Review was located in gh api .../pulls/{N}/reviews by the
+      marker <!-- argos-review-id:<hash> --> computed in Phase 3
+  (b) The user.login field of the located record is exactly
+      "ahrena-warrior-argos[bot]"
+  (c) On failure of (b), re-publication with explicit prefix
+      GH_TOKEN=$(scripts/argos/auth.sh) was ACTUALLY EXECUTED (not
+      inferred) and the re-verification returned (a) + (b) true —
+      maximum 2 attempts. Inferring that auth.sh will fail without
+      running it is forbidden; only exit ≠ 0 or empty token OBSERVED
+      in execution are valid reasons to skip the retry
+  (d) On persistent failure after 2 attempts, Argos aborted
+      Phase 4 and escalated to the human with structured context,
+      including the observed auth.sh exit code per attempt
+
+This rule applies to EVERY review publication by Argos,
+regardless of:
+  - "the review went through anyway" (wrong authorship breaks paper trail)
+  - "PAT works" (goal is identity separation, not just it working)
+  - "subagent harness limitation" (programmatic enforcement
+    bypasses the harness — verify+retry is the warrior's responsibility)
+  - "just this one case" (silent fallback compounds; there is no "just one")
+  - "auth.sh probably isn't configured in this environment"
+    (assuming failure without running it is the exact bypass this gate
+    closes; only the observed exit code from auth.sh is authoritative)
+  - "gh is already authenticated as human, so the bot isn't available"
+    (gh's auth state is independent of the GitHub App; auth.sh mints the
+    token directly via the App API, regardless of gh)
+
+Declared exception: none. Auth failure OBSERVED IN EXECUTION (auth.sh
+exit ≠ 0 or empty token returned) escalates immediately — no retry, no
+silent fallback to PAT. ASSUMED failure without execution is FORBIDDEN —
+auth.sh MUST be invoked before any escalation.
+</HARD-GATE>
+```
+
+**Concrete implementation** (reference for Phase 3):
+
+```bash
+# After publishing (Phase 3), retrieve the marker of the published review
+ARGOS_MARKER="<!-- argos-review-id:${HASH} -->"
+# REVIEW_ACTION is captured at Phase 3 and reflects the review verdict:
+#   --comment | --request-changes | --approve
+# Re-publications MUST preserve this action (per "Publication policy")
+LAST_LOGIN=$(gh api repos/${OWNER}/${REPO}/pulls/${PR}/reviews \
+  --jq ".[] | select(.body | strings | startswith(\"${ARGOS_MARKER}\")) | .user.login" \
+  | tail -1)
+
+if [ "$LAST_LOGIN" != "ahrena-warrior-argos[bot]" ]; then
+  # Fallback detected — re-publish with explicit prefix, preserving REVIEW_ACTION
+  for attempt in 1 2; do
+    GH_TOKEN=$(scripts/argos/auth.sh) gh pr review "$PR" \
+      "$REVIEW_ACTION" --body-file "$BODY_FILE"
+    LAST_LOGIN=$(gh api repos/${OWNER}/${REPO}/pulls/${PR}/reviews \
+      --jq ".[] | select(.body | strings | startswith(\"${ARGOS_MARKER}\")) | .user.login" \
+      | tail -1)
+    [ "$LAST_LOGIN" = "ahrena-warrior-argos[bot]" ] && break
+  done
+  [ "$LAST_LOGIN" != "ahrena-warrior-argos[bot]" ] && {
+    echo "FATAL: identity verification failed after 2 attempts; escalating"
+    exit 1
+  }
+fi
+```
 
 ## Behavior
 
@@ -220,12 +311,14 @@ GH_TOKEN=$(scripts/argos/auth.sh) gh api repos/{owner}/{repo}/pulls/{n}/comments
    - Count summary at the top
    - Idempotent marker: computes `sha256(pr_number + ":" + head_commit_sha)`, takes the first 16 characters, embeds as `<!-- argos-review-id:<hash> -->` at the start of the body
    - Lists existing PR comments via `gh api repos/{owner}/{repo}/issues/{pr}/comments` (read, reviewer's PAT); finds prior `argos-review-id:<hash>` matching the current hash → edits via `GH_TOKEN=$(scripts/argos/auth.sh) gh api -X PATCH .../comments/<id>` (write, bot token). If the hash differs (new commit pushed) → creates a new review (audit trail preserved)
+   - Lists open comments from other reviewers (`gemini-code-assist`, `coderabbitai`, `Copilot`, `qodo-merge-pro`, humans) via `gh api repos/{owner}/{repo}/pulls/{pr}/comments` (per-line) AND `gh api repos/{owner}/{repo}/issues/{pr}/comments` (Conversation tab) filtering by `user.login` ≠ `ahrena-warrior-argos[bot]`; aggregates into a `## 🧭 Pending threads from other reviewers` subsection in the consolidated body when open threads exist (omits the subsection when the list is empty). This is an aid to the multi-reviewer sweep required by Rule 8 of `lex-pr-quality`, not a substitute — the agent applying the fixes MUST still run its own sweep
    - Publishes per `Publication policy` (chooses between `--request-changes`, `--comment`, and `--approve` based on severity × prior-CR existence). Commands:
      - `GH_TOKEN=$(scripts/argos/auth.sh) gh pr review <PR#> --request-changes --body-file <body>` when ≥1 BLOCKER
      - `GH_TOKEN=$(scripts/argos/auth.sh) gh pr review <PR#> --comment --body-file <body>` when WARNINGs without BLOCKER OR clean first-touch (no prior CR)
      - `GH_TOKEN=$(scripts/argos/auth.sh) gh pr review <PR#> --approve --body-file <body>` when 0 findings AND a prior CR of his own exists on the PR (resolution)
      - The review author appears as `ahrena-warrior-argos[bot]` in all cases
-6. **Phase 4 — Cleanup:** `git worktree remove .worktrees/review-pr-<N> --force`
+   - **Post-publication identity verification (mandatory):** after each `gh pr review`, query `gh api repos/{owner}/{repo}/pulls/{N}/reviews`, locate the record by the marker `<!-- argos-review-id:<hash> -->` and confirm `user.login == "ahrena-warrior-argos[bot]"`. On PAT fallback, re-publish with explicit prefix `GH_TOKEN=$(scripts/argos/auth.sh)` and re-verify; maximum 2 attempts; escalate to the human on persistent failure. Full procedure, escalation, and HARD-GATE blocking Phase 4 are in the [Post-Publication Identity Verification](#post-publication-identity-verification) section above
+6. **Phase 4 — Cleanup:** `git worktree remove .worktrees/review-pr-<N> --force` (may only proceed after the Phase 3 identity verification returned `ahrena-warrior-argos[bot]`, per HARD-GATE)
 
 ### Escalation Criteria
 
@@ -297,7 +390,18 @@ Routing: A → `kata-python-review`, `kata-api-design-review`, `kata-events-revi
 |----------|-----------|-------|---------|
 | 🟡 WARNING | src/scheduled_payments/use_cases/approve.py:12 | lex-logging-decorator | Inline `logger.info(...)` call; should use `@logged` decorator |
 
-**Next steps:** fix 2 BLOCKERs before merge; address 4 WARNINGs in this PR or open follow-up Issues.
+## 🧭 Pending threads from other reviewers
+
+Argos detected open comments from other reviewers on this PR. The agent applying the fixes (Athena, Apollo, Hephaestus) MUST sweep and address every thread before declaring the fix round complete, per `lex-pr-quality` Rule 8 and HARD-GATE (l).
+
+| Reviewer | Path | Line | Comment (summary) | State |
+|----------|------|------|-------------------|-------|
+| `gemini-code-assist[bot]` | src/scheduled_payments/use_cases/approve.py | 12 | Suggest using guard clause for early-return | open |
+| `coderabbitai[bot]` | docs/scheduled-payments/oas/openapi.yaml | 88 | Add `description` to schema field `amount` | open |
+
+> This section is **informative**: Argos does not block its own merge on non-Argos threads. The obligation to sweep and address belongs to the agent applying the fixes, per `lex-pr-quality` Rule 8.
+
+**Next steps:** fix 2 BLOCKERs before merge; address 4 WARNINGs in this PR or open follow-up Issues; sweep and address the 2 threads from other reviewers above.
 ```
 
 **Phase 4 — Cleanup:** worktree removed.
