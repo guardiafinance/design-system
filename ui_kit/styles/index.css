@@ -1,12 +1,12 @@
 /**
- * @guardiafinance/design-system — global stylesheet
+ * @guardiatechnology/design-system — global stylesheet
  * Tailwind CSS v4 — CSS-first configuration via @theme inline
  *
  * Fonte de verdade consolidada a partir de wip/preview (tokens.html,
  * colors-*.html, type-*.html, spacing-radii-shadows.html).
  *
  * Load via:
- *   import "@guardiafinance/design-system/styles.css";
+ *   import "@guardiatechnology/design-system/styles.css";
  */
 
 @import "tailwindcss";

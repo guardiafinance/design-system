@@ -98,7 +98,7 @@
 <div class="hdr">
   <div class="eyebrow">COMEÇAR · PRIMEIROS PASSOS</div>
   <h1>Primeiros passos com o Guardia DS</h1>
-  <p class="lede">Adicione o <b>@guardiafinance/design-system</b> em qualquer app <b>React 19</b> em quatro passos. Traz 45 componentes acessíveis, tokens semânticos alinhados com a marca, <b>Tailwind 4</b> CSS-first e <b>Poppins</b> carregada automaticamente. <i>Lastica fica fora do bundle</i> — é reservada a logos.</p>
+  <p class="lede">Adicione o <b>@guardiatechnology/design-system</b> em qualquer app <b>React 19</b> em quatro passos. Traz 45 componentes acessíveis, tokens semânticos alinhados com a marca, <b>Tailwind 4</b> CSS-first e <b>Poppins</b> carregada automaticamente. <i>Lastica fica fora do bundle</i> — é reservada a logos.</p>
 </div>
 
 <!-- ============ INSTALL ============ -->
@@ -114,7 +114,7 @@
       <h3>Configure o registry do GitHub Packages</h3>
       <p>O pacote é privado. Gere um <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry" target="_blank">Personal Access Token</a> com scope <code class="inline">read:packages</code> e crie um <code class="inline">.npmrc</code> na raiz do seu projeto:</p>
 <pre><span class="c"># .npmrc</span>
-<span class="k">@guardiafinance</span>:registry=https://npm.pkg.github.com
+<span class="k">@guardiatechnology</span>:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}</pre>
       <p class="note">Em CI, exporte <code class="inline">GITHUB_TOKEN</code> com um token de read-only nos secrets.</p>
     </div>
@@ -125,7 +125,7 @@
     <div class="step-body">
       <h3>Instale o pacote e as peer deps</h3>
 <pre><span class="c"># o pacote</span>
-npm install <span class="s">@guardiafinance/design-system</span>
+npm install <span class="s">@guardiatechnology/design-system</span>
 
 <span class="c"># peer deps</span>
 npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span></pre>
@@ -138,7 +138,7 @@ npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span
     <div class="step-body">
       <h3>Importe o CSS no entrypoint da aplicação</h3>
 <pre><span class="c">// src/main.tsx (ou equivalente)</span>
-<span class="k">import</span> <span class="s">"@guardiafinance/design-system/styles.css"</span>;</pre>
+<span class="k">import</span> <span class="s">"@guardiatechnology/design-system/styles.css"</span>;</pre>
       <p>Esse único import já traz todos os tokens de cor, tipografia, spacing, radii, shadows e motion, além do reset e da CDN do Google Fonts (Poppins + Roboto).</p>
     </div>
   </div>
@@ -147,7 +147,7 @@ npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span
     <div class="step-num">4</div>
     <div class="step-body">
       <h3>Envolva a app no ThemeProvider</h3>
-<pre><span class="k">import</span> { <span class="s">ThemeProvider</span>, <span class="s">ThemeToggle</span> } <span class="k">from</span> <span class="s">"@guardiafinance/design-system"</span>;
+<pre><span class="k">import</span> { <span class="s">ThemeProvider</span>, <span class="s">ThemeToggle</span> } <span class="k">from</span> <span class="s">"@guardiatechnology/design-system"</span>;
 
 <span class="k">export function</span> <span class="s">App</span>() {
   <span class="k">return</span> (
@@ -169,7 +169,7 @@ npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span
     <small>exemplo mínimo</small>
   </div>
 
-<pre><span class="k">import</span> { <span class="s">Button</span>, <span class="s">Card</span>, <span class="s">Badge</span> } <span class="k">from</span> <span class="s">"@guardiafinance/design-system"</span>;
+<pre><span class="k">import</span> { <span class="s">Button</span>, <span class="s">Card</span>, <span class="s">Badge</span> } <span class="k">from</span> <span class="s">"@guardiatechnology/design-system"</span>;
 <span class="k">import</span> { <span class="s">Save</span>, <span class="s">Sparkles</span> } <span class="k">from</span> <span class="s">"lucide-react"</span>;
 
 <span class="k">export default function</span> <span class="s">Dashboard</span>() {
@@ -289,7 +289,7 @@ npm install <span class="s">react@^19 react-dom@^19 react-router@^7 zod@^4</span
       <span class="nc-title">Chromatic Library</span>
       <span class="nc-desc">Histórico de snapshots, visual regression e design review.</span>
     </a>
-    <a class="next-card" href="https://github.com/guardiafinance/design-system" target="_blank" rel="noreferrer">
+    <a class="next-card" href="https://github.com/guardiatechnology/design-system" target="_blank" rel="noreferrer">
       <span class="nc-eyebrow">GITHUB</span>
       <span class="nc-title">Repositório</span>
       <span class="nc-desc">Código-fonte, issues e roadmap público.</span>

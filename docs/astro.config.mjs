@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
  *  - React component previews hydrated from ../ui_kit/ (the live package source)
  */
 export default defineConfig({
-  site: "https://guardiafinance.github.io",
+  site: "https://guardiatechnology.github.io",
   base: "/design-system",
   integrations: [react(), mdx(), sitemap()],
   markdown: {
