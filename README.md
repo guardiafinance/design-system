@@ -1,6 +1,6 @@
-[![Build and Test](https://github.com/guardiafinance/design-system/actions/workflows/pull-request.yml/badge.svg)](https://github.com/guardiafinance/design-system/actions/workflows/pull-request.yml)
-[![Publish Package](https://github.com/guardiafinance/design-system/actions/workflows/publish.yml/badge.svg)](https://github.com/guardiafinance/design-system/actions/workflows/publish.yml)
-[![Deploy Docs](https://github.com/guardiafinance/design-system/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/guardiafinance/design-system/actions/workflows/deploy-docs.yml)
+[![Build and Test](https://github.com/guardiatechnology/design-system/actions/workflows/pull-request.yml/badge.svg)](https://github.com/guardiatechnology/design-system/actions/workflows/pull-request.yml)
+[![Publish Package](https://github.com/guardiatechnology/design-system/actions/workflows/publish.yml/badge.svg)](https://github.com/guardiatechnology/design-system/actions/workflows/publish.yml)
+[![Deploy Docs](https://github.com/guardiatechnology/design-system/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/guardiatechnology/design-system/actions/workflows/deploy-docs.yml)
 
 # Guardia Design System
 
@@ -111,13 +111,13 @@ Ou use `<ThemeToggle />` / `<ThemeProvider />`.
 **Conteúdo** — Card · ScrollArea · CustomIcons
 
 👉 Explorar:
-- **Docs (Astro)** — [guardiafinance.github.io/design-system](https://guardiafinance.github.io/design-system)
-- **Storybook (GitHub Pages)** — [guardiafinance.github.io/design-system/storybook](https://guardiafinance.github.io/design-system/storybook)
+- **Docs (Astro)** — [guardiatechnology.github.io/design-system](https://guardiatechnology.github.io/design-system)
+- **Storybook (GitHub Pages)** — [guardiatechnology.github.io/design-system/storybook](https://guardiatechnology.github.io/design-system/storybook)
 
 ## 🛠 Desenvolvimento
 
 ```bash
-git clone https://github.com/guardiafinance/design-system.git
+git clone https://github.com/guardiatechnology/design-system.git
 cd design-system
 npm install
 
