@@ -145,7 +145,9 @@ describe("<Chip />", () => {
   });
 
   describe("brand-aware tokens (per #125)", () => {
-    it("selected variant uses bg-action + text-button-fg with action-hover on hover", () => {
+    it("selected variant uses stable bg-action + text-button-fg with NO hover override", () => {
+      // WHY: hover does not override `selected: true` on action surfaces.
+      // See docs/adr/ADR-002-hover-on-action-surfaces.md.
       render(
         <Chip selected onSelect={() => {}} data-testid="c">
           Selected
@@ -155,10 +157,9 @@ describe("<Chip />", () => {
       expect(c.className).toMatch(/bg-action(?!-hover)/);
       expect(c.className).toMatch(/border-action(?!-hover)/);
       expect(c.className).toMatch(/text-button-fg(?!-hover)/);
-      expect(c.className).toMatch(/hover:bg-action-hover/);
-      expect(c.className).toMatch(/hover:border-action-hover/);
-      // WHY: dark mode hover swaps fg to white — mono-black over orange-700 = 3.2:1 (fails AA).
-      expect(c.className).toMatch(/hover:text-button-fg-hover/);
+      expect(c.className).not.toMatch(/hover:bg-action-hover/);
+      expect(c.className).not.toMatch(/hover:border-action-hover/);
+      expect(c.className).not.toMatch(/hover:text-button-fg-hover/);
       expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
       expect(c.className).not.toMatch(/\btext-white\b/);
     });

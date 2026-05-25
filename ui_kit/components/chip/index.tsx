@@ -28,7 +28,9 @@ const chipVariants = cva(
         md: "h-8 px-3 text-[13px] font-medium",
       },
       selected: {
-        true: "bg-action border-action text-button-fg hover:bg-action-hover hover:border-action-hover hover:text-button-fg-hover",
+        // WHY: hover does not override `selected: true` on action surfaces.
+        // See docs/adr/ADR-002-hover-on-action-surfaces.md.
+        true: "bg-action border-action text-button-fg",
         false:
           "bg-background border-border-strong text-foreground hover:bg-bg-hover hover:border-action",
       },
