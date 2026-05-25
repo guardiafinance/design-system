@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { CodeEditor } from "./index";
 
-const seedTsx = `import { Button } from "@guardiafinance/design-system";
+const seedTsx = `import { Button } from "@guardiatechnology/design-system";
 
 export function Demo() {
   return <Button>Olá</Button>;
@@ -114,7 +114,7 @@ export const ReadOnly: Story = {
 
 export const Compact: Story = {
   args: {
-    defaultValue: "npm install @guardiafinance/design-system",
+    defaultValue: "npm install @guardiatechnology/design-system",
     filename: ".npmrc-example",
     language: "bash",
     minHeight: "80px",

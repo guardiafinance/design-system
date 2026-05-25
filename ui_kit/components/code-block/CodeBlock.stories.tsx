@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { CodeBlock } from "./index";
 
-const sampleTsx = `import { Button } from "@guardiafinance/design-system";
+const sampleTsx = `import { Button } from "@guardiatechnology/design-system";
 import { Save } from "lucide-react";
 
 export function Save({ isSaving }: { isSaving: boolean }) {
@@ -14,16 +14,16 @@ export function Save({ isSaving }: { isSaving: boolean }) {
 }`;
 
 const sampleBash = `# configure registry
-@guardiafinance:registry=https://npm.pkg.github.com
+@guardiatechnology:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}
 
 # install
-npm install @guardiafinance/design-system`;
+npm install @guardiatechnology/design-system`;
 
 const sampleJson = `{
   "name": "my-app",
   "dependencies": {
-    "@guardiafinance/design-system": "^0.1.0",
+    "@guardiatechnology/design-system": "^0.1.0",
     "react": "^19.0.0"
   }
 }`;

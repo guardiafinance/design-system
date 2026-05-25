@@ -1,6 +1,6 @@
 # Guardia Design System — Docs (Astro)
 
-Static documentation site for `@guardiafinance/design-system`. Published to
+Static documentation site for `@guardiatechnology/design-system`. Published to
 GitHub Pages at `https://guardiafinance.github.io/design-system/`.
 
 ## Structure

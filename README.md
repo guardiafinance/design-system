@@ -20,14 +20,14 @@ A base de design e código que sustenta todos os produtos Guardia Finance.
 Crie um **Personal Access Token** com o scope `read:packages` e configure o `.npmrc`:
 
 ```ini
-@guardiafinance:registry=https://npm.pkg.github.com
+@guardiatechnology:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
 ### 2. Instale o pacote
 
 ```bash
-npm install @guardiafinance/design-system
+npm install @guardiatechnology/design-system
 # peer deps
 npm install react@^19 react-dom@^19 react-router@^7 zod@^4
 ```
@@ -37,14 +37,14 @@ npm install react@^19 react-dom@^19 react-router@^7 zod@^4
 No arquivo raiz da aplicação:
 
 ```ts
-import "@guardiafinance/design-system/styles.css";
+import "@guardiatechnology/design-system/styles.css";
 // Poppins é carregada automaticamente via Google Fonts pelo CSS do pacote.
 ```
 
 ### 4. Use os componentes
 
 ```tsx
-import { Button, Card, Badge, ThemeProvider } from "@guardiafinance/design-system";
+import { Button, Card, Badge, ThemeProvider } from "@guardiatechnology/design-system";
 
 export function App() {
     return (
@@ -204,7 +204,7 @@ Fluxo completo de visual regression e how-to em [CONTRIBUTING.md](./CONTRIBUTING
 A publicação é feita pelo workflow `publish.yml`:
 
 1. Bump de versão em um PR.
-2. Ao mergear em `main`, o CI publica `@guardiafinance/design-system@x.y.z`
+2. Ao mergear em `main`, o CI publica `@guardiatechnology/design-system@x.y.z`
    no GitHub Packages.
 
 ## 🤝 Contribuição

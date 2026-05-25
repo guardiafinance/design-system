@@ -1,6 +1,6 @@
 {
-  "name": "@guardiafinance/design-system",
-  "version": "0.0.12",
+  "name": "@guardiatechnology/design-system",
+  "version": "0.0.13",
   "type": "module",
   "exports": {
     ".": {
