@@ -50,9 +50,10 @@ const triggerVariants = cva(
     "border border-border-strong rounded-md",
     "text-left cursor-pointer",
     "transition-[border-color,box-shadow] duration-150",
-    "hover:border-guardia-violet-500 disabled:hover:border-border-strong",
+    /* Hover + open: border action (violet light / orange dark) */
+    "hover:border-action disabled:hover:border-border-strong",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "data-[state=open]:border-guardia-violet-500 data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
+    "data-[state=open]:border-action data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
     "aria-[invalid=true]:border-destructive aria-[invalid=true]:hover:border-destructive",
     "aria-[invalid=true]:focus-visible:ring-destructive aria-[invalid=true]:data-[state=open]:ring-destructive",
     "disabled:cursor-not-allowed disabled:opacity-70 disabled:bg-muted",
@@ -277,9 +278,9 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 caption_label: "select-none",
                 nav: "flex items-center justify-between absolute left-0 right-0 px-1",
                 button_previous:
-                  "inline-flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent text-fg hover:bg-guardia-violet-100/50 hover:text-guardia-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "inline-flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent text-fg hover:bg-bg-hover/50 hover:text-action focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 button_next:
-                  "inline-flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent text-fg hover:bg-guardia-violet-100/50 hover:text-guardia-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "inline-flex h-7 w-7 items-center justify-center rounded-md border-0 bg-transparent text-fg hover:bg-bg-hover/50 hover:text-action focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 month_grid: "border-collapse",
                 weekdays: "flex",
                 weekday:
@@ -289,14 +290,13 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 day_button: cn(
                   "h-8 w-8 inline-flex items-center justify-center rounded-md border-0 bg-transparent text-fg",
                   "transition-colors duration-100",
-                  "hover:bg-guardia-violet-100/50 hover:text-guardia-violet-700",
+                  "hover:bg-bg-hover/50 hover:text-action",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   "disabled:cursor-not-allowed disabled:opacity-35",
                 ),
-                today:
-                  "[&_button]:font-bold [&_button]:text-guardia-violet-700",
+                today: "[&_button]:font-bold [&_button]:text-action",
                 selected:
-                  "[&_button]:bg-guardia-violet-500 [&_button]:text-white [&_button]:hover:bg-guardia-violet-500 [&_button]:hover:text-white [&_button]:font-semibold",
+                  "[&_button]:bg-action [&_button]:text-button-fg [&_button]:hover:bg-action [&_button]:hover:text-button-fg [&_button]:font-semibold",
                 outside: "[&_button]:text-fg-muted [&_button]:opacity-60",
                 disabled: "[&_button]:cursor-not-allowed [&_button]:opacity-35",
                 hidden: "invisible",
@@ -316,7 +316,7 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 <button
                   type="button"
                   onClick={pickToday}
-                  className="rounded-sm border-0 bg-transparent px-2 py-1 text-[12px] font-semibold text-guardia-violet-700 hover:bg-guardia-violet-100/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-sm border-0 bg-transparent px-2 py-1 text-[12px] font-semibold text-action hover:bg-bg-hover/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Hoje
                 </button>
