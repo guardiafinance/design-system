@@ -83,4 +83,41 @@ describe("<ThemeProvider />", () => {
     expect(screen.getByTestId("current-theme")).toHaveTextContent("dark");
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
+
+  it("falls back to defaultTheme when localStorage access throws (private browsing, strict CSP)", () => {
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = vi.fn(() => {
+      throw new Error("SecurityError: localStorage blocked");
+    });
+    try {
+      render(
+        <ThemeProvider defaultTheme="dark">
+          <Consumer />
+        </ThemeProvider>,
+      );
+      expect(screen.getByTestId("current-theme")).toHaveTextContent("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    } finally {
+      Storage.prototype.getItem = originalGetItem;
+    }
+  });
+
+  it("keeps the in-memory theme even when localStorage.setItem throws (QuotaExceededError)", () => {
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = vi.fn(() => {
+      throw new Error("QuotaExceededError");
+    });
+    try {
+      render(
+        <ThemeProvider defaultTheme="light">
+          <Consumer />
+        </ThemeProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /go-dark/i }));
+      expect(screen.getByTestId("current-theme")).toHaveTextContent("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    } finally {
+      Storage.prototype.setItem = originalSetItem;
+    }
+  });
 });
