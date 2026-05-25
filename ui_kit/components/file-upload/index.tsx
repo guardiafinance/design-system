@@ -508,7 +508,8 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                 "inline-flex w-fit items-center",
                 "rounded-md border border-border-strong bg-background text-fg",
                 "transition-[background-color,border-color,box-shadow] duration-150",
-                "hover:bg-guardia-violet-100/30 hover:border-guardia-violet-500",
+                /* Hover: brand-aware soft tint + action border (violet light / orange dark) */
+                "hover:bg-bg-hover hover:border-action",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 "disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-background disabled:hover:border-border-strong",
                 buttonClasses[buttonSize],
@@ -516,7 +517,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
             >
               <span
                 aria-hidden="true"
-                className="inline-flex shrink-0 text-guardia-violet-500"
+                className="inline-flex shrink-0 text-action"
               >
                 {buttonIcon ?? (
                   <Paperclip width={buttonIconPx} height={buttonIconPx} />
@@ -548,9 +549,12 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
               "rounded-xl border-[1.5px] border-dashed border-border-strong",
               "bg-muted",
               "transition-[background-color,border-color] duration-150",
-              "hover:bg-guardia-violet-100/40 hover:border-guardia-violet-200",
+              /* Hover + drag: brand-aware soft tint + action border. The
+                 drag state shares the hover tokens because the dashed
+                 outline + cursor change already provide active feedback. */
+              "hover:bg-bg-hover hover:border-action",
               compact ? "p-3" : "p-5",
-              drag && "bg-guardia-violet-100/60 border-guardia-violet-500",
+              drag && "bg-bg-hover border-action",
               disabled &&
                 "cursor-not-allowed pointer-events-none opacity-55",
             )}
@@ -561,7 +565,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
               className={cn(
                 "inline-flex shrink-0 items-center justify-center",
                 "rounded-lg border border-border bg-background",
-                "text-guardia-violet-500",
+                "text-action",
                 compact ? "h-8 w-8" : "h-10 w-10",
               )}
               aria-hidden="true"
@@ -577,7 +581,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                 {title ?? (
                   <>
                     Arraste arquivos aqui ou{" "}
-                    <span className="font-semibold text-guardia-violet-700 underline underline-offset-2">
+                    <span className="font-semibold text-link underline underline-offset-2">
                       {linkLabel}
                     </span>
                   </>
@@ -615,7 +619,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                       status === "error" &&
                         "bg-signal-red/15 text-signal-red",
                       status === "uploading" &&
-                        "bg-guardia-violet-100/60 text-guardia-violet-500",
+                        "bg-bg-hover text-action",
                     )}
                   >
                     {status === "done" && (
@@ -658,7 +662,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                       >
                         <span
                           style={{ width: `${f.progress ?? 0}%` }}
-                          className="block h-full bg-guardia-violet-500 transition-[width] duration-200 ease-out"
+                          className="block h-full bg-action transition-[width] duration-200 ease-out"
                         />
                       </span>
                     )}
