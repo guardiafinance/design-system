@@ -1,7 +1,12 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { axeInThemes } from "@/test-utils/a11y";
 import { Combobox, type ComboboxOption } from "./index";
 
 const PLANOS: ComboboxOption[] = [
@@ -229,6 +234,131 @@ describe("Combobox", () => {
         "aria-expanded",
         "false",
       );
+    });
+  });
+
+  /* ────────────────────────────────────────────────────────────────
+   * AC traceability — Issue #142 (parent Tech Task #125)
+   *
+   * Cada teste deste bloco cobre um AC numerado de
+   * .ahrena/issues/142/02-requirements.md. A convenção `AC-N:` no
+   * início do nome do `it()` satisfaz a regra de traçabilidade
+   * AC↔teste de `lex-issue-driven` (regra 3).
+   * ──────────────────────────────────────────────────────────────── */
+  describe("AC traceability", () => {
+    it("AC-1: zero hardcoded palette in interactive state classes", () => {
+      /* Lê a source em runtime e roda a regex do parent #125 sobre o
+         conteúdo. Falha imediata se algum estado interativo voltar
+         a usar `guardia-{violet,orange,pink,yellow}-NNN`. */
+      const here = dirname(fileURLToPath(import.meta.url));
+      const src = readFileSync(resolve(here, "./index.tsx"), "utf-8");
+      const matches = src.match(/guardia-(violet|orange|pink|yellow)-[0-9]+/g);
+      expect(matches).toBeNull();
+    });
+
+    it("AC-2: trigger applies border-action in hover and data-state=open", () => {
+      render(<Combobox options={PLANOS} />);
+      const trigger = screen.getByRole("combobox");
+      const cls = trigger.className;
+      expect(cls).toContain("hover:border-action");
+      expect(cls).toContain("data-[state=open]:border-action");
+      expect(cls).not.toContain("guardia-violet");
+    });
+
+    it("AC-3: selected option uses bg-action + text-button-fg", async () => {
+      render(<Combobox options={PLANOS} defaultValue="pro" />);
+      await userEvent.click(screen.getByRole("combobox"));
+      const proOpt = screen
+        .getAllByText("Pro")
+        .map((el) => el.closest("[role=option]"))
+        .find((el): el is Element => el != null);
+      expect(proOpt).toBeDefined();
+      const cls = proOpt!.className;
+      expect(cls).toContain("bg-action");
+      expect(cls).toContain("text-button-fg");
+      expect(cls).not.toContain("guardia-violet");
+    });
+
+    it("AC-4: active-not-selected option uses bg-bg-hover/60", async () => {
+      render(<Combobox options={PLANOS} />);
+      await userEvent.click(screen.getByRole("combobox"));
+      /* activeIndex inicia em 0 e nenhum item está selected → primeiro
+         option está em estado active-not-selected, exibindo o halo
+         token-driven. */
+      const firstOpt = screen.getAllByRole("option")[0];
+      expect(firstOpt).toBeDefined();
+      const cls = firstOpt!.className;
+      expect(cls).toContain("bg-bg-hover/60");
+      expect(cls).not.toContain("bg-action");
+    });
+  });
+
+  /* ────────────────────────────────────────────────────────────────
+   * Acessibilidade — jest-axe em light + dark via axeInThemes
+   *
+   * Cobertura AC-6: 6 cenários canônicos definidos em
+   * .ahrena/issues/142/02-requirements.md, cobrindo as variantes
+   * que mais mudam paint state (closed, opened, opened+selected,
+   * invalid, disabled, clearable).
+   *
+   * Espelha o padrão do Checkbox (#139/PR #152). Cada teste fecha o
+   * Popover no teardown via unmount() implícito do Testing Library,
+   * mantendo isolamento entre cenários (lex-test-isolation).
+   * ──────────────────────────────────────────────────────────────── */
+  describe("a11y", () => {
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (default closed)", async () => {
+      const { container } = render(
+        <Combobox options={PLANOS} aria-label="Plano contratado" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (opened, no selection)", async () => {
+      const { container } = render(
+        <Combobox options={PLANOS} aria-label="Plano contratado" />,
+      );
+      await userEvent.click(screen.getByRole("combobox"));
+      expect(screen.getByRole("listbox")).toBeInTheDocument();
+      await axeInThemes(container);
+    });
+
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (opened with selection)", async () => {
+      const { container } = render(
+        <Combobox
+          options={PLANOS}
+          defaultValue="pro"
+          aria-label="Plano contratado"
+        />,
+      );
+      await userEvent.click(screen.getByRole("combobox"));
+      expect(screen.getByRole("listbox")).toBeInTheDocument();
+      await axeInThemes(container);
+    });
+
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (invalid)", async () => {
+      const { container } = render(
+        <Combobox options={PLANOS} invalid aria-label="Plano obrigatório" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (disabled)", async () => {
+      const { container } = render(
+        <Combobox options={PLANOS} disabled aria-label="Plano indisponível" />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-6: has no WCAG 2.1 AA violations in light + dark (clearable with value)", async () => {
+      const { container } = render(
+        <Combobox
+          options={PLANOS}
+          defaultValue="pro"
+          clearable
+          aria-label="Plano contratado"
+        />,
+      );
+      await axeInThemes(container);
     });
   });
 });
