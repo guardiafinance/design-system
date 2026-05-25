@@ -36,6 +36,84 @@ DEFAULT_REPO = "https://github.com/guardiatechnology/ahrena"
 DEFAULT_VERSION = "main"
 MIN_PYTHON = (3, 8)
 
+# WHY: SemVer tags ship as `vX.Y.Z`; the .version manifest stores `X.Y.Z`
+# (no `v`) so consumers can use the value directly in version comparisons.
+# Non-tag refs (branches, commit-ish) are written verbatim.
+_SEMVER_TAG_RE = re.compile(r"^v(\d+\.\d+\.\d+(?:[-+].*)?)$")
+
+
+def resolve_install_version(args: argparse.Namespace) -> str:
+    """Resolve the version string written into `.ahrena/.version` at install time.
+
+    Resolution order:
+      1. `--source PATH` or `--local`  -> read `git describe --tags --abbrev=0`
+         from the source repo (strip `v` prefix) so a local install reflects the
+         tip of the source tree, not the literal `main` from DEFAULT_VERSION.
+      2. `--self` install               -> same git describe path against the
+         repo containing this script.
+      3. Remote install                  -> use `args.version` verbatim,
+         stripping the `v` prefix only when the value matches a SemVer tag.
+         Branch names (`main`, `release/*`) and commit-ish refs are preserved
+         as-is so the manifest reflects the exact ref consumed.
+
+    Returns the version string. Returns empty string when no value can be
+    resolved (caller decides how to react: skip the write, log a warning, ...).
+    """
+    if args.source is not None:
+        repo_path = Path(args.source).resolve()
+        return _git_describe_or_blank(repo_path)
+    if getattr(args, "self_source", False):
+        repo_path = Path(__file__).resolve().parent.parent
+        return _git_describe_or_blank(repo_path)
+    if args.local:
+        return _git_describe_or_blank(Path(".").resolve())
+    raw = (args.version or "").strip()
+    if not raw:
+        return ""
+    match = _SEMVER_TAG_RE.match(raw)
+    if match:
+        return match.group(1)
+    return raw
+
+
+def _git_describe_or_blank(repo_path: Path) -> str:
+    """Return `git describe --tags --abbrev=0` (no `v` prefix) or blank on failure."""
+    try:
+        result = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            cwd=str(repo_path),
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    if result.returncode != 0:
+        return ""
+    raw = result.stdout.strip()
+    if not raw:
+        return ""
+    match = _SEMVER_TAG_RE.match(raw)
+    return match.group(1) if match else raw
+
+
+def write_version_file(ahrena_dir: Path, version: str, dry_run: bool = False) -> None:
+    """Persist `.ahrena/.version` with a single-line SemVer string + final newline.
+
+    No-op when `version` is blank — the kata-ahrena-version fallback chain handles
+    the absent-file case gracefully.
+    """
+    if not version:
+        return
+    target = ahrena_dir / ".version"
+    if dry_run:
+        print(f"  [DRY-RUN] Would write {target} containing '{version}'")
+        return
+    ahrena_dir.mkdir(parents=True, exist_ok=True)
+    target.write_text(f"{version}\n", encoding="utf-8")
+    print(f"  Wrote {target} ({version})")
+
 # Pilar names (prefixes) for detection and clean; transposition comes from platforms.yaml.
 PILAR_NAMES: tuple[str, ...] = ("lex", "codex", "kata", "warrior", "cry")
 
@@ -625,6 +703,215 @@ def install_pr_cost_attribution_hook(
         encoding="utf-8",
     )
     print("  Wired PR cost attribution hook (UserPromptSubmit, SessionStart) into .claude/settings.json")
+
+
+# Canonical RTK PreToolUse command per Decision 4 of Plan #214.
+# Strict fallback semantics: when `rtk` is absent from PATH the hook exits 0
+# with empty stdout so Claude Code proceeds with the original tool input;
+# when `rtk` is present runtime failures propagate normally (no silent mask).
+RTK_HOOK_COMMAND = "if command -v rtk >/dev/null 2>&1; then rtk hook claude; fi"
+
+
+def _install_rtk_binary(dry_run: bool = False) -> bool:
+    """Detect or install the rtk binary; return True if available afterward.
+
+    Platform support:
+      Linux/macOS : curl install script (or Homebrew on macOS)
+      Windows     : WSL > bash (Git Bash) > cargo; falls back to manual notice
+
+    Idempotent: returns immediately when `rtk` is already on PATH.
+    """
+    _INSTALL_URL = "https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh"
+    _REPO_URL = "https://github.com/rtk-ai/rtk"
+
+    if shutil.which("rtk"):
+        print("  RTK binary already installed.")
+        return True
+
+    if sys.platform.startswith("win"):
+        _os = "windows"
+    elif sys.platform == "darwin":
+        _os = "macos"
+    else:
+        _os = "linux"
+
+    if dry_run:
+        print(f"  [DRY-RUN] Would install rtk binary on {_os}")
+        return False
+
+    print(f"  Installing rtk binary ({_os})...")
+    try:
+        if _os == "macos":
+            brew = shutil.which("brew")
+            via_brew = False
+            if brew:
+                result = subprocess.run([brew, "install", "rtk"], check=False)
+                via_brew = result.returncode == 0
+            if not via_brew:
+                subprocess.run(
+                    ["bash", "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
+                    check=True,
+                )
+        elif _os == "linux":
+            subprocess.run(
+                ["bash", "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
+                check=True,
+            )
+        else:  # windows
+            installed = False
+            for shell in (shutil.which("wsl"), shutil.which("bash")):
+                if shell:
+                    result = subprocess.run(
+                        [shell, "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
+                        check=False,
+                    )
+                    installed = result.returncode == 0
+                    if installed:
+                        break
+            if not installed:
+                cargo = shutil.which("cargo")
+                if cargo:
+                    subprocess.run(
+                        [cargo, "install", "--git", _REPO_URL],
+                        check=True,
+                    )
+                else:
+                    print("  rtk: automatic install unavailable on native Windows without bash/cargo.")
+                    print("  Options:")
+                    print(f"    WSL (recommended) : wsl bash -c \"curl -fsSL {_INSTALL_URL} | sh\"")
+                    print(f"    Cargo             : cargo install --git {_REPO_URL}")
+                    print(f"    Binary download   : {_REPO_URL}/releases")
+                    return False
+    except (subprocess.CalledProcessError, OSError, FileNotFoundError) as exc:
+        print(f"  WARNING: rtk binary install failed ({exc}). Hook will no-op until installed.")
+        return False
+
+    return shutil.which("rtk") is not None
+
+
+def install_rtk_bundle(
+    ahrena_dir: Path,
+    target_dir: Path,
+    directives: dict,
+    dry_run: bool = False,
+) -> None:
+    """Bundle RTK (Rust Token Killer) into the target Claude Code project.
+
+    Activated when:
+      rtk.enabled is true (default true when the section is omitted)
+
+    Side effects (when enabled):
+      1. Detects or installs the rtk binary (brew/curl/cargo, OS-aware).
+      2. Adds a single canonical PreToolUse entry to settings.json.hooks with
+         matcher "Bash" and the strict-fallback command (RTK_HOOK_COMMAND).
+         Existing PreToolUse entries whose command contains "rtk hook claude"
+         (legacy bare form or non-canonical matcher) are collapsed to the
+         canonical shape. Other PreToolUse entries are preserved.
+      3. Copies framework/templates/.rtk/filters.toml to <target>/.rtk/filters.toml
+         only when the destination is absent (never overwrites user filters).
+
+    Idempotent on every install/update run; no-op when rtk.enabled is false.
+    """
+    import json
+
+    # parse_directives is stdlib-only and returns scalars as strings (e.g. "false"),
+    # so `bool("false")` would incorrectly be truthy. Coerce strings to real bools
+    # before gating on the directive.
+    raw_enabled = get_directive(directives, "rtk", "enabled", default=True)
+    if isinstance(raw_enabled, str):
+        enabled = raw_enabled.strip().lower() not in ("false", "no", "0", "off")
+    else:
+        enabled = bool(raw_enabled)
+    if not enabled:
+        return
+
+    raw_auto_install = get_directive(directives, "rtk", "auto_install_binary", default=True)
+    if isinstance(raw_auto_install, str):
+        auto_install = raw_auto_install.strip().lower() not in ("false", "no", "0", "off")
+    else:
+        auto_install = bool(raw_auto_install)
+
+    # 1. Ensure rtk binary is present (best-effort; hook stays safe if absent)
+    if auto_install:
+        _install_rtk_binary(dry_run=dry_run)
+
+    claude_dir = target_dir / ".claude"
+    settings_path = claude_dir / "settings.json"
+    rtk_dir = target_dir / ".rtk"
+    filters_dst = rtk_dir / "filters.toml"
+    filters_src = ahrena_dir / "framework" / "templates" / ".rtk" / "filters.toml"
+
+    if dry_run:
+        print("    [DRY-RUN] .claude/settings.json (wire RTK PreToolUse hook)")
+        if filters_src.exists() and not filters_dst.exists():
+            print("    [DRY-RUN] .rtk/filters.toml (copy from framework template)")
+        return
+
+    # 2. Merge canonical PreToolUse entry into settings.json
+    existing: dict = {}
+    if settings_path.exists():
+        try:
+            existing = json.loads(settings_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            existing = {}
+
+    hooks_block = existing.get("hooks")
+    if not isinstance(hooks_block, dict):
+        hooks_block = {}
+
+    groups = hooks_block.get("PreToolUse")
+    if not isinstance(groups, list):
+        groups = []
+
+    # Idempotency: drop any existing matcher-group whose hooks reference our
+    # command (legacy bare or canonical wrapped), then append the canonical
+    # entry. Other PreToolUse entries (unrelated tools) are preserved.
+    cleaned: list = []
+    for g in groups:
+        if not isinstance(g, dict):
+            cleaned.append(g)
+            continue
+        inner = g.get("hooks")
+        if not isinstance(inner, list):
+            cleaned.append(g)
+            continue
+        ours = any(
+            isinstance(h, dict)
+            and h.get("type") == "command"
+            and isinstance(h.get("command"), str)
+            and "rtk hook claude" in h["command"]
+            for h in inner
+        )
+        if not ours:
+            cleaned.append(g)
+
+    cleaned.append({
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": RTK_HOOK_COMMAND}],
+    })
+    hooks_block["PreToolUse"] = cleaned
+    existing["hooks"] = hooks_block
+
+    claude_dir.mkdir(parents=True, exist_ok=True)
+    settings_path.write_text(
+        json.dumps(existing, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    print("  Wired RTK PreToolUse hook (matcher Bash, strict fallback) into .claude/settings.json")
+
+    # 3. Copy filters template if absent at destination
+    if filters_src.exists() and not filters_dst.exists():
+        rtk_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(filters_src, filters_dst)
+        print("  Created .rtk/filters.toml from framework template")
+
+    # 4. Final hint when binary install was best-effort and did not succeed
+    if shutil.which("rtk") is None:
+        print(
+            "  WARNING: rtk binary still not on PATH. Hook is wired with strict "
+            "fallback (no-op when binary is absent). Install manually to enable "
+            "token-savings rewriting: https://github.com/rtk-ai/rtk"
+        )
 
 
 def _framework_rel_path_to_rule_key(rel_path: Path) -> str:
@@ -1331,6 +1618,9 @@ def install_ahrena(source_dir: Path, target_dir: Path, args: argparse.Namespace)
         except Exception as exc:  # noqa: BLE001 — best-effort; never abort install
             print(f"  Warning: label bootstrap step failed: {exc}")
 
+    # Persist install-time framework version manifest consumed by kata-ahrena-version.
+    write_version_file(ahrena_dir, resolve_install_version(args), dry_run=getattr(args, "dry_run", False))
+
     return ahrena_dir
 
 
@@ -1589,6 +1879,12 @@ def install_claude_code(ahrena_dir: Path, target_dir: Path, dry_run: bool = Fals
     # Keeps the hook script under .claude/hooks/ and wires it into settings.json.
     install_pr_cost_attribution_hook(ahrena_dir, target_dir, directives, dry_run=dry_run)
 
+    # RTK (Rust Token Killer) bundle: opt-out via rtk.enabled=false in .directives.
+    # Ensures the binary is installed, wires the per-project PreToolUse hook with
+    # strict fallback, and copies the filters template. Runs on every install/update
+    # so the canonical shape is reconciled idempotently.
+    install_rtk_bundle(ahrena_dir, target_dir, directives, dry_run=dry_run)
+
 
 def install_cursor(ahrena_dir: Path, target_dir: Path, dry_run: bool = False) -> None:
     """Phase 2: generate .cursor/ files from .ahrena/framework/ and .ahrena/artifacts/."""
@@ -1808,114 +2104,6 @@ def clean(target_dir: Path) -> None:
 # CLI
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-def install_rtk(agent_platform: str | None, dry_run: bool = False) -> None:
-    """Install RTK (Rust Token Killer) and initialize the agent hook.
-
-    RTK reduces LLM token consumption 60-90% by filtering command outputs.
-    https://github.com/rtk-ai/rtk
-
-    Platform support:
-      Linux/macOS : curl install script (or Homebrew on macOS)
-      Windows     : WSL > bash (Git Bash) > cargo; falls back to manual instructions
-    """
-    import shutil as _shutil
-    import subprocess as _subprocess
-
-    _INSTALL_URL = "https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh"
-    _REPO_URL = "https://github.com/rtk-ai/rtk"
-
-    if sys.platform.startswith("win"):
-        _os = "windows"
-    elif sys.platform == "darwin":
-        _os = "macos"
-    else:
-        _os = "linux"
-
-    already_installed = bool(_shutil.which("rtk"))
-
-    if not already_installed:
-        if dry_run:
-            print(f"  [DRY-RUN] Would install RTK on {_os}")
-        else:
-            print(f"  Installing RTK ({_os})...")
-            try:
-                if _os == "macos":
-                    brew = _shutil.which("brew")
-                    via_brew = False
-                    if brew:
-                        result = _subprocess.run([brew, "install", "rtk"], check=False)
-                        via_brew = result.returncode == 0
-                    if not via_brew:
-                        _subprocess.run(
-                            ["bash", "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
-                            check=True,
-                        )
-
-                elif _os == "linux":
-                    _subprocess.run(
-                        ["bash", "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
-                        check=True,
-                    )
-
-                else:  # windows
-                    installed = False
-                    for shell in (_shutil.which("wsl"), _shutil.which("bash")):
-                        if shell:
-                            result = _subprocess.run(
-                                [shell, "-c", f"curl -fsSL {_INSTALL_URL} | sh"],
-                                check=False,
-                            )
-                            installed = result.returncode == 0
-                            if installed:
-                                break
-                    if not installed:
-                        cargo = _shutil.which("cargo")
-                        if cargo:
-                            _subprocess.run(
-                                [cargo, "install", "--git", _REPO_URL],
-                                check=True,
-                            )
-                        else:
-                            print("  RTK: automatic install unavailable on native Windows without bash/cargo.")
-                            print("  Options:")
-                            print(f"    WSL (recommended) : wsl bash -c \"curl -fsSL {_INSTALL_URL} | sh\"")
-                            print(f"    Cargo             : cargo install --git {_REPO_URL}")
-                            print(f"    Binary download   : {_REPO_URL}/releases")
-                            return
-
-            except Exception as exc:
-                print(f"  WARNING: RTK installation failed ({exc}). Continuing without RTK.")
-                return
-    else:
-        print("  RTK already installed.")
-
-    hook_args = ["init", "-g"]
-    if agent_platform == "cursor":
-        hook_args += ["--agent", "cursor"]
-
-    if dry_run:
-        print(f"  [DRY-RUN] Would run: rtk {' '.join(hook_args)}")
-        return
-
-    rtk_bin = _shutil.which("rtk")
-    if not rtk_bin:
-        print("  WARNING: RTK not found in PATH. Ensure it is in PATH, then run:")
-        print(f"    rtk {' '.join(hook_args)}")
-        return
-
-    try:
-        result = _subprocess.run(
-            [rtk_bin, *hook_args],
-            capture_output=True, text=True,
-        )
-        if result.returncode == 0:
-            print(f"  RTK hook initialized (rtk {' '.join(hook_args)})")
-        else:
-            print(f"  WARNING: rtk {' '.join(hook_args)} failed: {result.stderr.strip()}")
-    except Exception as exc:
-        print(f"  WARNING: RTK hook initialization failed ({exc}).")
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="install.py",
@@ -1934,7 +2122,6 @@ examples:
   %(prog)s --directives ./my-directives                   Use custom directives
   %(prog)s --clean                                        Remove installed files
   %(prog)s --dry-run --platform cursor                    Preview without changes
-  %(prog)s --platform claude-code --skip-rtk             Install without RTK
 
 offline (run this script directly from a cloned Ahrena repo):
   python scripts/install.py --self --target /path/to/project --platform cursor
@@ -1995,10 +2182,6 @@ offline (run this script directly from a cloned Ahrena repo):
     parser.add_argument(
         "--clean", action="store_true",
         help="remove all Ahrena-installed files from the project",
-    )
-    parser.add_argument(
-        "--skip-rtk", action="store_true",
-        help="skip RTK (Rust Token Killer) installation and hook initialization",
     )
     parser.add_argument(
         "--skip-preflight", action="store_true",
@@ -2125,11 +2308,6 @@ def main() -> None:
             print("  [DRY-RUN] Would generate .claude/ files and CLAUDE.md")
         else:
             install_claude_code(ahrena_dir, target_dir, dry_run=args.dry_run)
-
-    # Phase 3: RTK
-    if not args.skip_rtk:
-        print(f"\n--- Phase 3: RTK (Rust Token Killer) ---")
-        install_rtk(args.platform, dry_run=args.dry_run)
 
     print(f"\nDone!")
 
