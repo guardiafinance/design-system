@@ -265,6 +265,15 @@ describe("Combobox", () => {
       expect(cls).not.toContain("guardia-violet");
     });
 
+    it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
+      // WHY: enabled:hover:border-action substitui o par verboso
+      // hover:border-action + disabled:hover:border-border-strong. Ver #169.
+      render(<Combobox options={PLANOS} />);
+      const trigger = screen.getByRole("combobox");
+      expect(trigger.className).toMatch(/enabled:hover:border-action/);
+      expect(trigger.className).not.toMatch(/disabled:hover:/);
+    });
+
     it("AC-3: selected option uses bg-action + text-button-fg", async () => {
       render(<Combobox options={PLANOS} defaultValue="pro" />);
       await userEvent.click(screen.getByRole("combobox"));

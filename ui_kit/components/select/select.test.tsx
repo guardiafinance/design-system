@@ -262,6 +262,15 @@ describe("Select", () => {
       expect(trigger.className).not.toMatch(/hover:border-guardia-violet-500/);
     });
 
+    it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
+      // WHY: enabled:hover:border-action substitui o par verboso
+      // hover:border-action + disabled:hover:border-border-strong. Ver #169.
+      render(<Select options={PLANOS} />);
+      const trigger = screen.getByRole("combobox");
+      expect(trigger.className).toMatch(/enabled:hover:border-action/);
+      expect(trigger.className).not.toMatch(/disabled:hover:/);
+    });
+
     it("trigger usa border-action quando aberto (data-state=open)", () => {
       render(<Select options={PLANOS} />);
       const trigger = screen.getByRole("combobox");
