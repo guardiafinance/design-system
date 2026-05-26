@@ -110,8 +110,8 @@ const baseData = [
 ];
 
 const baseConfig = {
-  revenue: { label: "Receita", color: "var(--chart-2)" },
-  expense: { label: "Despesa", color: "var(--chart-5)" },
+  revenue: { label: "Receita", color: "var(--chart-1)" },
+  expense: { label: "Despesa", color: "var(--chart-3)" },
 } satisfies ChartConfig;
 
 function LineSample() {
@@ -149,9 +149,9 @@ function PieSample() {
     { name: "Reserva", value: 15 },
   ];
   const pieConfig = {
-    Receita: { label: "Receita", color: "var(--chart-2)" },
-    Despesa: { label: "Despesa", color: "var(--chart-5)" },
-    Reserva: { label: "Reserva", color: "var(--chart-3)" },
+    Receita: { label: "Receita", color: "var(--chart-1)" },
+    Despesa: { label: "Despesa", color: "var(--chart-3)" },
+    Reserva: { label: "Reserva", color: "var(--chart-4)" },
   } satisfies ChartConfig;
   return (
     <ChartContainer config={pieConfig} aria-label="Distribuição de receita">
@@ -220,8 +220,8 @@ describe("<ChartContainer />", () => {
     const style = container.querySelector("style");
     expect(style).not.toBeNull();
     const css = style?.innerHTML ?? "";
-    expect(css).toContain("--color-revenue: var(--chart-2);");
-    expect(css).toContain("--color-expense: var(--chart-5);");
+    expect(css).toContain("--color-revenue: var(--chart-1);");
+    expect(css).toContain("--color-expense: var(--chart-3);");
   });
 
   it("scopes css vars to the matching data-chart id", () => {
@@ -416,8 +416,8 @@ describe("<ChartLegendContent />", () => {
       withSize(
         <LegendHarness
           payload={[
-            { value: "revenue", dataKey: "revenue", color: "var(--chart-2)" },
-            { value: "expense", dataKey: "expense", color: "var(--chart-5)" },
+            { value: "revenue", dataKey: "revenue", color: "var(--chart-1)" },
+            { value: "expense", dataKey: "expense", color: "var(--chart-3)" },
           ]}
         />,
       ),

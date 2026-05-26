@@ -56,15 +56,15 @@ const monthly = [
 ];
 
 const revenueExpenseConfig = {
-  revenue: { label: "Receita", color: "var(--chart-2)" },
-  expense: { label: "Despesa", color: "var(--chart-5)" },
+  revenue: { label: "Receita", color: "var(--chart-1)" },
+  expense: { label: "Despesa", color: "var(--chart-3)" },
 } satisfies ChartConfig;
 
 const distributionConfig = {
-  Receita: { label: "Receita", color: "var(--chart-2)" },
-  Despesa: { label: "Despesa", color: "var(--chart-5)" },
-  Reserva: { label: "Reserva", color: "var(--chart-3)" },
-  Investimento: { label: "Investimento", color: "var(--chart-1)" },
+  Receita: { label: "Receita", color: "var(--chart-1)" },
+  Despesa: { label: "Despesa", color: "var(--chart-3)" },
+  Reserva: { label: "Reserva", color: "var(--chart-4)" },
+  Investimento: { label: "Investimento", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 const distributionData = [
@@ -217,11 +217,11 @@ export const ThemeAware: Story = {
     config: {
       revenue: {
         label: "Receita",
-        theme: { light: "var(--chart-2)", dark: "var(--chart-2)" },
+        theme: { light: "var(--chart-1)", dark: "var(--chart-1)" },
       },
       expense: {
         label: "Despesa",
-        theme: { light: "var(--chart-5)", dark: "var(--chart-5)" },
+        theme: { light: "var(--chart-3)", dark: "var(--chart-3)" },
       },
     } satisfies ChartConfig,
     className: "h-[240px] w-full",

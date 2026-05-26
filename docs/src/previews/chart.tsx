@@ -34,15 +34,15 @@ const monthly = [
 ];
 
 const revenueExpenseConfig = {
-  revenue: { label: "Receita", color: "var(--chart-2)" },
-  expense: { label: "Despesa", color: "var(--chart-5)" },
+  revenue: { label: "Receita", color: "var(--chart-1)" },
+  expense: { label: "Despesa", color: "var(--chart-3)" },
 } satisfies ChartConfig;
 
 const distributionConfig = {
-  Receita: { label: "Receita", color: "var(--chart-2)" },
-  Despesa: { label: "Despesa", color: "var(--chart-5)" },
-  Reserva: { label: "Reserva", color: "var(--chart-3)" },
-  Investimento: { label: "Investimento", color: "var(--chart-1)" },
+  Receita: { label: "Receita", color: "var(--chart-1)" },
+  Despesa: { label: "Despesa", color: "var(--chart-3)" },
+  Reserva: { label: "Reserva", color: "var(--chart-4)" },
+  Investimento: { label: "Investimento", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 const distributionData = [
@@ -166,11 +166,11 @@ export function PiePreview() {
 const themedConfig = {
   revenue: {
     label: "Receita",
-    theme: { light: "var(--chart-2)", dark: "var(--chart-2)" },
+    theme: { light: "var(--chart-1)", dark: "var(--chart-1)" },
   },
   expense: {
     label: "Despesa",
-    theme: { light: "var(--chart-5)", dark: "var(--chart-5)" },
+    theme: { light: "var(--chart-3)", dark: "var(--chart-3)" },
   },
 } satisfies ChartConfig;
 
@@ -207,12 +207,18 @@ export function ThemeAwarePreview() {
 }
 
 export function PaletteSwatches() {
+  // WHY: a paleta Lighthouse do Notion documenta apenas 4 cores
+  // (verde, amarelo, vermelho, azul). O Recharts precisa de uma 5ª
+  // série em alguns gráficos (ex.: pie chart com >4 fatias), então
+  // a paleta foi estendida com o Laranja Quente da marca como cor
+  // de destaque/baseline — escolha consistente com a função "acento
+  // escasso" do laranja no Purple Mode.
   const tokens = [
-    { name: "--chart-1", role: "Acento Guardia (laranja)" },
-    { name: "--chart-2", role: "Receita / positivo (verde)" },
-    { name: "--chart-3", role: "Informativo (azul)" },
-    { name: "--chart-4", role: "Atenção (amarelo)" },
-    { name: "--chart-5", role: "Despesa / negativo (vermelho)" },
+    { name: "--chart-1", role: "Verde Sinal (positivo)" },
+    { name: "--chart-2", role: "Amarelo Sinal (atenção)" },
+    { name: "--chart-3", role: "Vermelho Sinal (negativo)" },
+    { name: "--chart-4", role: "Azul Sinal (informativo)" },
+    { name: "--chart-5", role: "Laranja Quente (destaque escasso)" },
   ];
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
