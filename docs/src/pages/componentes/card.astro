@@ -1,0 +1,212 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  Anatomy,
+  VariantsRow,
+  Compact,
+  Interactive,
+  WithBadge,
+} from "../../previews/card";
+import { LiveCardSnippet } from "../../previews/card-live";
+import cardSource from "@ds/components/card/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · DADOS & CONTEÚDO"
+  title="Card"
+  group="Dados & conteúdo"
+  storybookId="components-card--default"
+  sourcePath="ui_kit/components/card"
+  lede='Container semântico para agrupar conteúdo relacionado. Suporta três variantes (<b>default</b> · <b>elevated</b> · <b>outlined</b>), modo <b>interactive</b> e composição via <code class="inline">Card.Header</code>, <code class="inline">Card.Title</code>, <code class="inline">Card.Description</code>, <code class="inline">Card.Content</code>, <code class="inline">Card.Footer</code>. Apenas tokens semânticos.'
+>
+  <!-- ============ ANATOMIA ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Anatomia</h2>
+      <small>Header · Title · Description · Content · Footer</small>
+    </div>
+    <div class="preview">
+      <Anatomy client:load />
+    </div>
+    <p class="preview-caption">
+      A composição padrão usa <code class="inline">Card.Header</code> para
+      título e descrição, <code class="inline">Card.Content</code> para o
+      corpo e <code class="inline">Card.Footer</code> para ações. Cada slot
+      possui <code class="inline">data-slot</code> próprio para estilização e
+      testes.
+    </p>
+  </section>
+
+  <!-- ============ VARIANTES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>default · elevated · outlined</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      <b>default</b> usa <code class="inline">shadow-sm</code> — baseline para
+      a maioria dos contextos. <b>elevated</b> sobe a hierarquia com
+      <code class="inline">shadow-md</code>, indicado para cards de chamada de
+      atenção. <b>outlined</b> remove o shadow e reforça a borda
+      (<code class="inline">border-2</code> + <code class="inline">border-border-strong</code>),
+      ideal em dashboards densos.
+    </p>
+  </section>
+
+  <!-- ============ COMPACT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Cards compactos (KPIs)</h2>
+      <small>padding="sm" sem subcomponentes</small>
+    </div>
+    <div class="preview">
+      <Compact client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">padding="sm"</code> aplica padding diretamente na
+      raiz — útil quando você não precisa dos slots
+      <code class="inline">Card.Header</code> / <code class="inline">Card.Content</code>
+      e quer um grid de métricas mais denso.
+    </p>
+  </section>
+
+  <!-- ============ INTERACTIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Card interativo</h2>
+      <small>interactive + onClick · card-link</small>
+    </div>
+    <div class="preview">
+      <Interactive client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">interactive</code> injeta
+      <code class="inline">tabIndex=0</code>, <code class="inline">cursor-pointer</code>
+      e foco visível via <code class="inline">ring-ring</code>, além de
+      <code class="inline">hover:shadow-md</code>. Combine com
+      <code class="inline">onClick</code> para card-link / card-ação. Para
+      ações destrutivas ou submit prefira <code class="inline">as="button"</code>
+      explicitamente.
+    </p>
+  </section>
+
+  <!-- ============ COMPOSIÇÃO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Composição com outros primitivos</h2>
+      <small>Card + Badge + Button</small>
+    </div>
+    <div class="preview">
+      <WithBadge client:load />
+    </div>
+    <p class="preview-caption">
+      Padrão recomendado para fluxos: <code class="inline">Card.Header</code>
+      carrega o título + descrição + um Badge de status; o
+      <code class="inline">Card.Footer</code> agrupa as ações alinhadas à
+      direita. O Card delega a semântica de status ao Badge — o container
+      permanece neutro.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveCardSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"default" | "elevated" | "outlined"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Nível de ênfase visual. <b>default</b> = <code class="inline">shadow-sm</code>; <b>elevated</b> = <code class="inline">shadow-md</code>; <b>outlined</b> = borda forte sem shadow.</td>
+          </tr>
+          <tr>
+            <td class="name">padding</td>
+            <td class="type">"none" | "sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Padding da raiz. <b>md</b> (default) delega o spacing aos slots <code class="inline">Card.Header</code>/<code class="inline">Card.Content</code>/<code class="inline">Card.Footer</code>; <b>sm</b> aplica <code class="inline">p-4</code> direto para cards sem subcomponentes.</td>
+          </tr>
+          <tr>
+            <td class="name">interactive</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Liga <code class="inline">tabIndex=0</code>, <code class="inline">cursor-pointer</code>, foco visível e <code class="inline">hover:shadow-md</code>. Use junto com <code class="inline">onClick</code> para card-link.</td>
+          </tr>
+          <tr>
+            <td class="name">as</td>
+            <td class="type">"article" | "section" | "div"</td>
+            <td class="default">"article"</td>
+            <td class="desc">Elemento semântico raiz. <b>article</b> (default) para conteúdo coeso e independente; <b>section</b> quando o card faz parte de uma estrutura maior; <b>div</b> para casos sem semântica forte.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLElement</code>
+      (exceto <code class="inline">color</code>, substituído pelo sistema de
+      tokens). <code class="inline">ref</code> é encaminhado para a raiz.
+    </p>
+    <p class="preview-caption">
+      <b>Subcomponentes:</b> <code class="inline">Card.Title</code> aceita
+      <code class="inline">as</code> para escolher o nível semântico do heading
+      (<code class="inline">h1</code> a <code class="inline">h6</code>, default
+      <code class="inline">h3</code>). <code class="inline">Card.Description</code>
+      renderiza um <code class="inline">&lt;p&gt;</code>.
+      <code class="inline">Card.Header</code>, <code class="inline">Card.Content</code>
+      e <code class="inline">Card.Footer</code> renderizam <code class="inline">&lt;div&gt;</code>
+      com padding embutido.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/card/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={cardSource}
+      language="tsx"
+      filename="ui_kit/components/card/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>&lt;article&gt;</b> é o default — landmark semântico para conteúdo coeso.</span></li>
+        <li><span><b>Card.Title</b> renderiza um heading (<code class="inline">h3</code> default) — preserva a hierarquia.</span></li>
+        <li><span><b>Card.Description</b> usa <code class="inline">&lt;p&gt;</code> com texto <code class="inline">text-muted-foreground</code> (contraste AA).</span></li>
+        <li><span><b>interactive=true</b> injeta <code class="inline">tabIndex=0</code> e foco visível via <code class="inline">ring-ring</code>.</span></li>
+        <li><span>Contraste validado em <b>light + dark</b> via <code class="inline">jest-axe</code> nos quatro estados (default · elevated · outlined · interactive).</span></li>
+        <li><span>Tokens <code class="inline">bg-card</code> + <code class="inline">text-card-foreground</code> trocam automaticamente por tema — zero cor hardcoded.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
