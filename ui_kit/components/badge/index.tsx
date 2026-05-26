@@ -51,13 +51,22 @@ const badgeVariants = cva(
       { appearance: "soft", variant: "danger",   className: "bg-[color-mix(in_oklab,var(--signal-red)_14%,white)] text-[color-mix(in_oklab,var(--signal-red)_45%,black)]" },
       { appearance: "soft", variant: "info",     className: "bg-[color-mix(in_oklab,var(--signal-blue)_14%,white)] text-[color-mix(in_oklab,var(--signal-blue)_62%,black)]" },
 
-      /* ── SOLID ────────────────────────────────────── */
+      /* ── SOLID ──────────────────────────────────────
+       * WCAG fg overrides (per WCAG 2.1 §1.4.3 sRGB recompute, aligned with
+       * Chip ADR-003 — see docs/adr/ADR-003-chip-variants.md):
+       *   accent  → text-guardia-gray-900 (text-white over orange-500 = 3.15:1 fails AA-Normal)
+       *   success → text-guardia-gray-900 (text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large)
+       *   danger  → text-guardia-gray-900 (text-white over signal-red   = 3.66:1 fails AA-Normal)
+       *   warning → text-guardia-violet-900 (text-white over signal-yellow = 1.33:1 fails everything)
+       * neutral / brand / info keep the appearance.solid default `text-white`
+       * (all ≥ 8.13:1).
+       */
       { appearance: "solid", variant: "neutral",  className: "bg-guardia-gray-500" },
       { appearance: "solid", variant: "brand",    className: "bg-guardia-violet-500" },
-      { appearance: "solid", variant: "accent",   className: "bg-guardia-orange-500" },
-      { appearance: "solid", variant: "success",  className: "bg-signal-green" },
+      { appearance: "solid", variant: "accent",   className: "bg-guardia-orange-500 text-guardia-gray-900" },
+      { appearance: "solid", variant: "success",  className: "bg-signal-green text-guardia-gray-900" },
       { appearance: "solid", variant: "warning",  className: "bg-signal-yellow text-guardia-violet-900" },
-      { appearance: "solid", variant: "danger",   className: "bg-signal-red" },
+      { appearance: "solid", variant: "danger",   className: "bg-signal-red text-guardia-gray-900" },
       { appearance: "solid", variant: "info",     className: "bg-signal-blue" },
 
       /* ── OUTLINE ──────────────────────────────────── */
