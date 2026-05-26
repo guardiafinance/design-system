@@ -334,27 +334,26 @@ describe("<Chip />", () => {
         expect(c.className).toMatch(/border-transparent/);
       });
 
-      // Signal-* variants use color-mix() inline — assert the tint token is
-      // referenced via the expected --signal-* variable + percent split, so
-      // any regression to a wrong token / wrong ratio is caught.
+      // Signal-* variants — assert the semantic shade tokens (see
+      // ui_kit/styles/index.css `--signal-{color}-100 / -700`). Any regression
+      // back to inline color-mix or wrong token name is caught here.
       it.each([
-        { variant: "success" as const, bgPct: "18%", fgPct: "52%", token: "--signal-green" },
-        { variant: "danger" as const,  bgPct: "14%", fgPct: "45%", token: "--signal-red" },
-        { variant: "info" as const,    bgPct: "14%", fgPct: "62%", token: "--signal-blue" },
-      ])(
-        "variant=$variant soft uses color-mix tint of $token",
-        ({ variant, bgPct, fgPct, token }) => {
-          render(
-            <Chip variant={variant} appearance="soft" data-testid="c">
-              {variant}
-            </Chip>,
-          );
-          const c = screen.getByTestId("c");
-          expect(c.className).toContain(`bg-[color-mix(in_oklab,var(${token})_${bgPct},white)]`);
-          expect(c.className).toContain(`text-[color-mix(in_oklab,var(${token})_${fgPct},black)]`);
-          expect(c.className).toMatch(/border-transparent/);
-        },
-      );
+        { variant: "success" as const, bg: /bg-signal-green-100/,  fg: /text-signal-green-700/ },
+        { variant: "danger" as const,  bg: /bg-signal-red-100/,    fg: /text-signal-red-700/ },
+        { variant: "info" as const,    bg: /bg-signal-blue-100/,   fg: /text-signal-blue-700/ },
+      ])("variant=$variant soft uses bg-signal-{color}-100 + text-signal-{color}-700", ({ variant, bg, fg }) => {
+        render(
+          <Chip variant={variant} appearance="soft" data-testid="c">
+            {variant}
+          </Chip>,
+        );
+        const c = screen.getByTestId("c");
+        expect(c.className).toMatch(bg);
+        expect(c.className).toMatch(fg);
+        expect(c.className).toMatch(/border-transparent/);
+        // Negative guard: no inline color-mix utility leaked into the className.
+        expect(c.className).not.toContain("color-mix");
+      });
     });
 
     describe("ADR-003 decisão 5 — `selected: true` ignores `appearance` (always solid)", () => {

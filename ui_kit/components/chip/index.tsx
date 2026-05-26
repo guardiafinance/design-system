@@ -106,10 +106,10 @@ const chipVariants = cva(
       { selected: false, appearance: "soft", variant: "neutral",  className: "bg-guardia-gray-100 border-transparent text-guardia-gray-700" },
       { selected: false, appearance: "soft", variant: "brand",    className: "bg-guardia-violet-100 border-transparent text-guardia-violet-700" },
       { selected: false, appearance: "soft", variant: "accent",   className: "bg-guardia-orange-100 border-transparent text-guardia-orange-700" },
-      { selected: false, appearance: "soft", variant: "success",  className: "bg-[color-mix(in_oklab,var(--signal-green)_18%,white)] border-transparent text-[color-mix(in_oklab,var(--signal-green)_52%,black)]" },
+      { selected: false, appearance: "soft", variant: "success",  className: "bg-signal-green-100 border-transparent text-signal-green-700" },
       { selected: false, appearance: "soft", variant: "warning",  className: "bg-guardia-yellow-100 border-transparent text-guardia-yellow-900" },
-      { selected: false, appearance: "soft", variant: "danger",   className: "bg-[color-mix(in_oklab,var(--signal-red)_14%,white)] border-transparent text-[color-mix(in_oklab,var(--signal-red)_45%,black)]" },
-      { selected: false, appearance: "soft", variant: "info",     className: "bg-[color-mix(in_oklab,var(--signal-blue)_14%,white)] border-transparent text-[color-mix(in_oklab,var(--signal-blue)_62%,black)]" },
+      { selected: false, appearance: "soft", variant: "danger",   className: "bg-signal-red-100 border-transparent text-signal-red-700" },
+      { selected: false, appearance: "soft", variant: "info",     className: "bg-signal-blue-100 border-transparent text-signal-blue-700" },
 
       // ─── RESTING (selected: false) — appearance: outline ────────────────
       // `neutral` and `brand`: backward-compat path. ADR-003 decisão 4 — the
@@ -138,18 +138,18 @@ const chipVariants = cva(
       { selected: false, interactive: true, appearance: "outline", variant: "neutral",  className: "hover:bg-bg-hover hover:border-action" },
       { selected: false, interactive: true, appearance: "outline", variant: "brand",    className: "hover:bg-bg-hover hover:border-action" },
       { selected: false, interactive: true, appearance: "outline", variant: "accent",   className: "hover:bg-guardia-orange-100" },
-      { selected: false, interactive: true, appearance: "outline", variant: "success",  className: "hover:bg-[color-mix(in_oklab,var(--signal-green)_10%,white)]" },
+      { selected: false, interactive: true, appearance: "outline", variant: "success",  className: "hover:bg-signal-green-outline-hover" },
       { selected: false, interactive: true, appearance: "outline", variant: "warning",  className: "hover:bg-guardia-yellow-100" },
-      { selected: false, interactive: true, appearance: "outline", variant: "danger",   className: "hover:bg-[color-mix(in_oklab,var(--signal-red)_10%,white)]" },
-      { selected: false, interactive: true, appearance: "outline", variant: "info",     className: "hover:bg-[color-mix(in_oklab,var(--signal-blue)_10%,white)]" },
+      { selected: false, interactive: true, appearance: "outline", variant: "danger",   className: "hover:bg-signal-red-outline-hover" },
+      { selected: false, interactive: true, appearance: "outline", variant: "info",     className: "hover:bg-signal-blue-outline-hover" },
 
       { selected: false, interactive: true, appearance: "soft", variant: "neutral",  className: "hover:bg-guardia-gray-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "brand",    className: "hover:bg-guardia-violet-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "accent",   className: "hover:bg-guardia-orange-200" },
-      { selected: false, interactive: true, appearance: "soft", variant: "success",  className: "hover:bg-[color-mix(in_oklab,var(--signal-green)_28%,white)]" },
+      { selected: false, interactive: true, appearance: "soft", variant: "success",  className: "hover:bg-signal-green-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "warning",  className: "hover:bg-guardia-yellow-200" },
-      { selected: false, interactive: true, appearance: "soft", variant: "danger",   className: "hover:bg-[color-mix(in_oklab,var(--signal-red)_24%,white)]" },
-      { selected: false, interactive: true, appearance: "soft", variant: "info",     className: "hover:bg-[color-mix(in_oklab,var(--signal-blue)_24%,white)]" },
+      { selected: false, interactive: true, appearance: "soft", variant: "danger",   className: "hover:bg-signal-red-200" },
+      { selected: false, interactive: true, appearance: "soft", variant: "info",     className: "hover:bg-signal-blue-200" },
 
       // WHY: no `interactive: false` neutralizer compounds — hover classes
       // are emitted exclusively by the `interactive: true` compounds above,
