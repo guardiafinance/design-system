@@ -51,7 +51,7 @@ describe("Spinner", () => {
     expect(svg.getAttribute("width")).toBe(String(SPINNER_PX.xl));
   });
 
-  it("color=brand aplica violet-500", () => {
+  it("color=brand aplica purple-500", () => {
     render(<Spinner color="brand" />);
     expect(screen.getByRole("status")).toHaveClass("text-guardia-purple-500");
   });
