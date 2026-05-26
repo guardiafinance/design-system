@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 import { Badge } from "./index";
+import { axeInThemes } from "@/test-utils/a11y";
 
 describe("<Badge />", () => {
   it("renders its children", () => {
@@ -36,18 +37,44 @@ describe("<Badge />", () => {
     });
   });
 
-  it("applies solid appearance with white text", () => {
+  it("applies solid appearance with white text (brand: violet-500 + white = 12.47:1 AAA)", () => {
     render(<Badge appearance="solid" variant="brand" data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
     expect(el).toHaveClass("bg-guardia-violet-500");
     expect(el).toHaveClass("text-white");
   });
 
-  it("switches yellow text to violet in solid warning (AA contrast)", () => {
-    render(<Badge appearance="solid" variant="warning" data-testid="b">!</Badge>);
+  // WCAG AA-Normal (4.5:1) fg overrides for solid variants where text-white
+  // fails the §1.4.3 contrast threshold. Numbers come from sRGB luminance
+  // recompute (see PR #175 / Issue #173). Locked here to detect any future
+  // regression where someone reverts to the base `text-white` default.
+  it.each([
+    { variant: "accent",  bg: "bg-guardia-orange-500", fg: "text-guardia-gray-900",   reason: "text-white over orange-500 = 3.15:1 fails AA-Normal" },
+    { variant: "success", bg: "bg-signal-green",       fg: "text-guardia-gray-900",   reason: "text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large" },
+    { variant: "danger",  bg: "bg-signal-red",         fg: "text-guardia-gray-900",   reason: "text-white over signal-red = 3.66:1 fails AA-Normal" },
+    { variant: "warning", bg: "bg-signal-yellow",      fg: "text-guardia-violet-900", reason: "text-white over signal-yellow = 1.33:1 fails everything" },
+  ] as const)("solid variant=$variant uses $fg ($reason)", ({ variant, bg, fg }) => {
+    render(<Badge appearance="solid" variant={variant} data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
-    expect(el).toHaveClass("bg-signal-yellow");
-    expect(el).toHaveClass("text-guardia-violet-900");
+    expect(el).toHaveClass(bg);
+    expect(el).toHaveClass(fg);
+    // Negative guard: the failing base `text-white` MUST NOT leak through.
+    expect(el).not.toHaveClass("text-white");
+  });
+
+  it("jest-axe: solid variants are WCAG AA clean in light + dark themes", async () => {
+    const { container } = render(
+      <div>
+        <Badge appearance="solid" variant="neutral">neutral</Badge>
+        <Badge appearance="solid" variant="brand">brand</Badge>
+        <Badge appearance="solid" variant="accent">accent</Badge>
+        <Badge appearance="solid" variant="success">success</Badge>
+        <Badge appearance="solid" variant="warning">warning</Badge>
+        <Badge appearance="solid" variant="danger">danger</Badge>
+        <Badge appearance="solid" variant="info">info</Badge>
+      </div>,
+    );
+    await axeInThemes(container);
   });
 
   it("applies outline appearance with border+text color", () => {
