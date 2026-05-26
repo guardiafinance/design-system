@@ -160,7 +160,7 @@ describe("<Chip />", () => {
       expect(c.className).not.toMatch(/hover:bg-action-hover/);
       expect(c.className).not.toMatch(/hover:border-action-hover/);
       expect(c.className).not.toMatch(/hover:text-button-fg-hover/);
-      expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(c.className).not.toMatch(/guardia-purple-(100|500|700)/);
       expect(c.className).not.toMatch(/\btext-white\b/);
     });
 
@@ -192,7 +192,7 @@ describe("<Chip />", () => {
       const c = screen.getByTestId("c");
       expect(c.className).toMatch(/hover:bg-bg-hover/);
       expect(c.className).toMatch(/hover:border-action(?!-hover)/);
-      expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(c.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
   });
 
@@ -264,7 +264,7 @@ describe("<Chip />", () => {
         { variant: "brand" as const,    bg: /bg-action(?!-hover)/,        border: /border-action(?!-hover)/,        fg: /text-button-fg(?!-hover)/ },
         { variant: "accent" as const,   bg: /bg-accent-brand(?!-hover)/,  border: /border-accent-brand(?!-hover)/,  fg: /text-guardia-gray-900/ },
         { variant: "success" as const,  bg: /bg-signal-green/,            border: /border-signal-green/,            fg: /text-guardia-gray-900/ },
-        { variant: "warning" as const,  bg: /bg-signal-yellow/,           border: /border-signal-yellow/,           fg: /text-guardia-violet-900/ },
+        { variant: "warning" as const,  bg: /bg-signal-yellow/,           border: /border-signal-yellow/,           fg: /text-guardia-purple-900/ },
         { variant: "danger" as const,   bg: /bg-signal-red/,              border: /border-signal-red/,              fg: /text-guardia-gray-900/ },
         { variant: "info" as const,     bg: /bg-signal-blue/,             border: /border-signal-blue/,             fg: /\btext-white\b/ },
       ])("variant=$variant selected uses solid tokens per ADR-003 table", ({ variant, bg, border, fg }) => {
@@ -319,7 +319,7 @@ describe("<Chip />", () => {
     describe("selected: false, appearance: soft (Badge-style tinted resting)", () => {
       it.each([
         { variant: "neutral" as const, bg: /bg-guardia-gray-100/,    fg: /text-guardia-gray-700/ },
-        { variant: "brand" as const,   bg: /bg-guardia-violet-100/,  fg: /text-guardia-violet-700/ },
+        { variant: "brand" as const,   bg: /bg-guardia-purple-100/,  fg: /text-guardia-purple-700/ },
         { variant: "accent" as const,  bg: /bg-guardia-orange-100/,  fg: /text-guardia-orange-700/ },
         { variant: "warning" as const, bg: /bg-guardia-yellow-100/,  fg: /text-guardia-yellow-900/ },
       ])("variant=$variant soft uses tinted bg + matching text shade", ({ variant, bg, fg }) => {
@@ -370,7 +370,7 @@ describe("<Chip />", () => {
           expect(c.className).toMatch(/bg-action(?!-hover)/);
           expect(c.className).toMatch(/text-button-fg(?!-hover)/);
           // Never the soft tint
-          expect(c.className).not.toMatch(/bg-guardia-violet-100/);
+          expect(c.className).not.toMatch(/bg-guardia-purple-100/);
         },
       );
     });

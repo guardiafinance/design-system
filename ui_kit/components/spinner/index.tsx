@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  *
  * Cores:
  *   current → currentColor (default; use a cor do parent)
- *   brand   → guardia-violet-500
+ *   brand   → guardia-purple-500
  *   accent  → guardia-orange-500
  *   white   → #fff (em fundos escuros / sobre actions saturadas)
  *
@@ -64,7 +64,7 @@ const spinnerVariants = cva(
       },
       color: {
         current: "",
-        brand: "text-guardia-violet-500",
+        brand: "text-guardia-purple-500",
         accent: "text-guardia-orange-500",
         white: "text-white",
       },

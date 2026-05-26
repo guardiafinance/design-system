@@ -85,7 +85,7 @@ const chipVariants = cva(
       { selected: true, variant: "brand",    className: "bg-action border-action text-button-fg" },
       { selected: true, variant: "accent",   className: "bg-accent-brand border-accent-brand text-guardia-gray-900" },
       { selected: true, variant: "success",  className: "bg-signal-green border-signal-green text-guardia-gray-900" },
-      { selected: true, variant: "warning",  className: "bg-signal-yellow border-signal-yellow text-guardia-violet-900" },
+      { selected: true, variant: "warning",  className: "bg-signal-yellow border-signal-yellow text-guardia-purple-900" },
       { selected: true, variant: "danger",   className: "bg-signal-red border-signal-red text-guardia-gray-900" },
       { selected: true, variant: "info",     className: "bg-signal-blue border-signal-blue text-white" },
 
@@ -96,7 +96,7 @@ const chipVariants = cva(
       { selected: false, appearance: "solid", variant: "brand",    className: "bg-action border-action text-button-fg" },
       { selected: false, appearance: "solid", variant: "accent",   className: "bg-accent-brand border-accent-brand text-guardia-gray-900" },
       { selected: false, appearance: "solid", variant: "success",  className: "bg-signal-green border-signal-green text-guardia-gray-900" },
-      { selected: false, appearance: "solid", variant: "warning",  className: "bg-signal-yellow border-signal-yellow text-guardia-violet-900" },
+      { selected: false, appearance: "solid", variant: "warning",  className: "bg-signal-yellow border-signal-yellow text-guardia-purple-900" },
       { selected: false, appearance: "solid", variant: "danger",   className: "bg-signal-red border-signal-red text-guardia-gray-900" },
       { selected: false, appearance: "solid", variant: "info",     className: "bg-signal-blue border-signal-blue text-white" },
 
@@ -104,7 +104,7 @@ const chipVariants = cva(
       // Badge's soft palette adopted verbatim (validated). text contrast
       // verified against AA on the corresponding *-100/*-700 pairs.
       { selected: false, appearance: "soft", variant: "neutral",  className: "bg-guardia-gray-100 border-transparent text-guardia-gray-700" },
-      { selected: false, appearance: "soft", variant: "brand",    className: "bg-guardia-violet-100 border-transparent text-guardia-violet-700" },
+      { selected: false, appearance: "soft", variant: "brand",    className: "bg-guardia-purple-100 border-transparent text-guardia-purple-700" },
       { selected: false, appearance: "soft", variant: "accent",   className: "bg-guardia-orange-100 border-transparent text-guardia-orange-700" },
       { selected: false, appearance: "soft", variant: "success",  className: "bg-signal-green-100 border-transparent text-signal-green-700" },
       { selected: false, appearance: "soft", variant: "warning",  className: "bg-guardia-yellow-100 border-transparent text-guardia-yellow-900" },
@@ -144,7 +144,7 @@ const chipVariants = cva(
       { selected: false, interactive: true, appearance: "outline", variant: "info",     className: "hover:bg-signal-blue-outline-hover" },
 
       { selected: false, interactive: true, appearance: "soft", variant: "neutral",  className: "hover:bg-guardia-gray-200" },
-      { selected: false, interactive: true, appearance: "soft", variant: "brand",    className: "hover:bg-guardia-violet-200" },
+      { selected: false, interactive: true, appearance: "soft", variant: "brand",    className: "hover:bg-guardia-purple-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "accent",   className: "hover:bg-guardia-orange-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "success",  className: "hover:bg-signal-green-200" },
       { selected: false, interactive: true, appearance: "soft", variant: "warning",  className: "hover:bg-guardia-yellow-200" },

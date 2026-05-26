@@ -262,7 +262,7 @@ describe("Combobox", () => {
       const cls = trigger.className;
       expect(cls).toContain("hover:border-action");
       expect(cls).toContain("data-[state=open]:border-action");
-      expect(cls).not.toContain("guardia-violet");
+      expect(cls).not.toContain("guardia-purple");
     });
 
     it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
@@ -285,7 +285,7 @@ describe("Combobox", () => {
       const cls = proOpt!.className;
       expect(cls).toContain("bg-action");
       expect(cls).toContain("text-button-fg");
-      expect(cls).not.toContain("guardia-violet");
+      expect(cls).not.toContain("guardia-purple");
     });
 
     it("AC-4: active-not-selected option uses bg-bg-hover/60", async () => {

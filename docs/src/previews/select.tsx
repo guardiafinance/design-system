@@ -94,7 +94,7 @@ export function FormSubmitRow() {
       />
       <button
         type="submit"
-        className="rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white"
+        className="rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white"
       >
         Enviar
       </button>

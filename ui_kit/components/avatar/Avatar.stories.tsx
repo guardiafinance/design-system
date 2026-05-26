@@ -77,7 +77,7 @@ export const FallbackColors: Story = {
   render: () => (
     <div className="flex flex-wrap gap-3">
       {(
-        ["violet", "orange", "pink", "yellow", "green", "blue", "gray"] as const
+        ["purple", "orange", "pink", "yellow", "green", "blue", "gray"] as const
       ).map((color) => (
         <Avatar key={color} size="lg">
           <AvatarFallback color={color}>
@@ -93,7 +93,7 @@ export const Shapes: Story = {
   render: () => (
     <div className="flex gap-4">
       <Avatar size="lg" shape="circle">
-        <AvatarFallback color="violet">FS</AvatarFallback>
+        <AvatarFallback color="purple">FS</AvatarFallback>
       </Avatar>
       <Avatar size="lg" shape="square">
         <AvatarFallback color="orange">FS</AvatarFallback>
@@ -120,7 +120,7 @@ export const FallbackOnly: Story = {
   render: () => (
     <div className="flex gap-3">
       <Avatar size="md">
-        <AvatarFallback color="violet">{initials("Ada Lovelace")}</AvatarFallback>
+        <AvatarFallback color="purple">{initials("Ada Lovelace")}</AvatarFallback>
       </Avatar>
       <Avatar size="md">
         <AvatarFallback color="orange">
@@ -147,7 +147,7 @@ export const Group: Story = {
   render: () => (
     <div className="flex -space-x-2">
       {[
-        { initials: "FS", color: "violet" as const },
+        { initials: "FS", color: "purple" as const },
         { initials: "AL", color: "orange" as const },
         { initials: "GH", color: "pink" as const },
         { initials: "AT", color: "green" as const },
@@ -184,13 +184,13 @@ export const DarkTheme: Story = {
       <div className="flex flex-wrap items-end gap-4">
         {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
           <Avatar key={size} size={size}>
-            <AvatarFallback color="violet">FS</AvatarFallback>
+            <AvatarFallback color="purple">FS</AvatarFallback>
           </Avatar>
         ))}
       </div>
       <div className="flex flex-wrap gap-3">
         {(
-          ["violet", "orange", "pink", "yellow", "green", "blue", "gray"] as const
+          ["purple", "orange", "pink", "yellow", "green", "blue", "gray"] as const
         ).map((color) => (
           <Avatar key={color} size="lg">
             <AvatarFallback color={color}>

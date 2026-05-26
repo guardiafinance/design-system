@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * Compound pattern (Radix-style):
  *   <Avatar size="md" shape="circle">
  *     <AvatarImage src="/u.jpg" alt="Fernando" />
- *     <AvatarFallback color="violet">FS</AvatarFallback>
+ *     <AvatarFallback color="purple">FS</AvatarFallback>
  *     <AvatarStatus status="online" />
  *   </Avatar>
  *
@@ -108,17 +108,17 @@ const avatarFallbackVariants = cva(
   {
     variants: {
       color: {
-        violet: "bg-guardia-violet-500 text-white",
+        purple: "bg-guardia-purple-500 text-white",
         orange: "bg-guardia-orange-500 text-white",
         pink: "bg-guardia-pink-500 text-white",
-        yellow: "bg-guardia-yellow-500 text-guardia-violet-900",
+        yellow: "bg-guardia-yellow-500 text-guardia-purple-900",
         green: "bg-signal-green text-white",
         blue: "bg-signal-blue text-white",
         gray: "bg-guardia-gray-500 text-white",
       },
     },
     defaultVariants: {
-      color: "violet",
+      color: "purple",
     },
   },
 );

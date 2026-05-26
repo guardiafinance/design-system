@@ -47,7 +47,7 @@ virar código.
 | Gray   | Estabilidade e integridade    | #D7D7D9 | #A6A6AA | #3A3A44 | #28282F | #17171B |
 
 Tokens CSS: `--guardia-<cor>-<tom>` (ex: `--guardia-orange-500`).
-Utilitárias Tailwind: `bg-guardia-orange-500`, `text-guardia-violet-700`, etc.
+Utilitárias Tailwind: `bg-guardia-orange-500`, `text-guardia-purple-700`, etc.
 
 ### 2.2 Mono
 
@@ -119,9 +119,9 @@ naturalmente — listado explicitamente abaixo.
 escolha combinações AAA:
 
 - `text-foreground` sobre `bg-background` → 11.24:1 (AAA)
-- `bg-guardia-violet-500 text-white` → 7.85:1 (AAA) — Button `variant="secondary"`
+- `bg-guardia-purple-500 text-white` → 7.85:1 (AAA) — Button `variant="secondary"`
 - `bg-guardia-orange-700 text-white` → 7.5:1 (AAA)
-- `bg-signal-yellow text-guardia-violet-900` → 13:1 (AAA) — Badge `warning solid`
+- `bg-signal-yellow text-guardia-purple-900` → 13:1 (AAA) — Badge `warning solid`
 
 **Tokens que NÃO atingem AAA** (atendem AA para texto grande ≥ 18pt ou ≥ 14pt bold):
 

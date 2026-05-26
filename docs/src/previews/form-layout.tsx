@@ -60,7 +60,7 @@ export function StackedRow() {
         <button className="rounded-md border border-border px-3 py-2 text-sm">
           Cancelar
         </button>
-        <button className="rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white">
+        <button className="rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white">
           Salvar
         </button>
       </FormLayout.Actions>
@@ -110,7 +110,7 @@ export function SplitRow() {
         <button className="rounded-md border border-border px-3 py-2 text-sm">
           Cancelar
         </button>
-        <button className="rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white">
+        <button className="rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white">
           Salvar alterações
         </button>
       </FormLayout.Actions>
@@ -207,10 +207,10 @@ export function CompactFiltersRow() {
         </FormLayout.Row>
       </FormLayout.Section>
       <FormLayout.Actions align="between">
-        <button className="text-sm text-guardia-violet-700 underline">
+        <button className="text-sm text-guardia-purple-700 underline">
           Limpar filtros
         </button>
-        <button className="rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white">
+        <button className="rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white">
           Aplicar
         </button>
       </FormLayout.Actions>

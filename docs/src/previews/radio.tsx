@@ -142,7 +142,7 @@ export function FormSubmitRow() {
       </fieldset>
       <button
         type="submit"
-        className="self-start rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white"
+        className="self-start rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white"
       >
         Confirmar
       </button>

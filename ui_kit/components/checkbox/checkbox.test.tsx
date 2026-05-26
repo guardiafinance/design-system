@@ -107,7 +107,7 @@ describe("Checkbox", () => {
     expect(cb.className).toMatch(/data-\[state=checked\]:bg-action/);
     expect(cb.className).toMatch(/data-\[state=checked\]:border-action/);
     expect(cb.className).toMatch(/data-\[state=checked\]:text-button-fg/);
-    expect(cb.className).not.toMatch(/guardia-violet-(100|500|700)/);
+    expect(cb.className).not.toMatch(/guardia-purple-(100|500|700)/);
     expect(cb.className).not.toMatch(/\btext-white\b/);
   });
 
@@ -119,11 +119,11 @@ describe("Checkbox", () => {
     expect(cb.className).toMatch(/data-\[state=indeterminate\]:text-button-fg/);
   });
 
-  it("brand-aware hover: border-action (sem guardia-violet hardcoded)", () => {
+  it("brand-aware hover: border-action (sem guardia-purple hardcoded)", () => {
     render(<Checkbox />);
     const cb = screen.getByRole("checkbox");
     expect(cb.className).toMatch(/hover:border-action/);
-    expect(cb.className).not.toMatch(/hover:border-guardia-violet-500/);
+    expect(cb.className).not.toMatch(/hover:border-guardia-purple-500/);
   });
 
   it("focus-visible:ring laranja com offset", () => {

@@ -243,7 +243,7 @@ describe("Radio", () => {
   });
 
   describe("brand-aware tokens (per #125)", () => {
-    it("mark uses border-action on hover + checked (no guardia-violet hardcoded)", () => {
+    it("mark uses border-action on hover + checked (no guardia-purple hardcoded)", () => {
       render(
         <RadioGroup>
           <Radio value="x" />
@@ -252,7 +252,7 @@ describe("Radio", () => {
       const r = screen.getByRole("radio");
       expect(r.className).toMatch(/hover:border-action/);
       expect(r.className).toMatch(/data-\[state=checked\]:border-action/);
-      expect(r.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(r.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
 
     it("indicator dot uses bg-action (themed: violet light / orange dark)", () => {
@@ -265,7 +265,7 @@ describe("Radio", () => {
       const dot = container.querySelector('[role="radio"] span[aria-hidden="true"]');
       expect(dot).not.toBeNull();
       expect(dot!.className).toMatch(/\bbg-action\b/);
-      expect(dot!.className).not.toMatch(/bg-guardia-violet-500/);
+      expect(dot!.className).not.toMatch(/bg-guardia-purple-500/);
     });
   });
 

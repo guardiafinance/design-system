@@ -64,7 +64,7 @@ export function ColorsRow() {
 
 export function OnDarkRow() {
   return (
-    <div className="flex items-center gap-6 rounded-md bg-guardia-violet-900 p-6">
+    <div className="flex items-center gap-6 rounded-md bg-guardia-purple-900 p-6">
       <Spinner color="white" size="lg" />
       <Spinner color="white" size="xl" />
     </div>
@@ -74,7 +74,7 @@ export function OnDarkRow() {
 export function CurrentColorRow() {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 text-guardia-violet-500">
+      <div className="flex items-center gap-2 text-guardia-purple-500">
         <Spinner color="current" size="sm" />
         <span className="text-sm">Herda violet (texto roxo)</span>
       </div>
@@ -93,7 +93,7 @@ export function CurrentColorRow() {
 export function InlineRow() {
   return (
     <div className="flex flex-col gap-3 text-sm">
-      <div className="flex items-center gap-2 text-guardia-violet-500">
+      <div className="flex items-center gap-2 text-guardia-purple-500">
         <Spinner color="current" size="sm" /> Conciliando 248 lançamentos…
       </div>
       <div className="flex items-center gap-2 text-guardia-orange-500">
