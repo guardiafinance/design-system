@@ -31,7 +31,7 @@ export function ShapesRow() {
   return (
     <>
       <Avatar size="lg" shape="circle">
-        <AvatarFallback color="violet">FS</AvatarFallback>
+        <AvatarFallback color="purple">FS</AvatarFallback>
       </Avatar>
       <Avatar size="lg" shape="square">
         <AvatarFallback color="orange">FS</AvatarFallback>

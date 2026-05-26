@@ -22,7 +22,7 @@ describe("<Badge />", () => {
 
   it("applies each variant in soft appearance", () => {
     const cases = [
-      { variant: "brand",    bg: "bg-guardia-violet-100",  fg: "text-guardia-violet-700" },
+      { variant: "brand",    bg: "bg-guardia-purple-100",  fg: "text-guardia-purple-700" },
       { variant: "accent",   bg: "bg-guardia-orange-100",  fg: "text-guardia-orange-700" },
       { variant: "warning",  bg: "bg-guardia-yellow-100",  fg: "text-guardia-yellow-900" },
     ] as const;
@@ -40,7 +40,7 @@ describe("<Badge />", () => {
   it("applies solid appearance with white text (brand: violet-500 + white = 12.47:1 AAA)", () => {
     render(<Badge appearance="solid" variant="brand" data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
-    expect(el).toHaveClass("bg-guardia-violet-500");
+    expect(el).toHaveClass("bg-guardia-purple-500");
     expect(el).toHaveClass("text-white");
   });
 
@@ -52,7 +52,7 @@ describe("<Badge />", () => {
     { variant: "accent",  bg: "bg-guardia-orange-500", fg: "text-guardia-gray-900",   reason: "text-white over orange-500 = 3.15:1 fails AA-Normal" },
     { variant: "success", bg: "bg-signal-green",       fg: "text-guardia-gray-900",   reason: "text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large" },
     { variant: "danger",  bg: "bg-signal-red",         fg: "text-guardia-gray-900",   reason: "text-white over signal-red = 3.66:1 fails AA-Normal" },
-    { variant: "warning", bg: "bg-signal-yellow",      fg: "text-guardia-violet-900", reason: "text-white over signal-yellow = 1.33:1 fails everything" },
+    { variant: "warning", bg: "bg-signal-yellow",      fg: "text-guardia-purple-900", reason: "text-white over signal-yellow = 1.33:1 fails everything" },
   ] as const)("solid variant=$variant uses $fg ($reason)", ({ variant, bg, fg }) => {
     render(<Badge appearance="solid" variant={variant} data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
@@ -96,7 +96,7 @@ describe("<Badge />", () => {
   // fg on outline mode.
   it.each([
     { variant: "neutral", border: "border-border-strong",     originalFg: "text-guardia-gray-700",   reason: "text-guardia-gray-700 over dark bg = 1.22:1 fails AA-Normal" },
-    { variant: "brand",   border: "border-guardia-violet-500", originalFg: "text-guardia-violet-500", reason: "text-guardia-violet-500 over dark bg = 1.43:1 fails AA-Normal" },
+    { variant: "brand",   border: "border-guardia-purple-500", originalFg: "text-guardia-purple-500", reason: "text-guardia-purple-500 over dark bg = 1.43:1 fails AA-Normal" },
     { variant: "accent",  border: "border-guardia-orange-500", originalFg: "text-guardia-orange-500", reason: "text-guardia-orange-500 over light bg = 3.07:1 fails AA-Normal" },
     { variant: "success", border: "border-signal-green",       originalFg: "text-signal-green",       reason: "text-signal-green over light bg = 2.37:1 fails AA-Normal" },
     { variant: "warning", border: "border-signal-yellow",      originalFg: "text-guardia-yellow-900", reason: "text-guardia-yellow-900 over dark bg = 2.26:1 fails AA-Normal" },

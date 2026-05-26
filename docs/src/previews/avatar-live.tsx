@@ -14,7 +14,7 @@ const DEFAULT_CODE = `<Avatar size="lg">
     src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=128&h=128&fit=crop"
     alt="Fernando"
   />
-  <AvatarFallback color="violet">
+  <AvatarFallback color="purple">
     {initials("Fernando Seguim")}
   </AvatarFallback>
   <AvatarStatus status="online" />

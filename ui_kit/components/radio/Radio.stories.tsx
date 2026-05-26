@@ -122,7 +122,7 @@ export const InsideForm: Story = {
   parameters: {
     a11y: {
       // WHY: story renders Radio descriptions in `text-fg-muted` and a raw
-      // Violet 500 submit button (.bg-guardia-violet-500) — both inside the
+      // Violet 500 submit button (.bg-guardia-purple-500) — both inside the
       // lex-brand-colors permissive surfaces (button 3:1 / muted caption
       // deferred to follow-up).
       config: { rules: [{ id: "color-contrast", enabled: false }] },
@@ -147,7 +147,7 @@ export const InsideForm: Story = {
       </fieldset>
       <button
         type="submit"
-        className="self-start rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white"
+        className="self-start rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white"
       >
         Confirmar
       </button>

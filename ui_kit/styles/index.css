@@ -55,11 +55,11 @@
   --guardia-pink-900: #572735;
 
   /* Violet — profundidade e excelência */
-  --guardia-violet-100: #DBD0E1;
-  --guardia-violet-200: #AF97BD;
-  --guardia-violet-500: #4F186D;
-  --guardia-violet-700: #37104C;
-  --guardia-violet-900: #1F092B;
+  --guardia-purple-100: #DBD0E1;
+  --guardia-purple-200: #AF97BD;
+  --guardia-purple-500: #4F186D;
+  --guardia-purple-700: #37104C;
+  --guardia-purple-900: #1F092B;
 
   /* Gray — estabilidade e integridade */
   --guardia-gray-100: #D7D7D9;
@@ -129,27 +129,27 @@
   --bg: var(--mono-white);
   --bg-subtle: #F7F5F9;
   --surface: #FFFFFF;
-  --fg: var(--guardia-violet-500);
+  --fg: var(--guardia-purple-500);
   --fg-muted: var(--guardia-gray-500);
   --fg-subtle: var(--guardia-gray-200);
 
   /* Borders & rings (Guardia vocab) */
   --border-guardia: #E7E3EC;
-  --border-strong: var(--guardia-violet-200);
+  --border-strong: var(--guardia-purple-200);
   --ring-guardia: var(--guardia-orange-500);
 
   /* Links */
-  --link: var(--guardia-violet-700);
+  --link: var(--guardia-purple-700);
   --link-hover: var(--guardia-orange-500);
 
   /* Actions */
-  --action: var(--guardia-violet-500);
-  --action-hover: var(--guardia-violet-700);
+  --action: var(--guardia-purple-500);
+  --action-hover: var(--guardia-purple-700);
   --accent-brand: var(--guardia-orange-500);
   --accent-brand-hover: var(--guardia-orange-700);
 
   /* Surface hover for ghost/outline interactive elements — soft brand tint */
-  --bg-hover: var(--guardia-violet-100);
+  --bg-hover: var(--guardia-purple-100);
 
   /* State */
   --success: var(--signal-green);
@@ -236,7 +236,7 @@
   --chart-3: var(--signal-red);
   --chart-4: var(--signal-blue);
   --chart-5: var(--guardia-orange-500);
-  --chart-6: var(--guardia-violet-500);
+  --chart-6: var(--guardia-purple-500);
   --chart-7: var(--guardia-pink-500);
   --chart-8: var(--guardia-gray-500);
 }
@@ -267,8 +267,8 @@
 
   --action: var(--guardia-orange-500);
   --action-hover: var(--guardia-orange-700);
-  --accent-brand: var(--guardia-violet-200);    /* Violeta sobre dark: 200 (#AF97BD) */
-  --accent-brand-hover: var(--guardia-violet-100);
+  --accent-brand: var(--guardia-purple-200);    /* Violeta sobre dark: 200 (#AF97BD) */
+  --accent-brand-hover: var(--guardia-purple-100);
 
   /* Surface hover in dark: Surface 2 (gray-700) — subtle and legible */
   --bg-hover: var(--guardia-gray-700);
@@ -325,7 +325,7 @@
   --chart-3: var(--signal-red);           /* #FF3131 — negativo */
   --chart-4: var(--signal-blue);          /* #004AAD — informativo */
   --chart-5: var(--guardia-orange-500);   /* #E07400 — destaque escasso */
-  --chart-6: var(--guardia-violet-500);   /* #4F186D — autoridade */
+  --chart-6: var(--guardia-purple-500);   /* #4F186D — autoridade */
   --chart-7: var(--guardia-pink-500);     /* #DB6286 — acolhimento */
   --chart-8: var(--guardia-gray-500);     /* #3A3A44 — neutro/estável */
 }
@@ -501,11 +501,11 @@
   --color-guardia-pink-700: var(--guardia-pink-700);
   --color-guardia-pink-900: var(--guardia-pink-900);
 
-  --color-guardia-violet-100: var(--guardia-violet-100);
-  --color-guardia-violet-200: var(--guardia-violet-200);
-  --color-guardia-violet-500: var(--guardia-violet-500);
-  --color-guardia-violet-700: var(--guardia-violet-700);
-  --color-guardia-violet-900: var(--guardia-violet-900);
+  --color-guardia-purple-100: var(--guardia-purple-100);
+  --color-guardia-purple-200: var(--guardia-purple-200);
+  --color-guardia-purple-500: var(--guardia-purple-500);
+  --color-guardia-purple-700: var(--guardia-purple-700);
+  --color-guardia-purple-900: var(--guardia-purple-900);
 
   --color-guardia-gray-100: var(--guardia-gray-100);
   --color-guardia-gray-200: var(--guardia-gray-200);
@@ -517,10 +517,10 @@
   --color-brand-orange: var(--guardia-orange-500);
   --color-brand-orange-strong: var(--guardia-orange-700);
   --color-brand-orange-soft: var(--guardia-orange-200);
-  --color-brand-purple: var(--guardia-violet-500);
-  --color-brand-purple-strong: var(--guardia-violet-700);
-  --color-brand-bg-dark: var(--guardia-violet-900);
-  --color-brand-fg-light: var(--guardia-violet-100);
+  --color-brand-purple: var(--guardia-purple-500);
+  --color-brand-purple-strong: var(--guardia-purple-700);
+  --color-brand-bg-dark: var(--guardia-purple-900);
+  --color-brand-fg-light: var(--guardia-purple-100);
 
   /* Signal (data-viz only) */
   --color-signal-green: var(--signal-green);

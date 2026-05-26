@@ -255,11 +255,11 @@ describe("Select", () => {
   });
 
   describe("brand-aware tokens (Tech Task #125)", () => {
-    it("trigger usa border-action no hover (sem guardia-violet hardcoded)", () => {
+    it("trigger usa border-action no hover (sem guardia-purple hardcoded)", () => {
       render(<Select options={PLANOS} />);
       const trigger = screen.getByRole("combobox");
       expect(trigger.className).toMatch(/hover:border-action/);
-      expect(trigger.className).not.toMatch(/hover:border-guardia-violet-500/);
+      expect(trigger.className).not.toMatch(/hover:border-guardia-purple-500/);
     });
 
     it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
@@ -276,11 +276,11 @@ describe("Select", () => {
       const trigger = screen.getByRole("combobox");
       expect(trigger.className).toMatch(/data-\[state=open\]:border-action/);
       expect(trigger.className).not.toMatch(
-        /data-\[state=open\]:border-guardia-violet-500/,
+        /data-\[state=open\]:border-guardia-purple-500/,
       );
     });
 
-    it("option selecionada usa bg-bg-hover + text-action (sem guardia-violet hardcoded)", async () => {
+    it("option selecionada usa bg-bg-hover + text-action (sem guardia-purple hardcoded)", async () => {
       render(<Select options={PLANOS} defaultValue="pro" />);
       await userEvent.click(screen.getByRole("combobox"));
       const proOpt = screen
@@ -289,11 +289,11 @@ describe("Select", () => {
         .find((el): el is HTMLElement => el != null)!;
       expect(proOpt.className).toMatch(/bg-bg-hover/);
       expect(proOpt.className).toMatch(/text-action/);
-      expect(proOpt.className).not.toMatch(/bg-guardia-violet-100/);
-      expect(proOpt.className).not.toMatch(/text-guardia-violet-700/);
+      expect(proOpt.className).not.toMatch(/bg-guardia-purple-100/);
+      expect(proOpt.className).not.toMatch(/text-guardia-purple-700/);
     });
 
-    it("option ativa (não selecionada) usa bg-bg-hover/50 (sem guardia-violet hardcoded)", async () => {
+    it("option ativa (não selecionada) usa bg-bg-hover/50 (sem guardia-purple hardcoded)", async () => {
       const user = userEvent.setup();
       /* defaultValue=pro mantém Starter como ativo via hover/keyboard */
       render(<Select options={PLANOS} defaultValue="pro" />);
@@ -312,7 +312,7 @@ describe("Select", () => {
         .map((el) => el.closest("[role=option]"))
         .find((el): el is HTMLElement => el != null)!;
       expect(starter.className).toMatch(/bg-bg-hover\/50/);
-      expect(starter.className).not.toMatch(/bg-guardia-violet-100\/50/);
+      expect(starter.className).not.toMatch(/bg-guardia-purple-100\/50/);
     });
   });
 

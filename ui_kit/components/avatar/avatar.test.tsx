@@ -146,14 +146,14 @@ describe("<AvatarImage />", () => {
 });
 
 describe("<AvatarFallback />", () => {
-  it("applies the default (violet) color", () => {
+  it("applies the default (purple) color", () => {
     render(<AvatarFallback>FS</AvatarFallback>);
-    expect(screen.getByText("FS")).toHaveClass("bg-guardia-violet-500");
+    expect(screen.getByText("FS")).toHaveClass("bg-guardia-purple-500");
   });
 
   it("applies each brand color token", () => {
     const colors = [
-      "violet",
+      "purple",
       "orange",
       "pink",
       "yellow",

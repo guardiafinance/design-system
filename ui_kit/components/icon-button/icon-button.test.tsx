@@ -205,7 +205,7 @@ describe("<IconButton />", () => {
       const b = screen.getByTestId("b");
       expect(b.className).toMatch(/hover:bg-bg-hover/);
       expect(b.className).toMatch(/hover:border-action/);
-      expect(b.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(b.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
 
     it("ghost variant uses bg-bg-hover + text-action-hover on hover", () => {
@@ -217,7 +217,7 @@ describe("<IconButton />", () => {
       const b = screen.getByTestId("b");
       expect(b.className).toMatch(/hover:bg-bg-hover/);
       expect(b.className).toMatch(/hover:text-action-hover/);
-      expect(b.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(b.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
   });
 

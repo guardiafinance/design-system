@@ -133,7 +133,7 @@ export function FormSubmitRow() {
       />
       <button
         type="submit"
-        className="rounded-md bg-guardia-violet-500 px-3 py-2 text-sm text-white hover:bg-guardia-violet-700"
+        className="rounded-md bg-guardia-purple-500 px-3 py-2 text-sm text-white hover:bg-guardia-purple-700"
       >
         Enviar
       </button>

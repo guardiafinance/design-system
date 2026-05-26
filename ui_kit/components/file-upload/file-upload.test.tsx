@@ -134,7 +134,7 @@ describe("FileUpload — base", () => {
     fireEvent.dragEnter(label);
     expect(label.className).toMatch(/border-action/);
     expect(label.className).toMatch(/bg-bg-hover/);
-    expect(label.className).not.toMatch(/guardia-violet-(100|200|500|700)/);
+    expect(label.className).not.toMatch(/guardia-purple-(100|200|500|700)/);
   });
 });
 
@@ -144,8 +144,8 @@ describe("FileUpload — brand-aware tokens", () => {
     const label = container.querySelector("label")!;
     expect(label.className).toMatch(/hover:bg-bg-hover/);
     expect(label.className).toMatch(/hover:border-action/);
-    expect(label.className).not.toMatch(/hover:bg-guardia-violet-100/);
-    expect(label.className).not.toMatch(/hover:border-guardia-violet-(200|500)/);
+    expect(label.className).not.toMatch(/hover:bg-guardia-purple-100/);
+    expect(label.className).not.toMatch(/hover:border-guardia-purple-(200|500)/);
   });
 
   it("variant=button hover usa bg-bg-hover + border-action", () => {
@@ -153,8 +153,8 @@ describe("FileUpload — brand-aware tokens", () => {
     const button = screen.getByRole("button");
     expect(button.className).toMatch(/hover:bg-bg-hover/);
     expect(button.className).toMatch(/hover:border-action/);
-    expect(button.className).not.toMatch(/hover:bg-guardia-violet-100/);
-    expect(button.className).not.toMatch(/hover:border-guardia-violet-500/);
+    expect(button.className).not.toMatch(/hover:bg-guardia-purple-100/);
+    expect(button.className).not.toMatch(/hover:border-guardia-purple-500/);
   });
 
   it("variant=button gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
@@ -168,11 +168,11 @@ describe("FileUpload — brand-aware tokens", () => {
     expect(button.className).not.toMatch(/disabled:hover:/);
   });
 
-  it("variant=button icon usa text-action (sem guardia-violet hardcoded)", () => {
+  it("variant=button icon usa text-action (sem guardia-purple hardcoded)", () => {
     render(<FileUpload variant="button" />);
     const icon = screen.getByRole("button").querySelector("span[aria-hidden]")!;
     expect(icon.className).toMatch(/\btext-action\b/);
-    expect(icon.className).not.toMatch(/text-guardia-violet-500/);
+    expect(icon.className).not.toMatch(/text-guardia-purple-500/);
   });
 
   it("uploading badge usa bg-bg-hover + text-action", () => {
@@ -186,10 +186,10 @@ describe("FileUpload — brand-aware tokens", () => {
     const badge = container.querySelector("li[data-status='uploading'] span[aria-hidden]")!;
     expect(badge.className).toMatch(/bg-bg-hover/);
     expect(badge.className).toMatch(/\btext-action\b/);
-    expect(badge.className).not.toMatch(/guardia-violet-(100|500)/);
+    expect(badge.className).not.toMatch(/guardia-purple-(100|500)/);
   });
 
-  it("progressbar fill usa bg-action (sem guardia-violet hardcoded)", () => {
+  it("progressbar fill usa bg-action (sem guardia-purple hardcoded)", () => {
     const { container } = render(
       <FileUpload
         files={[
@@ -199,7 +199,7 @@ describe("FileUpload — brand-aware tokens", () => {
     );
     const fill = container.querySelector("[role='progressbar'] > span")!;
     expect(fill.className).toMatch(/\bbg-action\b/);
-    expect(fill.className).not.toMatch(/bg-guardia-violet-500/);
+    expect(fill.className).not.toMatch(/bg-guardia-purple-500/);
   });
 });
 

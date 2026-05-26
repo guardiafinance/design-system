@@ -44,7 +44,7 @@ const badgeVariants = cva(
     compoundVariants: [
       /* ── SOFT (default) ───────────────────────────── */
       { appearance: "soft", variant: "neutral",  className: "bg-guardia-gray-100 text-guardia-gray-700" },
-      { appearance: "soft", variant: "brand",    className: "bg-guardia-violet-100 text-guardia-violet-700" },
+      { appearance: "soft", variant: "brand",    className: "bg-guardia-purple-100 text-guardia-purple-700" },
       { appearance: "soft", variant: "accent",   className: "bg-guardia-orange-100 text-guardia-orange-700" },
       { appearance: "soft", variant: "success",  className: "bg-[color-mix(in_oklab,var(--signal-green)_18%,white)] text-[color-mix(in_oklab,var(--signal-green)_52%,black)]" },
       { appearance: "soft", variant: "warning",  className: "bg-guardia-yellow-100 text-guardia-yellow-900" },
@@ -57,15 +57,15 @@ const badgeVariants = cva(
        *   accent  → text-guardia-gray-900 (text-white over orange-500 = 3.15:1 fails AA-Normal)
        *   success → text-guardia-gray-900 (text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large)
        *   danger  → text-guardia-gray-900 (text-white over signal-red   = 3.66:1 fails AA-Normal)
-       *   warning → text-guardia-violet-900 (text-white over signal-yellow = 1.33:1 fails everything)
+       *   warning → text-guardia-purple-900 (text-white over signal-yellow = 1.33:1 fails everything)
        * neutral / brand / info keep the appearance.solid default `text-white`
        * (all ≥ 8.13:1).
        */
       { appearance: "solid", variant: "neutral",  className: "bg-guardia-gray-500" },
-      { appearance: "solid", variant: "brand",    className: "bg-guardia-violet-500" },
+      { appearance: "solid", variant: "brand",    className: "bg-guardia-purple-500" },
       { appearance: "solid", variant: "accent",   className: "bg-guardia-orange-500 text-guardia-gray-900" },
       { appearance: "solid", variant: "success",  className: "bg-signal-green text-guardia-gray-900" },
-      { appearance: "solid", variant: "warning",  className: "bg-signal-yellow text-guardia-violet-900" },
+      { appearance: "solid", variant: "warning",  className: "bg-signal-yellow text-guardia-purple-900" },
       { appearance: "solid", variant: "danger",   className: "bg-signal-red text-guardia-gray-900" },
       { appearance: "solid", variant: "info",     className: "bg-signal-blue" },
 
@@ -81,7 +81,7 @@ const badgeVariants = cva(
        *
        * Variant-tinted text fails AA-Normal in at least one theme:
        *   neutral  text-guardia-gray-700   light 14.27:1 pass | dark  1.22:1 FAIL
-       *   brand    text-guardia-violet-500 light 12.16:1 pass | dark  1.43:1 FAIL
+       *   brand    text-guardia-purple-500 light 12.16:1 pass | dark  1.43:1 FAIL
        *   accent   text-guardia-orange-500 light  3.07:1 FAIL | dark  5.67:1 pass
        *   success  text-signal-green       light  2.37:1 FAIL | dark  7.34:1 pass
        *   warning  text-guardia-yellow-900 light  7.71:1 pass | dark  2.26:1 FAIL
@@ -96,7 +96,7 @@ const badgeVariants = cva(
        * is 3:1, and border-strong remains the chosen neutral mark for neutral.
        */
       { appearance: "outline", variant: "neutral",  className: "border-border-strong text-foreground" },
-      { appearance: "outline", variant: "brand",    className: "border-guardia-violet-500 text-foreground" },
+      { appearance: "outline", variant: "brand",    className: "border-guardia-purple-500 text-foreground" },
       { appearance: "outline", variant: "accent",   className: "border-guardia-orange-500 text-foreground" },
       { appearance: "outline", variant: "success",  className: "border-signal-green text-foreground" },
       { appearance: "outline", variant: "warning",  className: "border-signal-yellow text-foreground" },

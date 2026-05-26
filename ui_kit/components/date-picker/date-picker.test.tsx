@@ -207,12 +207,12 @@ describe("DatePicker", () => {
   });
 
   describe("brand-aware tokens", () => {
-    it("trigger usa border-action no hover + estado aberto (sem guardia-violet hardcoded)", () => {
+    it("trigger usa border-action no hover + estado aberto (sem guardia-purple hardcoded)", () => {
       render(<DatePicker />);
       const trigger = screen.getByRole("button", { name: "Selecionar data" });
       expect(trigger.className).toMatch(/hover:border-action/);
       expect(trigger.className).toMatch(/data-\[state=open\]:border-action/);
-      expect(trigger.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(trigger.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
 
     it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
@@ -242,11 +242,11 @@ describe("DatePicker", () => {
       expect(gridcell).not.toBeNull();
       expect(gridcell?.className ?? "").toMatch(/bg-action/);
       expect(gridcell?.className ?? "").toMatch(/text-button-fg/);
-      expect(gridcell?.className ?? "").not.toMatch(/guardia-violet-500/);
+      expect(gridcell?.className ?? "").not.toMatch(/guardia-purple-500/);
       expect(gridcell?.className ?? "").not.toMatch(/\btext-white\b/);
     });
 
-    it("botão 'Hoje' usa text-action + hover:bg-bg-hover (sem guardia-violet hardcoded)", async () => {
+    it("botão 'Hoje' usa text-action + hover:bg-bg-hover (sem guardia-purple hardcoded)", async () => {
       render(<DatePicker />);
       await userEvent.click(
         screen.getByRole("button", { name: "Selecionar data" }),
@@ -254,7 +254,7 @@ describe("DatePicker", () => {
       const today = await screen.findByRole("button", { name: "Hoje" });
       expect(today.className).toMatch(/text-action/);
       expect(today.className).toMatch(/hover:bg-bg-hover/);
-      expect(today.className).not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(today.className).not.toMatch(/guardia-purple-(100|500|700)/);
     });
   });
 

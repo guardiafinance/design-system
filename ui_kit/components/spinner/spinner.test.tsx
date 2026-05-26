@@ -53,7 +53,7 @@ describe("Spinner", () => {
 
   it("color=brand aplica violet-500", () => {
     render(<Spinner color="brand" />);
-    expect(screen.getByRole("status")).toHaveClass("text-guardia-violet-500");
+    expect(screen.getByRole("status")).toHaveClass("text-guardia-purple-500");
   });
 
   it("color=accent aplica orange-500", () => {
@@ -69,7 +69,7 @@ describe("Spinner", () => {
   it("color=current não aplica nenhuma classe de cor", () => {
     render(<Spinner color="current" />);
     const el = screen.getByRole("status");
-    expect(el).not.toHaveClass("text-guardia-violet-500");
+    expect(el).not.toHaveClass("text-guardia-purple-500");
     expect(el).not.toHaveClass("text-guardia-orange-500");
     expect(el).not.toHaveClass("text-white");
   });
