@@ -140,6 +140,84 @@ Merge requirements:
 
 After merge: `main` is updated; the branch is deleted.
 
+## Author identity: human vs warriors-default
+
+Ahrena projects choose how warrior-driven commits and PRs are attributed: as the human contributor (default) or as the fleet-default GitHub App `[bot]` identity (opt-in).
+
+### Default mode — human author
+
+When `warriors_default_author.enabled` is `false` (or the section is absent from `.ahrena/.directives`), warriors commit using the developer's git identity and GPG key, exactly as if a human typed the commands. `git log --pretty='%an <%ae>'` shows the developer; PRs appear under the developer's GitHub login. This is the historical behavior; upgrading the framework does not change it.
+
+| Aspect | Default (human author) |
+|--------|------------------------|
+| Commit author | Developer's `user.name` / `user.email` |
+| Commit signature | Developer's GPG key (per `lex-signed-commits`) |
+| PR author on GitHub | Developer's GitHub login |
+| `gh pr view` | `Author: <developer-login>` |
+| Audit trail | Each contributor surfaces individually in commits and PRs |
+
+### Opt-in mode — warriors default author
+
+When `warriors_default_author.enabled` is `true`, the warriors listed in `warriors_default_author.apply_to` invoke `scripts/ahrena-auth.sh` before every `git commit` / `gh pr create`. The script exchanges the Ahrena GitHub App credentials for a short-lived installation token and exports the App's `[bot]` identity to the calling shell:
+
+```
+GH_TOKEN_AHRENA_WARRIORS_DEFAULT=<installation-token>
+GIT_AUTHOR_NAME=ahrena-bot[bot]
+GIT_AUTHOR_EMAIL=<numeric-user-id>+ahrena-bot[bot]@users.noreply.github.com
+GIT_COMMITTER_NAME=ahrena-bot[bot]
+GIT_COMMITTER_EMAIL=<same as author>
+```
+
+Commits produced under this identity are signed server-side by the App's installation token (no GPG key on the developer's machine needed for the warriors-default identity). When `warriors_default_author.commit_co_author` is `human`, the commit body carries `Co-authored-by: <human name> <human email>` so the individual driver of the work remains traceable.
+
+| Aspect | Opt-in (warriors default author) |
+|--------|----------------------------------|
+| Commit author | `ahrena-bot[bot]` |
+| Commit signature | Server-signed by the GitHub App installation token |
+| PR author on GitHub | `ahrena-bot[bot]` |
+| `gh pr view` | `Author: ahrena-bot[bot]` |
+| Co-author trailer | `Co-authored-by: <human>` (when `commit_co_author=human`) |
+| Audit trail | Agent vs human is answerable from the GitHub UI without parsing trailers |
+
+### Trade-offs
+
+- **Warriors default author** — clearer separation between human-driven and agent-driven contributions, simpler audit trail at the identity layer, no GPG on the developer's machine for agent commits, and a clean signal for cost-tracking and PR-review tooling that already recognizes `[bot]` identities. Requires registering the fleet-default GitHub App and provisioning the credentials.
+- **Human author** — preserves per-contributor recognition in `git log`, keeps the existing GPG flow, and removes one moving piece for solo developers or projects where the human is the only sender. No additional GitHub App registration required.
+
+### Per-warrior opt-out
+
+`warriors_default_author.apply_to` is a list of warrior names. Only the warriors in that list call the auth resolver; warriors omitted from the list keep human-author behavior even when the master switch is on. This allows partial adoption (for example, warriors-default identity for `apollo` and `hephaestus` while `iris` keeps the developer's identity).
+
+### Out-of-band commits
+
+A direct human-typed commit (no warrior involvement) keeps the developer's identity regardless of the directive — the auth resolver only fires when a warrior wraps the commit. The directive governs warrior attribution, not raw `git commit` invocations. Warriors that own their own GitHub App (e.g., Argos consumes `AHRENA_WARRIOR_ARGOS_GH_*`) do not depend on this default identity — they answer to their specific App.
+
+### Credential storage
+
+The GitHub App credentials follow the same storage convention as `scripts/argos/auth.sh`. The auth resolver consults each source in order and accepts any subset of values per source — APP_ID can come from env while the private key comes from the Keychain, etc.
+
+| Source | Used when |
+|--------|-----------|
+| Environment variables (`AHRENA_WARRIORS_DEFAULT_GH_APP_ID`, `AHRENA_WARRIORS_DEFAULT_GH_INSTALLATION_ID`, `AHRENA_WARRIORS_DEFAULT_GH_PRIVATE_KEY_PATH`) | CI / non-interactive environments |
+| `.env.local` at the repository root | Local development on Linux/Windows |
+| macOS Keychain (three `security` entries listed below) | Local development on macOS — keys never live on disk |
+
+#### macOS Keychain setup
+
+On macOS, store each credential as a separate `security` entry. The auth resolver fills any variable still missing after `.env.local` + env have been loaded:
+
+```bash
+security add-generic-password -s ahrena-warriors-default-gh-app-id -a "$USER" -w "<APP_ID>"
+security add-generic-password -s ahrena-warriors-default-gh-installation-id -a "$USER" -w "<INSTALLATION_ID>"
+security add-generic-password -s ahrena-warriors-default-gh-private-key -a "$USER" -w "$(cat /path/to/key.pem)"
+```
+
+The `ahrena-warriors-default-gh-private-key` entry stores the PEM content verbatim — the auth resolver materializes it into a chmod-600 tempfile at signing time and removes the tempfile via the `_ahrena_auth_cleanup` trap on every exit path. The private key never persists on disk under the operator's `$HOME`.
+
+On Linux / Windows / non-macOS hosts, the `security` CLI is absent; the Keychain block short-circuits via `command -v security` and the resolver falls back to env / `.env.local` without error.
+
+Credentials are NEVER committed to the repository; the auth resolver materializes them only into the calling shell's environment, never to stdout or to logs.
+
 ## Releases (`lex-semantic-version`)
 
 Releases follow Semantic Versioning (`MAJOR.MINOR.PATCH`). Tags MUST be signed:

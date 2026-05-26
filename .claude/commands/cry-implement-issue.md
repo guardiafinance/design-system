@@ -15,13 +15,13 @@ Implement Issue (Issue-Driven Development). Entry point for the Issue-Driven Dev
 | Parameter | Required | Description | Example |
 |-----------|:--------:|-------------|---------|
 | `issue-number` | Yes | GitHub issue number | `42` |
-| `<owner>/<repo>` | No | Target repository; default: current repo (via git remote) | `guardiafinance/ahrena` |
+| `<owner>/<repo>` | No | Target repository; default: current repo (via git remote) | `guardiatechnology/ahrena` |
 
 ## Prerequisites
 
 - `github` listed in `mcp.servers` in `.ahrena/.directives`
 - `notion` listed in `mcp.servers` (optional — enriches with Notion context when available)
-- Environment variables: `GITHUB_PAT` (required) and `NOTION_API_KEY` (optional)
+- Environment variables: `GH_TOKEN` (required) and `NOTION_API_KEY` (optional)
 - Existing issue in the indicated repository
 
 ## What the Command Does
@@ -73,7 +73,7 @@ Strictly respect lex-issue-driven: no skipping gates, with AC↔test traceabilit
 **Input:**
 
 ```
-/cry-implement-issue 42 guardiafinance/ahrena
+/cry-implement-issue 42 guardiatechnology/ahrena
 ```
 
 **Expected output (sequential flow with human pauses):**
@@ -86,7 +86,7 @@ Strictly respect lex-issue-driven: no skipping gates, with AC↔test traceabilit
 - Apollo implements; each test marks the corresponding AC
 - `kata-security-review` approves (0 critical findings)
 - `kata-quality-gate`: 6 checks ✅ → `go`
-- Athena creates the PR and reports the URL: `https://github.com/guardiafinance/ahrena/pull/123`
+- Athena creates the PR and reports the URL: `https://github.com/guardiatechnology/ahrena/pull/123`
 
 ## Restrictions
 

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import os
 import re
 import shutil
 import subprocess
@@ -26,6 +27,7 @@ import tempfile
 import urllib.error
 import urllib.request
 import zipfile
+from dataclasses import dataclass, field
 from pathlib import Path
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -914,6 +916,1128 @@ def install_rtk_bundle(
         )
 
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Project setup installers (CODEOWNERS, PR template, .gitignore merge)
+#
+# Each helper is idempotent and safe to re-run. Gated by the resolved
+# Selection.project_setup at install time.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Markers used by install_gitignore_merge() to delimit the Ahrena-managed
+# block inside the target's .gitignore. Edits between the markers are
+# overwritten on next install; edits outside the markers are preserved.
+_GITIGNORE_BEGIN = "# >>> AHRENA-GITIGNORE >>>"
+_GITIGNORE_END = "# <<< AHRENA-GITIGNORE <<<"
+
+# Regex pattern that extracts the org from a GitHub remote URL. Handles
+# both SSH (git@github.com:org/repo.git) and HTTPS (https://github.com/org/repo[.git])
+# shapes. Anything that does not match falls back to the commented
+# CODEOWNERS placeholder.
+_GITHUB_ORG_RE = re.compile(r"github\.com[:/](?P<org>[^/]+)/")
+
+
+def _resolve_github_org(target_dir: Path) -> str | None:
+    """Return the GitHub org parsed from `git remote get-url origin`, or None
+    when no remote is configured or the URL does not point at github.com."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(target_dir), "remote", "get-url", "origin"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=5,
+        )
+    except (FileNotFoundError, subprocess.SubprocessError):
+        return None
+    if result.returncode != 0:
+        return None
+    url = (result.stdout or "").strip()
+    if not url:
+        return None
+    match = _GITHUB_ORG_RE.search(url)
+    if not match:
+        return None
+    return match.group("org")
+
+
+def install_github_codeowners(source_dir: Path, target_dir: Path) -> None:
+    """Materialize <target>/.github/CODEOWNERS from the framework sample.
+
+    Preserves an existing CODEOWNERS at the target. When the GitHub org can
+    be resolved from `git remote get-url origin`, fills `{org}` in the
+    sample; otherwise emits a commented placeholder with an explanatory
+    note so the file does not request a non-existent team.
+    """
+    dst = target_dir / ".github" / "CODEOWNERS"
+    if dst.exists():
+        print("  Preserved existing CODEOWNERS at .github/CODEOWNERS")
+        return
+
+    sample_path = source_dir / "framework" / "templates" / "CODEOWNERS.sample"
+    if not sample_path.exists():
+        print(f"  WARNING: CODEOWNERS sample not found at {sample_path}; skipping")
+        return
+
+    sample = sample_path.read_text(encoding="utf-8")
+    org = _resolve_github_org(target_dir)
+    if org:
+        rendered = sample.replace("{org}", org)
+        label = f"@{org}/maintainers"
+    else:
+        # Comment out the default-team line and prepend an explanatory note.
+        commented_lines: list[str] = []
+        for line in sample.splitlines():
+            if line.startswith("* @"):
+                commented_lines.append(
+                    "# Ahrena could not resolve the GitHub org from "
+                    "`git remote get-url origin`."
+                )
+                commented_lines.append(
+                    "# Replace the placeholder below with your team handle and uncomment."
+                )
+                commented_lines.append(f"# {line}")
+            else:
+                commented_lines.append(line)
+        rendered = "\n".join(commented_lines)
+        if not rendered.endswith("\n"):
+            rendered += "\n"
+        label = "commented placeholder (no GitHub remote)"
+
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst.write_text(rendered, encoding="utf-8")
+    print(f"  Installed .github/CODEOWNERS ({label})")
+
+
+def install_github_pr_template(source_dir: Path, target_dir: Path) -> None:
+    """Sync <target>/.github/pull_request_template.md from the framework
+    template. Overwrites on every run so updates land; mirrors the existing
+    ISSUE_TEMPLATE sync pattern."""
+    src = source_dir / "framework" / "templates" / "contributing_templates" / "pull_request_template.md"
+    dst = target_dir / ".github" / "pull_request_template.md"
+    if not src.exists():
+        print(f"  WARNING: PR template not found at {src}; skipping")
+        return
+    if src.resolve() == dst.resolve():
+        # Self-install (ahrena dev-install with target = repo root) — nothing to do.
+        return
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    print("  Synced .github/pull_request_template.md from framework template")
+
+
+def install_gitignore_merge(source_dir: Path, target_dir: Path) -> None:
+    """Merge the Ahrena-managed `.gitignore` block into <target>/.gitignore
+    between the AHRENA-GITIGNORE markers. Idempotent: replaces the block
+    in place when markers exist; appends with a leading blank line on first
+    install. Lines outside the markers are never touched."""
+    sample_path = source_dir / "framework" / ".gitignore.sample"
+    if not sample_path.exists():
+        print(f"  WARNING: .gitignore sample not found at {sample_path}; skipping")
+        return
+
+    sample_body = sample_path.read_text(encoding="utf-8").rstrip("\n")
+    block_lines = [
+        _GITIGNORE_BEGIN,
+        "# Managed by Ahrena. Edits inside this block are overwritten on next install.",
+        "# Source: framework/.gitignore.sample",
+        sample_body,
+        _GITIGNORE_END,
+    ]
+    new_block = "\n".join(block_lines) + "\n"
+
+    gitignore_path = target_dir / ".gitignore"
+    if gitignore_path.exists():
+        current = gitignore_path.read_text(encoding="utf-8")
+    else:
+        current = ""
+
+    if _GITIGNORE_BEGIN in current and _GITIGNORE_END in current:
+        # Replace the existing block in place; preserve everything outside.
+        pattern = re.compile(
+            re.escape(_GITIGNORE_BEGIN) + r".*?" + re.escape(_GITIGNORE_END) + r"\n?",
+            re.DOTALL,
+        )
+        merged = pattern.sub(new_block, current, count=1)
+        action = "Replaced Ahrena-managed block in .gitignore"
+    else:
+        # First install: append with a single leading blank line separator
+        # when current content does not already end with a blank line.
+        if current and not current.endswith("\n"):
+            current += "\n"
+        separator = "\n" if current and not current.endswith("\n\n") else ""
+        merged = current + separator + new_block
+        action = "Appended Ahrena-managed block to .gitignore" if current \
+            else "Created .gitignore with Ahrena-managed block"
+
+    gitignore_path.write_text(merged, encoding="utf-8")
+    print(f"  {action}")
+
+
+def install_ahrena_auth_script(
+    source_dir: Path,
+    target_dir: Path,
+    selection: Selection,
+) -> None:
+    """Copy `scripts/ahrena-auth.sh` into the target's `scripts/` when the
+    `warriors-default-author` optional feature is selected. Skip silently
+    otherwise so projects that did not opt in stay clean.
+
+    The script is the auth resolver for the warriors-default GitHub App
+    identity. P1 ships only the resolver itself (no warrior wiring) —
+    when `warriors_default_author.enabled=false` (the default) the script
+    is a strict no-op, so even a future-enabled project that copies the
+    script keeps today's human-author behavior bit-for-bit until the
+    directive is flipped. Mirrors install_github_pr_template() for the
+    src→dst copy + chmod 0755 pattern.
+    """
+    if "warriors-default-author" not in selection.optional_features:
+        return
+
+    src = source_dir / "scripts" / "ahrena-auth.sh"
+    dst = target_dir / "scripts" / "ahrena-auth.sh"
+    if not src.exists():
+        print(f"  WARNING: ahrena-auth.sh not found at {src}; skipping", file=sys.stderr)
+        return
+    if src.resolve() == dst.resolve():
+        # Self-install (ahrena dev-install with target = repo root) — nothing to do.
+        return
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    dst.chmod(0o755)
+    print("  Installed scripts/ahrena-auth.sh (warriors-default-author feature)")
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Preference-driven install selection (MCPs, hooks, optional features)
+#
+# The installer materializes `.directives` from a `Selection` resolved
+# from CLI flags / interactive prompts. Downstream installers (MCP,
+# RTK, pr-cost-attribution) keep reading from `.directives`, so the
+# selection only changes the file content — never the runtime path.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Catalog of MCP servers. Tuple = (description, required env vars).
+# Env var names mirror those referenced in framework/mcp/<name>.json.
+MCP_CATALOG: dict[str, tuple[str, list[str]]] = {
+    "ahrena":  ("Ahrena's internal MCP server (codex-ahrena-mcp)", []),
+    "github":  ("GitHub MCP — Issues, PRs, releases", ["GH_TOKEN"]),
+    "notion":  ("Notion MCP — pages, databases (OAuth on first call)", []),
+    "figma":   ("Figma MCP — design tokens, file inspect", ["FIGMA_API_KEY"]),
+    "slack":   ("Slack MCP — channels, messages, notifications provider (OAuth)", []),
+}
+
+# Baseline OAuth scopes required by the GitHub MCP server's tool surface
+# (issues/PRs/branches/workflows/users). Kept adjacent to the catalog entry
+# so drift is visible when the upstream tool surface grows. Source:
+# https://github.com/github/github-mcp-server (toolset docs).
+GITHUB_MCP_REQUIRED_SCOPES: list[str] = ["repo", "read:org", "workflow", "read:user"]
+
+
+# Sentinel scope name returned in the "missing scopes" list when the token
+# is a fine-grained PAT (the GitHub API omits or empties the X-OAuth-Scopes
+# header for fine-grained tokens). Callers branch on this value to emit the
+# warn-only "manual scope verification needed" line instead of a per-scope
+# refresh hint, since `gh auth refresh -s <scope>` does not apply.
+GITHUB_FINE_GRAINED_SENTINEL = "__fine_grained_pat__"
+
+
+def check_github_token_scopes(token: str, required: list[str]) -> list[str]:
+    """Return the list of missing OAuth scopes for a classic GitHub PAT.
+
+    Calls GET https://api.github.com/ with the token and reads the granted
+    scopes from the response's `X-OAuth-Scopes` header. Soft-fail discipline:
+    any failure path (network error, timeout, DNS, non-200) returns an empty
+    list so the install never blocks. The token value is never logged by
+    this helper — only scope names cross the boundary upward.
+
+    Return contract:
+      - `[]`                                 → all required scopes granted
+                                              OR network failure (soft-fail);
+                                              callers cannot distinguish the
+                                              two and treat both as "do not warn"
+      - `[GITHUB_FINE_GRAINED_SENTINEL]`     → fine-grained PAT detected
+                                              (empty/missing X-OAuth-Scopes);
+                                              caller emits a warn-only line
+      - `["read:org", ...]`                  → missing scope names, in the
+                                              order declared in `required`
+    """
+    req = urllib.request.Request(
+        "https://api.github.com/",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "User-Agent": "ahrena-install",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:  # noqa: S310 (constant URL)
+            scopes_header = resp.headers.get("X-OAuth-Scopes")
+    except Exception:
+        # Soft-fail: never block install on network blip, DNS, 5xx, etc.
+        return []
+    if scopes_header is None or not scopes_header.strip():
+        # Fine-grained PAT — X-OAuth-Scopes is absent or empty.
+        return [GITHUB_FINE_GRAINED_SENTINEL]
+    granted = {s.strip() for s in scopes_header.split(",") if s.strip()}
+    return [s for s in required if s not in granted]
+
+# Catalog of installer-managed Claude Code hooks.
+HOOK_CATALOG: dict[str, tuple[str, list[str]]] = {
+    "rtk": (
+        "RTK (Rust Token Killer) PreToolUse hook — 60-90% token savings on Bash",
+        [],
+    ),
+    "pr-cost-attribution": (
+        "PR cost attribution hook — UserPromptSubmit + SessionStart; required by kata-pr-cost-stamp",
+        [],
+    ),
+}
+
+# Optional `.directives` feature sections. Keys MUST match the YAML
+# section name produced by render_directives().
+#
+# `warriors-default-author` uses a hyphen because it surfaces in the
+# install catalog under the CLI flag `--with-features=warriors-default-author`;
+# the rendered YAML section key is `warriors_default_author` (snake_case
+# for YAML consistency). The OPTIONAL_FEATURES key (`warriors-default-author`)
+# and the directive section key (`warriors_default_author`) are intentionally
+# distinct — render_directives() bridges the two by mapping
+# `"warriors-default-author" in selection.optional_features` to the
+# `warriors_default_author:` block emission.
+OPTIONAL_FEATURES: dict[str, str] = {
+    "pr_cost_tracking": "Stamp tokens/USD/time on PR bodies (requires pr-cost-attribution hook)",
+    "session_tracking": "Per-session heartbeat for Eunomia digest + PR Session Trace",
+    "notifications":    "Provider-agnostic notifications (Athena timeout, Janus release, Eunomia digest)",
+    "pm":               "Eunomia PM loop (plans status digest cadence + thresholds)",
+    "warriors-default-author": "Warriors default GitHub App identity for commits/PRs (requires GitHub App credentials)",
+}
+
+# Catalog of project setup files installed at bootstrap. Tuple = (description, env vars).
+# Each item is gated by the resolved Selection.project_setup and materialized by
+# a dedicated installer helper inside install_ahrena().
+PROJECT_SETUP_CATALOG: dict[str, tuple[str, list[str]]] = {
+    "github-issue-templates": (
+        "Sync .github/ISSUE_TEMPLATE/*.yml from framework templates",
+        [],
+    ),
+    "github-pr-template": (
+        "Sync .github/pull_request_template.md from framework template",
+        [],
+    ),
+    "github-codeowners": (
+        "Install .github/CODEOWNERS with default-team block (skipped when CODEOWNERS exists)",
+        [],
+    ),
+    "gitignore-merge": (
+        "Merge Ahrena-managed .gitignore block between AHRENA markers (idempotent)",
+        [],
+    ),
+}
+
+
+@dataclass(frozen=True, kw_only=True)
+class Selection:
+    """Resolved install preferences. Drives render_directives()."""
+
+    mcps: frozenset[str] = field(default_factory=frozenset)
+    hooks: frozenset[str] = field(default_factory=frozenset)
+    optional_features: frozenset[str] = field(default_factory=frozenset)
+    project_setup: frozenset[str] = field(default_factory=frozenset)
+
+
+# Features that MUST stay opt-in across every profile (Full, Standard,
+# Minimal). The warriors-default author flips a security-sensitive identity
+# for git commits and PRs, so the install never enables it by default —
+# users must add it explicitly via `--with-features=warriors-default-author`
+# (or the interactive prompt).
+_PROFILE_DEFAULT_OFF: frozenset[str] = frozenset({"warriors-default-author"})
+
+PROFILE_FULL = Selection(
+    mcps=frozenset(MCP_CATALOG.keys()),
+    hooks=frozenset(HOOK_CATALOG.keys()),
+    optional_features=frozenset(OPTIONAL_FEATURES.keys()) - _PROFILE_DEFAULT_OFF,
+    project_setup=frozenset(PROJECT_SETUP_CATALOG.keys()),
+)
+
+PROFILE_STANDARD = Selection(
+    mcps=frozenset({"ahrena"}),
+    hooks=frozenset({"rtk", "pr-cost-attribution"}),
+    optional_features=frozenset({"pr_cost_tracking", "session_tracking"}) - _PROFILE_DEFAULT_OFF,
+    # Standard skips github-codeowners — the org guess from `git remote` is
+    # fragile in solo or fork repos and the placeholder is a poor default.
+    project_setup=frozenset({"github-issue-templates", "github-pr-template", "gitignore-merge"}),
+)
+
+PROFILE_MINIMAL = Selection(
+    mcps=frozenset({"ahrena"}),
+    hooks=frozenset({"rtk"}),
+    optional_features=frozenset() - _PROFILE_DEFAULT_OFF,
+    project_setup=frozenset(),
+)
+
+_PROFILES: dict[str, Selection] = {
+    "full": PROFILE_FULL,
+    "standard": PROFILE_STANDARD,
+    "minimal": PROFILE_MINIMAL,
+}
+
+
+def parse_csv_set(value: str | None) -> frozenset[str]:
+    """Parse a comma-separated CLI list into a normalized, lowercased set."""
+    if not value:
+        return frozenset()
+    parts = [p.strip().lower() for p in value.split(",")]
+    return frozenset(p for p in parts if p)
+
+
+def _validate_names(label: str, names: frozenset[str], catalog: dict[str, object]) -> None:
+    unknown = sorted(n for n in names if n not in catalog)
+    if unknown:
+        print(
+            f"ERROR: unknown {label} name(s): {', '.join(unknown)}. "
+            f"Valid: {', '.join(sorted(catalog.keys()))}",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+
+
+def resolve_selection(args: argparse.Namespace, interactive: bool) -> Selection:
+    """Resolve a Selection from CLI flags + (optionally) interactive prompts.
+
+    Resolution order:
+      1. Base profile: ``args.profile`` if provided, else PROFILE_FULL.
+      2. Apply ``--with-*`` / ``--without-*`` overrides.
+      3. If interactive AND no profile AND no overrides AND stdin is a TTY,
+         prompt the user to toggle items on top of the base.
+      4. Force ``ahrena`` MCP to remain selected (framework's own server).
+    """
+    profile_name = (getattr(args, "profile", None) or "").strip().lower()
+    if profile_name:
+        if profile_name not in _PROFILES:
+            print(
+                f"ERROR: unknown --profile {profile_name!r}. "
+                f"Valid: {', '.join(sorted(_PROFILES.keys()))}",
+                file=sys.stderr,
+            )
+            raise SystemExit(2)
+        base = _PROFILES[profile_name]
+    else:
+        base = PROFILE_FULL
+
+    with_mcp = parse_csv_set(getattr(args, "with_mcp", None))
+    without_mcp = parse_csv_set(getattr(args, "without_mcp", None))
+    with_hooks = parse_csv_set(getattr(args, "with_hooks", None))
+    without_hooks = parse_csv_set(getattr(args, "without_hooks", None))
+    with_features = parse_csv_set(getattr(args, "with_features", None))
+    without_features = parse_csv_set(getattr(args, "without_features", None))
+    with_setup = parse_csv_set(getattr(args, "with_setup", None))
+    without_setup = parse_csv_set(getattr(args, "without_setup", None))
+
+    _validate_names("MCP", with_mcp, MCP_CATALOG)
+    _validate_names("MCP", without_mcp, MCP_CATALOG)
+    _validate_names("hook", with_hooks, HOOK_CATALOG)
+    _validate_names("hook", without_hooks, HOOK_CATALOG)
+    _validate_names("feature", with_features, OPTIONAL_FEATURES)
+    _validate_names("feature", without_features, OPTIONAL_FEATURES)
+    _validate_names("setup", with_setup, PROJECT_SETUP_CATALOG)
+    _validate_names("setup", without_setup, PROJECT_SETUP_CATALOG)
+
+    mcps = (base.mcps | with_mcp) - without_mcp
+    hooks = (base.hooks | with_hooks) - without_hooks
+    features = (base.optional_features | with_features) - without_features
+    setup = (base.project_setup | with_setup) - without_setup
+
+    resolved = Selection(
+        mcps=frozenset(mcps),
+        hooks=frozenset(hooks),
+        optional_features=frozenset(features),
+        project_setup=frozenset(setup),
+    )
+
+    any_override = bool(
+        with_mcp | without_mcp | with_hooks | without_hooks
+        | with_features | without_features | with_setup | without_setup
+    )
+
+    if (
+        interactive
+        and not profile_name
+        and not any_override
+        and sys.stdin is not None
+        and sys.stdin.isatty()
+    ):
+        resolved = interactive_select(resolved)
+
+    # `ahrena` is the framework's own server; non-negotiable.
+    if "ahrena" not in resolved.mcps:
+        print(
+            "  NOTE: 'ahrena' MCP is mandatory (framework's own server); "
+            "re-adding it to the selection.",
+        )
+        resolved = Selection(
+            mcps=resolved.mcps | frozenset({"ahrena"}),
+            hooks=resolved.hooks,
+            optional_features=resolved.optional_features,
+            project_setup=resolved.project_setup,
+        )
+    return resolved
+
+
+def _render_section(title: str, catalog: dict[str, tuple[str, list[str]]],
+                    selected: frozenset[str]) -> tuple[frozenset[str], bool]:
+    """Render a stdin-driven toggle section.
+
+    Returns (new selection, confirmed). Empty Enter keeps current state and
+    confirms. ``q`` aborts (raises SystemExit). Numeric tokens (comma- or
+    space-separated) toggle individual items.
+    """
+    items = list(catalog.keys())
+    current = set(selected)
+    while True:
+        print(f"\n{title}")
+        for idx, name in enumerate(items, 1):
+            mark = "[x]" if name in current else "[ ]"
+            desc, _envs = catalog[name]
+            print(f"  {idx}. {mark} {name} — {desc}")
+        prompt = "  Toggle numbers (comma/space-separated), Enter to keep, 'q' to abort: "
+        try:
+            raw = input(prompt).strip()
+        except EOFError:
+            return frozenset(current), True
+        if raw == "":
+            return frozenset(current), True
+        if raw.lower() == "q":
+            raise SystemExit(130)
+        tokens = re.split(r"[,\s]+", raw)
+        for tok in tokens:
+            if not tok:
+                continue
+            if not tok.isdigit():
+                print(f"    WARNING: '{tok}' is not a number; ignoring.")
+                continue
+            i = int(tok)
+            if i < 1 or i > len(items):
+                print(f"    WARNING: {i} out of range (1..{len(items)}); ignoring.")
+                continue
+            name = items[i - 1]
+            if name in current:
+                current.remove(name)
+            else:
+                current.add(name)
+        # Loop iterates again to show the updated state; user confirms with empty Enter.
+
+
+def interactive_select(initial: Selection) -> Selection:
+    """Interactive multi-select prompt (stdlib only). Pre-checked = ``initial``.
+
+    Three sections in order: MCPs, hooks, optional features. After all three,
+    a final Y/n confirmation. Pressing 'q' at any prompt aborts the install.
+    """
+    print("\n" + "=" * 60)
+    print("Preference-driven install (toggle items, Enter to keep)")
+    print("=" * 60)
+    print(
+        "Pre-checked = Full default. Edit to suit your project; "
+        "downstream agents only see what you keep here."
+    )
+
+    mcps, _ = _render_section("MCP servers:", MCP_CATALOG, initial.mcps)
+    hooks, _ = _render_section("Claude Code hooks:", HOOK_CATALOG, initial.hooks)
+    feats, _ = _render_section(
+        "Optional .directives features:",
+        {k: (v, []) for k, v in OPTIONAL_FEATURES.items()},
+        initial.optional_features,
+    )
+    setup, _ = _render_section(
+        "Project setup files (.github/, .gitignore):",
+        PROJECT_SETUP_CATALOG,
+        initial.project_setup,
+    )
+
+    candidate = Selection(
+        mcps=mcps,
+        hooks=hooks,
+        optional_features=feats,
+        project_setup=setup,
+    )
+
+    print("\nFinal selection:")
+    print(f"  MCPs:     {', '.join(sorted(candidate.mcps)) or '(none)'}")
+    print(f"  Hooks:    {', '.join(sorted(candidate.hooks)) or '(none)'}")
+    print(f"  Features: {', '.join(sorted(candidate.optional_features)) or '(none)'}")
+    print(f"  Setup:    {', '.join(sorted(candidate.project_setup)) or '(none)'}")
+    try:
+        confirm = input("Proceed? [Y/n] ").strip().lower()
+    except EOFError:
+        confirm = ""
+    if confirm in ("", "y", "yes"):
+        return candidate
+    raise SystemExit(130)
+
+
+def check_env_vars(selection: Selection) -> list[str]:
+    """Return one warning string per MCP whose required env var is unset.
+
+    The install never fails on missing vars; callers print the warnings so
+    the user knows which secrets to export before the MCP server can run.
+
+    For the github MCP, when GH_TOKEN is present, this function additionally
+    verifies the token's OAuth scopes against GITHUB_MCP_REQUIRED_SCOPES and
+    emits one warn-only line per missing scope with a copy-paste fix hint:
+    `gh auth refresh -s <scope>`. Soft-fail: network/timeout failures emit
+    nothing; the install proceeds.
+    """
+    warnings: list[str] = []
+    for name in sorted(selection.mcps):
+        _desc, required = MCP_CATALOG.get(name, ("", []))
+        for var in required:
+            value = os.environ.get(var)
+            if not value:
+                warnings.append(
+                    f"WARNING: MCP '{name}' requires {var} (currently unset)"
+                )
+                continue
+            # Var is set — for github, verify scopes (warn-only).
+            if name == "github" and var == "GH_TOKEN":
+                missing = check_github_token_scopes(value, GITHUB_MCP_REQUIRED_SCOPES)
+                for scope in missing:
+                    if scope == GITHUB_FINE_GRAINED_SENTINEL:
+                        warnings.append(
+                            "WARNING: MCP 'github' GH_TOKEN is a fine-grained PAT; "
+                            "automated scope verification unavailable. Confirm the "
+                            f"token grants: {', '.join(GITHUB_MCP_REQUIRED_SCOPES)}."
+                        )
+                    else:
+                        warnings.append(
+                            f"WARNING: MCP 'github' GH_TOKEN missing scope: {scope}. "
+                            f"Run: gh auth refresh -s {scope}"
+                        )
+    return warnings
+
+
+# ── .directives rendering ────────────────────────────────────────
+# render_directives() is the single source that produces both the
+# `.directives` file written at install time AND the
+# `framework/.directives.sample` shipped in the repo. The sample is
+# the verbatim Full-default output of render_directives(PROFILE_FULL).
+
+_DIRECTIVES_HEADER = """\
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Ahrena: AI-First Capability Framework — Directives
+# Canonical instructions that govern the framework's default
+# behavior. This file is the source of truth for cross-cutting
+# configurations consulted by all agents.
+#
+# This file is rendered by scripts/install.py from a preference
+# selection (--profile / --with-* / --without-* / interactive).
+# Downstream clients edit this file directly; the framework sample
+# (framework/.directives.sample) mirrors the Full-default output.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ─── Paths ───────────────────────────────────────────────────────
+# Canonical framework paths. All paths are relative to the
+# repository root. The .ahrena/ directory is the canonical entry
+# point for the framework in any project.
+
+paths:
+  root: ".ahrena/"
+  directives: ".ahrena/.directives"
+  templates: "templates/"
+  framework: "framework/"
+  # Project-specific artifacts (create here first; push to framework when ready)
+  project_artifacts: ".ahrena/artifacts/"
+  # Optional: URL or slug of the framework repo on GitHub (used by kata-push-to-framework and kata-diff-artifacts in --remote mode)
+  # framework_repo: "https://github.com/guardiatechnology/ahrena"
+  # NOTE: paths.oas and paths.events were removed by lex-feature-design-docs —
+  # design artifacts now live under docs/{context}/{entities|oas|events}/ per
+  # codex-feature-design-docs (fixed structure, no configurable paths).
+  # External skill projects (Anthropic Agent Skills format).
+  # See lex-skill-project-structure and codex-skill-project-architecture.
+  skills_root: "skills"        # Source of skill projects (versioned)
+  skills_build: ".build"       # Build intermediates (gitignored)
+  skills_dist: ".dist"         # Final packaged skills (committed, consumed by external agents)
+  samples:
+    lexis: "templates/lex-sample.md"
+    codex: "templates/codex-sample.md"
+    katas: "templates/kata-sample.md"
+    warriors: "templates/warrior-sample.md"
+    cries: "templates/cry-sample.md"
+
+# ─── References ─────────────────────────────────────────────────
+# External references consulted by framework artifacts. Each
+# reference is a URL or repo slug that lives outside the Ahrena
+# repository but is canonical for a specific convention. Codex
+# files point to these references instead of naming the URL
+# inline, so the URL can evolve without churning the Codex.
+#
+# component_template_repo: canonical reference repository for the
+# Guardia "bounded context" component layout (components/api,
+# components/agents, components/jobs, components/ui, deployment).
+# Consumed by codex-component-architecture and its 5 codex-filhos.
+# Future iterations MAY add pinned_ref (tag/SHA) and
+# last_reviewed_at to govern drift between the external repo and
+# the on-framework convention.
+
+references:
+  component_template_repo:
+    url: "https://github.com/guardiatechnology/bounded-context-template"
+"""
+
+_DIRECTIVES_QUALITY_AND_KNOWLEDGE = """\
+
+# ─── Quality (Issue-Driven Workflow) ────────────────────────────
+# Settings used by kata-quality-gate (Gate 2 of the Issue-Driven
+# Development flow orchestrated by warrior-athena).
+
+# quality:
+#   coverage_threshold: 80            # Minimum test coverage (%) to pass Gate 2
+#   stack: auto                       # auto | python | frontend | iac | mixed
+#   performance:
+#     lighthouse_min: 80              # Frontend: minimum Lighthouse performance score
+#     bundle_kb_max: 250              # Frontend: main bundle size limit (KB)
+#     api_p99_ms_max: 300             # Backend: p99 latency limit (ms) for modified endpoints
+#     benchmark_regression_pct: 10    # Backend: max regression vs. baseline on main (%)
+#   system_prompt_adversarial:
+#     enabled: false                  # enable when project adopts Guardia agents
+                                      # When true, kata-quality-gate Check 3 invokes
+                                      # kata-system-prompt-adversarial-validate on every PR
+                                      # whose diff touches docs/**/agents/**/system-prompt*.md.
+                                      # See lex-system-prompt and codex-system-prompt § Seção 7.
+
+# ─── Knowledge (Issue-Driven Workflow) ──────────────────────────
+# Optional: Notion root page/database that kata-issue-analysis
+# prioritizes when enriching issue context. If omitted, full
+# workspace search is performed.
+
+# knowledge:
+#   notion:
+#     root_page: "page-id-or-url"
+"""
+
+_DIRECTIVES_LANGUAGE_AND_TERMINAL = """\
+
+# ─── Language ────────────────────────────────────────────────────
+# Defines the default language, the mandatory languages for the
+# framework, and the language used in Cursor artifacts.
+# Language is the first navigation level inside framework/.
+
+language:
+  default: pt-BR
+  i18n:
+    - pt-BR
+    - es
+    - en
+  cursor: en
+  claude-code: en
+
+# ─── Terminal ───────────────────────────────────────────────────
+# Shell used for commands. Values: bash | powershell
+# Agents use this when executing or proposing shell commands (see lex-terminal-type).
+# If omitted, the agent infers from OS (e.g. Windows → powershell) or asks the user.
+
+# terminal: powershell   # Native Windows
+# terminal: bash         # Linux, macOS, WSL
+
+# ─── Stacked PRs ────────────────────────────────────────────────
+# Tool used to operate Stacked Pull Requests when a feature is
+# decomposed into N reviewable layers. Default is `vanilla`
+# (plain git + gh CLI). Set to `gs` to use git-spice, which
+# automates cascade rebase via auto-restack — see codex-git-spice.
+# Strategic decisions (when to stack, decomposition, naming) live
+# in codex-stacked-prs and apply equally to both tools.
+# Adoption is opt-in: the kata-stacked-pr-create runs a Decision
+# Checklist (≥ 3 high signals AND 0 anti-signals) before stacking.
+
+# stacked_prs:
+#   tool: vanilla   # vanilla | gs
+"""
+
+_DIRECTIVES_NAMING = """\
+
+# ─── Naming ─────────────────────────────────────────────────────
+# Canonical naming conventions for files, directories, and
+# framework artifacts.
+
+naming:
+
+  # Mandatory prefixes per Pilar
+  prefixes:
+    lexis: "lex-"
+    codex: "codex-"
+    katas: "kata-"
+    warriors: "warrior-"
+    cries: "cry-"
+
+  # Canonical extensions per context
+  extensions:
+    framework: ".md"
+    cursor: ".mdc"
+    claude-code: ".md"
+
+  # Casing conventions
+  casing:
+    files: kebab-case       # lex-no-secrets.md
+    directories: kebab-case # engineering/backend/
+
+  # Canonical artifact addressing
+  # Language is always the first path segment in the framework.
+  # <lang>/<clade>/<subclade>/<pilar>/<prefix>-<name>.<ext>
+  addressing: "{lang}/{clade}/{subclade}/{pilar}/{prefix}-{name}.{ext}"
+
+  # Special clades (prefixed with underscore)
+  reserved_clades:
+    - _foundation
+
+  tone_and_writing_style:
+    - "Adopt a direct and strategic style, driven by clarity, data, and purpose. Structure arguments with logic and precision, using frameworks such as Why, What, and How or Problem, Cause, and Solution to organize ideas objectively. Avoid embellishments or abstractions that stray from the essential. Whenever possible, support claims with numbers, evidence, or verifiable references (keeping the text accessible even for non-technical audiences). The tone should combine confidence, approachability, and practical vision. Ambition must come paired with feasibility. Big ideas only make sense when connected to concrete paths of execution. Avoid romanticizing technology or innovation, prioritizing real impact and purpose."
+    - "Do not use dashes or colons to contextualize concepts (unless explicitly requested). Use parentheses to explain nuances fluidly within the sentence. Reserve ellipses for marking interruption or continuity of thought, without overuse."
+    - "Eliminate buzzwords that carry no meaning. Use technical vocabulary only when necessary and always with a clear translation of the concept. Every response should help make decisions and move the discussion forward, avoiding text that informs without guiding."
+    - "Whenever I ask for writing or reviewing an email, post, or content to be shared with third parties, deliver exclusively the final text, without any commentary or introduction. Provide only the ready-to-use content, ensuring accuracy and avoiding unwanted passages."
+"""
+
+
+def _render_mcp_section(selection: Selection) -> str:
+    """Render the mcp: section. Every MCP in the catalog appears either active
+    or commented out, so users see the full menu without rerunning the installer."""
+    lines: list[str] = []
+    lines.append("")
+    lines.append("# ─── MCP Servers ────────────────────────────────────────────────")
+    lines.append("# List of MCP servers to activate. The installer merges each")
+    lines.append("# server config from framework/mcp/<name>.json (or")
+    lines.append("# .ahrena/mcp/<name>.json if overridden) into .cursor/mcp.json")
+    lines.append("# and the project-level .mcp.json + enabledMcpjsonServers in")
+    lines.append("# .claude/settings.json. Override individual server configs in")
+    lines.append("# .ahrena/mcp/<name>.json.")
+    lines.append("#")
+    lines.append("# `ahrena` is the framework's own internal server (see")
+    lines.append("# codex-ahrena-mcp). Mandatory.")
+    lines.append("")
+    lines.append("mcp:")
+    lines.append("  servers:")
+    for name in MCP_CATALOG:
+        if name in selection.mcps:
+            lines.append(f"    - {name}")
+        else:
+            lines.append(f"    # - {name}")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _render_pr_cost_tracking_section(selected: bool) -> str:
+    """pr_cost_tracking section. When selected, emit Full defaults uncommented;
+    otherwise emit the commented skeleton so the schema is documented."""
+    header = """\
+# ─── PR Cost Tracking ───────────────────────────────────────────
+# Computes Claude Code token consumption, estimated USD cost, and
+# implementation time (active + calendar) for the development that
+# produced each PR, and stamps the result in the PR body via
+# kata-pr-cost-stamp. Disabled by default to keep data inside teams
+# that explicitly opt in. See codex-pr-cost-tracking and
+# kata-pr-cost-stamp.
+"""
+    # NOTE: scalar values are kept free of inline comments so the
+    # parse_directives()-driven downstream lookups receive clean strings
+    # (e.g. install_pr_cost_attribution_hook bool-coerces the value).
+    body_selected = """\
+pr_cost_tracking:
+  # master switch for the stamp (true | false)
+  enabled: true
+  # gap in minutes that splits active windows for active-time computation
+  idle_gap_minutes: 10
+  # hook | project (legacy)
+  attribution_mode: hook
+  # warning threshold for branches.jsonl size
+  branches_sidecar_max_mb: 50
+  # extra GitHub logins recognized as AI reviewers in the Review subsection
+  known_ai_reviewers:
+    - "gemini-code-assist[bot]"
+    - "claude[bot]"
+    - "coderabbitai[bot]"
+    - "qodo-merge-pro[bot]"
+  # extra GitHub logins recognized as AI authors in the Development subsection
+  # Symmetric to known_ai_reviewers; drives the bot-author classification in
+  # kata-pr-cost-stamp § "Author identity".
+  known_ai_authors:
+    - "ahrena-bot[bot]"
+    - "claude[bot]"
+    - "copilot[bot]"
+"""
+    body_commented = """\
+# pr_cost_tracking:
+#   enabled: false                 # true | false (master switch for the stamp)
+#   idle_gap_minutes: 10           # gap (in minutes) that splits active windows
+#   attribution_mode: hook         # hook | project
+#   branches_sidecar_max_mb: 50    # warning threshold for branches.jsonl size
+#   known_ai_reviewers:            # extra GitHub logins recognized as AI reviewers
+#     - "gemini-code-assist[bot]"
+#     - "claude[bot]"
+#     - "coderabbitai[bot]"
+#     - "qodo-merge-pro[bot]"
+#   known_ai_authors:              # extra GitHub logins recognized as AI authors
+#     - "ahrena-bot[bot]"
+#     - "claude[bot]"
+#     - "copilot[bot]"
+"""
+    return "\n" + header + (body_selected if selected else body_commented)
+
+
+def _render_warriors_default_author_section(selected: bool) -> str:
+    """warriors_default_author section. When selected, emit defaults
+    uncommented with enabled=true; otherwise emit the commented skeleton so
+    the schema is visible and projects can opt in later by uncommenting +
+    flipping enabled. The warriors-default author swaps the git commit/PR
+    author from the human contributor to the fleet-default GitHub App `[bot]`
+    identity when warriors execute work. See codex-git-workflow
+    ("Author identity") and scripts/ahrena-auth.sh.
+    """
+    header = """\
+# ─── Warriors Default Author ────────────────────────────────────
+# Warriors default GitHub App identity for commits/PRs. When
+# enabled, warriors listed in apply_to call scripts/ahrena-auth.sh
+# before `git commit` / `gh pr create` so the resulting commits/PRs
+# are attributed to the App's `[bot]` identity (server-signed via
+# the App's installation token) and the human driver appears as
+# `Co-authored-by:` (when commit_co_author=human). Disabled by
+# default — existing human-author behavior is preserved bit-for-bit
+# until a project explicitly opts in. Requires the GitHub App
+# credentials (AHRENA_WARRIORS_DEFAULT_GH_APP_ID,
+# AHRENA_WARRIORS_DEFAULT_GH_INSTALLATION_ID,
+# AHRENA_WARRIORS_DEFAULT_GH_PRIVATE_KEY_PATH or macOS Keychain entry
+# `ahrena.bot.github-app`) in .env.local or the environment.
+# See codex-git-workflow ("Author identity").
+"""
+    body_selected = """\
+warriors_default_author:
+  # master switch (true | false); when false the auth script is a no-op
+  enabled: true
+  # GitHub App slug (override only if a fork/clone uses a different slug)
+  identity: ahrena-bot
+  # api (server-signed via App installation token) | local (reserved, future)
+  commit_mode: api
+  # human (Co-authored-by: <human>) | none
+  commit_co_author: human
+  # warriors that honor the override (per-warrior opt-out)
+  apply_to:
+    - athena
+    - apollo
+    - hephaestus
+    - iris
+    - claudionor
+"""
+    body_commented = """\
+# warriors_default_author:
+#   enabled: false                 # true | false (master switch; false = no-op)
+#   identity: ahrena-bot           # GitHub App slug
+#   commit_mode: api               # api | local (reserved)
+#   commit_co_author: human        # human | none
+#   apply_to:                      # warriors that honor the override
+#     - athena
+#     - apollo
+#     - hephaestus
+#     - iris
+#     - claudionor
+"""
+    return "\n" + header + (body_selected if selected else body_commented)
+
+
+def _render_rtk_section(selected: bool) -> str:
+    """RTK section. When the rtk hook is selected, emit enabled=true; otherwise
+    explicit enabled=false so install_rtk_bundle is a true no-op."""
+    header = """\
+# ─── RTK (Rust Token Killer) ────────────────────────────────────
+# Transparent command rewriting via Claude Code PreToolUse hook to
+# cut token consumption on common dev commands (git, gh, tsc,
+# pytest, jest, etc.). When enabled, scripts/install.py wires the
+# command `if command -v rtk >/dev/null 2>&1; then rtk hook claude; fi`
+# into <target>/.claude/settings.json under hooks.PreToolUse with
+# matcher "Bash". The strict-fallback shape exits 0 with empty
+# stdout when the rtk binary is absent from PATH, so Claude Code
+# proceeds with the original tool input. RTK binary install is
+# the developer's responsibility (see https://github.com/rtk-ai/rtk);
+# Ahrena only wires the hook.
+"""
+    body_selected = """\
+rtk:
+  # master switch (set false to skip every RTK action; install/update do not touch RTK artifacts)
+  enabled: true
+  # set false to skip the automatic binary install while still wiring the hook
+  auto_install_binary: true
+"""
+    body_disabled = """\
+rtk:
+  # opted out at install time; install/update do not touch any RTK artifact
+  enabled: false
+  auto_install_binary: false
+"""
+    return "\n" + header + (body_selected if selected else body_disabled)
+
+
+def _render_notifications_section(selected: bool) -> str:
+    header = """\
+# ─── Notifications ──────────────────────────────────────────────
+# Provider-agnostic notification configuration consumed by Athena
+# (PR review timeout), Janus (release published), and Eunomia
+# (plans status digest). The provider names a concrete MCP server
+# listed in mcp.servers; channels are logical names whose mapping
+# to provider-specific identifiers lives in codex-notifications.
+# See lex-mcp rule 5 (transport preference) and codex-mcp-slack
+# (initial provider implementation).
+"""
+    body_selected = """\
+notifications:
+  # slack | discord | teams | none — must be listed in mcp.servers
+  provider: slack
+  channels:
+    # Athena after the 3 review wait cycles
+    pr_review_timeout: "notifications-gh-pull-request"
+    # Janus on release published
+    release_notify: "notifications-gh-releases"
+    # Eunomia periodic digest
+    plans_status: "notifications-plans-status"
+  # working window for non-critical digests
+  working_hours:
+    start: "07:00"
+    end: "22:00"
+    timezone: "America/Sao_Paulo"
+"""
+    body_commented = """\
+# notifications:
+#   provider: slack                # slack | discord | teams | none
+#   channels:
+#     pr_review_timeout: "notifications-gh-pull-request"
+#     release_notify:    "notifications-gh-releases"
+#     plans_status:      "notifications-plans-status"
+#   working_hours:
+#     start: "07:00"
+#     end:   "22:00"
+#     timezone: "America/Sao_Paulo"
+"""
+    return "\n" + header + (body_selected if selected else body_commented)
+
+
+def _render_pm_section(selected: bool) -> str:
+    body_selected = """\
+# pm: consumed by Eunomia
+pm:
+  # cadence of the PM digest loop (minutes)
+  loop_interval_minutes: 15
+  # mark plan as stalled in the digest (hours)
+  stalled_threshold_hours: 4
+  # bypass working hours and alert immediately (hours)
+  critical_stalled_hours: 24
+"""
+    body_commented = """\
+# pm:                              # consumed by Eunomia
+#   loop_interval_minutes: 15      # cadence of the PM digest loop
+#   stalled_threshold_hours: 4     # mark plan as stalled in the digest
+#   critical_stalled_hours: 24     # bypass working hours and alert immediately
+"""
+    return "\n" + (body_selected if selected else body_commented)
+
+
+def _render_session_tracking_section(selected: bool) -> str:
+    header = """\
+# ─── Session Tracking ───────────────────────────────────────────
+# Per codex-session-tracking. Records heartbeat files in
+# .ahrena/workflow/sessions/<session-id>.json so Eunomia's digest
+# and the Session Trace block on PR bodies can attribute work to
+# the Claude Code session that produced it.
+"""
+    body_selected = """\
+session_tracking:
+  # global on/off
+  enabled: true
+  heartbeat_dir: ".ahrena/workflow/sessions"
+  # PM considers offline after this many minutes without heartbeat
+  stale_threshold_minutes: 30
+  # Gate 2 rejects PR without "Session Trace" when true
+  pr_trace_required: true
+"""
+    body_commented = """\
+# session_tracking:
+#   enabled: true                          # global on/off
+#   heartbeat_dir: ".ahrena/workflow/sessions"
+#   stale_threshold_minutes: 30            # PM considers offline after this
+#   pr_trace_required: true                # Gate 2 rejects PR without "Session Trace"
+"""
+    return "\n" + header + (body_selected if selected else body_commented)
+
+
+def _render_project_setup_section(selection: Selection) -> str:
+    """Render the project_setup: list. Selected items are uncommented;
+    unselected items appear as commented placeholders so the file documents
+    every available bootstrap target. Re-running install honors the items
+    currently materialized; this section is informational (the live source of
+    truth for what runs on the next install is the resolved Selection)."""
+    header = """\
+# ─── Project Setup ──────────────────────────────────────────────
+# Project setup files materialized by `scripts/install.py` at
+# bootstrap time. Each item is gated by the resolved Selection
+# during install (--profile / --with-setup / --without-setup).
+# Re-running install honors the current run's resolved selection;
+# this list is informational and documents which items are
+# currently expected to be present in the project tree.
+"""
+    lines: list[str] = ["project_setup:"]
+    for name in PROJECT_SETUP_CATALOG:
+        if name in selection.project_setup:
+            lines.append(f"  - {name}")
+        else:
+            lines.append(f"  # - {name}")
+    return "\n" + header + "\n".join(lines) + "\n"
+
+
+def render_directives(selection: Selection) -> str:
+    """Render a complete `.directives` file for the given selection.
+
+    Sections always present (schema is stable): paths, references, mcp,
+    quality (commented), knowledge (commented), language, terminal (commented),
+    stacked_prs (commented), pr_cost_tracking, warriors_default_author, rtk,
+    notifications, pm, session_tracking, project_setup, naming. Selection
+    drives whether optional-feature sections (pr_cost_tracking,
+    warriors_default_author, session_tracking, notifications, pm) and the
+    RTK section are uncommented with Full defaults or kept as schema-only
+    skeletons, and which project setup items appear uncommented vs. as
+    commented placeholders.
+    """
+    parts: list[str] = [_DIRECTIVES_HEADER, _render_mcp_section(selection)]
+    parts.append(_DIRECTIVES_QUALITY_AND_KNOWLEDGE)
+    parts.append(_DIRECTIVES_LANGUAGE_AND_TERMINAL)
+    parts.append(_render_pr_cost_tracking_section("pr_cost_tracking" in selection.optional_features))
+    parts.append(_render_warriors_default_author_section("warriors-default-author" in selection.optional_features))
+    parts.append(_render_rtk_section("rtk" in selection.hooks))
+    parts.append(_render_notifications_section("notifications" in selection.optional_features))
+    parts.append(_render_pm_section("pm" in selection.optional_features))
+    parts.append(_render_session_tracking_section("session_tracking" in selection.optional_features))
+    parts.append(_render_project_setup_section(selection))
+    parts.append(_DIRECTIVES_NAMING)
+    return "".join(parts)
+
+
+def print_catalog() -> None:
+    """Print the install catalog (used by ``--list-catalog``) and return."""
+    print("Ahrena install catalog")
+    print("=" * 60)
+    print("\nProfiles:")
+    print(f"  full     — every MCP, every hook, every feature, every setup item (default)")
+    print(f"  standard — ahrena MCP + both hooks + pr_cost_tracking + session_tracking + 3 setup items (no auto-codeowners)")
+    print(f"  minimal  — ahrena MCP + rtk hook only (no setup items)")
+    print("\nMCP servers (--with-mcp / --without-mcp):")
+    for name, (desc, envs) in MCP_CATALOG.items():
+        env_note = f"  [env: {', '.join(envs)}]" if envs else ""
+        print(f"  {name:10s} {desc}{env_note}")
+    print("\nClaude Code hooks (--with-hooks / --without-hooks):")
+    for name, (desc, _envs) in HOOK_CATALOG.items():
+        print(f"  {name:20s} {desc}")
+    print("\nOptional .directives features (--with-features / --without-features):")
+    for name, desc in OPTIONAL_FEATURES.items():
+        print(f"  {name:18s} {desc}")
+    print("\nProject setup files (--with-setup / --without-setup):")
+    for name, (desc, _envs) in PROJECT_SETUP_CATALOG.items():
+        print(f"  {name:25s} {desc}")
+    print("\nResolution order: explicit --with-*/--without-* > --profile > full")
+
+
 def _framework_rel_path_to_rule_key(rel_path: Path) -> str:
     """Convert framework-relative path (e.g. en/_foundation/process/lexis/lex-directives.md) to rule key."""
     parts = list(rel_path.parts)
@@ -1468,6 +2592,7 @@ def install_ahrena(source_dir: Path, target_dir: Path, args: argparse.Namespace)
     directives_path = ahrena_dir / ".directives"
     directives_content: str | None = None
     should_write = False
+    selection: Selection | None = None
 
     if args.directives:
         if args.directives.startswith("http://") or args.directives.startswith("https://"):
@@ -1484,14 +2609,26 @@ def install_ahrena(source_dir: Path, target_dir: Path, args: argparse.Namespace)
             directives_content = custom.read_text(encoding="utf-8")
         should_write = True
 
-    elif args.language:
-        sample = ahrena_framework / ".directives.sample"
-        directives_content = sample.read_text(encoding="utf-8")
+    elif not directives_path.exists():
+        # First install (no custom file): resolve a Selection from CLI flags
+        # and/or interactive prompts, then render the .directives content.
+        interactive = not bool(getattr(args, "non_interactive", False))
+        selection = resolve_selection(args, interactive=interactive)
+        directives_content = render_directives(selection)
+        print(
+            f"  Selection: MCPs={sorted(selection.mcps) or '[]'}, "
+            f"hooks={sorted(selection.hooks) or '[]'}, "
+            f"features={sorted(selection.optional_features) or '[]'}, "
+            f"setup={sorted(selection.project_setup) or '[]'}",
+        )
+        for warning in check_env_vars(selection):
+            print(f"  {warning}", file=sys.stderr)
         should_write = True
 
-    elif not directives_path.exists():
-        sample = ahrena_framework / ".directives.sample"
-        directives_content = sample.read_text(encoding="utf-8")
+    elif args.language:
+        # Re-render existing directives with overridden language. Preserve
+        # the current file content and only swap language.default below.
+        directives_content = directives_path.read_text(encoding="utf-8")
         should_write = True
 
     if args.language and directives_content:
@@ -1502,6 +2639,21 @@ def install_ahrena(source_dir: Path, target_dir: Path, args: argparse.Namespace)
         print(f"  Installed .directives")
     else:
         print(f"  .directives already exists — preserved")
+
+    # Resolve the project setup selection for the current run.
+    #
+    # Project setup helpers (CODEOWNERS, PR template, .gitignore merge,
+    # ISSUE_TEMPLATE sync) always honor the *current run's* resolved
+    # Selection — not the previously-rendered .directives. This matches
+    # Plan A's existing flow: the installer respects the live CLI flags /
+    # profile on every run and never re-parses .directives. When no CLI
+    # flags and no profile are given, the resolved selection defaults to
+    # Full, so re-runs preserve the user-facing default behavior.
+    if selection is None:
+        # Always non-interactive here: the live install_ahrena call has
+        # already produced any prompt (above). On re-runs there is no
+        # opportunity for a fresh prompt — fall back to flags + profile.
+        selection = resolve_selection(args, interactive=False)
 
     # 2.5. Sync contributing_templates to .ahrena/contributing_templates/
     # (framework-managed: always refresh on install/update so new templates land
@@ -1514,26 +2666,47 @@ def install_ahrena(source_dir: Path, target_dir: Path, args: argparse.Namespace)
         shutil.copytree(ct_src, ct_dst)
         print(f"  Synced contributing_templates to .ahrena/contributing_templates/")
 
-    # 2.5b. Sync GitHub Issue Templates to target/.github/ISSUE_TEMPLATE/
-    # The .yml forms under source_dir/.github/ISSUE_TEMPLATE/ are the canonical
-    # GitHub-rendered counterparts of the .md sources in contributing_templates.
-    # Copy each file individually so user-authored templates (file names not in
-    # the framework set) are preserved in the consumer repo.
-    gh_tpl_src = source_dir / ".github" / "ISSUE_TEMPLATE"
-    gh_tpl_dst = target_dir / ".github" / "ISSUE_TEMPLATE"
-    if gh_tpl_src.exists():
-        gh_tpl_dst.mkdir(parents=True, exist_ok=True)
-        synced = 0
-        for yml in sorted(gh_tpl_src.glob("*.yml")):
-            dst = gh_tpl_dst / yml.name
-            # Skip self-copy when source and target are the same path
-            # (ahrena dev-install with target = repo root).
-            if yml.resolve() == dst.resolve():
-                continue
-            shutil.copy2(yml, dst)
-            synced += 1
-        if synced:
-            print(f"  Synced {synced} GitHub Issue Template(s) to .github/ISSUE_TEMPLATE/")
+    # 2.5b. Project setup files (gated by selection.project_setup).
+    # Each item is installed only when present in the resolved selection.
+    # Minimal profile materializes none; Standard skips github-codeowners;
+    # Full materializes all four. See PROJECT_SETUP_CATALOG for details.
+    if "github-issue-templates" in selection.project_setup:
+        # Sync GitHub Issue Templates to target/.github/ISSUE_TEMPLATE/.
+        # The .yml forms under source_dir/.github/ISSUE_TEMPLATE/ are the canonical
+        # GitHub-rendered counterparts of the .md sources in contributing_templates.
+        # Copy each file individually so user-authored templates (file names not in
+        # the framework set) are preserved in the consumer repo.
+        gh_tpl_src = source_dir / ".github" / "ISSUE_TEMPLATE"
+        gh_tpl_dst = target_dir / ".github" / "ISSUE_TEMPLATE"
+        if gh_tpl_src.exists():
+            gh_tpl_dst.mkdir(parents=True, exist_ok=True)
+            synced = 0
+            for yml in sorted(gh_tpl_src.glob("*.yml")):
+                dst = gh_tpl_dst / yml.name
+                # Skip self-copy when source and target are the same path
+                # (ahrena dev-install with target = repo root).
+                if yml.resolve() == dst.resolve():
+                    continue
+                shutil.copy2(yml, dst)
+                synced += 1
+            if synced:
+                print(f"  Synced {synced} GitHub Issue Template(s) to .github/ISSUE_TEMPLATE/")
+
+    if "github-pr-template" in selection.project_setup:
+        install_github_pr_template(source_dir, target_dir)
+
+    if "github-codeowners" in selection.project_setup:
+        install_github_codeowners(source_dir, target_dir)
+
+    if "gitignore-merge" in selection.project_setup:
+        install_gitignore_merge(source_dir, target_dir)
+
+    # Warriors-default-author resolver script (gated by
+    # selection.optional_features). Copy is unconditional once the feature
+    # is opted in; activation is governed by
+    # warriors_default_author.enabled in the rendered .directives. The
+    # script itself no-ops when the directive is false.
+    install_ahrena_auth_script(source_dir, target_dir, selection)
 
     # 2.6. Copy mcp/ templates to .ahrena/mcp/ (never overwrite user overrides)
     mcp_src = ahrena_framework / "mcp"
@@ -2189,7 +3362,50 @@ offline (run this script directly from a cloned Ahrena repo):
     )
     parser.add_argument(
         "--non-interactive", action="store_true",
-        help="never prompt; soft preflight failures become warnings only",
+        help="never prompt; soft preflight failures become warnings only; "
+             "selection prompt is skipped and the resolved profile/flags apply directly",
+    )
+    parser.add_argument(
+        "--profile", choices=["full", "standard", "minimal"],
+        help="preference profile applied as base before --with-*/--without-* overrides "
+             "(default: full when no flag and no interactive answer)",
+    )
+    parser.add_argument(
+        "--with-mcp", metavar="LIST", default="",
+        help="comma-separated MCPs to include on top of the resolved base",
+    )
+    parser.add_argument(
+        "--without-mcp", metavar="LIST", default="",
+        help="comma-separated MCPs to exclude from the resolved base",
+    )
+    parser.add_argument(
+        "--with-hooks", metavar="LIST", default="",
+        help="comma-separated hooks to include",
+    )
+    parser.add_argument(
+        "--without-hooks", metavar="LIST", default="",
+        help="comma-separated hooks to exclude",
+    )
+    parser.add_argument(
+        "--with-features", metavar="LIST", default="",
+        help="comma-separated optional .directives features to include",
+    )
+    parser.add_argument(
+        "--without-features", metavar="LIST", default="",
+        help="comma-separated optional .directives features to exclude",
+    )
+    parser.add_argument(
+        "--with-setup", metavar="LIST", default="",
+        help="comma-separated project setup items to include "
+             "(e.g., github-codeowners,github-pr-template,gitignore-merge)",
+    )
+    parser.add_argument(
+        "--without-setup", metavar="LIST", default="",
+        help="comma-separated project setup items to exclude",
+    )
+    parser.add_argument(
+        "--list-catalog", action="store_true",
+        help="print the install catalog (MCPs, hooks, features, project setup) and exit",
     )
     return parser
 
@@ -2218,6 +3434,11 @@ def main() -> None:
 
     parser = build_parser()
     args = parser.parse_args()
+
+    if getattr(args, "list_catalog", False):
+        print_catalog()
+        return
+
     target_dir = Path(args.target).resolve()
 
     print("Ahrena: AI-First Capability Framework — Installer")
