@@ -95,22 +95,87 @@ describe("<Badge />", () => {
   // Pinned here to detect any regression that re-introduces a variant-color
   // fg on outline mode.
   it.each([
-    { variant: "neutral", border: "border-border-strong",     originalFg: "text-guardia-gray-700",   reason: "text-guardia-gray-700 over dark bg = 1.22:1 fails AA-Normal" },
-    { variant: "brand",   border: "border-guardia-purple-500", originalFg: "text-guardia-purple-500", reason: "text-guardia-purple-500 over dark bg = 1.43:1 fails AA-Normal" },
-    { variant: "accent",  border: "border-guardia-orange-500", originalFg: "text-guardia-orange-500", reason: "text-guardia-orange-500 over light bg = 3.07:1 fails AA-Normal" },
-    { variant: "success", border: "border-signal-green",       originalFg: "text-signal-green",       reason: "text-signal-green over light bg = 2.37:1 fails AA-Normal" },
-    { variant: "warning", border: "border-signal-yellow",      originalFg: "text-guardia-yellow-900", reason: "text-guardia-yellow-900 over dark bg = 2.26:1 fails AA-Normal" },
-    { variant: "danger",  border: "border-signal-red",         originalFg: "text-signal-red",         reason: "text-signal-red over light bg = 3.57:1 fails AA-Normal" },
-    { variant: "info",    border: "border-signal-blue",        originalFg: "text-signal-blue",        reason: "text-signal-blue over dark bg = 2.20:1 fails AA-Normal" },
-  ] as const)("outline variant=$variant uses $border + text-foreground ($reason)", ({ variant, border, originalFg }) => {
+    { variant: "neutral", originalFg: "text-guardia-gray-700",   reason: "text-guardia-gray-700 over dark bg = 1.22:1 fails AA-Normal" },
+    { variant: "brand",   originalFg: "text-guardia-purple-500", reason: "text-guardia-purple-500 over dark bg = 1.43:1 fails AA-Normal" },
+    { variant: "accent",  originalFg: "text-guardia-orange-500", reason: "text-guardia-orange-500 over light bg = 3.07:1 fails AA-Normal" },
+    { variant: "success", originalFg: "text-signal-green",       reason: "text-signal-green over light bg = 2.37:1 fails AA-Normal" },
+    { variant: "warning", originalFg: "text-guardia-yellow-900", reason: "text-guardia-yellow-900 over dark bg = 2.26:1 fails AA-Normal" },
+    { variant: "danger",  originalFg: "text-signal-red",         reason: "text-signal-red over light bg = 3.57:1 fails AA-Normal" },
+    { variant: "info",    originalFg: "text-signal-blue",        reason: "text-signal-blue over dark bg = 2.20:1 fails AA-Normal" },
+  ] as const)("outline variant=$variant uses text-foreground ($reason)", ({ variant, originalFg }) => {
     render(<Badge appearance="outline" variant={variant} data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
     expect(el).toHaveClass("bg-transparent");
-    expect(el).toHaveClass(border);
     expect(el).toHaveClass("text-foreground");
     // Negative guard: the failing variant-tinted fg MUST NOT leak through.
     expect(el).not.toHaveClass(originalFg);
   });
+
+  // WCAG §1.4.11 (3:1 non-text UI) — border tokens per theme. Pinned per #180
+  // after recompute against --background in both themes. Theme-conditional
+  // shades selected so every (variant × theme) combo passes 3:1.
+  // See WCAG block in index.tsx for the per-combo ratios.
+  it.each([
+    {
+      variant: "neutral",
+      lightBorder: "border-guardia-gray-500",
+      darkBorder:  "dark:border-guardia-gray-200",
+      originalLightBorder: "border-border-strong",  // resolved to purple-200 #AF97BD in light = 2.56:1 FAIL
+      lightRatio: "10.95:1", darkRatio: "7.37:1",
+    },
+    {
+      variant: "brand",
+      lightBorder: "border-guardia-purple-500",
+      darkBorder:  "dark:border-guardia-purple-200",
+      originalLightBorder: null,  // light already passed; only dark was failing
+      lightRatio: "12.16:1", darkRatio: "6.80:1",
+    },
+    {
+      variant: "accent",
+      lightBorder: "border-guardia-orange-500",
+      darkBorder:  null,  // single-token (both themes pass; light tight at 3.07:1)
+      originalLightBorder: null,
+      lightRatio: "3.07:1", darkRatio: "5.68:1",
+    },
+    {
+      variant: "success",
+      lightBorder: "border-signal-green-700",
+      darkBorder:  "dark:border-signal-green",
+      originalLightBorder: "border-signal-green",  // green #00BF63 on light = 2.37:1 FAIL
+      lightRatio: "7.23:1", darkRatio: "7.35:1",
+    },
+    {
+      variant: "warning",
+      lightBorder: "border-guardia-yellow-700",
+      darkBorder:  "dark:border-signal-yellow",
+      originalLightBorder: "border-signal-yellow",  // yellow #FFDE59 on light = 1.29:1 FAIL
+      lightRatio: "3.19:1", darkRatio: "13.49:1",
+    },
+    {
+      variant: "danger",
+      lightBorder: "border-signal-red",
+      darkBorder:  null,  // single-token (both themes pass)
+      originalLightBorder: null,
+      lightRatio: "3.57:1", darkRatio: "4.88:1",
+    },
+    {
+      variant: "info",
+      lightBorder: "border-signal-blue",
+      darkBorder:  "dark:border-signal-blue-200",
+      originalLightBorder: null,  // light already passed; only dark was failing
+      lightRatio: "7.92:1", darkRatio: "11.73:1",
+    },
+  ] as const)(
+    "outline variant=$variant border passes WCAG 1.4.11 in both themes (light $lightRatio · dark $darkRatio)",
+    ({ variant, lightBorder, darkBorder, originalLightBorder }) => {
+      render(<Badge appearance="outline" variant={variant} data-testid="b">X</Badge>);
+      const el = screen.getByTestId("b");
+      expect(el).toHaveClass(lightBorder);
+      if (darkBorder) expect(el).toHaveClass(darkBorder);
+      // Negative guard: the originally failing border MUST NOT leak through.
+      if (originalLightBorder) expect(el).not.toHaveClass(originalLightBorder);
+    },
+  );
 
   it("jest-axe: outline variants are WCAG AA clean in light + dark themes", async () => {
     const { container } = render(

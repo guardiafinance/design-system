@@ -75,33 +75,40 @@ const badgeVariants = cva(
        * AA-Normal (4.5:1) in both themes — aligns with Chip ADR-003 policy
        * (see docs/adr/ADR-003-chip-variants.md, outline section).
        *
-       * WCAG recompute against --background in each theme
-       *   light --background #FCFCFC | dark --background #17171C
-       *   light --foreground #44186D | dark --foreground #FCFCFC
+       * Border WCAG 2.1 §1.4.11 (3:1 non-text UI) recompute against
+       * --background in each theme (per #180):
+       *   light --background #FCFCFC | dark --background #17171B
        *
-       * Variant-tinted text fails AA-Normal in at least one theme:
-       *   neutral  text-guardia-gray-700   light 14.27:1 pass | dark  1.22:1 FAIL
-       *   brand    text-guardia-purple-500 light 12.16:1 pass | dark  1.43:1 FAIL
-       *   accent   text-guardia-orange-500 light  3.07:1 FAIL | dark  5.67:1 pass
-       *   success  text-signal-green       light  2.37:1 FAIL | dark  7.34:1 pass
-       *   warning  text-guardia-yellow-900 light  7.71:1 pass | dark  2.26:1 FAIL
-       *   danger   text-signal-red         light  3.57:1 FAIL | dark  4.88:1 pass
-       *   info     text-signal-blue        light  7.92:1 pass | dark  2.20:1 FAIL
+       * Single-token borders (theme-agnostic) failed 3:1 in at least one
+       * theme. Fixed with theme-conditional borders via Tailwind `dark:`
+       * modifier, picking shades from the palette / signal-* color-mix
+       * tokens already published in @theme inline:
        *
-       * After fix (text-foreground):
-       *   light fg #44186D over #FCFCFC = 12.81:1 AA-Normal pass
-       *   dark  fg #FCFCFC over #17171C = 17.41:1 AA-Normal pass
+       *   variant  light border          ratio  | dark border           ratio
+       *   neutral  guardia-gray-500    10.95:1  | guardia-gray-200     7.37:1
+       *   brand    guardia-purple-500  12.16:1  | guardia-purple-200   6.80:1
+       *   accent   guardia-orange-500   3.07:1  | guardia-orange-500   5.68:1
+       *   success  signal-green-700     7.23:1  | signal-green         7.35:1
+       *   warning  guardia-yellow-700   3.19:1  | signal-yellow       13.49:1
+       *   danger   signal-red           3.57:1  | signal-red           4.88:1
+       *   info     signal-blue          7.92:1  | signal-blue-200     11.73:1
        *
-       * Border keeps the variant signal — WCAG 1.4.11 non-text UI threshold
-       * is 3:1, and border-strong remains the chosen neutral mark for neutral.
+       * accent light (3.07:1) is the tightest combo — passes 3:1 by 0.07.
+       * orange-500 #E07400 over #FCFCFC sits right at the threshold; kept
+       * as-is because it is the canonical brand accent. If visual review
+       * ever wants a stricter margin, swap for orange-700 #9C5100 (5.70:1).
+       *
+       * text-foreground (AA-Normal):
+       *   light fg #44186D over #FCFCFC = 12.81:1
+       *   dark  fg #FCFCFC over #17171B = 17.41:1
        */
-      { appearance: "outline", variant: "neutral",  className: "border-border-strong text-foreground" },
-      { appearance: "outline", variant: "brand",    className: "border-guardia-purple-500 text-foreground" },
+      { appearance: "outline", variant: "neutral",  className: "border-guardia-gray-500 dark:border-guardia-gray-200 text-foreground" },
+      { appearance: "outline", variant: "brand",    className: "border-guardia-purple-500 dark:border-guardia-purple-200 text-foreground" },
       { appearance: "outline", variant: "accent",   className: "border-guardia-orange-500 text-foreground" },
-      { appearance: "outline", variant: "success",  className: "border-signal-green text-foreground" },
-      { appearance: "outline", variant: "warning",  className: "border-signal-yellow text-foreground" },
+      { appearance: "outline", variant: "success",  className: "border-signal-green-700 dark:border-signal-green text-foreground" },
+      { appearance: "outline", variant: "warning",  className: "border-guardia-yellow-700 dark:border-signal-yellow text-foreground" },
       { appearance: "outline", variant: "danger",   className: "border-signal-red text-foreground" },
-      { appearance: "outline", variant: "info",     className: "border-signal-blue text-foreground" },
+      { appearance: "outline", variant: "info",     className: "border-signal-blue dark:border-signal-blue-200 text-foreground" },
     ],
     defaultVariants: {
       variant: "neutral",
