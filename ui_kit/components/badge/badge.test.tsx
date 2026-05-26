@@ -37,7 +37,7 @@ describe("<Badge />", () => {
     });
   });
 
-  it("applies solid appearance with white text (brand: violet-500 + white = 12.47:1 AAA)", () => {
+  it("applies solid appearance with white text (brand: purple-500 + white = 12.47:1 AAA)", () => {
     render(<Badge appearance="solid" variant="brand" data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
     expect(el).toHaveClass("bg-guardia-purple-500");

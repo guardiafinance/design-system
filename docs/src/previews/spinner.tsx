@@ -76,7 +76,7 @@ export function CurrentColorRow() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2 text-guardia-purple-500">
         <Spinner color="current" size="sm" />
-        <span className="text-sm">Herda violet (texto roxo)</span>
+        <span className="text-sm">Herda purple (texto roxo)</span>
       </div>
       <div className="flex items-center gap-2 text-guardia-orange-500">
         <Spinner color="current" size="sm" />

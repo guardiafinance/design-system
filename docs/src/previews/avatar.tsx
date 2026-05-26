@@ -42,7 +42,7 @@ export function ShapesRow() {
 
 export function ColorsRow() {
   const colors: AvatarFallbackColor[] = [
-    "violet",
+    "purple",
     "orange",
     "pink",
     "yellow",
@@ -86,7 +86,7 @@ export function StatusRow() {
 
 export function FallbackInitials() {
   const people = [
-    { name: "Ada Lovelace", color: "violet" as const },
+    { name: "Ada Lovelace", color: "purple" as const },
     { name: "Alan Turing", color: "orange" as const },
     { name: "Grace Hopper", color: "pink" as const },
     { name: "Linus Torvalds", color: "green" as const },
@@ -111,7 +111,7 @@ export function AvatarGroup() {
   return (
     <div className="flex -space-x-2">
       {[
-        { initials: "FS", color: "violet" as const },
+        { initials: "FS", color: "purple" as const },
         { initials: "AL", color: "orange" as const },
         { initials: "GH", color: "pink" as const },
         { initials: "AT", color: "green" as const },
