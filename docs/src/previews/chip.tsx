@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Chip } from "@ds/components/chip";
 import { Filter, Tag, Clock, Check } from "lucide-react";
 
@@ -136,5 +136,91 @@ export function Disabled() {
         Travado
       </Chip>
     </>
+  );
+}
+
+// ─── #168 — variant + appearance API (ADR-003) ────────────────────────
+
+const VARIANTS = ["neutral", "brand", "accent", "success", "warning", "danger", "info"] as const;
+
+/** Variant × appearance matrix em estado resting (selected: false). */
+export function VariantMatrix() {
+  return (
+    <div className="grid gap-3" style={{ gridTemplateColumns: "auto repeat(3, minmax(120px, 1fr))" }}>
+      <div />
+      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">soft</div>
+      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">outline</div>
+      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">solid</div>
+      {VARIANTS.map((v) => (
+        <Fragment key={v}>
+          <div className="text-[12px] font-medium text-muted-foreground self-center">{v}</div>
+          <div className="self-center"><Chip variant={v} appearance="soft">{v}</Chip></div>
+          <div className="self-center"><Chip variant={v} appearance="outline">{v}</Chip></div>
+          <div className="self-center"><Chip variant={v} appearance="solid">{v}</Chip></div>
+        </Fragment>
+      ))}
+    </div>
+  );
+}
+
+/** Cada variant em selected: true (sempre solid per ADR-003 decisão 5). */
+export function VariantSelected() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {VARIANTS.map((v) => (
+        <Chip key={v} variant={v} selected onSelect={() => {}}>{v}</Chip>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Demo da asymmetry appearance × selected (ADR-003 decisão 5).
+ *
+ * 3 chips com appearance distintas — todos viram solid quando selected.
+ */
+export function AppearanceSelectedAsymmetry() {
+  return (
+    <div className="grid gap-3">
+      {(["soft", "outline", "solid"] as const).map((a) => (
+        <div key={a} className="flex items-center gap-3">
+          <div className="w-16 text-[12px] font-medium text-muted-foreground">{a}</div>
+          <Chip variant="warning" appearance={a} onSelect={() => {}}>resting</Chip>
+          <span className="text-[11px] text-muted-foreground">→ selected:</span>
+          <Chip variant="warning" appearance={a} selected onSelect={() => {}}>solid (ignora `{a}`)</Chip>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Use cases reais por variant. */
+export function SemanticUseCases() {
+  return (
+    <div className="grid gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[12px] text-muted-foreground w-28">Status:</span>
+        <Chip variant="success" selected onSelect={() => {}}>Conciliado</Chip>
+        <Chip variant="warning" selected onSelect={() => {}}>Em análise</Chip>
+        <Chip variant="danger" selected onSelect={() => {}}>Rejeitado</Chip>
+        <Chip variant="info" selected onSelect={() => {}}>Aguardando</Chip>
+        <Chip variant="neutral" selected onSelect={() => {}}>Arquivado</Chip>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[12px] text-muted-foreground w-28">Filtros:</span>
+        <Chip variant="brand" onSelect={() => {}}>Não conciliadas</Chip>
+        <Chip variant="success" onSelect={() => {}}>Receitas</Chip>
+        <Chip variant="danger" onSelect={() => {}}>Despesas</Chip>
+        <Chip variant="accent" onSelect={() => {}}>Acentuado</Chip>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[12px] text-muted-foreground w-28">Tags (soft):</span>
+        <Chip variant="brand" appearance="soft">NF-e</Chip>
+        <Chip variant="accent" appearance="soft">SPED</Chip>
+        <Chip variant="success" appearance="soft">Reconciliado</Chip>
+        <Chip variant="warning" appearance="soft">Pendente</Chip>
+        <Chip variant="info" appearance="soft">CFOP 5102</Chip>
+      </div>
+    </div>
   );
 }

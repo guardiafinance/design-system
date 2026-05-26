@@ -252,4 +252,126 @@ describe("<Chip />", () => {
       await axeInThemes(container);
     });
   });
+
+  describe("variant + appearance API (per #168 / ADR-003)", () => {
+    // WHY: each selected solid variant has a token mapping per ADR-003
+    // decisão 6 (Foreground color overrides for low-contrast solids).
+    // These guards assert the compound variant matrix renders the exact
+    // bg/border/text triplet per cell.
+    describe("selected: true (always solid, regardless of `appearance` per ADR-003 decisão 5)", () => {
+      it.each([
+        { variant: "neutral" as const,  bg: /bg-guardia-gray-500/,        border: /border-guardia-gray-500/,        fg: /\btext-white\b/ },
+        { variant: "brand" as const,    bg: /bg-action(?!-hover)/,        border: /border-action(?!-hover)/,        fg: /text-button-fg(?!-hover)/ },
+        { variant: "accent" as const,   bg: /bg-accent-brand(?!-hover)/,  border: /border-accent-brand(?!-hover)/,  fg: /text-guardia-gray-900/ },
+        { variant: "success" as const,  bg: /bg-signal-green/,            border: /border-signal-green/,            fg: /text-guardia-gray-900/ },
+        { variant: "warning" as const,  bg: /bg-signal-yellow/,           border: /border-signal-yellow/,           fg: /text-guardia-violet-900/ },
+        { variant: "danger" as const,   bg: /bg-signal-red/,              border: /border-signal-red/,              fg: /text-guardia-gray-900/ },
+        { variant: "info" as const,     bg: /bg-signal-blue/,             border: /border-signal-blue/,             fg: /\btext-white\b/ },
+      ])("variant=$variant selected uses solid tokens per ADR-003 table", ({ variant, bg, border, fg }) => {
+        render(
+          <Chip variant={variant} selected onSelect={() => {}} data-testid="c">
+            {variant}
+          </Chip>,
+        );
+        const c = screen.getByTestId("c");
+        expect(c.className).toMatch(bg);
+        expect(c.className).toMatch(border);
+        expect(c.className).toMatch(fg);
+        // ADR-002 + ADR-003 decisão 7: no hover override on selected
+        expect(c.className).not.toMatch(/hover:bg-[a-z]/);
+      });
+    });
+
+    describe("selected: false, appearance: outline (default resting)", () => {
+      it("default render (no props) matches `variant=brand appearance=outline` byte-identical (backward-compat per ADR-003 decisão 4)", () => {
+        render(<Chip data-testid="c">Default</Chip>);
+        const c = screen.getByTestId("c");
+        // Backward-compat: current resting look preserved
+        expect(c.className).toMatch(/bg-background/);
+        expect(c.className).toMatch(/border-border-strong/);
+        expect(c.className).toMatch(/text-foreground/);
+        // data-attribute exposed for consumer styling
+        expect(c).toHaveAttribute("data-variant", "brand");
+        expect(c).toHaveAttribute("data-appearance", "outline");
+      });
+
+      it.each([
+        { variant: "neutral" as const, border: /border-border-strong/ },
+        { variant: "brand" as const,   border: /border-border-strong/ }, // backward-compat
+        { variant: "accent" as const,  border: /border-accent-brand(?!-hover)/ },
+        { variant: "success" as const, border: /border-signal-green/ },
+        { variant: "warning" as const, border: /border-signal-yellow/ },
+        { variant: "danger" as const,  border: /border-signal-red/ },
+        { variant: "info" as const,    border: /border-signal-blue/ },
+      ])("variant=$variant outline carries variant-tinted border + neutral text (AA-safe)", ({ variant, border }) => {
+        render(
+          <Chip variant={variant} appearance="outline" data-testid="c">
+            {variant}
+          </Chip>,
+        );
+        const c = screen.getByTestId("c");
+        expect(c.className).toMatch(border);
+        expect(c.className).toMatch(/text-foreground/);
+        expect(c.className).toMatch(/bg-background/);
+      });
+    });
+
+    describe("selected: false, appearance: soft (Badge-style tinted resting)", () => {
+      it.each([
+        { variant: "neutral" as const, bg: /bg-guardia-gray-100/,    fg: /text-guardia-gray-700/ },
+        { variant: "brand" as const,   bg: /bg-guardia-violet-100/,  fg: /text-guardia-violet-700/ },
+        { variant: "accent" as const,  bg: /bg-guardia-orange-100/,  fg: /text-guardia-orange-700/ },
+        { variant: "warning" as const, bg: /bg-guardia-yellow-100/,  fg: /text-guardia-yellow-900/ },
+      ])("variant=$variant soft uses tinted bg + matching text shade", ({ variant, bg, fg }) => {
+        render(
+          <Chip variant={variant} appearance="soft" data-testid="c">
+            {variant}
+          </Chip>,
+        );
+        const c = screen.getByTestId("c");
+        expect(c.className).toMatch(bg);
+        expect(c.className).toMatch(fg);
+        expect(c.className).toMatch(/border-transparent/);
+      });
+    });
+
+    describe("ADR-003 decisão 5 — `selected: true` ignores `appearance` (always solid)", () => {
+      it.each(["soft" as const, "outline" as const, "solid" as const])(
+        "appearance=%s + selected=true renders as variant=brand solid (ignored)",
+        (appearance) => {
+          render(
+            <Chip variant="brand" appearance={appearance} selected onSelect={() => {}} data-testid="c">
+              forced solid
+            </Chip>,
+          );
+          const c = screen.getByTestId("c");
+          // ALWAYS solid action surface, regardless of `appearance`
+          expect(c.className).toMatch(/bg-action(?!-hover)/);
+          expect(c.className).toMatch(/text-button-fg(?!-hover)/);
+          // Never the soft tint
+          expect(c.className).not.toMatch(/bg-guardia-violet-100/);
+        },
+      );
+    });
+
+    describe("WCAG AA — jest-axe on every variant × selected combo", () => {
+      const variants = ["neutral", "brand", "accent", "success", "warning", "danger", "info"] as const;
+      it.each(variants)("variant=%s selected has no WCAG 2.1 AA violations in light + dark", async (variant) => {
+        const { container } = render(
+          <Chip variant={variant} selected onSelect={() => {}}>
+            {variant}
+          </Chip>,
+        );
+        await axeInThemes(container);
+      });
+      it.each(variants)("variant=%s outline (resting) has no WCAG 2.1 AA violations in light + dark", async (variant) => {
+        const { container } = render(
+          <Chip variant={variant} appearance="outline" onSelect={() => {}}>
+            {variant}
+          </Chip>,
+        );
+        await axeInThemes(container);
+      });
+    });
+  });
 });

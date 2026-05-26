@@ -9,6 +9,10 @@ import {
   SelectableAndRemovable,
   Sizes,
   Disabled,
+  VariantMatrix,
+  VariantSelected,
+  AppearanceSelectedAsymmetry,
+  SemanticUseCases,
 } from "../../previews/chip";
 import { LiveChipSnippet } from "../../previews/chip-live";
 import chipSource from "@ds/components/chip/index.tsx?raw";
@@ -98,6 +102,66 @@ import chipSource from "@ds/components/chip/index.tsx?raw";
     <p class="preview-caption">
       Use com moderação — dois controles aumentam a superfície cognitiva.
       Prefira separar quando possível.
+    </p>
+  </section>
+
+  <!-- ============ VARIANT + APPEARANCE (#168 / ADR-003) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variant + Appearance</h2>
+      <small>cores semânticas · ADR-003</small>
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">variant</code> (<code class="inline">neutral · brand · accent · success · warning · danger · info</code>)
+      para expressar significado e <code class="inline">appearance</code>
+      (<code class="inline">soft · outline · solid</code>) para escolher o registro visual.
+      O default <code class="inline">variant="brand" appearance="outline"</code> preserva
+      o render do Chip pré-#168.
+    </p>
+    <div class="preview">
+      <VariantMatrix client:load />
+    </div>
+    <p class="preview-caption">
+      <b>Selecionado (selected: true):</b> sempre solid — o <code class="inline">appearance</code>
+      é ignorado neste estado (ver Asymmetry abaixo).
+    </p>
+    <div class="preview row">
+      <VariantSelected client:load />
+    </div>
+  </section>
+
+  <!-- ============ ASYMMETRY (ADR-003 decisão 5) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Asymmetry: appearance × selected</h2>
+      <small>ADR-003 decisão 5 · selected sempre vence → solid</small>
+    </div>
+    <p class="preview-caption">
+      <b>Atenção:</b> a prop <code class="inline">appearance</code> só controla o estado
+      <b>resting</b> (<code class="inline">selected: false</code>). Quando
+      <code class="inline">selected: true</code>, o chip <b>ignora</b>
+      <code class="inline">appearance</code> e renderiza sempre como solid. Esta regra
+      preserva o affordance "toggle ON = sólido" alinhado com Checkbox e Radio.
+    </p>
+    <div class="preview">
+      <AppearanceSelectedAsymmetry client:load />
+    </div>
+  </section>
+
+  <!-- ============ SEMANTIC USE CASES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Use cases semânticos</h2>
+      <small>status · filtros · tags</small>
+    </div>
+    <div class="preview">
+      <SemanticUseCases client:load />
+    </div>
+    <p class="preview-caption">
+      Variant comunica intent: <b>success</b> para conclusão, <b>warning</b> para
+      pendência, <b>danger</b> para rejeição, <b>info</b> para aguardando,
+      <b>neutral</b> para metadados sem hierarquia. <b>brand</b> e <b>accent</b>
+      permanecem theme-aware (violet↔orange por <code class="inline">data-theme</code>).
     </p>
   </section>
 
