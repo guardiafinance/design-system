@@ -28,13 +28,18 @@ const chipVariants = cva(
         md: "h-8 px-3 text-[13px] font-medium",
       },
       selected: {
-        true: "bg-action border-action text-button-fg hover:bg-action-hover hover:border-action-hover hover:text-button-fg-hover",
+        // WHY: hover does not override `selected: true` on action surfaces.
+        // See docs/adr/ADR-002-hover-on-action-surfaces.md.
+        true: "bg-action border-action text-button-fg",
         false:
           "bg-background border-border-strong text-foreground hover:bg-bg-hover hover:border-action",
       },
       interactive: {
         true: "cursor-pointer",
-        false: "cursor-default hover:bg-background hover:border-border-strong",
+        // WHY: hover-neutralization moved to the compound variant below so it
+        // applies ONLY to `selected: false`. See ADR-002 — `interactive: false`
+        // with `selected: true` MUST keep the action surface stable on hover.
+        false: "cursor-default",
       },
       disabled: {
         true: "opacity-50 cursor-not-allowed",
@@ -42,7 +47,9 @@ const chipVariants = cva(
       },
     },
     compoundVariants: [
-      // Chip não-interativo e não selecionado → neutraliza hover
+      // Chip não-interativo e não selecionado → neutraliza hover do estado
+      // padrão (resting). Os outros 3 cantos da matriz são governados pelos
+      // variants `selected`/`interactive` diretamente, conforme ADR-002.
       {
         interactive: false,
         selected: false,

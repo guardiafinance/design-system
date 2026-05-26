@@ -145,7 +145,9 @@ describe("<Chip />", () => {
   });
 
   describe("brand-aware tokens (per #125)", () => {
-    it("selected variant uses bg-action + text-button-fg with action-hover on hover", () => {
+    it("selected variant uses stable bg-action + text-button-fg with NO hover override", () => {
+      // WHY: hover does not override `selected: true` on action surfaces.
+      // See docs/adr/ADR-002-hover-on-action-surfaces.md.
       render(
         <Chip selected onSelect={() => {}} data-testid="c">
           Selected
@@ -155,12 +157,30 @@ describe("<Chip />", () => {
       expect(c.className).toMatch(/bg-action(?!-hover)/);
       expect(c.className).toMatch(/border-action(?!-hover)/);
       expect(c.className).toMatch(/text-button-fg(?!-hover)/);
-      expect(c.className).toMatch(/hover:bg-action-hover/);
-      expect(c.className).toMatch(/hover:border-action-hover/);
-      // WHY: dark mode hover swaps fg to white — mono-black over orange-700 = 3.2:1 (fails AA).
-      expect(c.className).toMatch(/hover:text-button-fg-hover/);
+      expect(c.className).not.toMatch(/hover:bg-action-hover/);
+      expect(c.className).not.toMatch(/hover:border-action-hover/);
+      expect(c.className).not.toMatch(/hover:text-button-fg-hover/);
       expect(c.className).not.toMatch(/guardia-violet-(100|500|700)/);
       expect(c.className).not.toMatch(/\btext-white\b/);
+    });
+
+    it("non-interactive selected variant keeps action surface stable on hover", () => {
+      // WHY: ADR-002 governs the `selected: true ∧ interactive: false` cell of
+      // the variant matrix too. Without this guard, hover would override
+      // `bg-action` with `bg-background` (JSDoc Mode 4 and split-interactive
+      // Mode 3 both hit this path).
+      // See docs/adr/ADR-002-hover-on-action-surfaces.md.
+      render(
+        <Chip selected data-testid="c">
+          Selected (non-interactive)
+        </Chip>,
+      );
+      const c = screen.getByTestId("c");
+      expect(c.className).toMatch(/bg-action(?!-hover)/);
+      expect(c.className).toMatch(/border-action(?!-hover)/);
+      expect(c.className).toMatch(/text-button-fg(?!-hover)/);
+      expect(c.className).not.toMatch(/hover:bg-background/);
+      expect(c.className).not.toMatch(/hover:border-border-strong/);
     });
 
     it("unselected variant uses bg-bg-hover + border-action on hover", () => {
