@@ -77,6 +77,33 @@
   --signal-yellow: #FFDE59;
   --signal-red: #FF3131;
   --signal-blue: #004AAD;
+
+  /* Signal shade scale — derived tints used by Chip / Badge soft + hover modes.
+   *
+   * Mirrors the guardia-{color}-100/200/700 pattern. Values come from the
+   * WCAG analysis in docs/adr/ADR-003-chip-variants.md and are computed in
+   * oklab to preserve perceptual lightness. Do not edit ratios without
+   * re-validating contrast against the same ADR.
+   *
+   *   -100  soft bg (resting)             — pale tint over white
+   *   -200  soft bg (hover)               — stronger tint over white
+   *   -700  soft fg (text)                — darker shade over black for AA
+   *   -outline-hover  outline mode hover  — ultra-light tint (10% mix)
+   */
+  --signal-green-100: color-mix(in oklab, var(--signal-green) 18%, white);
+  --signal-green-200: color-mix(in oklab, var(--signal-green) 28%, white);
+  --signal-green-700: color-mix(in oklab, var(--signal-green) 52%, black);
+  --signal-green-outline-hover: color-mix(in oklab, var(--signal-green) 10%, white);
+
+  --signal-red-100: color-mix(in oklab, var(--signal-red) 14%, white);
+  --signal-red-200: color-mix(in oklab, var(--signal-red) 24%, white);
+  --signal-red-700: color-mix(in oklab, var(--signal-red) 45%, black);
+  --signal-red-outline-hover: color-mix(in oklab, var(--signal-red) 10%, white);
+
+  --signal-blue-100: color-mix(in oklab, var(--signal-blue) 14%, white);
+  --signal-blue-200: color-mix(in oklab, var(--signal-blue) 24%, white);
+  --signal-blue-700: color-mix(in oklab, var(--signal-blue) 62%, black);
+  --signal-blue-outline-hover: color-mix(in oklab, var(--signal-blue) 10%, white);
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -475,6 +502,22 @@
   --color-signal-yellow: var(--signal-yellow);
   --color-signal-red: var(--signal-red);
   --color-signal-blue: var(--signal-blue);
+
+  /* Signal shade scale — soft tints + outline hover (see palette block above) */
+  --color-signal-green-100: var(--signal-green-100);
+  --color-signal-green-200: var(--signal-green-200);
+  --color-signal-green-700: var(--signal-green-700);
+  --color-signal-green-outline-hover: var(--signal-green-outline-hover);
+
+  --color-signal-red-100: var(--signal-red-100);
+  --color-signal-red-200: var(--signal-red-200);
+  --color-signal-red-700: var(--signal-red-700);
+  --color-signal-red-outline-hover: var(--signal-red-outline-hover);
+
+  --color-signal-blue-100: var(--signal-blue-100);
+  --color-signal-blue-200: var(--signal-blue-200);
+  --color-signal-blue-700: var(--signal-blue-700);
+  --color-signal-blue-outline-hover: var(--signal-blue-outline-hover);
 
   /* Sidebar tokens (shadcn) */
   --color-sidebar: hsl(var(--sidebar));
