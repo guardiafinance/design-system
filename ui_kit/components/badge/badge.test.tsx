@@ -77,12 +77,54 @@ describe("<Badge />", () => {
     await axeInThemes(container);
   });
 
-  it("applies outline appearance with border+text color", () => {
+  it("applies outline appearance with variant-tinted border + neutral fg", () => {
     render(<Badge appearance="outline" variant="danger" data-testid="b">Erro</Badge>);
     const el = screen.getByTestId("b");
     expect(el).toHaveClass("bg-transparent");
     expect(el).toHaveClass("border-signal-red");
-    expect(el).toHaveClass("text-signal-red");
+    // ADR-003 outline policy: text-foreground (not variant-tinted) so AA-Normal
+    // passes against bg-background in both themes (see WCAG block in index.tsx).
+    expect(el).toHaveClass("text-foreground");
+    expect(el).not.toHaveClass("text-signal-red");
+  });
+
+  // WCAG AA-Normal (4.5:1) fg overrides for outline variants. The original
+  // variant-tinted fg fails §1.4.3 over --background in at least one theme
+  // for every single variant (see WCAG block in index.tsx for the recompute).
+  // ADR-003 policy adopted: variant-tinted border + text-foreground.
+  // Pinned here to detect any regression that re-introduces a variant-color
+  // fg on outline mode.
+  it.each([
+    { variant: "neutral", border: "border-border-strong",     originalFg: "text-guardia-gray-700",   reason: "text-guardia-gray-700 over dark bg = 1.22:1 fails AA-Normal" },
+    { variant: "brand",   border: "border-guardia-violet-500", originalFg: "text-guardia-violet-500", reason: "text-guardia-violet-500 over dark bg = 1.43:1 fails AA-Normal" },
+    { variant: "accent",  border: "border-guardia-orange-500", originalFg: "text-guardia-orange-500", reason: "text-guardia-orange-500 over light bg = 3.07:1 fails AA-Normal" },
+    { variant: "success", border: "border-signal-green",       originalFg: "text-signal-green",       reason: "text-signal-green over light bg = 2.37:1 fails AA-Normal" },
+    { variant: "warning", border: "border-signal-yellow",      originalFg: "text-guardia-yellow-900", reason: "text-guardia-yellow-900 over dark bg = 2.26:1 fails AA-Normal" },
+    { variant: "danger",  border: "border-signal-red",         originalFg: "text-signal-red",         reason: "text-signal-red over light bg = 3.57:1 fails AA-Normal" },
+    { variant: "info",    border: "border-signal-blue",        originalFg: "text-signal-blue",        reason: "text-signal-blue over dark bg = 2.20:1 fails AA-Normal" },
+  ] as const)("outline variant=$variant uses $border + text-foreground ($reason)", ({ variant, border, originalFg }) => {
+    render(<Badge appearance="outline" variant={variant} data-testid="b">X</Badge>);
+    const el = screen.getByTestId("b");
+    expect(el).toHaveClass("bg-transparent");
+    expect(el).toHaveClass(border);
+    expect(el).toHaveClass("text-foreground");
+    // Negative guard: the failing variant-tinted fg MUST NOT leak through.
+    expect(el).not.toHaveClass(originalFg);
+  });
+
+  it("jest-axe: outline variants are WCAG AA clean in light + dark themes", async () => {
+    const { container } = render(
+      <div>
+        <Badge appearance="outline" variant="neutral">neutral</Badge>
+        <Badge appearance="outline" variant="brand">brand</Badge>
+        <Badge appearance="outline" variant="accent">accent</Badge>
+        <Badge appearance="outline" variant="success">success</Badge>
+        <Badge appearance="outline" variant="warning">warning</Badge>
+        <Badge appearance="outline" variant="danger">danger</Badge>
+        <Badge appearance="outline" variant="info">info</Badge>
+      </div>,
+    );
+    await axeInThemes(container);
   });
 
   it("applies square shape", () => {
