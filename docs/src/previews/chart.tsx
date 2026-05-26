@@ -38,26 +38,29 @@ const revenueExpenseConfig = {
   expense: { label: "Despesa", color: "var(--chart-3)" },
 } satisfies ChartConfig;
 
+// WHY: os keys do config viram nomes de CSS var (`--color-<key>`); espaços
+// e acentos quebram a variável. Mantemos os keys em ASCII kebab-case e
+// usamos `label` para o nome visível na legenda/tooltip.
 const distributionConfig = {
-  Receita: { label: "Receita", color: "var(--chart-1)" },
-  "Em análise": { label: "Em análise", color: "var(--chart-2)" },
-  Despesa: { label: "Despesa", color: "var(--chart-3)" },
-  Conciliado: { label: "Conciliado", color: "var(--chart-4)" },
-  Investimento: { label: "Investimento", color: "var(--chart-5)" },
-  Provisão: { label: "Provisão", color: "var(--chart-6)" },
-  "Não-categorizado": { label: "Não-categorizado", color: "var(--chart-7)" },
-  Arquivado: { label: "Arquivado", color: "var(--chart-8)" },
+  receita: { label: "Receita", color: "var(--chart-1)" },
+  "em-analise": { label: "Em análise", color: "var(--chart-2)" },
+  despesa: { label: "Despesa", color: "var(--chart-3)" },
+  conciliado: { label: "Conciliado", color: "var(--chart-4)" },
+  investimento: { label: "Investimento", color: "var(--chart-5)" },
+  provisao: { label: "Provisão", color: "var(--chart-6)" },
+  "nao-categorizado": { label: "Não-categorizado", color: "var(--chart-7)" },
+  arquivado: { label: "Arquivado", color: "var(--chart-8)" },
 } satisfies ChartConfig;
 
 const distributionData = [
-  { name: "Receita", value: 28 },
-  { name: "Em análise", value: 8 },
-  { name: "Despesa", value: 22 },
-  { name: "Conciliado", value: 14 },
-  { name: "Investimento", value: 10 },
-  { name: "Provisão", value: 8 },
-  { name: "Não-categorizado", value: 6 },
-  { name: "Arquivado", value: 4 },
+  { name: "receita", value: 28 },
+  { name: "em-analise", value: 8 },
+  { name: "despesa", value: 22 },
+  { name: "conciliado", value: 14 },
+  { name: "investimento", value: 10 },
+  { name: "provisao", value: 8 },
+  { name: "nao-categorizado", value: 6 },
+  { name: "arquivado", value: 4 },
 ];
 
 export function LinePreview() {
@@ -222,14 +225,17 @@ export function PaletteSwatches() {
   // de destaque/baseline — escolha consistente com a função "acento
   // escasso" do laranja no Purple Mode.
   const tokens = [
-    { name: "--chart-1", role: "Verde Sinal (positivo)" },
-    { name: "--chart-2", role: "Amarelo Sinal (atenção)" },
-    { name: "--chart-3", role: "Vermelho Sinal (negativo)" },
-    { name: "--chart-4", role: "Azul Sinal (informativo)" },
-    { name: "--chart-5", role: "Laranja Quente (destaque escasso)" },
+    { name: "--chart-1", role: "Verde Sinal · positivo" },
+    { name: "--chart-2", role: "Amarelo Sinal · atenção" },
+    { name: "--chart-3", role: "Vermelho Sinal · negativo" },
+    { name: "--chart-4", role: "Azul Sinal · informativo" },
+    { name: "--chart-5", role: "Laranja Quente · destaque escasso" },
+    { name: "--chart-6", role: "Violeta Profundo · autoridade" },
+    { name: "--chart-7", role: "Rosa Suave · acolhimento" },
+    { name: "--chart-8", role: "Cinza Báltico · neutro/estável" },
   ];
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       {tokens.map((t) => (
         <div
           key={t.name}
