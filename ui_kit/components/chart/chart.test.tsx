@@ -103,15 +103,15 @@ function withSize(node: ReactNode) {
 }
 
 const baseData = [
-  { name: "Jan", revenue: 400, cost: 240 },
-  { name: "Feb", revenue: 300, cost: 138 },
-  { name: "Mar", revenue: 520, cost: 280 },
-  { name: "Apr", revenue: 478, cost: 308 },
+  { name: "Jan", revenue: 400, expense: 240 },
+  { name: "Feb", revenue: 300, expense: 138 },
+  { name: "Mar", revenue: 520, expense: 280 },
+  { name: "Apr", revenue: 478, expense: 308 },
 ];
 
 const baseConfig = {
-  revenue: { label: "Receita", color: "var(--chart-1)" },
-  cost: { label: "Custo", color: "var(--chart-2)" },
+  revenue: { label: "Receita", color: "var(--chart-2)" },
+  expense: { label: "Despesa", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 function LineSample() {
@@ -122,7 +122,7 @@ function LineSample() {
         <XAxis dataKey="name" />
         <YAxis />
         <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" />
-        <Line type="monotone" dataKey="cost" stroke="var(--color-cost)" />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" />
       </LineChart>
     </ChartContainer>
   );
@@ -136,7 +136,7 @@ function BarSample() {
         <XAxis dataKey="name" />
         <YAxis />
         <Bar dataKey="revenue" fill="var(--color-revenue)" />
-        <Bar dataKey="cost" fill="var(--color-cost)" />
+        <Bar dataKey="expense" fill="var(--color-expense)" />
       </BarChart>
     </ChartContainer>
   );
@@ -145,12 +145,12 @@ function BarSample() {
 function PieSample() {
   const slices = [
     { name: "Receita", value: 60 },
-    { name: "Custo", value: 25 },
+    { name: "Despesa", value: 25 },
     { name: "Reserva", value: 15 },
   ];
   const pieConfig = {
-    Receita: { label: "Receita", color: "var(--chart-1)" },
-    Custo: { label: "Custo", color: "var(--chart-2)" },
+    Receita: { label: "Receita", color: "var(--chart-2)" },
+    Despesa: { label: "Despesa", color: "var(--chart-5)" },
     Reserva: { label: "Reserva", color: "var(--chart-3)" },
   } satisfies ChartConfig;
   return (
@@ -220,8 +220,8 @@ describe("<ChartContainer />", () => {
     const style = container.querySelector("style");
     expect(style).not.toBeNull();
     const css = style?.innerHTML ?? "";
-    expect(css).toContain("--color-revenue: var(--chart-1);");
-    expect(css).toContain("--color-cost: var(--chart-2);");
+    expect(css).toContain("--color-revenue: var(--chart-2);");
+    expect(css).toContain("--color-expense: var(--chart-5);");
   });
 
   it("scopes css vars to the matching data-chart id", () => {
@@ -416,14 +416,14 @@ describe("<ChartLegendContent />", () => {
       withSize(
         <LegendHarness
           payload={[
-            { value: "revenue", dataKey: "revenue", color: "var(--chart-1)" },
-            { value: "cost", dataKey: "cost", color: "var(--chart-2)" },
+            { value: "revenue", dataKey: "revenue", color: "var(--chart-2)" },
+            { value: "expense", dataKey: "expense", color: "var(--chart-5)" },
           ]}
         />,
       ),
     );
     expect(screen.getByText("Receita")).toBeInTheDocument();
-    expect(screen.getByText("Custo")).toBeInTheDocument();
+    expect(screen.getByText("Despesa")).toBeInTheDocument();
   });
 });
 

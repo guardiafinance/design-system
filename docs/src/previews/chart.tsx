@@ -22,30 +22,32 @@ import {
   type ChartConfig,
 } from "@ds/components/chart";
 
+// WHY: convenção universal Lighthouse (Brand Notion → Gráficos):
+// receita/positivo = signal-green, despesa/negativo = signal-red.
 const monthly = [
-  { name: "Jan", revenue: 4200, cost: 2800 },
-  { name: "Fev", revenue: 3900, cost: 2400 },
-  { name: "Mar", revenue: 5100, cost: 3100 },
-  { name: "Abr", revenue: 4800, cost: 2950 },
-  { name: "Mai", revenue: 5600, cost: 3300 },
-  { name: "Jun", revenue: 6100, cost: 3500 },
+  { name: "Jan", revenue: 4200, expense: 2800 },
+  { name: "Fev", revenue: 3900, expense: 2400 },
+  { name: "Mar", revenue: 5100, expense: 3100 },
+  { name: "Abr", revenue: 4800, expense: 2950 },
+  { name: "Mai", revenue: 5600, expense: 3300 },
+  { name: "Jun", revenue: 6100, expense: 3500 },
 ];
 
-const revenueCostConfig = {
-  revenue: { label: "Receita", color: "var(--chart-1)" },
-  cost: { label: "Custo", color: "var(--chart-2)" },
+const revenueExpenseConfig = {
+  revenue: { label: "Receita", color: "var(--chart-2)" },
+  expense: { label: "Despesa", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 const distributionConfig = {
-  Receita: { label: "Receita", color: "var(--chart-1)" },
-  Custo: { label: "Custo", color: "var(--chart-2)" },
+  Receita: { label: "Receita", color: "var(--chart-2)" },
+  Despesa: { label: "Despesa", color: "var(--chart-5)" },
   Reserva: { label: "Reserva", color: "var(--chart-3)" },
-  Investimento: { label: "Investimento", color: "var(--chart-4)" },
+  Investimento: { label: "Investimento", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
 const distributionData = [
   { name: "Receita", value: 52 },
-  { name: "Custo", value: 28 },
+  { name: "Despesa", value: 28 },
   { name: "Reserva", value: 12 },
   { name: "Investimento", value: 8 },
 ];
@@ -53,9 +55,9 @@ const distributionData = [
 export function LinePreview() {
   return (
     <ChartContainer
-      config={revenueCostConfig}
+      config={revenueExpenseConfig}
       className="h-[260px] w-full"
-      aria-label="Receita e custo por mês"
+      aria-label="Receita e despesa por mês"
     >
       <LineChart data={monthly}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -72,8 +74,8 @@ export function LinePreview() {
         />
         <Line
           type="monotone"
-          dataKey="cost"
-          stroke="var(--color-cost)"
+          dataKey="expense"
+          stroke="var(--color-expense)"
           strokeWidth={2}
           dot={false}
         />
@@ -85,9 +87,9 @@ export function LinePreview() {
 export function BarPreview() {
   return (
     <ChartContainer
-      config={revenueCostConfig}
+      config={revenueExpenseConfig}
       className="h-[260px] w-full"
-      aria-label="Receita e custo (barras)"
+      aria-label="Receita e despesa (barras)"
     >
       <BarChart data={monthly}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -96,7 +98,7 @@ export function BarPreview() {
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
         <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-        <Bar dataKey="cost" fill="var(--color-cost)" radius={4} />
+        <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
       </BarChart>
     </ChartContainer>
   );
@@ -105,9 +107,9 @@ export function BarPreview() {
 export function AreaPreview() {
   return (
     <ChartContainer
-      config={revenueCostConfig}
+      config={revenueExpenseConfig}
       className="h-[260px] w-full"
-      aria-label="Receita e custo (área)"
+      aria-label="Receita e despesa (área)"
     >
       <AreaChart data={monthly}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -124,9 +126,9 @@ export function AreaPreview() {
         />
         <Area
           type="monotone"
-          dataKey="cost"
-          stroke="var(--color-cost)"
-          fill="var(--color-cost)"
+          dataKey="expense"
+          stroke="var(--color-expense)"
+          fill="var(--color-expense)"
           fillOpacity={0.2}
         />
       </AreaChart>
@@ -164,11 +166,11 @@ export function PiePreview() {
 const themedConfig = {
   revenue: {
     label: "Receita",
-    theme: { light: "var(--chart-1)", dark: "var(--chart-2)" },
+    theme: { light: "var(--chart-2)", dark: "var(--chart-2)" },
   },
-  cost: {
-    label: "Custo",
-    theme: { light: "var(--chart-3)", dark: "var(--chart-4)" },
+  expense: {
+    label: "Despesa",
+    theme: { light: "var(--chart-5)", dark: "var(--chart-5)" },
   },
 } satisfies ChartConfig;
 
@@ -177,7 +179,7 @@ export function ThemeAwarePreview() {
     <ChartContainer
       config={themedConfig}
       className="h-[260px] w-full"
-      aria-label="Receita e custo com cores específicas por tema"
+      aria-label="Receita e despesa com cores específicas por tema"
     >
       <LineChart data={monthly}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -194,8 +196,8 @@ export function ThemeAwarePreview() {
         />
         <Line
           type="monotone"
-          dataKey="cost"
-          stroke="var(--color-cost)"
+          dataKey="expense"
+          stroke="var(--color-expense)"
           strokeWidth={2}
           dot={false}
         />
@@ -206,11 +208,11 @@ export function ThemeAwarePreview() {
 
 export function PaletteSwatches() {
   const tokens = [
-    { name: "--chart-1", role: "Destaque (laranja)" },
-    { name: "--chart-2", role: "Categoria 2 (verde)" },
-    { name: "--chart-3", role: "Categoria 3 (azul)" },
-    { name: "--chart-4", role: "Categoria 4 (amarelo)" },
-    { name: "--chart-5", role: "Categoria 5 (vermelho)" },
+    { name: "--chart-1", role: "Acento Guardia (laranja)" },
+    { name: "--chart-2", role: "Receita / positivo (verde)" },
+    { name: "--chart-3", role: "Informativo (azul)" },
+    { name: "--chart-4", role: "Atenção (amarelo)" },
+    { name: "--chart-5", role: "Despesa / negativo (vermelho)" },
   ];
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-5">

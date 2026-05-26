@@ -44,39 +44,41 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+// WHY: convenção universal Lighthouse (Brand Notion → Gráficos):
+// receita/positivo = signal-green (chart-2), despesa/negativo = signal-red (chart-5).
 const monthly = [
-  { name: "Jan", revenue: 4200, cost: 2800 },
-  { name: "Fev", revenue: 3900, cost: 2400 },
-  { name: "Mar", revenue: 5100, cost: 3100 },
-  { name: "Abr", revenue: 4800, cost: 2950 },
-  { name: "Mai", revenue: 5600, cost: 3300 },
-  { name: "Jun", revenue: 6100, cost: 3500 },
+  { name: "Jan", revenue: 4200, expense: 2800 },
+  { name: "Fev", revenue: 3900, expense: 2400 },
+  { name: "Mar", revenue: 5100, expense: 3100 },
+  { name: "Abr", revenue: 4800, expense: 2950 },
+  { name: "Mai", revenue: 5600, expense: 3300 },
+  { name: "Jun", revenue: 6100, expense: 3500 },
 ];
 
-const revenueCostConfig = {
-  revenue: { label: "Receita", color: "var(--chart-1)" },
-  cost: { label: "Custo", color: "var(--chart-2)" },
+const revenueExpenseConfig = {
+  revenue: { label: "Receita", color: "var(--chart-2)" },
+  expense: { label: "Despesa", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 const distributionConfig = {
-  Receita: { label: "Receita", color: "var(--chart-1)" },
-  Custo: { label: "Custo", color: "var(--chart-2)" },
+  Receita: { label: "Receita", color: "var(--chart-2)" },
+  Despesa: { label: "Despesa", color: "var(--chart-5)" },
   Reserva: { label: "Reserva", color: "var(--chart-3)" },
-  Investimento: { label: "Investimento", color: "var(--chart-4)" },
+  Investimento: { label: "Investimento", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
 const distributionData = [
   { name: "Receita", value: 52 },
-  { name: "Custo", value: 28 },
+  { name: "Despesa", value: 28 },
   { name: "Reserva", value: 12 },
   { name: "Investimento", value: 8 },
 ];
 
 export const Default: Story = {
   args: {
-    config: revenueCostConfig,
+    config: revenueExpenseConfig,
     className: "h-[240px] w-full",
-    "aria-label": "Receita e custo por mês",
+    "aria-label": "Receita e despesa por mês",
   } as unknown as Story["args"],
   render: (args) => (
     <ChartContainer {...args}>
@@ -87,7 +89,7 @@ export const Default: Story = {
         <Tooltip content={<ChartTooltipContent />} />
         <Legend content={<ChartLegendContent />} />
         <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" />
-        <Line type="monotone" dataKey="cost" stroke="var(--color-cost)" />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" />
       </LineChart>
     </ChartContainer>
   ),
@@ -95,9 +97,9 @@ export const Default: Story = {
 
 export const LineMultiSeries: Story = {
   args: {
-    config: revenueCostConfig,
+    config: revenueExpenseConfig,
     className: "h-[240px] w-full",
-    "aria-label": "Linhas: receita e custo por mês",
+    "aria-label": "Linhas: receita e despesa por mês",
   } as unknown as Story["args"],
   render: (args) => (
     <ChartContainer {...args}>
@@ -108,7 +110,7 @@ export const LineMultiSeries: Story = {
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
         <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} />
-        <Line type="monotone" dataKey="cost" stroke="var(--color-cost)" strokeWidth={2} />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} />
       </LineChart>
     </ChartContainer>
   ),
@@ -116,9 +118,9 @@ export const LineMultiSeries: Story = {
 
 export const BarVariant: Story = {
   args: {
-    config: revenueCostConfig,
+    config: revenueExpenseConfig,
     className: "h-[240px] w-full",
-    "aria-label": "Barras: receita e custo por mês",
+    "aria-label": "Barras: receita e despesa por mês",
   } as unknown as Story["args"],
   render: (args) => (
     <ChartContainer {...args}>
@@ -129,7 +131,7 @@ export const BarVariant: Story = {
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
         <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-        <Bar dataKey="cost" fill="var(--color-cost)" radius={4} />
+        <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
       </BarChart>
     </ChartContainer>
   ),
@@ -137,9 +139,9 @@ export const BarVariant: Story = {
 
 export const AreaVariant: Story = {
   args: {
-    config: revenueCostConfig,
+    config: revenueExpenseConfig,
     className: "h-[240px] w-full",
-    "aria-label": "Área: receita e custo por mês",
+    "aria-label": "Área: receita e despesa por mês",
   } as unknown as Story["args"],
   render: (args) => (
     <ChartContainer {...args}>
@@ -158,9 +160,9 @@ export const AreaVariant: Story = {
         />
         <Area
           type="monotone"
-          dataKey="cost"
-          stroke="var(--color-cost)"
-          fill="var(--color-cost)"
+          dataKey="expense"
+          stroke="var(--color-expense)"
+          fill="var(--color-expense)"
           fillOpacity={0.2}
         />
       </AreaChart>
@@ -215,15 +217,15 @@ export const ThemeAware: Story = {
     config: {
       revenue: {
         label: "Receita",
-        theme: { light: "var(--chart-1)", dark: "var(--chart-2)" },
+        theme: { light: "var(--chart-2)", dark: "var(--chart-2)" },
       },
-      cost: {
-        label: "Custo",
-        theme: { light: "var(--chart-3)", dark: "var(--chart-4)" },
+      expense: {
+        label: "Despesa",
+        theme: { light: "var(--chart-5)", dark: "var(--chart-5)" },
       },
     } satisfies ChartConfig,
     className: "h-[240px] w-full",
-    "aria-label": "Receita e custo com cores específicas por tema",
+    "aria-label": "Receita e despesa com cores específicas por tema",
   } as unknown as Story["args"],
   render: (args) => (
     <ChartContainer {...args}>
@@ -234,7 +236,7 @@ export const ThemeAware: Story = {
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
         <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} />
-        <Line type="monotone" dataKey="cost" stroke="var(--color-cost)" strokeWidth={2} />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} />
       </LineChart>
     </ChartContainer>
   ),

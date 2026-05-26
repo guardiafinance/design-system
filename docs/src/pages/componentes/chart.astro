@@ -32,9 +32,10 @@ import chartSource from "@ds/components/chart/index.tsx?raw";
     <p class="preview-caption">
       Cada série lê sua cor de <code class="inline">var(--color-&lt;key&gt;)</code>,
       injetada pelo <code class="inline">ChartContainer</code> a partir do
-      <code class="inline">config</code>. Aqui <code class="inline">revenue</code>
-      usa <code class="inline">--chart-1</code> e <code class="inline">cost</code>
-      usa <code class="inline">--chart-2</code>.
+      <code class="inline">config</code>. Convenção Lighthouse (Brand Notion):
+      <code class="inline">revenue</code> usa <code class="inline">--chart-2</code>
+      (signal-green, positivo) e <code class="inline">expense</code> usa
+      <code class="inline">--chart-5</code> (signal-red, negativo).
     </p>
   </section>
 
@@ -224,7 +225,7 @@ import chartSource from "@ds/components/chart/index.tsx?raw";
     </div>
     <div class="a11y">
       <ul>
-        <li><span><b>aria-label</b> obrigatório no <code class="inline">ChartContainer</code> resumindo o conteúdo do gráfico (ex.: "Receita e custo por mês").</span></li>
+        <li><span><b>aria-label</b> obrigatório no <code class="inline">ChartContainer</code> resumindo o conteúdo do gráfico (ex.: "Receita e despesa por mês").</span></li>
         <li><span><b>Cores tokenizadas</b> garantem contraste mínimo nos dois temas — sem combinações inventadas.</span></li>
         <li><span><b>Cor nunca é o único indicador</b>: use <code class="inline">indicator="dashed"</code>, ícones por série ou rótulos diretos quando houver risco de daltonismo.</span></li>
         <li><span><b>Tooltip e legend</b> são DOM real (não canvas), então leitor de tela percorre rótulos e valores.</span></li>
