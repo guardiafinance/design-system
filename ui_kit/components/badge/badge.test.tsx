@@ -49,11 +49,11 @@ describe("<Badge />", () => {
   // recompute (see PR #175 / Issue #173). Locked here to detect any future
   // regression where someone reverts to the base `text-white` default.
   it.each([
-    { variant: "accent" as const,  bg: "bg-guardia-orange-500", fg: "text-guardia-gray-900",   reason: "text-white over orange-500 = 3.15:1 fails AA-Normal" },
-    { variant: "success" as const, bg: "bg-signal-green",       fg: "text-guardia-gray-900",   reason: "text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large" },
-    { variant: "danger" as const,  bg: "bg-signal-red",         fg: "text-guardia-gray-900",   reason: "text-white over signal-red = 3.66:1 fails AA-Normal" },
-    { variant: "warning" as const, bg: "bg-signal-yellow",      fg: "text-guardia-violet-900", reason: "text-white over signal-yellow = 1.33:1 fails everything" },
-  ])("solid variant=$variant uses $fg ($reason)", ({ variant, bg, fg }) => {
+    { variant: "accent",  bg: "bg-guardia-orange-500", fg: "text-guardia-gray-900",   reason: "text-white over orange-500 = 3.15:1 fails AA-Normal" },
+    { variant: "success", bg: "bg-signal-green",       fg: "text-guardia-gray-900",   reason: "text-white over signal-green = 2.43:1 fails AA-Normal AND AA-Large" },
+    { variant: "danger",  bg: "bg-signal-red",         fg: "text-guardia-gray-900",   reason: "text-white over signal-red = 3.66:1 fails AA-Normal" },
+    { variant: "warning", bg: "bg-signal-yellow",      fg: "text-guardia-violet-900", reason: "text-white over signal-yellow = 1.33:1 fails everything" },
+  ] as const)("solid variant=$variant uses $fg ($reason)", ({ variant, bg, fg }) => {
     render(<Badge appearance="solid" variant={variant} data-testid="b">X</Badge>);
     const el = screen.getByTestId("b");
     expect(el).toHaveClass(bg);
