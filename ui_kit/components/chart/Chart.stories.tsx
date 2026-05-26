@@ -85,6 +85,15 @@ const distributionData = [
   { name: "arquivado", value: 4 },
 ];
 
+// WHY: Recharts data components (Area, Bar, Pie, Line) ship with
+// `isAnimationActive: true` and drive enter animations via
+// `requestAnimationFrame`. The test-runner CSS freeze in
+// `.storybook/test-runner.ts` only stops CSS keyframes; the JS-driven SVG
+// transitions still produce sub-pixel divergence between visual snapshot
+// runs, exceeding FAILURE_THRESHOLD (0.2%) for AreaVariant/PieVariant.
+// Disabling animation per-story keeps the runtime default unchanged for
+// product consumers while making the snapshot rendering deterministic.
+
 export const Default: Story = {
   args: {
     config: revenueExpenseConfig,
@@ -99,8 +108,8 @@ export const Default: Story = {
         <YAxis />
         <Tooltip content={<ChartTooltipContent />} />
         <Legend content={<ChartLegendContent />} />
-        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" />
-        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" />
+        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" isAnimationActive={false} />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" isAnimationActive={false} />
       </LineChart>
     </ChartContainer>
   ),
@@ -120,8 +129,8 @@ export const LineMultiSeries: Story = {
         <YAxis />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} />
-        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} />
+        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} isAnimationActive={false} />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} isAnimationActive={false} />
       </LineChart>
     </ChartContainer>
   ),
@@ -141,8 +150,8 @@ export const BarVariant: Story = {
         <YAxis />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-        <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
+        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} isAnimationActive={false} />
+        <Bar dataKey="expense" fill="var(--color-expense)" radius={4} isAnimationActive={false} />
       </BarChart>
     </ChartContainer>
   ),
@@ -168,6 +177,7 @@ export const AreaVariant: Story = {
           stroke="var(--color-revenue)"
           fill="var(--color-revenue)"
           fillOpacity={0.2}
+          isAnimationActive={false}
         />
         <Area
           type="monotone"
@@ -175,6 +185,7 @@ export const AreaVariant: Story = {
           stroke="var(--color-expense)"
           fill="var(--color-expense)"
           fillOpacity={0.2}
+          isAnimationActive={false}
         />
       </AreaChart>
     </ChartContainer>
@@ -213,6 +224,7 @@ export const PieVariant: Story = {
           innerRadius={48}
           outerRadius={84}
           paddingAngle={2}
+          isAnimationActive={false}
         >
           {distributionData.map((slice) => (
             <Cell key={slice.name} fill={`var(--color-${slice.name})`} />
@@ -293,8 +305,8 @@ export const ThemeAware: Story = {
         <YAxis />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} />
-        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} />
+        <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} isAnimationActive={false} />
+        <Line type="monotone" dataKey="expense" stroke="var(--color-expense)" strokeWidth={2} isAnimationActive={false} />
       </LineChart>
     </ChartContainer>
   ),

@@ -40,6 +40,19 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Typecheck do pacote (ui_kit/) via tsconfig.test.json.
+      # Step adicionado pelo #187 — antes nao era invocado pelo CI,
+      # apesar de existir como npm script.
+      - name: Typecheck (package)
+        run: npm run typecheck
+
+      # Typecheck do site de docs (Astro) via docs/tsconfig.json.
+      # Fecha o gap exposto pelo PR #184: Astro builda em loose TS mode
+      # e nao roda tsc --strict, entao erros reais de tipos em
+      # docs/src/previews/ passam silenciosamente. Closes #187.
+      - name: Typecheck (docs)
+        run: npm run typecheck:docs
+
       - name: Build package
         run: npm run build
 
