@@ -214,23 +214,24 @@
 
   /* Chart palette — Lighthouse signals + brand orange.
    *
-   * Aligned with Brand Notion (Cores → Lighthouse / Gráficos):
+   * Aligned with Brand Notion (Cores → Lighthouse / Gráficos), values
+   * byte-identical à paleta-mestre da marca via referência direta aos
+   * tokens hex já declarados (--guardia-orange-500, --signal-*):
+   *
    *   chart-1 = orange-500 (#E07400)   — destaque/baseline (acento Guardia)
    *   chart-2 = signal-green (#00BF63) — positivo/saúde/crescimento
    *   chart-3 = signal-blue (#004AAD)  — informativo/referência
    *   chart-4 = signal-yellow (#FFDE59) — atenção/pendência
    *   chart-5 = signal-red (#FF3131)   — negativo/crítica
    *
-   * Mesmos valores que o dark mode (diretriz Notion: "mesmo dado tem
-   * o mesmo significado visual independentemente do tema"). Os tons
-   * default shadcn (teal/gold) foram substituídos pelos signals da
-   * marca como parte da migração #96 v0.1.0.
+   * Diretriz Notion: "mesmo dado tem o mesmo significado visual
+   * independentemente do tema" — light e dark referenciam os mesmos hex.
    */
-  --chart-1: oklch(0.65 0.20 31);
-  --chart-2: oklch(0.74 0.18 145);
-  --chart-3: oklch(0.61 0.20 264);
-  --chart-4: oklch(0.88 0.16 95);
-  --chart-5: oklch(0.66 0.26 23);
+  --chart-1: var(--guardia-orange-500);
+  --chart-2: var(--signal-green);
+  --chart-3: var(--signal-blue);
+  --chart-4: var(--signal-yellow);
+  --chart-5: var(--signal-red);
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -309,13 +310,14 @@
   --sidebar-border: 240 9% 17%;
   --sidebar-ring: 31 100% 44%;
 
-  /* Chart palette — Lighthouse signals mantidos em dark conforme diretriz
-     "mesmo dado tem o mesmo significado visual independentemente do tema" */
-  --chart-1: oklch(0.65 0.20 31);                /* orange-500 — destaque/baseline */
-  --chart-2: oklch(0.74 0.18 145);               /* signal-green */
-  --chart-3: oklch(0.61 0.20 264);               /* signal-blue */
-  --chart-4: oklch(0.88 0.16 95);                /* signal-yellow */
-  --chart-5: oklch(0.66 0.26 23);                /* signal-red */
+  /* Chart palette — referência direta aos hex da paleta-mestre (mesmos
+     valores que o light theme). Diretriz Notion: "mesmo dado tem o
+     mesmo significado visual independentemente do tema". */
+  --chart-1: var(--guardia-orange-500);   /* #E07400 — destaque/baseline */
+  --chart-2: var(--signal-green);         /* #00BF63 — positivo */
+  --chart-3: var(--signal-blue);          /* #004AAD — informativo */
+  --chart-4: var(--signal-yellow);        /* #FFDE59 — atenção */
+  --chart-5: var(--signal-red);           /* #FF3131 — negativo */
 }
 
 /* ────────────────────────────────────────────────────────────────────────
