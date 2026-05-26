@@ -35,7 +35,6 @@ const chipVariants = cva(
     "inline-flex items-center gap-1.5 whitespace-nowrap select-none",
     "rounded-full border transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "disabled:pointer-events-none",
   ].join(" "),
   {
     variants: {
@@ -63,20 +62,23 @@ const chipVariants = cva(
       },
       interactive: {
         true: "cursor-pointer",
-        // WHY: hover-neutralization moved to compound variants below so it
-        // applies ONLY to `selected: false`. See ADR-002 — `interactive: false`
-        // with `selected: true` MUST keep the surface stable on hover.
+        // WHY: non-interactive chips opt out of hover affordance entirely —
+        // hover classes are emitted only by `interactive: true` compounds.
+        // Aligns with ADR-002 (hover-on-action policy).
         false: "cursor-default",
       },
       disabled: {
-        true: "opacity-50 cursor-not-allowed",
+        // WHY: Chip renders as <span> (no native :disabled), so the
+        // Tailwind `disabled:` modifier never matches. Apply
+        // pointer-events-none directly on the variant.
+        true: "opacity-50 cursor-not-allowed pointer-events-none",
         false: "",
       },
     },
     // WHY: compound variants encode the full 7×3×2 matrix (variant × appearance × selected)
     // per ADR-003 decisões 3–6. Ordering: SELECTED first (always wins → solid), then
-    // resting states by appearance. Last group neutralizes hover for non-interactive +
-    // non-selected chips (ADR-002 hover-on-checked policy + backward-compat).
+    // resting states by appearance. Hover is opt-in via `interactive: true` compounds
+    // only — non-interactive chips never receive hover classes.
     compoundVariants: [
       // ─── SELECTED: TRUE (always solid, regardless of `appearance` per ADR-003 decisão 5) ───
       { selected: true, variant: "neutral",  className: "bg-guardia-gray-500 border-guardia-gray-500 text-white" },
@@ -149,24 +151,9 @@ const chipVariants = cva(
       { selected: false, interactive: true, appearance: "soft", variant: "danger",   className: "hover:bg-[color-mix(in_oklab,var(--signal-red)_24%,white)]" },
       { selected: false, interactive: true, appearance: "soft", variant: "info",     className: "hover:bg-[color-mix(in_oklab,var(--signal-blue)_24%,white)]" },
 
-      // ─── NON-INTERACTIVE + NON-SELECTED — neutralize hover ──────────────
-      // WHY: covers Mode 4 (`<Chip>` sem handlers) and split-interactive Mode 3
-      // wrapper. Preserves ADR-002 (hover-on-checked stable) by ensuring
-      // hover is suppressed when there is no toggle to signal.
-      {
-        interactive: false,
-        selected: false,
-        appearance: "outline",
-        variant: "neutral",
-        className: "hover:bg-background hover:border-border-strong",
-      },
-      {
-        interactive: false,
-        selected: false,
-        appearance: "outline",
-        variant: "brand",
-        className: "hover:bg-background hover:border-border-strong",
-      },
+      // WHY: no `interactive: false` neutralizer compounds — hover classes
+      // are emitted exclusively by the `interactive: true` compounds above,
+      // so non-interactive chips already inherit zero hover affordance.
     ],
     defaultVariants: {
       size: "sm",
