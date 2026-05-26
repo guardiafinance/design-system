@@ -23,14 +23,29 @@ type ChartContextProps = {
 
 const ChartContext = React.createContext<ChartContextProps | null>(null)
 
-function useChart() {
+// Standalone provider for consumers (and tests) that need to render
+// `ChartTooltipContent` / `ChartLegendContent` outside a `ChartContainer`
+// — for example, a shared legend rendered next to multiple charts.
+const ChartConfigProvider = ({
+    config,
+    children,
+}: {
+    config: ChartConfig
+    children: React.ReactNode
+}) => (
+    <ChartContext.Provider value={{ config }}>{children}</ChartContext.Provider>
+)
+ChartConfigProvider.displayName = "ChartConfigProvider"
+
+function useChart(): ChartContextProps {
     const context = React.useContext(ChartContext)
-
-    if (!context) {
-        throw new Error("useChart must be used within a <ChartContainer />")
-    }
-
-    return context
+    // WHY: when consumed outside a `ChartContainer` (e.g. a standalone
+    // tooltip surface or a legend rendered above the chart), degrade
+    // gracefully to an empty config instead of throwing. Throwing made
+    // the components untestable in isolation and offered no real safety
+    // — the only consequence of a missing config is that labels fall
+    // back to `payload.name`.
+    return context ?? { config: {} }
 }
 
 const ChartContainer = React.forwardRef<
@@ -41,15 +56,24 @@ const ChartContainer = React.forwardRef<
             typeof RechartsPrimitive.ResponsiveContainer
         >["children"]
     }
->(({ id, className, children, config, ...props }, ref) => {
+>(({ id, className, children, config, role, ...props }, ref) => {
     const uniqueId = React.useId()
     const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+    // WHY: WCAG forbids `aria-label`/`aria-labelledby` on a generic <div>.
+    // When the consumer supplies a chart label we promote the wrapper to
+    // `role="img"` (the canonical pattern for chart graphics) unless they
+    // pass an explicit role.
+    const hasAriaLabel =
+        typeof props["aria-label"] === "string" ||
+        typeof props["aria-labelledby"] === "string"
+    const resolvedRole = role ?? (hasAriaLabel ? "img" : undefined)
 
     return (
         <ChartContext.Provider value={{ config }}>
             <div
                 data-chart={chartId}
                 ref={ref}
+                role={resolvedRole}
                 className={cn(
                     "flex aspect-video justify-center text-xs rounded-md border bg-card text-card-foreground p-2 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
                     className
@@ -351,6 +375,7 @@ function getPayloadConfigFromPayload(
 }
 
 export {
+    ChartConfigProvider,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
