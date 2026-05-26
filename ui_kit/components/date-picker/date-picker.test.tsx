@@ -215,6 +215,15 @@ describe("DatePicker", () => {
       expect(trigger.className).not.toMatch(/guardia-violet-(100|500|700)/);
     });
 
+    it("trigger gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
+      // WHY: enabled:hover:border-action substitui o par verboso
+      // hover:border-action + disabled:hover:border-border-strong. Ver #169.
+      render(<DatePicker />);
+      const trigger = screen.getByRole("button", { name: "Selecionar data" });
+      expect(trigger.className).toMatch(/enabled:hover:border-action/);
+      expect(trigger.className).not.toMatch(/disabled:hover:/);
+    });
+
     it("dia selecionado renderiza com bg-action + text-button-fg", async () => {
       const user = userEvent.setup();
       render(<DatePicker defaultValue={new Date(2025, 5, 15)} />);

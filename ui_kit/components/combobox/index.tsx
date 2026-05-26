@@ -62,7 +62,7 @@ const triggerVariants = cva(
     "text-left cursor-pointer",
     "transition-[border-color,box-shadow] duration-150",
     /* Hover (não disabled): border action (violet-500 light / orange-500 dark) */
-    "hover:border-action disabled:hover:border-border-strong",
+    "enabled:hover:border-action",
     /* Focus / open: ring laranja */
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     "data-[state=open]:border-action data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",

@@ -157,6 +157,17 @@ describe("FileUpload — brand-aware tokens", () => {
     expect(button.className).not.toMatch(/hover:border-guardia-violet-500/);
   });
 
+  it("variant=button gates hover via `enabled:` modifier (no `disabled:hover:` override, per #169)", () => {
+    // WHY: enabled:hover:* substitui o par verboso
+    // hover:* + disabled:hover:* no botão (form element nativo). Ver #169.
+    // O dropzone (variant=default) usa pointer-events-none e fica fora deste guard.
+    render(<FileUpload variant="button" />);
+    const button = screen.getByRole("button");
+    expect(button.className).toMatch(/enabled:hover:bg-bg-hover/);
+    expect(button.className).toMatch(/enabled:hover:border-action/);
+    expect(button.className).not.toMatch(/disabled:hover:/);
+  });
+
   it("variant=button icon usa text-action (sem guardia-violet hardcoded)", () => {
     render(<FileUpload variant="button" />);
     const icon = screen.getByRole("button").querySelector("span[aria-hidden]")!;

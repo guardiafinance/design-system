@@ -52,7 +52,7 @@ const triggerVariants = cva(
     "border border-border-strong rounded-md",
     "text-left cursor-pointer",
     "transition-[border-color,box-shadow] duration-150",
-    "hover:border-action disabled:hover:border-border-strong",
+    "enabled:hover:border-action",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     "data-[state=open]:border-action data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
     "aria-[invalid=true]:border-destructive aria-[invalid=true]:hover:border-destructive",

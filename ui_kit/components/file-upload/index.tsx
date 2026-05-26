@@ -508,10 +508,10 @@ const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                 "inline-flex w-fit items-center",
                 "rounded-md border border-border-strong bg-background text-fg",
                 "transition-[background-color,border-color,box-shadow] duration-150",
-                /* Hover: brand-aware soft tint + action border (violet light / orange dark) */
-                "hover:bg-bg-hover hover:border-action",
+                /* Hover (não disabled): brand-aware soft tint + action border (violet light / orange dark) */
+                "enabled:hover:bg-bg-hover enabled:hover:border-action",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                "disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-background disabled:hover:border-border-strong",
+                "disabled:cursor-not-allowed disabled:opacity-55",
                 buttonClasses[buttonSize],
               )}
             >
