@@ -176,6 +176,21 @@ Rationale: the hover-on-checked policy was a UX consistency call, not a brand-sp
 - **14 jest-axe assertions** (7 variants × 2 states) × `axeInThemes(container)` = **28 axe runs** for WCAG verification.
 - **14 brand-token guard tests** (7 variants × 2 states) asserting positive token presence + negative absence of legacy `guardia-violet-*` literals.
 
+## Addendum — outline resting fg policy (2026-05-25, PR #175)
+
+**Context.** The decision table in section "Selected solid mapping" pins the fg for every `selected: true` combination. The 7 outline `selected: false` combinations were not pinned in the original ADR — only `appearance="outline" variant="brand"` was constrained by the backward-compat invariant (decision 4: `bg-background border-border-strong text-foreground`). The other 6 outline variants needed an explicit fg choice during implementation.
+
+**Decision.** Non-brand outline resting variants use **variant-tinted border + neutral `text-foreground`** (i.e., `border-{variant-token}` + `text-foreground`, no background). Rationale:
+
+1. `text-foreground` against `bg-background` already meets WCAG AA in both themes (validated by the existing surface tokens).
+2. Tinting the text with the variant token would require per-variant fg WCAG validation against `bg-background` in light and dark — most signal colors fail AA against the resting background.
+3. The variant signal in outline mode is carried by the border, not by the text — the border has a lower WCAG threshold (3:1 for non-text UI per WCAG 1.4.11) and every signal-* token clears it against `bg-background`.
+4. Hover compounds add a soft variant-tinted background (`bg-{variant-token}/10` or `/15`) without changing fg, so the affordance is preserved without re-validating contrast.
+
+**Impact.** Backward-compat for `appearance="outline" variant="brand"` is unaffected (border is `border-border-strong`, fg is `text-foreground` — identical to pre-#168). The 6 new outline variants follow this rule.
+
+**Not a violation of decision 5.** Decision 5 (asymmetry: selected always wins → solid) is unchanged. This addendum only fills the resting half of the outline table.
+
 ## References
 
 - [ADR-002 — hover-on-action-surfaces](ADR-002-hover-on-action-surfaces.md)

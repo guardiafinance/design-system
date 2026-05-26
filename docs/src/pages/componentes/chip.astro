@@ -55,7 +55,9 @@ import chipSource from "@ds/components/chip/index.tsx?raw";
       Com <code class="inline">onSelect</code>, o Chip ganha
       <code class="inline">role="button"</code>, <code class="inline">tabIndex=0</code>,
       <code class="inline">aria-pressed</code> e resposta a Enter/Space.
-      Selecionado usa violeta (7.85:1 AAA).
+      O estado selecionado renderiza solid com contraste WCAG AA conforme
+      a <code class="inline">variant</code> (default <code class="inline">brand</code>:
+      <code class="inline">bg-action</code> + <code class="inline">text-button-fg</code>).
     </p>
   </section>
 
@@ -143,6 +145,16 @@ import chipSource from "@ds/components/chip/index.tsx?raw";
       <code class="inline">appearance</code> e renderiza sempre como solid. Esta regra
       preserva o affordance "toggle ON = sólido" alinhado com Checkbox e Radio.
     </p>
+    <p class="preview-caption">
+      <b>Limitação visual:</b> em <code class="inline">appearance="solid"</code>, o
+      estado resting (<code class="inline">selected: false</code>) e o estado
+      selected (<code class="inline">selected: true</code>) renderizam com classes
+      idênticas. Para chips interativos (com <code class="inline">onSelect</code>),
+      o estado é comunicado via <code class="inline">aria-pressed</code> e foco
+      de teclado — não há diferenciação visual entre on/off neste modo. Quando
+      o estado visual de toggle for crítico, prefira <code class="inline">appearance="outline"</code>
+      ou <code class="inline">appearance="soft"</code>.
+    </p>
     <div class="preview">
       <AppearanceSelectedAsymmetry client:load />
     </div>
@@ -220,10 +232,22 @@ import chipSource from "@ds/components/chip/index.tsx?raw";
             <td class="desc">Altura do chip (24 ou 32 px).</td>
           </tr>
           <tr>
+            <td class="name">variant</td>
+            <td class="type">"neutral" | "brand" | "accent" | "success" | "warning" | "danger" | "info"</td>
+            <td class="default">"brand"</td>
+            <td class="desc">Cor semântica. <b>brand</b> e <b>accent</b> são theme-aware (violet↔orange por <code class="inline">data-theme</code>); demais usam tokens <code class="inline">signal-*</code> theme-agnostic. Ver ADR-003.</td>
+          </tr>
+          <tr>
+            <td class="name">appearance</td>
+            <td class="type">"soft" | "outline" | "solid"</td>
+            <td class="default">"outline"</td>
+            <td class="desc">Registro visual aplicado apenas em <b>resting</b> (<code class="inline">selected: false</code>). Quando <code class="inline">selected: true</code>, o chip <b>ignora</b> <code class="inline">appearance</code> e renderiza sempre solid (ADR-003 decisão 5).</td>
+          </tr>
+          <tr>
             <td class="name">selected</td>
             <td class="type">boolean</td>
             <td class="default">false</td>
-            <td class="desc">Estado ativo (fundo violeta).</td>
+            <td class="desc">Estado ativo. Renderiza sempre solid com a cor da <code class="inline">variant</code>.</td>
           </tr>
           <tr>
             <td class="name">onSelect</td>
