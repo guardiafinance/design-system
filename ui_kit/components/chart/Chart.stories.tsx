@@ -62,16 +62,24 @@ const revenueExpenseConfig = {
 
 const distributionConfig = {
   Receita: { label: "Receita", color: "var(--chart-1)" },
+  "Em análise": { label: "Em análise", color: "var(--chart-2)" },
   Despesa: { label: "Despesa", color: "var(--chart-3)" },
-  Reserva: { label: "Reserva", color: "var(--chart-4)" },
+  Conciliado: { label: "Conciliado", color: "var(--chart-4)" },
   Investimento: { label: "Investimento", color: "var(--chart-5)" },
+  Provisão: { label: "Provisão", color: "var(--chart-6)" },
+  "Não-categorizado": { label: "Não-categorizado", color: "var(--chart-7)" },
+  Arquivado: { label: "Arquivado", color: "var(--chart-8)" },
 } satisfies ChartConfig;
 
 const distributionData = [
-  { name: "Receita", value: 52 },
-  { name: "Despesa", value: 28 },
-  { name: "Reserva", value: 12 },
-  { name: "Investimento", value: 8 },
+  { name: "Receita", value: 28 },
+  { name: "Em análise", value: 8 },
+  { name: "Despesa", value: 22 },
+  { name: "Conciliado", value: 14 },
+  { name: "Investimento", value: 10 },
+  { name: "Provisão", value: 8 },
+  { name: "Não-categorizado", value: 6 },
+  { name: "Arquivado", value: 4 },
 ];
 
 export const Default: Story = {
@@ -209,6 +217,53 @@ export const PieVariant: Story = {
         </Pie>
       </PieChart>
     </ChartContainer>
+  ),
+};
+
+/**
+ * Paleta completa exposta como swatches.
+ *
+ * 4 signals do Notion (chart-1..4) + 4 cores brand de extensão (chart-5..8)
+ * para suportar Recharts com até 8 séries.
+ */
+const PALETTE_TOKENS = [
+  { name: "--chart-1", role: "Verde Sinal · positivo" },
+  { name: "--chart-2", role: "Amarelo Sinal · atenção" },
+  { name: "--chart-3", role: "Vermelho Sinal · negativo" },
+  { name: "--chart-4", role: "Azul Sinal · informativo" },
+  { name: "--chart-5", role: "Laranja Quente · destaque escasso" },
+  { name: "--chart-6", role: "Violeta Profundo · autoridade" },
+  { name: "--chart-7", role: "Rosa Suave · acolhimento" },
+  { name: "--chart-8", role: "Cinza Báltico · neutro/estável" },
+];
+
+export const PaletteSwatches: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Paleta completa de 8 tokens: 4 signals (Notion canonical order) + 4 cores brand de extensão. Use `var(--chart-N)` no `config` por série.",
+      },
+    },
+  },
+  args: { config: {} } as unknown as Story["args"],
+  render: () => (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {PALETTE_TOKENS.map((t) => (
+        <div
+          key={t.name}
+          className="flex flex-col gap-2 rounded-md border border-border bg-card p-3"
+        >
+          <div
+            aria-hidden="true"
+            className="h-12 w-full rounded"
+            style={{ backgroundColor: `var(${t.name})` }}
+          />
+          <code className="text-[12px] font-mono">{t.name}</code>
+          <span className="text-[11px] text-muted-foreground">{t.role}</span>
+        </div>
+      ))}
+    </div>
   ),
 };
 

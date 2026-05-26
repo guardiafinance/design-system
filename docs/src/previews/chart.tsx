@@ -40,16 +40,24 @@ const revenueExpenseConfig = {
 
 const distributionConfig = {
   Receita: { label: "Receita", color: "var(--chart-1)" },
+  "Em análise": { label: "Em análise", color: "var(--chart-2)" },
   Despesa: { label: "Despesa", color: "var(--chart-3)" },
-  Reserva: { label: "Reserva", color: "var(--chart-4)" },
+  Conciliado: { label: "Conciliado", color: "var(--chart-4)" },
   Investimento: { label: "Investimento", color: "var(--chart-5)" },
+  Provisão: { label: "Provisão", color: "var(--chart-6)" },
+  "Não-categorizado": { label: "Não-categorizado", color: "var(--chart-7)" },
+  Arquivado: { label: "Arquivado", color: "var(--chart-8)" },
 } satisfies ChartConfig;
 
 const distributionData = [
-  { name: "Receita", value: 52 },
-  { name: "Despesa", value: 28 },
-  { name: "Reserva", value: 12 },
-  { name: "Investimento", value: 8 },
+  { name: "Receita", value: 28 },
+  { name: "Em análise", value: 8 },
+  { name: "Despesa", value: 22 },
+  { name: "Conciliado", value: 14 },
+  { name: "Investimento", value: 10 },
+  { name: "Provisão", value: 8 },
+  { name: "Não-categorizado", value: 6 },
+  { name: "Arquivado", value: 4 },
 ];
 
 export function LinePreview() {
