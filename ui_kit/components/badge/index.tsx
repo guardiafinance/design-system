@@ -69,14 +69,39 @@ const badgeVariants = cva(
       { appearance: "solid", variant: "danger",   className: "bg-signal-red text-guardia-gray-900" },
       { appearance: "solid", variant: "info",     className: "bg-signal-blue" },
 
-      /* ── OUTLINE ──────────────────────────────────── */
-      { appearance: "outline", variant: "neutral",  className: "border-border-strong text-guardia-gray-700" },
-      { appearance: "outline", variant: "brand",    className: "border-guardia-violet-500 text-guardia-violet-500" },
-      { appearance: "outline", variant: "accent",   className: "border-guardia-orange-500 text-guardia-orange-500" },
-      { appearance: "outline", variant: "success",  className: "border-signal-green text-signal-green" },
-      { appearance: "outline", variant: "warning",  className: "border-signal-yellow text-guardia-yellow-900" },
-      { appearance: "outline", variant: "danger",   className: "border-signal-red text-signal-red" },
-      { appearance: "outline", variant: "info",     className: "border-signal-blue text-signal-blue" },
+      /* ── OUTLINE ──────────────────────────────────────
+       * appearance.outline composites text against bg-background (transparent
+       * bg). text-foreground is the only fg that passes WCAG 2.1 §1.4.3
+       * AA-Normal (4.5:1) in both themes — aligns with Chip ADR-003 policy
+       * (see docs/adr/ADR-003-chip-variants.md, outline section).
+       *
+       * WCAG recompute against --background in each theme
+       *   light --background #FCFCFC | dark --background #17171C
+       *   light --foreground #44186D | dark --foreground #FCFCFC
+       *
+       * Variant-tinted text fails AA-Normal in at least one theme:
+       *   neutral  text-guardia-gray-700   light 14.27:1 pass | dark  1.22:1 FAIL
+       *   brand    text-guardia-violet-500 light 12.16:1 pass | dark  1.43:1 FAIL
+       *   accent   text-guardia-orange-500 light  3.07:1 FAIL | dark  5.67:1 pass
+       *   success  text-signal-green       light  2.37:1 FAIL | dark  7.34:1 pass
+       *   warning  text-guardia-yellow-900 light  7.71:1 pass | dark  2.26:1 FAIL
+       *   danger   text-signal-red         light  3.57:1 FAIL | dark  4.88:1 pass
+       *   info     text-signal-blue        light  7.92:1 pass | dark  2.20:1 FAIL
+       *
+       * After fix (text-foreground):
+       *   light fg #44186D over #FCFCFC = 12.81:1 AA-Normal pass
+       *   dark  fg #FCFCFC over #17171C = 17.41:1 AA-Normal pass
+       *
+       * Border keeps the variant signal — WCAG 1.4.11 non-text UI threshold
+       * is 3:1, and border-strong remains the chosen neutral mark for neutral.
+       */
+      { appearance: "outline", variant: "neutral",  className: "border-border-strong text-foreground" },
+      { appearance: "outline", variant: "brand",    className: "border-guardia-violet-500 text-foreground" },
+      { appearance: "outline", variant: "accent",   className: "border-guardia-orange-500 text-foreground" },
+      { appearance: "outline", variant: "success",  className: "border-signal-green text-foreground" },
+      { appearance: "outline", variant: "warning",  className: "border-signal-yellow text-foreground" },
+      { appearance: "outline", variant: "danger",   className: "border-signal-red text-foreground" },
+      { appearance: "outline", variant: "info",     className: "border-signal-blue text-foreground" },
     ],
     defaultVariants: {
       variant: "neutral",

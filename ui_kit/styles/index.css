@@ -212,12 +212,33 @@
   --sidebar-border: 280 22% 91%;
   --sidebar-ring: 31 100% 44%;
 
-  /* Chart palette — mapeada a signal + brand */
-  --chart-1: oklch(0.646 0.222 41.116);  /* orange */
-  --chart-2: oklch(0.6 0.118 184.704);   /* teal-ish */
-  --chart-3: oklch(0.398 0.07 227.392);  /* blue */
-  --chart-4: oklch(0.828 0.189 84.429);  /* yellow */
-  --chart-5: oklch(0.769 0.188 70.08);   /* gold */
+  /* Chart palette — 4 Lighthouse signals (Notion ordem canônica) +
+   * extensão de 4 cores brand para séries adicionais.
+   *
+   * Notion (Cores → Lighthouse / Gráficos), na ordem listada:
+   *   chart-1 = Verde Sinal     (#00BF63) — positivo/saúde/crescimento
+   *   chart-2 = Amarelo Sinal   (#FFDE59) — atenção/pendência
+   *   chart-3 = Vermelho Sinal  (#FF3131) — negativo/crítica
+   *   chart-4 = Azul Sinal      (#004AAD) — informativo/referência
+   *
+   * Extensão brand (não documentada no Notion — necessidade do Recharts
+   * para multi-séries de até 8 categorias):
+   *   chart-5 = Laranja Quente  (#E07400) — destaque escasso
+   *   chart-6 = Violeta Profundo (#4F186D) — autoridade
+   *   chart-7 = Rosa Suave      (#DB6286) — acolhimento
+   *   chart-8 = Cinza Báltico   (#3A3A44) — neutro/estável
+   *
+   * Diretriz Notion: "mesmo dado tem o mesmo significado visual
+   * independentemente do tema" — light e dark referenciam os mesmos hex.
+   */
+  --chart-1: var(--signal-green);
+  --chart-2: var(--signal-yellow);
+  --chart-3: var(--signal-red);
+  --chart-4: var(--signal-blue);
+  --chart-5: var(--guardia-orange-500);
+  --chart-6: var(--guardia-violet-500);
+  --chart-7: var(--guardia-pink-500);
+  --chart-8: var(--guardia-gray-500);
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -296,13 +317,17 @@
   --sidebar-border: 240 9% 17%;
   --sidebar-ring: 31 100% 44%;
 
-  /* Chart palette — Lighthouse signals mantidos em dark conforme diretriz
-     "mesmo dado tem o mesmo significado visual independentemente do tema" */
-  --chart-1: oklch(0.65 0.20 31);                /* orange-500 — destaque/baseline */
-  --chart-2: oklch(0.74 0.18 145);               /* signal-green */
-  --chart-3: oklch(0.61 0.20 264);               /* signal-blue */
-  --chart-4: oklch(0.88 0.16 95);                /* signal-yellow */
-  --chart-5: oklch(0.66 0.26 23);                /* signal-red */
+  /* Chart palette — mesmos valores e ordem que o light theme (diretriz
+     Notion: "mesmo dado tem o mesmo significado visual independentemente
+     do tema"). */
+  --chart-1: var(--signal-green);         /* #00BF63 — positivo */
+  --chart-2: var(--signal-yellow);        /* #FFDE59 — atenção */
+  --chart-3: var(--signal-red);           /* #FF3131 — negativo */
+  --chart-4: var(--signal-blue);          /* #004AAD — informativo */
+  --chart-5: var(--guardia-orange-500);   /* #E07400 — destaque escasso */
+  --chart-6: var(--guardia-violet-500);   /* #4F186D — autoridade */
+  --chart-7: var(--guardia-pink-500);     /* #DB6286 — acolhimento */
+  --chart-8: var(--guardia-gray-500);     /* #3A3A44 — neutro/estável */
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -535,6 +560,9 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
 
   /* Keyframes & animations legados */
   --animate-accordion-down: accordion-down 0.2s ease-out;

@@ -1,0 +1,236 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  LinePreview,
+  BarPreview,
+  AreaPreview,
+  PiePreview,
+  ThemeAwarePreview,
+  PaletteSwatches,
+} from "../../previews/chart";
+import chartSource from "@ds/components/chart/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · DATA & CONTENT"
+  title="Chart"
+  group="Data & content"
+  storybookId="components-chart--default"
+  sourcePath="ui_kit/components/chart"
+  lede='Wrapper sobre <a href="https://recharts.org" target="_blank" rel="noopener noreferrer">Recharts</a> com paleta tokenizada (<code class="inline">--chart-1..8</code>), tooltip e legend acessíveis. <b>Não</b> reinventa o desenho dos gráficos — apenas plugga tokens semânticos e cores brand-aware.'
+>
+  <!-- ============ LINE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Linha</h2>
+      <small>séries temporais · multi-série</small>
+    </div>
+    <div class="preview">
+      <LinePreview client:load />
+    </div>
+    <p class="preview-caption">
+      Cada série lê sua cor de <code class="inline">var(--color-&lt;key&gt;)</code>,
+      injetada pelo <code class="inline">ChartContainer</code> a partir do
+      <code class="inline">config</code>. Convenção Lighthouse (Brand Notion):
+      <code class="inline">revenue</code> usa <code class="inline">--chart-1</code>
+      (Verde Sinal, positivo) e <code class="inline">expense</code> usa
+      <code class="inline">--chart-3</code> (Vermelho Sinal, negativo).
+    </p>
+  </section>
+
+  <!-- ============ BAR ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Barras</h2>
+      <small>comparação categórica</small>
+    </div>
+    <div class="preview">
+      <BarPreview client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">&lt;Bar fill="var(--color-revenue)" /&gt;</code> — o
+      preenchimento sai do mesmo token semântico. Para dois ou mais valores
+      por categoria, declare cada chave no <code class="inline">config</code>.
+    </p>
+  </section>
+
+  <!-- ============ AREA ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Área</h2>
+      <small>tendência com volume</small>
+    </div>
+    <div class="preview">
+      <AreaPreview client:load />
+    </div>
+    <p class="preview-caption">
+      Combinação de <code class="inline">stroke</code> + <code class="inline">fill</code>
+      com <code class="inline">fillOpacity={0.2}</code> para sobreposições legíveis.
+      Tooltip e legend continuam tokenizados.
+    </p>
+  </section>
+
+  <!-- ============ PIE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Donut</h2>
+      <small>distribuição percentual</small>
+    </div>
+    <div class="preview">
+      <PiePreview client:load />
+    </div>
+    <p class="preview-caption">
+      Para gráficos de fatias, declare a config indexada pelo
+      <code class="inline">nameKey</code> da série. Cada
+      <code class="inline">&lt;Cell /&gt;</code> referencia
+      <code class="inline">var(--color-&lt;name&gt;)</code>.
+    </p>
+  </section>
+
+  <!-- ============ THEME-AWARE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Theme-aware</h2>
+      <small>cores distintas em light e dark</small>
+    </div>
+    <div class="preview">
+      <ThemeAwarePreview client:load />
+    </div>
+    <p class="preview-caption">
+      Em vez de <code class="inline">color</code>, passe
+      <code class="inline">theme: {`{ light, dark }`}</code> no
+      <code class="inline">config</code>. O <code class="inline">ChartStyle</code>
+      emite dois blocos CSS escopados por <code class="inline">data-chart</code>,
+      e o tema ativo alterna via <code class="inline">data-theme</code> no
+      <code class="inline">&lt;html&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ PALETTE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Paleta tokenizada</h2>
+      <small>--chart-1..8 · 4 signals (Notion) + 4 cores brand de extensão</small>
+    </div>
+    <div class="preview">
+      <PaletteSwatches client:load />
+    </div>
+    <p class="preview-caption">
+      A paleta de data viz é definida em <code class="inline">ui_kit/styles/index.css</code>.
+      Sempre referencie pelos tokens — nunca cole valores oklch/hex diretos.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente</th><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">ChartContainer</td>
+            <td class="name">config</td>
+            <td class="type">ChartConfig</td>
+            <td class="default">—</td>
+            <td class="desc">Mapa <code class="inline">{`{ key: { label, color | theme, icon } }`}</code> que alimenta tooltip, legend e <code class="inline">--color-&lt;key&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartContainer</td>
+            <td class="name">id</td>
+            <td class="type">string</td>
+            <td class="default">React.useId()</td>
+            <td class="desc">Identificador exposto em <code class="inline">data-chart="chart-&lt;id&gt;"</code> para escopo de CSS variables.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartContainer</td>
+            <td class="name">children</td>
+            <td class="type">React.ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Aceita uma única árvore Recharts (LineChart, BarChart, AreaChart, PieChart, etc.) — embrulhada num <code class="inline">ResponsiveContainer</code> internamente.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartTooltipContent</td>
+            <td class="name">indicator</td>
+            <td class="type">"line" | "dot" | "dashed"</td>
+            <td class="default">"dot"</td>
+            <td class="desc">Forma do marcador antes da label de cada linha.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartTooltipContent</td>
+            <td class="name">hideLabel</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Oculta o eixo X correspondente (útil em tooltips de uma série única).</td>
+          </tr>
+          <tr>
+            <td class="name">ChartTooltipContent</td>
+            <td class="name">hideIndicator</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Oculta o marcador colorido antes da label.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartTooltipContent</td>
+            <td class="name">labelKey / nameKey</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Sobrescreve a chave do <code class="inline">config</code> para resolver label e ícone.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartLegendContent</td>
+            <td class="name">verticalAlign</td>
+            <td class="type">"top" | "bottom"</td>
+            <td class="default">"bottom"</td>
+            <td class="desc">Posição da legend; ajusta o padding superior/inferior.</td>
+          </tr>
+          <tr>
+            <td class="name">ChartLegendContent</td>
+            <td class="name">hideIcon</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Suprime o ícone definido em <code class="inline">config[key].icon</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/chart/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={chartSource}
+      language="tsx"
+      filename="ui_kit/components/chart/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>aria-label</b> obrigatório no <code class="inline">ChartContainer</code> resumindo o conteúdo do gráfico (ex.: "Receita e despesa por mês").</span></li>
+        <li><span><b>Cores tokenizadas</b> garantem contraste mínimo nos dois temas — sem combinações inventadas.</span></li>
+        <li><span><b>Cor nunca é o único indicador</b>: use <code class="inline">indicator="dashed"</code>, ícones por série ou rótulos diretos quando houver risco de daltonismo.</span></li>
+        <li><span><b>Tooltip e legend</b> são DOM real (não canvas), então leitor de tela percorre rótulos e valores.</span></li>
+        <li><span><b>Dark mode</b> automático via <code class="inline">data-theme</code> no <code class="inline">&lt;html&gt;</code>; <code class="inline">ChartStyle</code> emite blocos CSS para os dois temas.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
