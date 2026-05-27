@@ -45,10 +45,11 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
       <b>assistant</b> à esquerda com <code class="inline">bg-muted</code>;
       <b>system</b> centraliza como nota neutra com
       <code class="inline">bg-muted</code> + <code class="inline">text-muted-foreground</code>.
-      O consumer envolve os turnos em um
-      container rolável <code class="inline">role="log"</code> — use
-      <code class="inline">as="li"</code> quando o log for uma
-      <code class="inline">&lt;ul&gt;</code>.
+      Use <code class="inline">as="li"</code> quando os turnos estão dentro de uma
+      <code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;ol&gt;</code>
+      (semântica de lista). Para um transcript com live region, use
+      <code class="inline">&lt;div role="log" aria-live="polite"&gt;</code> com turnos
+      <code class="inline">as="div"</code> ou <code class="inline">article</code>.
     </p>
   </section>
 
@@ -132,7 +133,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
             <td class="name">as</td>
             <td class="type">"div" | "li" | "article"</td>
             <td class="default">"div"</td>
-            <td class="desc">Elemento semântico raiz. Use <b>li</b> dentro de uma <code class="inline">&lt;ul role="log"&gt;</code>; <b>article</b> para um turno autocontido.</td>
+            <td class="desc">Elemento semântico raiz. Use <b>li</b> dentro de uma <code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;ol&gt;</code> (lista); <b>article</b> para um turno autocontido. Para transcript com live region use <code class="inline">&lt;div role="log"&gt;</code> com <b>div</b>/<b>article</b> (não combine <b>li</b> com <code class="inline">role="log"</code>).</td>
           </tr>
         </tbody>
       </table>
@@ -173,7 +174,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
         <li><span><b>status="streaming"</b> anuncia digitação via <code class="inline">role="status"</code> + <code class="inline">aria-busy</code>.</span></li>
         <li><span><b>status="error"</b> expõe <code class="inline">role="alert"</code> para anúncio imediato da falha.</span></li>
         <li><span><b>ChatMessage.Actions</b> mantém affordances operáveis por teclado, sem trap de foco.</span></li>
-        <li><span>O consumer envolve os turnos em <code class="inline">role="log"</code> — use <code class="inline">as="li"</code> para preservar a semântica de lista.</span></li>
+        <li><span>Para semântica de lista use <code class="inline">as="li"</code> dentro de <code class="inline">&lt;ul&gt;</code>; para um transcript com live region use <code class="inline">&lt;div role="log" aria-live="polite"&gt;</code> com turnos <code class="inline">div</code>/<code class="inline">article</code> (<code class="inline">role="log"</code> e lista são mutuamente exclusivos).</span></li>
         <li><span>Contraste validado em <b>light + dark</b> via <code class="inline">jest-axe</code> em cinco estados (assistant · user · system · streaming · error).</span></li>
         <li><span>Tokens <code class="inline">secondary</code>/<code class="inline">muted</code>/<code class="inline">destructive</code> trocam por tema — zero cor hardcoded; contraste de corpo AA garantido (sem laranja em texto de corpo).</span></li>
       </ul>

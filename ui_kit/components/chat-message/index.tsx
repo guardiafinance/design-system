@@ -86,8 +86,11 @@ export interface ChatMessageProps
   /** Rótulo acessível do indicador de digitação. Default "Digitando…". */
   typingLabel?: string;
   /**
-   * Elemento semântico raiz. Default `div`. Use `li` quando o log do consumer
-   * é uma `<ul role="log">`; `article` para um turno autocontido.
+   * Elemento semântico raiz. Default `div`. Use `li` quando os turnos estão
+   * dentro de uma `<ul>`/`<ol>` (semântica de lista). Para um transcript com
+   * live region, use `<div role="log" aria-live="polite">` com turnos `div`
+   * (default) ou `article` — `role="log"` e a semântica de lista são mutuamente
+   * exclusivos, então não combine `as="li"` com `role="log"`.
    */
   as?: ChatMessageElement;
 }

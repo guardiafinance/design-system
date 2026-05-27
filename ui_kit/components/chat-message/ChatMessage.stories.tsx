@@ -65,7 +65,7 @@ export const Default: Story = {
 /** Conversa completa: turno do usuário, resposta do agente e nota de sistema. */
 export const Conversation: Story = {
   render: () => (
-    <ul role="log" className="flex w-full max-w-xl flex-col gap-4">
+    <ul className="flex w-full max-w-xl flex-col gap-4">
       <ChatMessage as="li" variant="system">
         <ChatMessage.Bubble>
           <ChatMessage.Content>Sessão iniciada às 14:30.</ChatMessage.Content>

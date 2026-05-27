@@ -47,7 +47,7 @@ export function Anatomy() {
 /** Papéis: user (direita) · assistant (esquerda) · system (centralizado). */
 export function Roles() {
   return (
-    <ul role="log" className="flex w-full max-w-[440px] flex-col gap-4">
+    <ul className="flex w-full max-w-[440px] flex-col gap-4">
       <ChatMessage as="li" variant="system">
         <ChatMessage.Bubble>
           <ChatMessage.Content>Sessão iniciada às 14:30.</ChatMessage.Content>
