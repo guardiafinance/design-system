@@ -9,7 +9,17 @@ const DEFAULT_CODE = `<div className="flex flex-col gap-3">
     description="Você concorda com a política de privacidade da Guardia."
   />
   <Checkbox label="Conciliação automática" defaultChecked />
-  <Checkbox label="3 de 5 selecionados" indeterminate />
+
+  <div>
+    <Checkbox label="Janeiro a Maio (3 de 5 selecionados)" indeterminate />
+    <div className="ml-6 mt-2 flex flex-col gap-1">
+      <Checkbox label="Janeiro" defaultChecked />
+      <Checkbox label="Fevereiro" defaultChecked />
+      <Checkbox label="Março" defaultChecked />
+      <Checkbox label="Abril" />
+      <Checkbox label="Maio" />
+    </div>
+  </div>
 </div>`;
 
 const scope = { Checkbox };
