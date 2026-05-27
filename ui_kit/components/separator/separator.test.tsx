@@ -134,8 +134,12 @@ describe("Separator", () => {
   it("AC-3: sem label é decorativo por default (role=none/presentation)", () => {
     const { container } = render(<Separator data-testid="sep" />);
     const sep = container.querySelector('[data-testid="sep"]');
+    /* gemini-code-assist #197: null-check explícito impede false positive
+     * caso o render falhe silenciosamente — o fallback `?? "none"` mascararia
+     * `undefined` como `"none"` e o teste passaria sem o elemento existir. */
+    expect(sep).not.toBeNull();
     /* Radix com decorative=true usa role=none */
-    expect(sep?.getAttribute("role") ?? "none").toBe("none");
+    expect(sep!.getAttribute("role")).toBe("none");
   });
 
   it("AC-4: não-interativo — role=separator não entra no tab order (sem tabindex positivo)", () => {
