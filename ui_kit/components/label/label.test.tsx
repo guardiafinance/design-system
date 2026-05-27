@@ -242,12 +242,14 @@ describe("<Label />", () => {
   // AC-4 (c) disabled aplicável — input controlado disabled associado
   // ao Label. O Label propaga `peer-disabled:opacity-70` via tailwind
   // quando o input irmão tem a classe `peer` e está disabled.
+  // WHY: o input com `peer` DEVE vir ANTES do Label no DOM para que o
+  // combinador irmão subsequente (`~`/`+`) do Tailwind aplique
+  // `peer-disabled:cursor-not-allowed peer-disabled:opacity-70` no Label.
+  // Render invertida (Label primeiro) deixaria o estado disabled fora
+  // do exercício de a11y. Ver Gemini #r3307991401.
   it("AC-4: a11y — Label associated with disabled input — light + dark", async () => {
     const { container } = render(
       <>
-        <Label htmlFor="email-axe-disabled" optional>
-          Email
-        </Label>
         <input
           id="email-axe-disabled"
           type="email"
@@ -255,6 +257,9 @@ describe("<Label />", () => {
           disabled
           aria-disabled="true"
         />
+        <Label htmlFor="email-axe-disabled" optional>
+          Email
+        </Label>
       </>,
     );
     await axeInThemes(container);

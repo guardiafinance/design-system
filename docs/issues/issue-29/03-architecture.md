@@ -56,7 +56,7 @@ Os 11 testes existentes já cobrem: render, htmlFor, sizes (sm + md), required+a
 
 | # | Novo teste | AC |
 |---|-----------|----|
-| 12 | `getByRole('button')` falha (Label não é botão — guard semântico) → trocar para `getByText` retorna o elemento `<label>` | AC-3 |
+| 12 | `getByText` resolve children mesmo quando o componente os renderiza dentro de `<span>` interno (guard contra regressão de DOM) | AC-3 |
 | 13 | `getByLabelText("Email")` retorna o input associado quando `htmlFor` casa com `id` | AC-3 |
 | 14 | Click no label foca o input associado (`userEvent.click` no label → `document.activeElement === input`) | AC-3 |
 | 15 | `required` + `optional` simultâneos: ambos renderizados (sufixo e asterisco) sem colisão | AC-3 |
