@@ -82,23 +82,26 @@ describe("Spinner", () => {
     expect(svg.getAttribute("width")).toBe(String(SPINNER_PX.xl));
   });
 
-  // AC-3 — size variant: each size also applies the matching wrapper width class
-  it("AC-3: cada size aplica a classe de largura correspondente no wrapper", () => {
-    const cases = [
-      { size: "xs", cls: "w-3" },
-      { size: "sm", cls: "w-4" },
-      { size: "md", cls: "w-5" },
-      { size: "lg", cls: "w-7" },
-      { size: "xl", cls: "w-10" },
-    ] as const;
-    cases.forEach(({ size, cls }) => {
-      const { unmount } = render(<Spinner size={size} label={`spin-${size}`} />);
+  // AC-3 — size variant: each size also applies the matching wrapper width class.
+  // `it.each` per Gemini suggestion (PR #194 review): each row reports as an
+  // independent test case in Vitest and gets native isolation (no manual unmount),
+  // honoring lex-test-isolation (Rule 4 — order independence) and improving the
+  // failure surface when one width regresses.
+  it.each([
+    { size: "xs", cls: "w-3" },
+    { size: "sm", cls: "w-4" },
+    { size: "md", cls: "w-5" },
+    { size: "lg", cls: "w-7" },
+    { size: "xl", cls: "w-10" },
+  ] as const)(
+    "AC-3: size=$size aplica a classe $cls no wrapper",
+    ({ size, cls }) => {
+      render(<Spinner size={size} label={`spin-${size}`} />);
       expect(
         screen.getByRole("status", { name: `spin-${size}` }),
       ).toHaveClass(cls);
-      unmount();
-    });
-  });
+    },
+  );
 
   // AC-3 — color variant: brand
   it("AC-3: color=brand aplica purple-500", () => {
