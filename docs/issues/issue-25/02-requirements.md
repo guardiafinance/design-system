@@ -46,7 +46,7 @@ Additional jest-axe coverage of the 7 variants × `selected: true | false` matri
 
 ### AC-5 — Brand validated against Notion source of truth
 
-Local mirrors `lex-brand-colors`, `lex-brand-typography`, `lex-brand-logo` MUST match the Notion Branding hub. The Chip uses brand tokens only (no hardcoded values) — visual inspection of `index.tsx` confirms exclusive use of `bg-action`, `border-action`, `text-button-fg`, `bg-guardia-{color}-{100|500|700}`, `bg-signal-{color}-{100|500|700}`, `text-foreground`, `bg-background`, `border-border-strong`.
+Local mirrors `lex-brand-colors`, `lex-brand-typography`, `lex-brand-logo` MUST match the Notion Branding hub. The Chip uses brand tokens only (no hardcoded values) — visual inspection of `index.tsx` confirms exclusive use of `bg-action`, `border-action`, `text-button-fg`, `bg-guardia-{color}-{100|200|500|700|900}`, `bg-signal-{color}-{100|200|500|700|900}`, `text-foreground`, `bg-background`, `border-border-strong`. The `200` scale appears in interactive hover states (e.g., `hover:bg-guardia-purple-200`, `hover:bg-signal-green-200`).
 
 The Notion MCP server is NOT active in this session — Brand × Notion check is recorded as **manual verification pending**, surfaced to Fernando in the PR body. Per `lex-mcp` rule 4, the agent surfaces the gap rather than silently substituting.
 
