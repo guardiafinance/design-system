@@ -237,6 +237,32 @@ describe("Combobox", () => {
     });
   });
 
+  it("AC-3 (#39): Home posiciona activeIndex no primeiro option filtrado", async () => {
+    // WHY: DoD do #38 lista Home como tecla de navegação coberta. O handler em
+    // index.tsx:221-223 implementa setActiveIndex(0); este teste cobre o
+    // contrato. Avançamos 2x ArrowDown e voltamos via Home, depois Enter
+    // dispara pick() no primeiro option ("Starter") provando o efeito.
+    render(<Combobox options={PLANOS} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}{Home}{Enter}");
+    expect(screen.getByRole("combobox")).toHaveTextContent("Starter");
+  });
+
+  it("AC-3 (#39): End posiciona activeIndex no último option filtrado", async () => {
+    // WHY: handler em index.tsx:224-227 faz setActiveIndex(filtered.length - 1).
+    // Em PLANOS o último item ("Legacy") é disabled; Enter sobre option disabled
+    // é no-op (pick() early-return). A asserção correta é a intenção do teclado —
+    // checamos aria-activedescendant do search apontando para o último id.
+    render(<Combobox options={PLANOS} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.keyboard("{End}");
+    const search = screen.getByPlaceholderText("Buscar…");
+    expect(search).toHaveAttribute(
+      "aria-activedescendant",
+      expect.stringMatching(/-opt-3$/),
+    );
+  });
+
   /* ────────────────────────────────────────────────────────────────
    * AC traceability — Issue #142 (parent Tech Task #125)
    *
@@ -367,6 +393,22 @@ describe("Combobox", () => {
           aria-label="Plano contratado"
         />,
       );
+      await axeInThemes(container);
+    });
+
+    it("AC-4 (#39): has no WCAG 2.1 AA violations in light + dark (opened, no results)", async () => {
+      // WHY: DoD do parent #38 lista o no-results state como cenário crítico.
+      // O fallback emptyText renderiza em text-fg-muted sobre bg-background;
+      // este teste prova que o par mantém WCAG AA em ambos os temas.
+      const { container } = render(
+        <Combobox options={PLANOS} aria-label="Plano contratado" />,
+      );
+      await userEvent.click(screen.getByRole("combobox"));
+      await userEvent.type(
+        screen.getByPlaceholderText("Buscar…"),
+        "zzz-nenhum-resultado",
+      );
+      expect(screen.getByText("Nenhum resultado")).toBeInTheDocument();
       await axeInThemes(container);
     });
   });
