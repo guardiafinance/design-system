@@ -3,21 +3,79 @@ import { LiveProvider, LivePreview, LiveError } from "react-live";
 import { CodeEditor } from "@ds/components/code-editor";
 import { Checkbox } from "@ds/components/checkbox";
 
-const DEFAULT_CODE = `<div className="flex flex-col gap-3">
-  <Checkbox
-    label="Aceito os termos"
-    description="Você concorda com a política de privacidade da Guardia."
-  />
-  <Checkbox label="Conciliação automática" defaultChecked />
-  <Checkbox label="3 de 5 selecionados" indeterminate />
-</div>`;
+const DEFAULT_CODE = `const items = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio"];
 
-const scope = { Checkbox };
+function App() {
+  const [checked, setChecked] = useState({
+    Janeiro: true,
+    Fevereiro: true,
+    Março: true,
+    Abril: false,
+    Maio: false,
+  });
+
+  const selectedCount = Object.values(checked).filter(Boolean).length;
+  const total = items.length;
+  const allChecked = selectedCount === total;
+  const noneChecked = selectedCount === 0;
+  const parentState = allChecked
+    ? true
+    : noneChecked
+      ? false
+      : "indeterminate";
+
+  const toggleAll = (next) => {
+    const value = next === true;
+    setChecked(
+      items.reduce((acc, item) => ({ ...acc, [item]: value }), {}),
+    );
+  };
+
+  const label = allChecked
+    ? "Janeiro a Maio (todos selecionados)"
+    : noneChecked
+      ? "Janeiro a Maio (nenhum selecionado)"
+      : "Janeiro a Maio (" + selectedCount + " de " + total + " selecionados)";
+
+  return (
+    <div className="flex flex-col gap-3">
+      <Checkbox
+        label="Aceito os termos"
+        description="Você concorda com a política de privacidade da Guardia."
+      />
+      <Checkbox label="Conciliação automática" defaultChecked />
+
+      <div>
+        <Checkbox
+          label={label}
+          checked={parentState}
+          onCheckedChange={toggleAll}
+        />
+        <div className="ml-6 mt-2 flex flex-col gap-1">
+          {items.map((item) => (
+            <Checkbox
+              key={item}
+              label={item}
+              checked={checked[item]}
+              onCheckedChange={(next) =>
+                setChecked((prev) => ({ ...prev, [item]: next === true }))
+              }
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+render(<App />);`;
+
+const scope = { Checkbox, useState };
 
 export function LiveCheckboxSnippet() {
   const [code, setCode] = useState(DEFAULT_CODE);
   return (
-    <LiveProvider code={code} scope={scope}>
+    <LiveProvider code={code} scope={scope} noInline>
       <div className="grid gap-3 md:grid-cols-2">
         <CodeEditor
           value={code}
