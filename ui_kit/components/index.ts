@@ -8,6 +8,7 @@ export * from "./button";
 export * from "./button-group";
 export * from "./badge";
 export * from "./card";
+export * from "./chat-message";
 export * from "./chart";
 export * from "./checkbox";
 export * from "./chip";
