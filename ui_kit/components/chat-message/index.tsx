@@ -116,11 +116,14 @@ const ChatMessageRoot = React.forwardRef<HTMLElement, ChatMessageProps>(
           Component,
           {
             ref,
+            // WHY: props vêm primeiro — os atributos internos (data-slot,
+            // data-variant, data-status, className) são autoritativos e não
+            // podem ser sobrescritos por props arbitrárias do consumer.
+            ...props,
             "data-slot": "chat-message",
             "data-variant": variant,
             "data-status": status,
             className: cn(chatMessageVariants({ variant }), className),
-            ...props,
           },
           children,
         )}
@@ -176,11 +179,11 @@ const ChatMessageBubble = React.forwardRef<
   return (
     <div
       ref={ref}
+      {...props}
       data-slot="chat-message-bubble"
       data-variant={variant}
       data-status={status}
       className={cn(chatBubbleVariants({ variant }), className)}
-      {...props}
     />
   );
 });
@@ -290,10 +293,12 @@ const ChatMessageContent = React.forwardRef<
     return (
       <div
         ref={ref}
+        {...props}
         data-slot="chat-message-content"
+        // WHY: aria-busy vem depois de props — o estado de carregamento é
+        // crítico e não pode ser sobrescrito por uma prop do consumer.
         aria-busy="true"
         className={cn("leading-relaxed", className)}
-        {...props}
       >
         <ChatMessageTyping />
       </div>
@@ -303,12 +308,14 @@ const ChatMessageContent = React.forwardRef<
   return (
     <div
       ref={ref}
-      data-slot="chat-message-content"
-      // WHY: no estado de erro o conteúdo é a mensagem de falha — `role="alert"`
-      // garante que a tecnologia assistiva anuncie o erro (AC-6).
-      role={status === "error" ? "alert" : undefined}
-      className={cn("leading-relaxed [overflow-wrap:anywhere]", className)}
       {...props}
+      data-slot="chat-message-content"
+      className={cn("leading-relaxed break-words", className)}
+      // WHY: role vem depois de props — no estado de erro o conteúdo é a
+      // mensagem de falha e `role="alert"` (AC-6) precisa vencer qualquer
+      // `role` genérico passado pelo consumer; fora de erro, preserva o role
+      // do consumer.
+      role={status === "error" ? "alert" : props.role}
     >
       {children}
     </div>

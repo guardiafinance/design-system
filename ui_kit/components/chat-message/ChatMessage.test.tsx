@@ -274,6 +274,56 @@ describe("status=error (AC-6)", () => {
     const alert = screen.getByRole("alert");
     expect(alert).toHaveTextContent("Conciliei 127 lançamentos.");
   });
+
+  it("role=alert wins over a consumer-supplied role on error content", () => {
+    render(
+      <ChatMessage variant="assistant" status="error">
+        <ChatMessageContent role="region">Falha</ChatMessageContent>
+      </ChatMessage>,
+    );
+    // The critical a11y role must not be overridable by the consumer.
+    expect(screen.getByRole("alert")).toHaveTextContent("Falha");
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("preserves a consumer role on content outside the error state", () => {
+    render(
+      <ChatMessage variant="assistant" status="sent">
+        <ChatMessageContent role="note">Nota</ChatMessageContent>
+      </ChatMessage>,
+    );
+    expect(screen.getByRole("note")).toHaveTextContent("Nota");
+  });
+});
+
+describe("internal attributes are authoritative (review hardening)", () => {
+  it("consumer cannot override data-* / data-variant on the root", () => {
+    render(
+      <ChatMessage
+        variant="user"
+        data-testid="m"
+        data-slot="hacked"
+        data-variant="hacked"
+      >
+        x
+      </ChatMessage>,
+    );
+    const root = screen.getByTestId("m");
+    expect(root).toHaveAttribute("data-slot", "chat-message");
+    expect(root).toHaveAttribute("data-variant", "user");
+  });
+
+  it("consumer cannot override aria-busy on streaming content", () => {
+    const { container } = render(
+      <ChatMessage variant="assistant" status="streaming">
+        <ChatMessageContent aria-busy={false}>x</ChatMessageContent>
+      </ChatMessage>,
+    );
+    const content = container.querySelector(
+      "[data-slot='chat-message-content']",
+    ) as HTMLElement;
+    expect(content).toHaveAttribute("aria-busy", "true");
+  });
 });
 
 describe("status=sent (default)", () => {

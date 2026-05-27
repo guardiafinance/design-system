@@ -24,7 +24,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
       <Anatomy client:load />
     </div>
     <p class="preview-caption">
-      O <code class="inline">role</code> da raiz propaga por contexto: a
+      O <code class="inline">variant</code> da raiz propaga por contexto: a
       <code class="inline">ChatMessage.Bubble</code> escolhe sua paleta e o
       avatar/header se alinham sem repetir o papel em cada filho. Cada slot expõe
       um <code class="inline">data-slot</code> próprio para estilização e testes.
@@ -110,10 +110,10 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
         </thead>
         <tbody>
           <tr>
-            <td class="name">role</td>
+            <td class="name">variant</td>
             <td class="type">"user" | "assistant" | "system"</td>
             <td class="default">"assistant"</td>
-            <td class="desc">Papel do autor do turno. Define alinhamento e paleta da bolha (propagado por contexto).</td>
+            <td class="desc">Papel do autor do turno. Define alinhamento e paleta da bolha (propagado por contexto). Nomeado <code class="inline">variant</code> (e não <code class="inline">role</code>) para não colidir com o atributo ARIA <code class="inline">role</code>.</td>
           </tr>
           <tr>
             <td class="name">status</td>
@@ -137,8 +137,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
       </table>
     </div>
     <p class="preview-caption">
-      Aceita qualquer atributo de <code class="inline">HTMLElement</code> (exceto
-      <code class="inline">role</code>, reservado pela prop de papel).
+      Aceita qualquer atributo de <code class="inline">HTMLElement</code>.
       <code class="inline">ref</code> é encaminhado para a raiz.
       <code class="inline">ChatMessage.Time</code> renderiza um
       <code class="inline">&lt;time dateTime&gt;</code> nativo;
