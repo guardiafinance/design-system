@@ -30,9 +30,9 @@ import { cn } from "@/lib/utils";
  *   - `<input type="range">` nativo carrega role="slider", aria-valuenow,
  *     aria-valuemin, aria-valuemax e navegação por setas automaticamente.
  *   - `aria-invalid` é refletido quando `invalid` é true.
- *   - O readout opcional (`showValue`) é anunciado por leitores de tela
- *     pois fica adjacente ao input no DOM (associação via aria-describedby
- *     quando renderizado).
+ *   - O readout opcional (`showValue`) possui `aria-hidden="true"` para evitar
+ *     dupla anunciação por leitores de tela, já que o `<input>` nativo já
+ *     anuncia o valor atual de forma acessível.
  *   - Focus-visible ring laranja (--ring) com offset (CSS global).
  */
 
@@ -94,8 +94,12 @@ export interface SliderProps
   valueClassName?: string;
 }
 
-function clampToRange(value: number, min: number, max: number): number {
-  if (Number.isNaN(value)) return min;
+function clampToRange(
+  value: number | null | undefined,
+  min: number,
+  max: number,
+): number {
+  if (value === null || value === undefined || Number.isNaN(value)) return min;
   if (value < min) return min;
   if (value > max) return max;
   return value;

@@ -373,4 +373,48 @@ describe("Slider", () => {
     );
     await axeInThemes(container);
   });
+
+  /* ─────────────────────────────────────────────────────────────
+   * AC-4 — entrada defensiva: callers JS sem types ou estado
+   *        vindo de API/form podem entregar null / undefined / NaN
+   *        no `value` ou `defaultValue`. O clamp interno cai para
+   *        `min` sem renderizar `null` no input nem disparar warning
+   *        do React `value prop on input should not be null`.
+   * ───────────────────────────────────────────────────────────── */
+  it("AC-4 — `value={null}` (caller sem types) renderiza no min sem warning do React", () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    render(
+      <Slider
+        aria-label="Volume"
+        min={10}
+        max={90}
+        value={null as unknown as number}
+      />,
+    );
+    const input = screen.getByRole("slider") as HTMLInputElement;
+    expect(input.value).toBe("10");
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it("AC-4 — `value={NaN}` cai para `min` (clamp defensivo)", () => {
+    render(
+      <Slider aria-label="Volume" min={0} max={100} value={Number.NaN} />,
+    );
+    const input = screen.getByRole("slider") as HTMLInputElement;
+    expect(input.value).toBe("0");
+  });
+
+  it("AC-4 — `defaultValue={null}` (caller sem types) inicializa no min", () => {
+    render(
+      <Slider
+        aria-label="Volume"
+        min={5}
+        max={50}
+        defaultValue={null as unknown as number}
+      />,
+    );
+    const input = screen.getByRole("slider") as HTMLInputElement;
+    expect(input.value).toBe("5");
+  });
 });
