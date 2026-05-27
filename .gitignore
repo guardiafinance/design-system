@@ -20,6 +20,9 @@ storybook-static
 # Ahrena Issue-Driven flow scratchpad (canonical docs live under docs/issues/issue-{N}/)
 .ahrena/issues/
 
+# Ahrena ephemeral orchestration state (checkpoints, session heartbeats — never committed)
+.ahrena/workflow/
+
 # Astro generated cache
 docs/.astro/
 
