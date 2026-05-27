@@ -211,6 +211,71 @@ export const ButtonWithUploader: Story = {
 };
 
 /**
+ * Matriz de estados visuais críticos do FileUpload em tema dark.
+ *
+ * Cobertura: dropzone vazio (Default), dropzone com lista nas 3 statuses
+ * (`done` + `uploading` + `error`), dropzone Disabled e a variant button
+ * em três tamanhos (`sm` / `md` / `lg`). Replica o padrão do Combobox
+ * (`Combobox.stories.tsx::DarkTheme`, PR #219), DatePicker (#218),
+ * Button (#209), IconButton (#205), ButtonGroup (#206) e Avatar (#119).
+ *
+ * WHY decorators undefined: o meta envolve cada story em `w-[480px]`
+ * (útil pro dropzone padrão); na matriz queremos o stack vertical natural
+ * para o reviewer ler todos os estados de uma vez no playground.
+ *
+ * Background "dark" definido em `.storybook/preview.tsx`
+ * (parameters.backgrounds.values + applyThemeSync). Todos os tokens
+ * (`bg-action`, `text-action`, `text-button-fg`, `border-action`,
+ * `bg-bg-hover`, `text-fg`, `border-border-strong`) flipam via
+ * `[data-theme="dark"]` no `<html>`.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz dos estados visuais críticos do FileUpload no tema dark — dropzone vazio, dropzone com lista (`done` + `uploading` + `error`), dropzone Disabled e a variant button nos 3 tamanhos. Cada estado mantém contraste WCAG AA conforme tokens do design-system em dark mode (`bg-action`, `text-action`, `text-button-fg`, `border-action`).",
+      },
+    },
+  },
+  decorators: undefined,
+  render: () => {
+    const mixedFiles: UploadFile[] = [
+      { name: "extrato-marco-2025.pdf", size: 425_000, status: "done" },
+      {
+        name: "comprovante.png",
+        size: 120_000,
+        status: "uploading",
+        progress: 64,
+      },
+      {
+        name: "boleto-rejeitado.zip",
+        size: 8_400_000,
+        status: "error",
+        error: "Tamanho excede 5 MB",
+      },
+    ];
+    return (
+      <div className="flex w-[520px] flex-col gap-6">
+        <FileUpload hint="PDF / PNG / JPG · máx. 5 MB" />
+        <FileUpload files={mixedFiles} onRemove={() => {}} />
+        <FileUpload
+          disabled
+          hint="Aguarde o processamento anterior"
+        />
+        <div className="flex items-end gap-3">
+          <FileUpload variant="button" buttonSize="sm" buttonLabel="Small" />
+          <FileUpload variant="button" buttonSize="md" buttonLabel="Medium" />
+          <FileUpload variant="button" buttonSize="lg" buttonLabel="Large" />
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
  * onReject custom: receba as rejeições e mostre fora da lista interna.
  */
 export const RejectCallback: Story = {

@@ -753,3 +753,112 @@ describe("FileUpload — a11y", () => {
     await axeInThemes(container);
   });
 });
+
+describe("FileUpload — keyboard accessibility", () => {
+  /* WHY: o DoD do Plan #43 exige cobertura explicita de "keyboard
+   * accessibility (Enter/Space to trigger file input)". O input file fica
+   * dentro de um <label> no variant=dropzone, então a contrato de
+   * teclado é exercido via o botão acessível (variant=button) — onde o
+   * usuario tabula até o botão e aperta Enter/Space. */
+  it("variant=button: Enter no botão focado dispara o file picker", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<FileUpload variant="button" />);
+    const input = container.querySelector(
+      "input[type='file']",
+    ) as HTMLInputElement;
+    const clickSpy = vi.spyOn(input, "click");
+    const button = screen.getByRole("button");
+    button.focus();
+    expect(button).toHaveFocus();
+    await user.keyboard("[Enter]");
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it("variant=button: Space no botão focado dispara o file picker", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<FileUpload variant="button" />);
+    const input = container.querySelector(
+      "input[type='file']",
+    ) as HTMLInputElement;
+    const clickSpy = vi.spyOn(input, "click");
+    const button = screen.getByRole("button");
+    button.focus();
+    await user.keyboard("[Space]");
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it("variant=dropzone: input file é alcançável via accessible name", () => {
+    /* O input é sr-only com tabIndex=-1, mas o <label> que o envolve é
+     * o elemento focável visual; o input continua localizável por nome
+     * acessível (que é o que screen readers anunciam). */
+    render(<FileUpload />);
+    expect(screen.getByLabelText("Selecionar arquivo")).toBeInTheDocument();
+  });
+
+  it("variant=dropzone (multiple): accessible name vira plural", () => {
+    render(<FileUpload multiple />);
+    expect(screen.getByLabelText("Selecionar arquivos")).toBeInTheDocument();
+  });
+
+  it("variant=button: input file é alcançável via accessible name", () => {
+    render(<FileUpload variant="button" />);
+    /* Em variant=button o input fica fora do botão (sibling) mas mantém
+     * o mesmo aria-label, garantindo que screen readers descrevam a ação. */
+    expect(screen.getByLabelText("Selecionar arquivo")).toBeInTheDocument();
+  });
+
+  it("remove button responde a Enter quando focado", async () => {
+    const user = userEvent.setup();
+    const onRemove = vi.fn();
+    render(
+      <FileUpload
+        files={[{ name: "extrato.pdf", size: 1024, status: "done" }]}
+        onRemove={onRemove}
+      />,
+    );
+    const removeBtn = screen.getByLabelText("Remover extrato.pdf");
+    removeBtn.focus();
+    expect(removeBtn).toHaveFocus();
+    await user.keyboard("[Enter]");
+    expect(onRemove).toHaveBeenCalledWith(0);
+  });
+});
+
+describe("FileUpload — XSS safety (filename render)", () => {
+  /* WHY: File.name vem do usuario. JSX text interpolation é XSS-safe por
+   * default (escape automatico), mas pinar isso como teste protege
+   * contra um refactor futuro acidentalmente introduzir
+   * dangerouslySetInnerHTML. Conforme lex-frontend-security regra 1. */
+  it("nome de arquivo com payload HTML é renderizado como texto, não como HTML", () => {
+    const malicious = "<img src=x onerror=\"alert(1)\">.pdf";
+    const { container } = render(
+      <FileUpload
+        files={[{ name: malicious, size: 1024, status: "done" }]}
+      />,
+    );
+    /* Conteudo aparece como texto literal — caractere por caractere */
+    expect(screen.getByText(malicious)).toBeInTheDocument();
+    /* Nenhuma tag <img> foi materializada a partir do payload */
+    expect(container.querySelector("li img")).toBeNull();
+    /* Atributos perigosos nao escaparam */
+    expect(container.innerHTML).not.toMatch(/<img\s+src=x/i);
+  });
+
+  it("mensagem de erro com payload HTML é renderizada como texto", () => {
+    const maliciousError = '<script>alert("xss")</script>';
+    const { container } = render(
+      <FileUpload
+        files={[
+          {
+            name: "a.pdf",
+            size: 100,
+            status: "error",
+            error: maliciousError,
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText(maliciousError)).toBeInTheDocument();
+    expect(container.querySelector("script")).toBeNull();
+  });
+});
