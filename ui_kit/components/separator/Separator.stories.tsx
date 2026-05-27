@@ -11,7 +11,7 @@ const meta: Meta<typeof Separator> = {
     docs: {
       description: {
         component:
-          "Divisor horizontal ou vertical para agrupar visualmente blocos de conteúdo. Três aparências (`solid` · `dashed` · `dotted`) e label opcional centralizado.",
+          "Divisor horizontal ou vertical para agrupar visualmente blocos de conteúdo. Três aparências (`solid` · `dashed` · `dotted`) e label opcional centralizado. Use o toggle de tema da toolbar para validar light + dark — todas as variantes são exercitadas em jest-axe nos dois temas via `axeInThemes` (`ui_kit/test-utils/a11y.ts`).",
       },
     },
   },
