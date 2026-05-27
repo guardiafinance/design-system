@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 import { Button } from "../button";
 import { ButtonGroup } from "./index";
+import { axeInThemes } from "@/test-utils/a11y";
 
 describe("<ButtonGroup />", () => {
   it("renders with role='group' by default", () => {
@@ -294,5 +295,78 @@ describe("<ButtonGroup />", () => {
     // radii — mirror of the horizontal left/right collapse heuristic above.
     expect(screen.getByTestId("g").className).toMatch(/rounded-t-none/);
     expect(screen.getByTestId("g").className).toMatch(/rounded-b-none/);
+  });
+
+  // [AC-4] jest-axe coverage in light + dark themes via axeInThemes().
+  // The 6 surfaces below mirror the matrix declared in
+  // docs/issues/issue-23/03-architecture.md (Component surface map). Each
+  // case asserts toHaveNoViolations() in both themes, so any future
+  // contrast or aria regression in ButtonGroup or its child contract is
+  // caught at unit level (Tech Task #125 axes).
+
+  it("[AC-4] Default (horizontal + attached + 3 Buttons) is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup>
+        <Button>A</Button>
+        <Button>B</Button>
+        <Button>C</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
+  });
+
+  it("[AC-4] semantic group (aria-label='Paginação') is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup aria-label="Paginação">
+        <Button>Anterior</Button>
+        <Button>Atual</Button>
+        <Button>Próximo</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
+  });
+
+  it("[AC-4] disabled-equivalent child is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup aria-label="Paginação">
+        <Button>Anterior</Button>
+        <Button disabled>Atual</Button>
+        <Button>Próximo</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
+  });
+
+  it("[AC-4] vertical orientation is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup orientation="vertical" aria-label="Menu lateral">
+        <Button>Dashboard</Button>
+        <Button>Relatórios</Button>
+        <Button>Configurações</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
+  });
+
+  it("[AC-4] role='toolbar' + IconButtons is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup role="toolbar" aria-label="Formatação">
+        <Button size="icon" aria-label="Negrito">B</Button>
+        <Button size="icon" aria-label="Itálico">I</Button>
+        <Button size="icon" aria-label="Sublinhado">U</Button>
+        <Button size="icon" aria-label="Tachado">S</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
+  });
+
+  it("[AC-4] spaced (attached=false) is WCAG AA clean in light + dark", async () => {
+    const { container } = render(
+      <ButtonGroup attached={false} aria-label="Ações">
+        <Button>Salvar</Button>
+        <Button variant="outline">Cancelar</Button>
+      </ButtonGroup>,
+    );
+    await axeInThemes(container);
   });
 });
