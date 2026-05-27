@@ -221,7 +221,7 @@ describe("<Skeleton />", () => {
 
   /* ── AC-3: regressão estrutural extra ─────────────────────── */
 
-  it("AC-3: cada variante expõe data-attribute previsível quando consumidor seta data-testid", () => {
+  it("AC-3: encaminha atributos adicionais (como data-testid) corretamente para todas as variantes", () => {
     const variants = ["text", "title", "rect", "circle"] as const;
     variants.forEach((v) => {
       const { unmount } = render(
