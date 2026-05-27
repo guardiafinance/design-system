@@ -258,8 +258,10 @@ describe("<Badge />", () => {
       );
       const btn = screen.getByRole("button", { name: /notificações/i });
       expect(btn).toBeInTheDocument();
-      // Badge content is part of the button's accessible name composition
-      // via its text node — confirm the visual text is present too.
+      // ARIA: aria-label="Notificações" replaces the button's child text
+      // in the accessible name computation. The visual count "3" still
+      // renders in the DOM (sighted users see it); accessible users hear
+      // the aria-label. Negative guard: assert the visual text is in DOM.
       expect(screen.getByText("3")).toBeInTheDocument();
     });
 
@@ -277,10 +279,12 @@ describe("<Badge />", () => {
 
     it("AC-3: dot ornament is aria-hidden (decorative, not announced)", () => {
       render(<Badge variant="success" dot>Em dia</Badge>);
-      // getByText resolves only the text node ("Em dia"); the dot span
-      // is hidden from the accessibility tree per aria-hidden="true".
-      const text = screen.getByText("Em dia");
-      const dot = text.parentElement?.querySelector("[aria-hidden='true']");
+      // getByText("Em dia") returns the Badge <span> itself (the closest
+      // element holding the text node). The dot ornament is a sibling
+      // span INSIDE the Badge, so we query directly on the badge.
+      // aria-hidden="true" keeps the dot out of the accessibility tree.
+      const badge = screen.getByText("Em dia");
+      const dot = badge.querySelector("[aria-hidden='true']");
       expect(dot).not.toBeNull();
     });
 
@@ -305,9 +309,11 @@ describe("<Badge />", () => {
       await axeInThemes(container);
     });
 
-    it("AC-4: primary interactive state (Badge inside <button>) is WCAG AA clean in light + dark", async () => {
+    it("AC-4: primary interactive state (Badge inside <button data-state='open'>) is WCAG AA clean in light + dark", async () => {
+      // Per requirements AC-4.2: simulate real use in surfaces like
+      // dropdown/tab indicators with data-state="open" on the container.
       const { container } = render(
-        <button type="button" aria-label="Notificações pendentes">
+        <button type="button" data-state="open" aria-label="Notificações pendentes">
           <Badge variant="brand" appearance="solid">3 novos</Badge>
         </button>,
       );
