@@ -70,7 +70,7 @@ mcp:
   servers:
     - ahrena
     - github
-    # - notion
+    - notion
     # - figma
 
 # ─── Quality (Issue-Driven Workflow) ────────────────────────────
