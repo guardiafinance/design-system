@@ -57,13 +57,41 @@ make update SOURCE=../ahrena
 make clean
 ```
 
+### Preference-driven install
+
+The first install of `scripts/install.py` materializes `.directives` from a preference selection. When stdin is a TTY and `--non-interactive` is not passed, the installer prompts the user to toggle every MCP, hook, and optional feature (pre-checked = Full default). For non-interactive runs (CI, scripts), pick a profile and adjust:
+
+```powershell
+# Discover the catalog (MCPs, hooks, optional features)
+python scripts/install.py --list-catalog
+
+# Full default (no flag, no prompt): every MCP, every hook, every optional feature
+python scripts/install.py --self --target . --platform claude-code --non-interactive
+
+# Minimal profile (ahrena MCP + rtk hook only)
+python scripts/install.py --self --target . --platform claude-code --non-interactive --profile=minimal
+
+# Full minus selected MCPs
+python scripts/install.py --self --target . --platform claude-code --non-interactive --profile=full --without-mcp=notion,figma
+
+# Standard profile plus the default CODEOWNERS bootstrap (resolves org from `git remote get-url origin`)
+python scripts/install.py --self --target . --platform claude-code --non-interactive --profile=standard --with-setup=github-codeowners
+
+# Full minus the .gitignore merge (project already manages its own .gitignore)
+python scripts/install.py --self --target . --platform claude-code --non-interactive --profile=full --without-setup=gitignore-merge
+```
+
+Resolution order: explicit `--with-*` / `--without-*` overrides `--profile`, which overrides Full default. The `ahrena` MCP is always kept (framework's own server). Existing `.directives` files are preserved on re-install.
+
+The project setup dimension (`--with-setup` / `--without-setup`) materializes `.github/ISSUE_TEMPLATE/*.yml`, `.github/pull_request_template.md`, `.github/CODEOWNERS` (skipped when the file already exists), and merges a managed block into `.gitignore` between `AHRENA-GITIGNORE` markers (idempotent). Profile defaults: Full ships all four; Standard ships three (no auto-CODEOWNERS, since the org guess from `git remote` is fragile in solo or fork repos); Minimal ships none.
+
 ### Equivalence without Make (Windows)
 
 When `make` is not available (e.g. PowerShell on Windows), run the scripts directly:
 
 **Remote installation:**
 ```powershell
-python .ahrena/install.py --target . --version main --repo https://github.com/guardiafinance/ahrena --platform cursor
+python .ahrena/install.py --target . --version main --repo https://github.com/guardiatechnology/ahrena --platform cursor
 ```
 
 **Local installation (in the Ahrena repo):**
@@ -90,7 +118,7 @@ python .ahrena/update.py --target . --source C:\path\to\ahrena
 
 **Bootstrap (first install):** download the installer from GitHub and run it; in PowerShell, for example:
 ```powershell
-Invoke-WebRequest https://github.com/guardiafinance/ahrena/releases/latest/download/install.py -OutFile install.py; python install.py --platform cursor; Remove-Item install.py
+Invoke-WebRequest https://github.com/guardiatechnology/ahrena/releases/latest/download/install.py -OutFile install.py; python install.py --platform cursor; Remove-Item install.py
 ```
 
 **Sync-cursor (regenerate .cursor/):**
