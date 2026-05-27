@@ -13,7 +13,7 @@ const IsacAvatar = () => (
 const YouAvatar = () => (
   <ChatMessage.Avatar>
     <Avatar size="sm">
-      <AvatarFallback color="orange">FS</AvatarFallback>
+      <AvatarFallback color="gray">FS</AvatarFallback>
     </Avatar>
   </ChatMessage.Avatar>
 );
