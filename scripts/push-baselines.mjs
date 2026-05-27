@@ -49,8 +49,15 @@ async function gh(method, endpoint, body) {
   return res.json();
 }
 
-// 1. List PNG changes (added, modified, deleted) under __image_snapshots__/
-const diff = execSync("git status --porcelain __image_snapshots__/", {
+// 1. List PNG changes (added, modified, deleted) under __image_snapshots__/.
+// `-uall` (--untracked-files=all) is required so that brand-new directories
+// (first-time baselines for a component, e.g. `components/slider/`) are
+// expanded into individual files instead of being collapsed into a single
+// directory entry (`?? __image_snapshots__/components/slider/`), which the
+// `.endsWith(".png")` filter below would drop. Without `-uall`, the first
+// regenerate run for any new component reports "No baseline changes to
+// push" despite having written PNGs to disk.
+const diff = execSync("git status --porcelain -uall __image_snapshots__/", {
   encoding: "utf-8",
 });
 const changed = diff
