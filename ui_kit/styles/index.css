@@ -714,3 +714,190 @@ body {
   background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.6) 100%);
   border: 1px solid hsl(var(--muted-foreground) / 0.2);
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SLIDER (`<input type="range">`)
+ *
+ * Wrapper React `<Slider>` aplica a classe base `.guardia-slider` + variantes
+ * `--sm` / `--md` / `--invalid` / `--disabled`. O preenchimento do track usa
+ * a custom prop `--pct` (0–100%) atualizada pelo wrapper via `style`.
+ *
+ * Pseudo-elementos `::-webkit-slider-thumb` e `::-moz-range-thumb` não podem
+ * ser estilizados via utility classes do Tailwind — é restrição do DOM. Daí
+ * o bloco global aqui, em vez de classes inline no componente.
+ *
+ * Cores: somente tokens semânticos (`--action`, `--ring`, `--destructive`,
+ * `--border`, `--muted`, `--fg-muted`). Zero literais hex.
+ * ──────────────────────────────────────────────────────────────────────── */
+.guardia-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+  /* Default fallback caso o wrapper não tenha computado ainda. */
+  --pct: 0%;
+  /* Reset margin para alinhamento limpo dentro do flex wrapper. */
+  margin: 0;
+  padding: 0;
+}
+
+.guardia-slider:focus {
+  outline: none;
+}
+
+/* ─── Sizes ─── */
+.guardia-slider--sm {
+  height: 18px;
+}
+.guardia-slider--md {
+  height: 22px;
+}
+
+/* ─── Track (WebKit / Chrome / Safari / Edge) ─── */
+.guardia-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    hsl(var(--action)) 0%,
+    hsl(var(--action)) var(--pct),
+    hsl(var(--muted)) var(--pct),
+    hsl(var(--muted)) 100%
+  );
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+}
+.guardia-slider--sm::-webkit-slider-runnable-track {
+  height: 4px;
+}
+.guardia-slider--md::-webkit-slider-runnable-track {
+  height: 6px;
+}
+
+/* ─── Track + progress (Firefox) ─── */
+.guardia-slider::-moz-range-track {
+  width: 100%;
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+}
+.guardia-slider::-moz-range-progress {
+  background: hsl(var(--action));
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--action));
+}
+.guardia-slider--sm::-moz-range-track,
+.guardia-slider--sm::-moz-range-progress {
+  height: 4px;
+}
+.guardia-slider--md::-moz-range-track,
+.guardia-slider--md::-moz-range-progress {
+  height: 6px;
+}
+
+/* ─── Thumb (WebKit) ─── */
+.guardia-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 9999px;
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--action));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+.guardia-slider--sm::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -6px; /* center vs. 4px track */
+}
+.guardia-slider--md::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -7px; /* center vs. 6px track */
+}
+
+/* ─── Thumb (Firefox) ─── */
+.guardia-slider::-moz-range-thumb {
+  border-radius: 9999px;
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--action));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+.guardia-slider--sm::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+}
+.guardia-slider--md::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+}
+
+/* ─── Hover (não disabled) ─── */
+.guardia-slider:hover:not(:disabled)::-webkit-slider-thumb {
+  border-color: hsl(var(--action-hover));
+  transform: scale(1.05);
+}
+.guardia-slider:hover:not(:disabled)::-moz-range-thumb {
+  border-color: hsl(var(--action-hover));
+  transform: scale(1.05);
+}
+
+/* ─── Focus visible (anel laranja com offset) ─── */
+.guardia-slider:focus-visible::-webkit-slider-thumb {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+}
+.guardia-slider:focus-visible::-moz-range-thumb {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+}
+
+/* ─── Invalid (vermelho) ─── */
+.guardia-slider--invalid::-webkit-slider-thumb {
+  border-color: hsl(var(--destructive));
+}
+.guardia-slider--invalid:hover:not(:disabled)::-webkit-slider-thumb {
+  border-color: hsl(var(--destructive));
+}
+.guardia-slider--invalid::-moz-range-thumb {
+  border-color: hsl(var(--destructive));
+}
+.guardia-slider--invalid:hover:not(:disabled)::-moz-range-thumb {
+  border-color: hsl(var(--destructive));
+}
+.guardia-slider--invalid::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    hsl(var(--destructive)) 0%,
+    hsl(var(--destructive)) var(--pct),
+    hsl(var(--muted)) var(--pct),
+    hsl(var(--muted)) 100%
+  );
+}
+.guardia-slider--invalid::-moz-range-progress {
+  background: hsl(var(--destructive));
+  border-color: hsl(var(--destructive));
+}
+
+/* ─── Disabled ─── */
+.guardia-slider--disabled,
+.guardia-slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.guardia-slider:disabled::-webkit-slider-thumb {
+  border-color: hsl(var(--border));
+  transform: none;
+}
+.guardia-slider:disabled::-moz-range-thumb {
+  border-color: hsl(var(--border));
+  transform: none;
+}
+.guardia-slider:disabled::-webkit-slider-runnable-track {
+  background: hsl(var(--muted));
+}
+.guardia-slider:disabled::-moz-range-progress {
+  background: hsl(var(--muted));
+  border-color: hsl(var(--border));
+}

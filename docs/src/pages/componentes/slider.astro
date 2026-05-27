@@ -1,0 +1,259 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SizesRow,
+  ControlledRow,
+  FormatPrefixSuffixRow,
+  InvalidRow,
+  DisabledRow,
+} from "../../previews/slider";
+import { LiveSliderSnippet } from "../../previews/slider-live";
+import sliderSource from "@ds/components/slider/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Slider"
+  group="Forms"
+  storybookId="components-slider--default"
+  sourcePath="ui_kit/components/slider"
+  lede='Faixa numérica contínua. Wrapper do <code class="inline">&lt;input type="range"&gt;</code> nativo com variantes <code class="inline">size</code>, estados <code class="inline">invalid</code> / <code class="inline">disabled</code> e readout opcional via <code class="inline">format</code> / <code class="inline">prefix</code> / <code class="inline">suffix</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>track preenchido via <code class="inline">--pct</code></small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">aria-label</code> ou
+      <code class="inline">aria-labelledby</code> sempre — o leitor de tela
+      anuncia o valor, o mínimo e o máximo automaticamente (ARIA nativa do
+      <code class="inline">&lt;input type="range"&gt;</code>).
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm (track 4px · thumb 14px) · md (track 6px · thumb 18px, default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ CONTROLLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Controlled</h2>
+      <small><code class="inline">value</code> + <code class="inline">onValueChange</code></small>
+    </div>
+    <div class="preview">
+      <ControlledRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando <code class="inline">value</code> é passado, o componente vira
+      controlled — <code class="inline">onValueChange</code> recebe o novo
+      número (já convertido de string para number). Sem
+      <code class="inline">value</code>, use
+      <code class="inline">defaultValue</code> para uncontrolled.
+    </p>
+  </section>
+
+  <!-- ============ FORMAT / PREFIX / SUFFIX ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Formato do readout</h2>
+      <small>format · prefix · suffix</small>
+    </div>
+    <div class="preview">
+      <FormatPrefixSuffixRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">showValue</code> habilita o readout numérico ao
+      lado do track; <code class="inline">format(v)</code> reformata o valor
+      cru antes de aplicar <code class="inline">prefix</code> /
+      <code class="inline">suffix</code>.
+    </p>
+  </section>
+
+  <!-- ============ INVALID ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Invalid</h2>
+      <small>aria-invalid="true" + variant vermelho</small>
+    </div>
+    <div class="preview">
+      <InvalidRow client:load />
+    </div>
+    <p class="preview-caption">
+      Combine sempre <code class="inline">invalid</code> com mensagem inline
+      explicando o erro — o vermelho sozinho não é acessível.
+    </p>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Disabled</h2>
+      <small>cursor-not-allowed · opacity 55%</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSliderSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Tamanho do track + thumb (4/14px ou 6/18px).</td>
+          </tr>
+          <tr>
+            <td class="name">value</td>
+            <td class="type">number</td>
+            <td class="default">—</td>
+            <td class="desc">Valor controlado. Quando passado, vira controlled.</td>
+          </tr>
+          <tr>
+            <td class="name">defaultValue</td>
+            <td class="type">number</td>
+            <td class="default"><code class="inline">min</code></td>
+            <td class="desc">Valor inicial uncontrolled. Ignorado quando <code class="inline">value</code> é passado.</td>
+          </tr>
+          <tr>
+            <td class="name">onValueChange</td>
+            <td class="type">(value: number) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback com o novo número (já convertido).</td>
+          </tr>
+          <tr>
+            <td class="name">onChange</td>
+            <td class="type">ChangeEventHandler&lt;HTMLInputElement&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Callback nativo. Dispara em paralelo a <code class="inline">onValueChange</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">min</td>
+            <td class="type">number</td>
+            <td class="default">0</td>
+            <td class="desc">Mínimo da faixa.</td>
+          </tr>
+          <tr>
+            <td class="name">max</td>
+            <td class="type">number</td>
+            <td class="default">100</td>
+            <td class="desc">Máximo da faixa.</td>
+          </tr>
+          <tr>
+            <td class="name">step</td>
+            <td class="type">number</td>
+            <td class="default">1</td>
+            <td class="desc">Incremento por seta / click.</td>
+          </tr>
+          <tr>
+            <td class="name">showValue</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Renderiza readout numérico ao lado do track.</td>
+          </tr>
+          <tr>
+            <td class="name">prefix</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Texto antes do valor (apenas com <code class="inline">showValue</code>).</td>
+          </tr>
+          <tr>
+            <td class="name">suffix</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Texto depois do valor (apenas com <code class="inline">showValue</code>).</td>
+          </tr>
+          <tr>
+            <td class="name">format</td>
+            <td class="type">(value: number) =&gt; string</td>
+            <td class="default"><code class="inline">String(v)</code></td>
+            <td class="desc">Formatador do valor. Aplicado antes de prefix/suffix.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Variant vermelho + <code class="inline">aria-invalid="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita interação e aplica variant cinza.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita todos os props nativos de <code class="inline">&lt;input type="range"&gt;</code>
+      (exceto <code class="inline">type</code> / <code class="inline">size</code>).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/slider/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={sliderSource}
+      language="tsx"
+      filename="ui_kit/components/slider/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b><code class="inline">&lt;input type="range"&gt;</code></b> nativo carrega <code class="inline">role="slider"</code>, <code class="inline">aria-valuenow</code>, <code class="inline">aria-valuemin</code> e <code class="inline">aria-valuemax</code> automaticamente — não reimplementamos em ARIA manual.</span></li>
+        <li><span><b>Setas</b> ←/→/↑/↓ ajustam por <code class="inline">step</code>; <b>Home/End</b> levam para <code class="inline">min</code>/<code class="inline">max</code>; <b>PageUp/PageDown</b> ajustam em ~10% (default do browser).</span></li>
+        <li><span><b>Focus-visible</b>: anel laranja (<code class="inline">--ring</code>) com offset, visível tanto em mouse-tab quanto em keyboard.</span></li>
+        <li><span><b>Invalid</b> aplica <code class="inline">aria-invalid="true"</code> + track + thumb vermelhos. Acompanhe sempre de mensagem inline.</span></li>
+        <li><span><b>Disabled</b> bloqueia teclado e mouse, com <code class="inline">opacity 55%</code> e <code class="inline">cursor: not-allowed</code>.</span></li>
+        <li><span><b>Contraste</b>: track e thumb usam <code class="inline">--action</code> (laranja 500) que atende AA contra fundos light e dark — mesmos tokens do resto do DS.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
