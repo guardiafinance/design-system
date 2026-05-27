@@ -137,6 +137,26 @@ describe("AgentCard", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("AC-3 — Enter em filho focável (botão no Footer) NÃO sequestra o onClick do card", () => {
+    const onCardClick = vi.fn();
+    const onChildClick = vi.fn();
+    render(
+      <AgentCard interactive onClick={onCardClick}>
+        <AgentCard.Footer>
+          <button type="button" onClick={onChildClick}>
+            Reativar
+          </button>
+        </AgentCard.Footer>
+      </AgentCard>,
+    );
+    // Enter pressionado NO botão filho borbulha até a raiz; o card não deve
+    // sintetizar seu próprio click (event.target !== event.currentTarget).
+    fireEvent.keyDown(screen.getByRole("button", { name: "Reativar" }), {
+      key: "Enter",
+    });
+    expect(onCardClick).not.toHaveBeenCalled();
+  });
+
   it("AC-3 — sem `interactive`, Enter/Espaço NÃO disparam onClick", () => {
     const onClick = vi.fn();
     render(

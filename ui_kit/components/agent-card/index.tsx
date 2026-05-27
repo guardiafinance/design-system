@@ -170,6 +170,10 @@ const AgentCardRoot = React.forwardRef<HTMLElement, AgentCardProps>(
     const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
       onKeyDown?.(event);
       if (!isInteractive || event.defaultPrevented) return;
+      // WHY: só ativa quando a tecla foi pressionada na própria raiz. Sem
+      // isso, Enter/Espaço em um filho focável (ex.: botão no Footer) borbulha
+      // até aqui e teria seu comportamento sequestrado pelo click sintético.
+      if (event.target !== event.currentTarget) return;
       // WHY: <article>/<div> não têm ativação nativa por teclado como <button>.
       // Enter/Espaço sintetizam o click para paridade com mouse + a11y.
       if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
@@ -247,7 +251,7 @@ const AgentCardAvatar = React.forwardRef<HTMLSpanElement, AgentCardAvatarProps>(
       >
         <Avatar size={size}>
           {src ? <AvatarImage src={src} alt={alt ?? name ?? ""} /> : null}
-          <AvatarFallback>{initials(name)}</AvatarFallback>
+          <AvatarFallback>{initials(name ?? "")}</AvatarFallback>
         </Avatar>
         {!hideStatusDot && (
           <span
@@ -365,16 +369,22 @@ const AgentCardCapabilities = React.forwardRef<
 AgentCardCapabilities.displayName = "AgentCardCapabilities";
 
 export interface AgentCardCapabilityProps
-  extends Omit<BadgeProps, "children"> {
+  extends Omit<React.LiHTMLAttributes<HTMLLIElement>, "color"> {
   children: React.ReactNode;
+  /** Variant do Badge interno. Default `neutral`. */
+  variant?: BadgeProps["variant"];
+  /** Appearance do Badge interno. Default `soft`. */
+  appearance?: BadgeProps["appearance"];
 }
 
 const AgentCardCapability = React.forwardRef<
   HTMLLIElement,
   AgentCardCapabilityProps
->(({ children, variant = "neutral", appearance = "soft", ...rest }, ref) => (
-  <li ref={ref} data-slot="agent-card-capability">
-    <Badge variant={variant} appearance={appearance} {...rest}>
+>(({ children, variant = "neutral", appearance = "soft", ...props }, ref) => (
+  // WHY: atributos HTML padrão (className, style, eventos) vão para o <li>
+  // (o item da lista); `variant`/`appearance` customizam o Badge interno.
+  <li ref={ref} data-slot="agent-card-capability" {...props}>
+    <Badge variant={variant} appearance={appearance}>
       {children}
     </Badge>
   </li>
