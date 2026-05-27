@@ -158,11 +158,17 @@ const chatBubbleVariants = cva(
   ].join(" "),
   {
     variants: {
+      // WHY: paleta escolhida para contraste WCAG AA de TEXTO DE CORPO em
+      // light + dark (axe roda no browser real). `bg-secondary` é violeta no
+      // light / gray-700 no dark — branco sobre ambos passa AA. `bg-primary`
+      // (laranja) só atinge 3.16:1 com branco no light, faixa reservada a
+      // botões/badges por lex-brand-colors — inadequada para corpo. `system`
+      // usa o par neutro muted/muted-foreground (AA nos dois temas).
       variant: {
-        user: "max-w-[80%] rounded-br-sm bg-primary text-primary-foreground",
+        user: "max-w-[80%] rounded-br-sm bg-secondary text-secondary-foreground",
         assistant: "max-w-[80%] rounded-bl-sm bg-muted text-foreground",
         system:
-          "max-w-full rounded-xl bg-accent px-3 py-1.5 text-center text-xs text-accent-foreground",
+          "max-w-full rounded-xl bg-muted px-3 py-1.5 text-center text-xs text-muted-foreground",
       },
     },
     defaultVariants: {
@@ -233,7 +239,10 @@ const ChatMessageTime = React.forwardRef<HTMLTimeElement, ChatMessageTimeProps>(
       ref={ref}
       data-slot="chat-message-time"
       dateTime={dateTime}
-      className={cn("text-xs leading-none opacity-70", className)}
+      // WHY: sem opacity — a redução de opacidade derrubava o contraste do
+      // timestamp abaixo de AA (axe no browser real). A hierarquia visual
+      // vem do tamanho (text-xs) e do peso (author é font-semibold).
+      className={cn("text-xs leading-none", className)}
       {...props}
     />
   ),

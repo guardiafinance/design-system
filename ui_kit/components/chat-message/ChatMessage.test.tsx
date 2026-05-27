@@ -171,16 +171,16 @@ describe("<ChatMessageBubble /> — palette by role (AC-2)", () => {
     expect(b).toHaveClass("text-foreground");
   });
 
-  it("user → bg-primary + text-primary-foreground", () => {
+  it("user → bg-secondary + text-secondary-foreground (AA body contrast)", () => {
     const b = bubbleFor("user");
-    expect(b).toHaveClass("bg-primary");
-    expect(b).toHaveClass("text-primary-foreground");
+    expect(b).toHaveClass("bg-secondary");
+    expect(b).toHaveClass("text-secondary-foreground");
   });
 
-  it("system → bg-accent + text-accent-foreground", () => {
+  it("system → bg-muted + text-muted-foreground (AA neutral notice)", () => {
     const b = bubbleFor("system");
-    expect(b).toHaveClass("bg-accent");
-    expect(b).toHaveClass("text-accent-foreground");
+    expect(b).toHaveClass("bg-muted");
+    expect(b).toHaveClass("text-muted-foreground");
   });
 
   it("uses semantic tokens only — no hex/rgb leaked into className", () => {

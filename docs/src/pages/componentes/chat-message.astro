@@ -41,10 +41,11 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
       <Roles client:load />
     </div>
     <p class="preview-caption">
-      <b>user</b> ancora à direita com <code class="inline">bg-primary</code>;
+      <b>user</b> ancora à direita com <code class="inline">bg-secondary</code>;
       <b>assistant</b> à esquerda com <code class="inline">bg-muted</code>;
       <b>system</b> centraliza como nota neutra com
-      <code class="inline">bg-accent</code>. O consumer envolve os turnos em um
+      <code class="inline">bg-muted</code> + <code class="inline">text-muted-foreground</code>.
+      O consumer envolve os turnos em um
       container rolável <code class="inline">role="log"</code> — use
       <code class="inline">as="li"</code> quando o log for uma
       <code class="inline">&lt;ul&gt;</code>.
@@ -174,7 +175,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
         <li><span><b>ChatMessage.Actions</b> mantém affordances operáveis por teclado, sem trap de foco.</span></li>
         <li><span>O consumer envolve os turnos em <code class="inline">role="log"</code> — use <code class="inline">as="li"</code> para preservar a semântica de lista.</span></li>
         <li><span>Contraste validado em <b>light + dark</b> via <code class="inline">jest-axe</code> em cinco estados (assistant · user · system · streaming · error).</span></li>
-        <li><span>Tokens <code class="inline">primary</code>/<code class="inline">muted</code>/<code class="inline">accent</code>/<code class="inline">destructive</code> trocam por tema — zero cor hardcoded.</span></li>
+        <li><span>Tokens <code class="inline">secondary</code>/<code class="inline">muted</code>/<code class="inline">destructive</code> trocam por tema — zero cor hardcoded; contraste de corpo AA garantido (sem laranja em texto de corpo).</span></li>
       </ul>
     </div>
   </section>
