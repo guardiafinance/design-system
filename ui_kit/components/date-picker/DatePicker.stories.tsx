@@ -96,3 +96,61 @@ export const NoToday: Story = {
 export const NotClearable: Story = {
   args: { defaultValue: new Date(), clearable: false },
 };
+
+/**
+ * Renders the popover open by default so the docs preview captures the
+ * calendar grid surface — selected day, today indicator, month nav, "Hoje"
+ * footer. The standard stories above can be opened via the toolbar at
+ * runtime; this dedicated story makes the open state reviewable without
+ * interaction (parallel to Combobox/Select OpenInDialog precedent).
+ */
+export const OpenInDialog: Story = {
+  args: {
+    defaultValue: new Date(2026, 4, 15),
+    open: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Dialog aberto com data selecionada para revisão do grid de dias, indicador 'hoje', navegação de mês e rodapé 'Hoje'. Útil para validar o estado visual do popover em light + dark sem precisar interagir.",
+      },
+    },
+  },
+};
+
+/**
+ * Forces dark theme regardless of the global toolbar toggle. Serves as a
+ * visual contract: DatePicker preserves WCAG AA on `bg-action` (selected
+ * day), `text-action` (today indicator, "Hoje" button), and the trigger
+ * border/ring tokens over the Mono Black (#0E1016) surface declared in
+ * lex-brand-colors.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz de sizes + estados (default / com valor / invalid / disabled / aberto) sobre fundo escuro. Tokens `bg-action`, `text-button-fg`, `border-action`, `text-action` mantêm contraste >= 4.5:1 (texto) / >= 3:1 (UI) conforme `lex-brand-colors`.",
+      },
+    },
+  },
+  decorators: undefined,
+  render: () => (
+    <div className="flex w-72 flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <DatePicker size="sm" placeholder="Small" />
+        <DatePicker size="md" placeholder="Medium (default)" />
+        <DatePicker size="lg" placeholder="Large" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <DatePicker defaultValue={new Date(2026, 4, 15)} />
+        <DatePicker invalid placeholder="Data obrigatória" />
+        <DatePicker disabled defaultValue={new Date(2026, 4, 15)} />
+      </div>
+      <DatePicker defaultValue={new Date(2026, 4, 15)} open />
+    </div>
+  ),
+};
