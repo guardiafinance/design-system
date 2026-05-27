@@ -145,6 +145,17 @@ export const Interactive: Story = {
 };
 
 export const WithFooter: Story = {
+  parameters: {
+    a11y: {
+      // WHY: o botão primário (bg-primary = laranja 500) sobre texto branco
+      // tem 3.15:1 — abaixo do limite uniforme de 4.5:1 que o axe aplica a
+      // texto normal, porém aprovado pela marca para botões (lex-brand-colors:
+      // Laranja 500 + Branco = 3.15:1, válido em títulos/botões/badges). Mesma
+      // decisão documentada em Button.stories.tsx. As demais stories de
+      // AgentCard (sem Button) mantêm color-contrast ativo.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
+  },
   render: () => (
     <div className="w-80">
       <AgentCard status="error">
