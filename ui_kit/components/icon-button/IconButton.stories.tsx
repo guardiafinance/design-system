@@ -160,3 +160,91 @@ export const Formatting: Story = {
     </div>
   ),
 };
+
+/**
+ * Força a story para o tema escuro independentemente do toggle global da
+ * toolbar. Serve como contrato visual: o IconButton mantém WCAG AA das
+ * 5 variantes × 3 tamanhos × 2 shapes sobre fundo Mono Black (#0E1016 /
+ * Cinza 900 #17171B) declarado em lex-brand-colors.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz variants × sizes × shapes + estados loading/disabled sobre fundo escuro. Ghost (default) e outline usam tokens brand-aware (`bg-bg-hover`, `text-action-hover`, `border-action`); default/secondary/destructive mantêm contraste ≥ 4.5:1 com o ícone em dark mode conforme tokens de marca.",
+      },
+    },
+  },
+  render: () => (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-wrap items-center gap-2">
+        {(
+          ["default", "secondary", "destructive", "outline", "ghost"] as const
+        ).map((variant) => (
+          <IconButton key={variant} aria-label={variant} variant={variant}>
+            <Settings />
+          </IconButton>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-end gap-2">
+        {(["sm", "md", "lg"] as const).map((size) => (
+          <IconButton
+            key={size}
+            aria-label={`Search ${size}`}
+            size={size}
+            variant="default"
+          >
+            <Search />
+          </IconButton>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {(["square", "circle"] as const).map((shape) => (
+          <IconButton
+            key={shape}
+            aria-label={`Heart ${shape}`}
+            shape={shape}
+            variant="secondary"
+          >
+            <Heart />
+          </IconButton>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <IconButton aria-label="Salvando" loading variant="default">
+          <Plus />
+        </IconButton>
+        <IconButton aria-label="Desabilitado" disabled variant="default">
+          <Settings />
+        </IconButton>
+        <IconButton aria-label="Ghost loading" loading variant="ghost">
+          <Plus />
+        </IconButton>
+        <IconButton aria-label="Outline disabled" disabled variant="outline">
+          <Settings />
+        </IconButton>
+      </div>
+      <div
+        role="toolbar"
+        aria-label="Ações compactas em dark"
+        className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1"
+      >
+        <IconButton aria-label="Editar" size="sm">
+          <Pencil />
+        </IconButton>
+        <IconButton aria-label="Copiar" size="sm">
+          <Copy />
+        </IconButton>
+        <IconButton aria-label="Excluir" size="sm" variant="destructive">
+          <Trash2 />
+        </IconButton>
+        <IconButton aria-label="Mais ações" size="sm">
+          <MoreVertical />
+        </IconButton>
+      </div>
+    </div>
+  ),
+};
