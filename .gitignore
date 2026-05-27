@@ -17,6 +17,9 @@ storybook-static
 .worktrees/
 .plans/
 
+# Ahrena Issue-Driven flow scratchpad (canonical docs live under docs/issues/issue-{N}/)
+.ahrena/issues/
+
 # Astro generated cache
 docs/.astro/
 
