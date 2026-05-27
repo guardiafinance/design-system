@@ -235,4 +235,130 @@ describe("<Badge />", () => {
     expect(el).toHaveAttribute("data-variant", "success");
     expect(el).toHaveAttribute("data-appearance", "outline");
   });
+
+  // ──────────────────────────────────────────────────────────────────
+  // v0.1.0 DoD review (Plan #19) — close the gap for:
+  //   AC-3 (behavioral with accessible queries)
+  //   AC-4 (jest-axe in light + dark — Default, primary interactive
+  //         state, disabled-equivalent, dot/icons variants)
+  //
+  // WHY: Badge is a passive <span> primitive (no role/tabIndex/disabled
+  // of its own). Interactive semantics live in the container; tests
+  // cover the composite case (Badge inside <button>) because that
+  // mirrors real use (counters in buttons, status in menu items).
+  // See docs/issues/issue-19/03-architecture.md D-1.
+  // ──────────────────────────────────────────────────────────────────
+
+  describe("[AC-3] behavioral queries (accessible)", () => {
+    it("AC-3: Badge inside <button> is reachable via getByRole('button', { name })", () => {
+      render(
+        <button type="button" aria-label="Notificações">
+          <Badge variant="danger" appearance="solid">3</Badge>
+        </button>,
+      );
+      const btn = screen.getByRole("button", { name: /notificações/i });
+      expect(btn).toBeInTheDocument();
+      // ARIA: aria-label="Notificações" replaces the button's child text
+      // in the accessible name computation. The visual count "3" still
+      // renders in the DOM (sighted users see it); accessible users hear
+      // the aria-label. Negative guard: assert the visual text is in DOM.
+      expect(screen.getByText("3")).toBeInTheDocument();
+    });
+
+    it("AC-3: Badge inside <button> does NOT pollute the accessible tree (no extra role)", () => {
+      render(
+        <button type="button" aria-label="Status">
+          <Badge variant="success" dot>Em dia</Badge>
+        </button>,
+      );
+      // The container is the only interactive role; Badge itself MUST NOT
+      // expose role=button or any landmark role.
+      const buttons = screen.getAllByRole("button");
+      expect(buttons).toHaveLength(1);
+    });
+
+    it("AC-3: dot ornament is aria-hidden (decorative, not announced)", () => {
+      render(<Badge variant="success" dot>Em dia</Badge>);
+      // getByText("Em dia") returns the Badge <span> itself (the closest
+      // element holding the text node). The dot ornament is a sibling
+      // span INSIDE the Badge, so we query directly on the badge.
+      // aria-hidden="true" keeps the dot out of the accessibility tree.
+      const badge = screen.getByText("Em dia");
+      const dot = badge.querySelector("[aria-hidden='true']");
+      expect(dot).not.toBeNull();
+    });
+
+    it("AC-3: Badge inside <button disabled> propagates disabled to the interactive role", () => {
+      render(
+        <button type="button" disabled aria-label="Conciliar">
+          <Badge variant="brand" appearance="solid">12</Badge>
+        </button>,
+      );
+      const btn = screen.getByRole("button", { name: /conciliar/i });
+      expect(btn).toBeDisabled();
+      // Badge itself MUST NOT carry a `disabled` attribute (it is a span).
+      const badge = screen.getByText("12");
+      expect(badge.tagName).toBe("SPAN");
+      expect(badge).not.toHaveAttribute("disabled");
+    });
+  });
+
+  describe("[AC-4] jest-axe in light + dark themes", () => {
+    it("AC-4: Default (soft + neutral + pill) is WCAG AA clean in light + dark", async () => {
+      const { container } = render(<Badge>Ativo</Badge>);
+      await axeInThemes(container);
+    });
+
+    it("AC-4: primary interactive state (Badge inside <button data-state='open'>) is WCAG AA clean in light + dark", async () => {
+      // Per requirements AC-4.2: simulate real use in surfaces like
+      // dropdown/tab indicators with data-state="open" on the container.
+      const { container } = render(
+        <button type="button" data-state="open" aria-label="Notificações pendentes">
+          <Badge variant="brand" appearance="solid">3 novos</Badge>
+        </button>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-4: disabled-equivalent (Badge inside <button disabled>) is WCAG AA clean in light + dark", async () => {
+      const { container } = render(
+        <button type="button" disabled aria-label="Conciliar 12 itens">
+          <Badge variant="neutral" appearance="solid">12</Badge>
+        </button>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-4: WithDot variants are WCAG AA clean in light + dark", async () => {
+      const { container } = render(
+        <div>
+          <Badge variant="success" dot>Em dia</Badge>
+          <Badge variant="warning" dot>Pendente</Badge>
+          <Badge variant="danger" dot>Atrasado</Badge>
+          <Badge variant="info" dot>Em análise</Badge>
+        </div>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("AC-4: WithIcons variants are WCAG AA clean in light + dark", async () => {
+      const { container } = render(
+        <div>
+          <Badge
+            variant="brand"
+            leadingIcon={<span data-testid="lead" aria-hidden="true">★</span>}
+          >
+            Novo
+          </Badge>
+          <Badge
+            variant="info"
+            trailingIcon={<span data-testid="trail" aria-hidden="true">●</span>}
+          >
+            Ao vivo
+          </Badge>
+        </div>,
+      );
+      await axeInThemes(container);
+    });
+  });
 });
