@@ -1,0 +1,226 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  StatusesRow,
+  VariantsRow,
+  WithImageRow,
+  InteractiveRow,
+  FooterRow,
+} from "../../previews/agent-card";
+import { LiveAgentCardSnippet } from "../../previews/agent-card-live";
+import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · DADOS & CONTEÚDO"
+  title="AgentCard"
+  group="Dados & conteúdo"
+  storybookId="components-agentcard--default"
+  sourcePath="ui_kit/components/agent-card"
+  lede='Cartão de identidade de um agente de IA. Reúne <b>identidade</b> (avatar, nome, papel), <b>status operacional</b> (<code class="inline">idle · working · active · paused · error · offline</code>) e <b>capabilities</b>, no padrão composto do <code class="inline">Card</code>. Apenas tokens semânticos; o status usa as cores de sinal da marca.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>identidade + status + capabilities</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      O <code class="inline">status</code> da raiz cascateia para
+      <code class="inline">AgentCard.Status</code> (badge com rótulo) e para o
+      ponto decorativo do <code class="inline">AgentCard.Avatar</code>.
+    </p>
+  </section>
+
+  <!-- ============ STATUSES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Status</h2>
+      <small>idle · working · active · paused · error · offline</small>
+    </div>
+    <div class="preview">
+      <StatusesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O estado é comunicado por <b>cor + texto</b> (nunca cor sozinha): o badge
+      anuncia o rótulo via <code class="inline">role="status"</code>; o ponto no
+      avatar é decorativo (<code class="inline">aria-hidden</code>). As cores
+      seguem a convenção de sinal da marca — verde positivo, amarelo atenção,
+      vermelho exceção, laranja em movimento.
+    </p>
+  </section>
+
+  <!-- ============ VARIANTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>default · elevated · outlined</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ WITH IMAGE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com imagem</h2>
+      <small>avatar com src · fallback de iniciais</small>
+    </div>
+    <div class="preview">
+      <WithImageRow client:load />
+    </div>
+    <p class="preview-caption">
+      Com <code class="inline">src</code>, o avatar mostra a imagem; sem
+      <code class="inline">src</code>, recai nas iniciais derivadas de
+      <code class="inline">name</code>.
+    </p>
+  </section>
+
+  <!-- ============ INTERACTIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Interativo</h2>
+      <small>card inteiro clicável</small>
+    </div>
+    <div class="preview">
+      <InteractiveRow client:load />
+    </div>
+    <p class="preview-caption">
+      Com <code class="inline">interactive</code>, a raiz fica focável
+      (<code class="inline">tabindex=0</code>), ganha anel de foco e ativa
+      <code class="inline">onClick</code> por mouse, <b>Enter</b> e
+      <b>Espaço</b>. Forneça um <code class="inline">aria-label</code>
+      descritivo quando o card todo for a ação.
+    </p>
+  </section>
+
+  <!-- ============ FOOTER / ACTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ações</h2>
+      <small>AgentCard.Footer</small>
+    </div>
+    <div class="preview">
+      <FooterRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveAgentCardSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública (raiz + subcomponentes)</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">status</td>
+            <td class="type">AgentStatus</td>
+            <td class="default">"idle"</td>
+            <td class="desc">Estado operacional. Cascateia via contexto para Status e Avatar.</td>
+          </tr>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"default" | "elevated" | "outlined"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Superfície do card (shadow-sm / shadow-md / borda forte).</td>
+          </tr>
+          <tr>
+            <td class="name">interactive</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Foco visível + hover + ativação por Enter/Espaço (dispara onClick).</td>
+          </tr>
+          <tr>
+            <td class="name">as</td>
+            <td class="type">"article" | "section" | "div"</td>
+            <td class="default">"article"</td>
+            <td class="desc">Elemento semântico da raiz.</td>
+          </tr>
+          <tr>
+            <td class="name">AgentCard.Avatar</td>
+            <td class="type">{`{ name?, src?, alt?, size?, status?, hideStatusDot? }`}</td>
+            <td class="default">size "lg"</td>
+            <td class="desc">Avatar do agente + ponto de status decorativo.</td>
+          </tr>
+          <tr>
+            <td class="name">AgentCard.Name</td>
+            <td class="type">{`{ as?: "h1".."h6" }`}</td>
+            <td class="default">"h3"</td>
+            <td class="desc">Nome do agente (heading).</td>
+          </tr>
+          <tr>
+            <td class="name">AgentCard.Status</td>
+            <td class="type">{`{ status?, label?, ...BadgeProps }`}</td>
+            <td class="default">herda do root</td>
+            <td class="desc">Badge com role="status"; rótulo localizado por status.</td>
+          </tr>
+          <tr>
+            <td class="name">AgentCard.Capability</td>
+            <td class="type">{`{ ...BadgeProps }`}</td>
+            <td class="default">neutral / soft</td>
+            <td class="desc">Item de capability (li + Badge) dentro de AgentCard.Capabilities.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      A raiz aceita os atributos nativos de <code class="inline">&lt;article&gt;</code>
+      (incluindo <code class="inline">onClick</code> e
+      <code class="inline">aria-label</code>). Subcomponentes: Header, Avatar,
+      Name, Role, Status, Description, Capabilities, Capability, Footer.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/agent-card/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={agentCardSource}
+      language="tsx"
+      filename="ui_kit/components/agent-card/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span>A raiz é um <b><code class="inline">&lt;article&gt;</code></b> semântico (ou <code class="inline">section</code>/<code class="inline">div</code> via <code class="inline">as</code>).</span></li>
+        <li><span><b>Status por cor + texto</b>: o badge anuncia o rótulo via <code class="inline">role="status"</code>; o ponto colorido é decorativo (<code class="inline">aria-hidden</code>) — a cor nunca é o único indicador.</span></li>
+        <li><span><b>Capabilities</b> são uma lista (<code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;li&gt;</code>) navegável por leitor de tela.</span></li>
+        <li><span><b>Interativo</b>: a raiz fica focável (<code class="inline">tabindex=0</code>), com anel de foco visível, e ativa por <b>Enter</b>/<b>Espaço</b> além do clique. Use <code class="inline">aria-label</code> quando o card todo for a ação.</span></li>
+        <li><span><b>Heading configurável</b>: <code class="inline">AgentCard.Name</code> aceita <code class="inline">as</code> para respeitar a hierarquia da página.</span></li>
+        <li><span><b>Contraste</b>: status e superfícies usam tokens já validados em AA contra os fundos light e dark (badges de sinal + tokens <code class="inline">--card</code> / <code class="inline">--fg-muted</code>).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

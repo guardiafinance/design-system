@@ -1,4 +1,5 @@
 export * from "./accordion";
+export * from "./agent-card";
 export * from "./alert";
 export * from "./avatar";
 export * from "./alert-dialog";
