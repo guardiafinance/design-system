@@ -118,6 +118,98 @@ export const Standalone: Story = {
   ),
 };
 
+/**
+ * Força a story para o tema escuro independentemente do toggle global da
+ * toolbar. Serve como contrato visual: o Radio mantém WCAG AA dos estados
+ * (unchecked, checked, invalid, disabled) em ambos os tamanhos (sm, md)
+ * sobre fundo Mono Black (#0E1016) / Cinza 900 (#17171B) declarados em
+ * lex-brand-colors. Os tokens brand-aware (`bg-action`, `border-action`,
+ * `border-border-strong`, `text-fg`, `text-fg-muted`, `border-destructive`)
+ * preservam contraste sob `data-theme="dark"`, mesmo após a inversão do
+ * --primary do v0.1.0 (PR #226: Violet 500 em light, Orange 500 em dark).
+ *
+ * Todos os <Radio> e <RadioGroup> desta story carregam nome acessível
+ * explícito (prop `label` ou `aria-label` no grupo) — mitiga a armadilha
+ * Plan #208 (componentes sem rótulo na DarkTheme story disparam axe
+ * `label` rule violation).
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          'Matriz estados × tamanhos + composição com label/description + horizontal + invalid + disabled + fieldset/legend sobre fundo escuro. Confirma que `bg-action` / `border-action` mantêm contraste ≥ 3:1 (UI) sob `data-theme="dark"`, e que o anel de foco (`focus-visible:ring-ring`) e a borda padrão (`border-border-strong`) preservam visibilidade sobre Mono Black.',
+      },
+    },
+  },
+  render: () => (
+    <div className="flex flex-col gap-8">
+      <RadioGroup aria-label="Frequência md" defaultValue="daily">
+        <Radio
+          value="now"
+          label="Imediato (md)"
+          description="Recebe assim que acontece"
+        />
+        <Radio
+          value="daily"
+          label="Diário (md)"
+          description="Resumo no fim do dia"
+        />
+        <Radio
+          value="weekly"
+          label="Semanal (md)"
+          description="Resumo na sexta-feira"
+        />
+      </RadioGroup>
+
+      <RadioGroup aria-label="Frequência sm" defaultValue="a">
+        <Radio value="a" size="sm" label="Pequeno (sm)" description="13px label" />
+        <Radio value="b" size="sm" label="Pequeno (sm)" description="Box 16px" />
+      </RadioGroup>
+
+      <RadioGroup
+        aria-label="Período"
+        orientation="horizontal"
+        defaultValue="month"
+        gap={20}
+      >
+        <Radio value="day" label="Dia" />
+        <Radio value="week" label="Semana" />
+        <Radio value="month" label="Mês" />
+        <Radio value="year" label="Ano" />
+      </RadioGroup>
+
+      <RadioGroup aria-label="Opção inválida">
+        <Radio value="a" invalid label="Você precisa escolher uma opção" />
+        <Radio value="b" invalid label="Outra alternativa" />
+      </RadioGroup>
+
+      <RadioGroup aria-label="Disponibilidade" defaultValue="now">
+        <Radio value="now" label="Disponível agora" />
+        <Radio value="trial" label="Não disponível neste plano" disabled />
+        <Radio value="enterprise" label="Apenas Enterprise" disabled />
+      </RadioGroup>
+
+      <fieldset className="flex flex-col gap-3 rounded-md border border-border p-4">
+        <legend className="px-2 text-sm font-semibold">
+          Notificações (dark)
+        </legend>
+        <RadioGroup name="dark-notif" defaultValue="email">
+          <Radio
+            value="email"
+            label="Email"
+            description="Resumo diário e alertas críticos"
+          />
+          <Radio value="push" label="Push" description="Apenas alertas críticos" />
+          <Radio value="sms" label="SMS" description="Apenas para 2FA" disabled />
+        </RadioGroup>
+      </fieldset>
+    </div>
+  ),
+};
+
 export const InsideForm: Story = {
   parameters: {
     a11y: {
