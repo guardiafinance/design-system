@@ -56,12 +56,13 @@ const chatMessageVariants = cva("flex w-full items-start gap-2.5", {
   variants: {
     variant: {
       // WHY: usuário ancora à direita (flex-row-reverse empacota no fim →
-      // lado direito); agente e sistema na esquerda. O sistema se distingue
-      // visualmente pela bolha tracejada + paleta neutra, não por
-      // centralização (alinhado ao playground v0.1.0).
+      // lado direito); agente à esquerda; sistema centralizado como nota
+      // neutra do produto (separadores, mudança de contexto, eventos de
+      // sessão). A centralização + bolha tracejada + paleta neutra
+      // diferenciam o turno de sistema dos turnos conversacionais.
       user: "flex-row-reverse",
       assistant: "flex-row",
-      system: "flex-row",
+      system: "flex-row justify-center",
     },
   },
   defaultVariants: {
@@ -176,7 +177,7 @@ const chatBubbleVariants = cva(
         user: "bg-guardia-purple-500 text-white border-transparent",
         assistant: "bg-card text-card-foreground border-border",
         system:
-          "bg-muted text-muted-foreground border-dashed border-border text-xs",
+          "bg-muted text-muted-foreground border-dashed border-border text-center text-xs",
       },
     },
     defaultVariants: {

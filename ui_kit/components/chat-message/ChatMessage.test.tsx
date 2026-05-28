@@ -102,7 +102,7 @@ describe("<ChatMessage /> — role-driven rendering (AC-1)", () => {
     expect(root).toHaveClass("flex-row-reverse");
   });
 
-  it("role=system uses left-aligned row (distinction is the bubble's dashed border + muted palette)", () => {
+  it("role=system centers the message (system notes use a neutral centered bubble)", () => {
     render(
       <ChatMessage variant="system" data-testid="m">
         <ChatMessageBubble>sessão iniciada</ChatMessageBubble>
@@ -110,8 +110,7 @@ describe("<ChatMessage /> — role-driven rendering (AC-1)", () => {
     );
     const root = screen.getByTestId("m");
     expect(root).toHaveAttribute("data-variant", "system");
-    expect(root).toHaveClass("flex-row");
-    expect(root).not.toHaveClass("justify-center");
+    expect(root).toHaveClass("justify-center");
   });
 
   it("renders as <div> by default and respects `as` (li/article)", () => {
