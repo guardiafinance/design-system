@@ -6,8 +6,12 @@
 > originais (CVA `size`+`orientation`, aba ativa neutra de marca) foram
 > substituídas. Resumo do redirect:
 >
-> - API composta **preservada** (`Tabs / TabsList / TabsTrigger / TabsContent`)
->   conforme orientação do stakeholder.
+> - API: **padrão composto Radix-style** (`Tabs / TabsList / TabsTrigger / TabsContent`),
+>   alinhado com Select/Combobox/DatePicker/Switch do DS. A referência canônica
+>   em `ux_references/ui_kits/components/Tabs/` expunha `items: TabItemProps[]`
+>   (array prop) + namespace `Tabs.Item`; essa shape foi descartada em favor do
+>   padrão Radix-wrapper composto consistente com o resto do design-system —
+>   `items[]` programático teria sido outlier no catálogo.
 > - Três variantes visuais novas: `underline` (default), `pills`, `boxed` —
 >   variantes haviam sido marcadas out-of-scope no `02-requirements.md`
 >   original; agora são parte do escopo do Plan.
@@ -16,6 +20,11 @@
 >   horizontal).
 > - Nova subcomponente `TabsBadge` para pílulas de contagem dentro de
 >   `TabsTrigger`.
+> - `icon` **não é prop tipada** por item: a referência canônica expunha
+>   `icon?: string` em `TabItemProps` + render condicional via `(window as any).Icon`;
+>   o componente migrated suporta ícones por composição JSX
+>   (`<FileText className="h-4 w-4" /> Lançamentos` dentro do `TabsTrigger`),
+>   padrão consistente com Select/Combobox/DatePicker do DS.
 > - A aba ativa do `boxed` consome `bg-action` + `text-button-fg` — passa a
 >   tocar a divergência Plan #208 em dark mode, deliberadamente, em troca de
 >   consistência com Button/Combobox/DatePicker. Detalhe em D4.
