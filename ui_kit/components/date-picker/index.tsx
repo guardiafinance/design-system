@@ -210,18 +210,17 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
 
     /* viewMonth pivots on the currently-committed left endpoint of the range
        or the single selection; falls back to today otherwise. */
+    const pivotDate = isRangeMode(props) ? currentRange?.from : currentSingle;
+    const pivotKey = pivotDate ? pivotDate.getTime() : null;
     const [viewMonth, setViewMonth] = React.useState<Date>(
-      (isRangeMode(props) ? currentRange?.from : currentSingle) ?? new Date(),
+      pivotDate ?? new Date(),
     );
     React.useEffect(() => {
-      const pivot = isRangeMode(props)
-        ? currentRange?.from
-        : currentSingle;
-      if (pivot) setViewMonth(pivot);
+      if (pivotDate) setViewMonth(pivotDate);
+      /* WHY: pivotDate carries identity per render but pivotKey is the
+         stable numeric trigger we want to depend on. */
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    }, [
-      isRangeMode(props) ? currentRange?.from?.getTime() : currentSingle?.getTime(),
-    ]);
+    }, [pivotKey]);
 
     /* ------------------------------ commit -------------------------------*/
 
