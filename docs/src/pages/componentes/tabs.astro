@@ -1,0 +1,229 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  UnderlineRow,
+  PillsRow,
+  BoxedRow,
+  SizesRow,
+  DisabledRow,
+} from "../../previews/tabs";
+import { LiveTabsSnippet } from "../../previews/tabs-live";
+import tabsSource from "@ds/components/tabs/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVIGATION"
+  title="Tabs"
+  group="Navigation"
+  storybookId="components-tabs--default"
+  sourcePath="ui_kit/components/tabs"
+  lede='Alternância entre views dentro da mesma tela. Três variantes — <code class="inline">underline</code> (padrão, tabs de página), <code class="inline">pills</code> (filtros leves) e <code class="inline">boxed</code> (seções compactas). Tamanhos <code class="inline">sm</code> e <code class="inline">md</code>. API composta (<code class="inline">Tabs</code> / <code class="inline">TabsList</code> / <code class="inline">TabsTrigger</code> / <code class="inline">TabsContent</code> / <code class="inline">TabsBadge</code>) sobre Radix.'
+>
+  <!-- ============ UNDERLINE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Underline · tabs de página</h2>
+      <small>variant default · com ícones e badges</small>
+    </div>
+    <div class="preview">
+      <UnderlineRow client:load />
+    </div>
+    <p class="preview-caption">
+      A aba ativa pinta <code class="inline">text-action-hover</code> e ganha
+      um traço inferior em <code class="inline">border-action</code> — o
+      <code class="inline">border-b</code> da lista atua como guia visual sob
+      todos os triggers. Badges seguem o token chain
+      (<code class="inline">bg-bg-hover</code> / <code class="inline">text-action-hover</code> quando ativa).
+    </p>
+  </section>
+
+  <!-- ============ PILLS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Pills · filtros leves</h2>
+      <small>variant="pills" · track elevado em pílula</small>
+    </div>
+    <div class="preview">
+      <PillsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Track <code class="inline">bg-muted</code> com triggers
+      arredondados; o ativo recebe <code class="inline">bg-background</code> +
+      <code class="inline">shadow-sm</code>. Indicado para filtros
+      (períodos, escopos) dentro de uma página.
+    </p>
+  </section>
+
+  <!-- ============ BOXED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Boxed · seções compactas</h2>
+      <small>variant="boxed" · cards individuais</small>
+    </div>
+    <div class="preview">
+      <BoxedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cada trigger é um card individual com borda. A aba ativa usa
+      <code class="inline">bg-action</code> + <code class="inline">text-button-fg</code>
+      (violet/white em light, orange/mono-black em dark — pareado com o token
+      chain global, Plan #208 corrige a inversão quando entregue). Indicado para
+      seções compactas (seletores de formato, abas de exemplo).
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm · md (default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">size</code> é declarado em <code class="inline">Tabs</code>
+      e propagado via contexto. Triggers podem sobrescrever individualmente
+      passando <code class="inline">size</code> próprio.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Item desabilitado</h2>
+      <small>fora do roving focus · ignora clique</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveTabsSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente</th><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Tabs</td>
+            <td class="name">variant</td>
+            <td class="type">"underline" | "pills" | "boxed"</td>
+            <td class="default">"underline"</td>
+            <td class="desc">Estilo visual do grupo. Propagado a List e Trigger via contexto interno.</td>
+          </tr>
+          <tr>
+            <td class="name">Tabs</td>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Padding e font-size dos triggers. Propagado via contexto.</td>
+          </tr>
+          <tr>
+            <td class="name">Tabs</td>
+            <td class="name">defaultValue</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Aba ativa inicial (modo não controlado).</td>
+          </tr>
+          <tr>
+            <td class="name">Tabs</td>
+            <td class="name">value / onValueChange</td>
+            <td class="type">string · (value: string) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Modo controlado.</td>
+          </tr>
+          <tr>
+            <td class="name">TabsTrigger</td>
+            <td class="name">value</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Identificador da aba; deve casar com o <code class="inline">value</code> do <code class="inline">TabsContent</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">TabsTrigger</td>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">herdado</td>
+            <td class="desc">Sobrescreve o size do contexto para este trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">TabsTrigger</td>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia seleção e remove do roving focus.</td>
+          </tr>
+          <tr>
+            <td class="name">TabsContent</td>
+            <td class="name">value</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Casa com o trigger correspondente.</td>
+          </tr>
+          <tr>
+            <td class="name">TabsBadge</td>
+            <td class="name">—</td>
+            <td class="type">React.HTMLAttributes&lt;HTMLSpanElement&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Pílula de contagem opcional dentro de um <code class="inline">TabsTrigger</code>. O estilo ativo é controlado pelo trigger via seletor descendente.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      <code class="inline">Tabs</code>, <code class="inline">TabsList</code>,
+      <code class="inline">TabsTrigger</code> e <code class="inline">TabsContent</code>
+      aceitam todos os props de <code class="inline">@radix-ui/react-tabs</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/tabs/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={tabsSource}
+      language="tsx"
+      filename="ui_kit/components/tabs/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Tabs</b> garante <code class="inline">role="tablist"</code>, <code class="inline">role="tab"</code>, <code class="inline">role="tabpanel"</code>, <code class="inline">aria-selected</code> e foco roving.</span></li>
+        <li><span><b>Teclado:</b> <kbd>←</kbd>/<kbd>→</kbd> navegam, <kbd>Home</kbd>/<kbd>End</kbd> saltam para a primeira/última aba.</span></li>
+        <li><span><b>Foco visível:</b> anel laranja com offset (<code class="inline">focus-visible:ring-ring</code>) — nunca remova o focus-visible.</span></li>
+        <li><span><b>Contraste:</b> aba ativa em <code class="inline">text-action-hover</code> sobre <code class="inline">bg-background</code> = ≥7:1 (AAA) em ambos os temas; em boxed, <code class="inline">text-button-fg</code> sobre <code class="inline">bg-action</code> garante ≥6:1 (AA UI ou AAA conforme tamanho).</span></li>
+        <li><span><b>Disabled:</b> abas com <code class="inline">disabled</code> ficam fora do roving focus e não recebem seleção via clique.</span></li>
+        <li><span><b>Sem hex hardcoded:</b> só tokens semânticos (lex-brand-colors / lex-design-system-library).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
