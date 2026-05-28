@@ -1,0 +1,264 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SidesRow,
+  AlignmentsRow,
+  SizesRow,
+  StatesRow,
+  AnchorAndCloseRow,
+} from "../../previews/popover";
+import { LivePopoverSnippet } from "../../previews/popover-live";
+import popoverSource from "@ds/components/popover/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Popover"
+  group="Overlays"
+  storybookId="components-popover--default"
+  sourcePath="ui_kit/components/popover"
+  lede='Pop flutuante ancorado por clique. Use para filtros, forms compactos e hints acionáveis. Base no Radix Popover com tokens semânticos canônicos e CVA <code class="inline">size</code> alinhado a Combobox e Select.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Popover · Trigger · Content</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para conteúdo grande ou modal, prefira <code class="inline">&lt;Dialog&gt;</code>;
+      para hover-driven information, <code class="inline">&lt;Tooltip&gt;</code> ou
+      <code class="inline">&lt;HoverCard&gt;</code>; para listas longas com busca,
+      <code class="inline">&lt;Combobox&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIDES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Posicionamento</h2>
+      <small>side · top / right / bottom / left</small>
+    </div>
+    <div class="preview">
+      <SidesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Radix pode inverter automaticamente em caso de collision com a viewport.
+      O atributo <code class="inline">data-side</code> no DOM reflete o lado
+      resolvido após eventual flip.
+    </p>
+  </section>
+
+  <!-- ============ ALIGNMENTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Alinhamento</h2>
+      <small>align · start / center / end</small>
+    </div>
+    <div class="preview">
+      <AlignmentsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 8 · md 12 (default) · lg 16</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O ladder de padding (<code class="inline">p-2</code> /
+      <code class="inline">p-3</code> / <code class="inline">p-4</code>) acompanha o
+      ladder de Combobox e Select para manter o ritmo visual entre Overlays.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · disabled · modal</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ ANCHOR + CLOSE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Anchor &amp; Close</h2>
+      <small>composição avançada</small>
+    </div>
+    <div class="preview">
+      <AnchorAndCloseRow client:load />
+    </div>
+    <p class="preview-caption">
+      Use <code class="inline">PopoverAnchor</code> para ancorar o popover em um
+      elemento distinto do trigger (e.g., uma linha de data grid). Use
+      <code class="inline">PopoverClose</code> dentro de
+      <code class="inline">PopoverContent</code> para criar botões de fechar sem
+      precisar instrumentar <code class="inline">onOpenChange</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LivePopoverSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente / Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Popover · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">Popover · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback ao abrir/fechar.</td>
+          </tr>
+          <tr>
+            <td class="name">Popover · modal</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Quando true, bloqueia interação com o background.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverTrigger · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Repassa props para o filho (sem wrapper extra).</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverTrigger · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverContent · side</td>
+            <td class="type">"top" | "right" | "bottom" | "left"</td>
+            <td class="default">"bottom"</td>
+            <td class="desc">Posição preferida. Pode ser invertida na collision.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverContent · align</td>
+            <td class="type">"start" | "center" | "end"</td>
+            <td class="default">"center"</td>
+            <td class="desc">Alinhamento relativo ao trigger / anchor.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverContent · sideOffset</td>
+            <td class="type">number</td>
+            <td class="default">4</td>
+            <td class="desc">Distância em px ao trigger / anchor.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverContent · size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Padding ladder 8 / 12 / 16 px + tamanho do texto.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverContent · width</td>
+            <td class="type">number | string</td>
+            <td class="default">w-72 (18rem)</td>
+            <td class="desc">Override do width. Número vira px; string vai como inline style.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverAnchor</td>
+            <td class="type">—</td>
+            <td class="default">—</td>
+            <td class="desc">Ancoragem desacoplada do trigger. Renderiza o filho via <code class="inline">asChild</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">PopoverClose</td>
+            <td class="type">—</td>
+            <td class="default">—</td>
+            <td class="desc">Botão de fechar dentro do content; devolve foco ao trigger.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação completa</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Space / Enter</td><td class="desc">Abre o popover quando o trigger está focado.</td></tr>
+          <tr><td class="name">Tab</td><td class="desc">Foco percorre os elementos focáveis dentro do content (focus-trap natural quando há tabbables).</td></tr>
+          <tr><td class="name">Shift+Tab</td><td class="desc">Retorna o ciclo de foco.</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha e devolve foco ao trigger.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/popover/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={popoverSource}
+      language="tsx"
+      filename="ui_kit/components/popover/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · dialog pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: <code class="inline">aria-haspopup="dialog"</code> + <code class="inline">aria-expanded</code> + <code class="inline">aria-controls</code> (Radix).</span></li>
+        <li><span><b>Content</b>: <code class="inline">role="dialog"</code> com focus-trap natural quando há elementos tabbables.</span></li>
+        <li><span><b>Escape</b> + <b>outside click</b> fecham e devolvem foco ao trigger.</span></li>
+        <li><span><b>jest-axe</b> em light + dark cobre Default, Open e Disabled (ver <code class="inline">Popover.test.tsx</code>).</span></li>
+        <li><span><b>Modal</b>: quando <code class="inline">modal=true</code>, o background fica inerte; reservado para mini-diálogos de confirmação.</span></li>
+        <li><span><b>Foco visível</b>: o content recebe ring laranja (<code class="inline">ring-ring</code>) quando focado via teclado.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
