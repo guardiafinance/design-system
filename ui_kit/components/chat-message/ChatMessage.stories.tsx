@@ -157,7 +157,7 @@ export const DarkTheme: Story = {
     docs: {
       description: {
         story:
-          "Papéis (user · assistant · system) e estados (streaming · error) sobre fundo escuro. As bolhas trocam de paleta automaticamente via tokens (secondary/muted/destructive), com contraste WCAG AA de texto de corpo nos dois temas.",
+          "Papéis (user · assistant · system) e estados (streaming · error) sobre fundo escuro. As bolhas trocam de paleta automaticamente via tokens (card/muted/destructive) + brand guardia-purple-500 no turno do usuário; contraste WCAG AA de texto de corpo nos dois temas.",
       },
     },
   },

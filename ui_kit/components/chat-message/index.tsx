@@ -52,15 +52,16 @@ function useChatMessage(): ChatMessageContextValue {
 
 /* ─── Root ─────────────────────────────────────────────────────────── */
 
-const chatMessageVariants = cva("flex w-full gap-2", {
+const chatMessageVariants = cva("flex w-full items-start gap-2.5", {
   variants: {
     variant: {
       // WHY: usuário ancora à direita (flex-row-reverse empacota no fim →
-      // lado direito), agente à esquerda, sistema centralizado como aviso
-      // neutro de toda a largura.
-      user: "flex-row-reverse items-end",
-      assistant: "flex-row items-end",
-      system: "flex-row justify-center",
+      // lado direito); agente e sistema na esquerda. O sistema se distingue
+      // visualmente pela bolha tracejada + paleta neutra, não por
+      // centralização (alinhado ao playground v0.1.0).
+      user: "flex-row-reverse",
+      assistant: "flex-row",
+      system: "flex-row",
     },
   },
   defaultVariants: {
@@ -145,7 +146,7 @@ const ChatMessageAvatar = React.forwardRef<
   <div
     ref={ref}
     data-slot="chat-message-avatar"
-    className={cn("shrink-0 self-end", className)}
+    className={cn("shrink-0 self-start", className)}
     {...props}
   />
 ));
@@ -155,23 +156,27 @@ ChatMessageAvatar.displayName = "ChatMessageAvatar";
 
 const chatBubbleVariants = cva(
   [
-    "relative inline-block min-w-0 rounded-2xl px-4 py-2.5 text-sm",
+    // Layout base alinhado ao playground v0.1.0: max-width 640px, raio xl,
+    // padding 10px 14px (py-2.5 px-3.5), 14px texto, leading-relaxed.
+    "relative inline-block min-w-0 max-w-[640px] rounded-xl border px-3.5 py-2.5 text-sm leading-relaxed",
     // Estado de erro: anel destrutivo tokenizado, sem cor hardcoded.
     "data-[status=error]:ring-1 data-[status=error]:ring-destructive",
   ].join(" "),
   {
     variants: {
-      // WHY: paleta escolhida para contraste WCAG AA de TEXTO DE CORPO em
-      // light + dark (axe roda no browser real). `bg-secondary` é violeta no
-      // light / gray-700 no dark — branco sobre ambos passa AA. `bg-primary`
-      // (laranja) só atinge 3.16:1 com branco no light, faixa reservada a
-      // botões/badges por lex-brand-colors — inadequada para corpo. `system`
-      // usa o par neutro muted/muted-foreground (AA nos dois temas).
+      // WHY: paleta WCAG AA de TEXTO DE CORPO em light + dark, mapeada para
+      // o playground v0.1.0:
+      //   assistant → `surface` (bg-card) + `fg` (text-card-foreground) com
+      //               borda neutra — same pair que Card; AA garantido.
+      //   user      → `violet-500` (bg-guardia-purple-500) + branco — token
+      //               fixo de marca, ~12:1 nos dois temas; borda transparente.
+      //   system    → `bg-subtle`/`gray-50` (bg-muted) + `fg-muted`
+      //               (text-muted-foreground) com borda tracejada, fonte 12px.
       variant: {
-        user: "max-w-[80%] rounded-br-sm bg-secondary text-secondary-foreground",
-        assistant: "max-w-[80%] rounded-bl-sm bg-muted text-foreground",
+        user: "bg-guardia-purple-500 text-white border-transparent",
+        assistant: "bg-card text-card-foreground border-border",
         system:
-          "max-w-full rounded-xl bg-muted px-3 py-1.5 text-center text-xs text-muted-foreground",
+          "bg-muted text-muted-foreground border-dashed border-border text-xs",
       },
     },
     defaultVariants: {
@@ -222,7 +227,7 @@ const ChatMessageAuthor = React.forwardRef<
   <span
     ref={ref}
     data-slot="chat-message-author"
-    className={cn("text-sm font-semibold leading-none", className)}
+    className={cn("text-xs font-semibold", className)}
     {...props}
   />
 ));
@@ -243,9 +248,10 @@ const ChatMessageTime = React.forwardRef<HTMLTimeElement, ChatMessageTimeProps>(
       data-slot="chat-message-time"
       dateTime={dateTime}
       // WHY: sem opacity — a redução de opacidade derrubava o contraste do
-      // timestamp abaixo de AA (axe no browser real). A hierarquia visual
-      // vem do tamanho (text-xs) e do peso (author é font-semibold).
-      className={cn("text-xs leading-none", className)}
+      // timestamp abaixo de AA (axe no browser real). `tabular-nums` mantém
+      // o número alinhado entre turnos consecutivos. A hierarquia visual
+      // vem do tamanho (text-[11px]) e do peso (author é font-semibold).
+      className={cn("text-[11px] tabular-nums", className)}
       {...props}
     />
   ),
@@ -344,7 +350,13 @@ const ChatMessageActions = React.forwardRef<
   <div
     ref={ref}
     data-slot="chat-message-actions"
-    className={cn("mt-1.5 flex items-center gap-1", className)}
+    // WHY: footer com `border-t` separa as ações do corpo da mensagem, alinhado
+    // ao playground v0.1.0. Borda usa o token `border-border` (mesmo em
+    // bolhas coloridas — leve contraste visual aceitável, sem opacidades).
+    className={cn(
+      "mt-2 flex items-center justify-end gap-2 border-t border-border pt-2",
+      className,
+    )}
     {...props}
   />
 ));

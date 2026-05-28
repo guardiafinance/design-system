@@ -41,10 +41,10 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
       <Roles client:load />
     </div>
     <p class="preview-caption">
-      <b>user</b> ancora à direita com <code class="inline">bg-secondary</code>;
-      <b>assistant</b> à esquerda com <code class="inline">bg-muted</code>;
-      <b>system</b> centraliza como nota neutra com
-      <code class="inline">bg-muted</code> + <code class="inline">text-muted-foreground</code>.
+      <b>user</b> ancora à direita com <code class="inline">bg-guardia-purple-500</code> + texto branco;
+      <b>assistant</b> à esquerda com <code class="inline">bg-card</code> + borda neutra;
+      <b>system</b> também à esquerda como nota neutra com
+      <code class="inline">bg-muted</code> + <code class="inline">text-muted-foreground</code> + borda <b>tracejada</b>.
       Use <code class="inline">as="li"</code> quando os turnos estão dentro de uma
       <code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;ol&gt;</code>
       (semântica de lista). Para um transcript com live region, use
@@ -176,7 +176,7 @@ import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
         <li><span><b>ChatMessage.Actions</b> mantém affordances operáveis por teclado, sem trap de foco.</span></li>
         <li><span>Para semântica de lista use <code class="inline">as="li"</code> dentro de <code class="inline">&lt;ul&gt;</code>; para um transcript com live region use <code class="inline">&lt;div role="log" aria-live="polite"&gt;</code> com turnos <code class="inline">div</code>/<code class="inline">article</code> (<code class="inline">role="log"</code> e lista são mutuamente exclusivos).</span></li>
         <li><span>Contraste validado em <b>light + dark</b> via <code class="inline">jest-axe</code> em cinco estados (assistant · user · system · streaming · error).</span></li>
-        <li><span>Tokens <code class="inline">secondary</code>/<code class="inline">muted</code>/<code class="inline">destructive</code> trocam por tema — zero cor hardcoded; contraste de corpo AA garantido (sem laranja em texto de corpo).</span></li>
+        <li><span>Tokens <code class="inline">card</code>/<code class="inline">muted</code>/<code class="inline">destructive</code> + brand <code class="inline">guardia-purple-500</code> trocam por tema — zero cor hardcoded; contraste de corpo AA garantido nos dois temas.</span></li>
       </ul>
     </div>
   </section>

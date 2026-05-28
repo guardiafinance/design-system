@@ -102,7 +102,7 @@ describe("<ChatMessage /> — role-driven rendering (AC-1)", () => {
     expect(root).toHaveClass("flex-row-reverse");
   });
 
-  it("role=system centers the message", () => {
+  it("role=system uses left-aligned row (distinction is the bubble's dashed border + muted palette)", () => {
     render(
       <ChatMessage variant="system" data-testid="m">
         <ChatMessageBubble>sessão iniciada</ChatMessageBubble>
@@ -110,7 +110,8 @@ describe("<ChatMessage /> — role-driven rendering (AC-1)", () => {
     );
     const root = screen.getByTestId("m");
     expect(root).toHaveAttribute("data-variant", "system");
-    expect(root).toHaveClass("justify-center");
+    expect(root).toHaveClass("flex-row");
+    expect(root).not.toHaveClass("justify-center");
   });
 
   it("renders as <div> by default and respects `as` (li/article)", () => {
@@ -165,22 +166,25 @@ describe("<ChatMessageBubble /> — palette by role (AC-2)", () => {
     return container.querySelector("[data-testid='b']") as HTMLElement;
   }
 
-  it("assistant → bg-muted + text-foreground", () => {
+  it("assistant → bg-card + text-card-foreground (surface)", () => {
     const b = bubbleFor("assistant");
-    expect(b).toHaveClass("bg-muted");
-    expect(b).toHaveClass("text-foreground");
+    expect(b).toHaveClass("bg-card");
+    expect(b).toHaveClass("text-card-foreground");
+    expect(b).toHaveClass("border-border");
   });
 
-  it("user → bg-secondary + text-secondary-foreground (AA body contrast)", () => {
+  it("user → bg-guardia-purple-500 + text-white (brand violet, ~12:1 AA)", () => {
     const b = bubbleFor("user");
-    expect(b).toHaveClass("bg-secondary");
-    expect(b).toHaveClass("text-secondary-foreground");
+    expect(b).toHaveClass("bg-guardia-purple-500");
+    expect(b).toHaveClass("text-white");
+    expect(b).toHaveClass("border-transparent");
   });
 
-  it("system → bg-muted + text-muted-foreground (AA neutral notice)", () => {
+  it("system → bg-muted + text-muted-foreground + dashed border (neutral notice)", () => {
     const b = bubbleFor("system");
     expect(b).toHaveClass("bg-muted");
     expect(b).toHaveClass("text-muted-foreground");
+    expect(b).toHaveClass("border-dashed");
   });
 
   it("uses semantic tokens only — no hex/rgb leaked into className", () => {
