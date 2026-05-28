@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DataTable · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="../Checkbox/index.css">
+<link rel="stylesheet" href="../EmptyState/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<link rel="stylesheet" href="../Avatar/index.css">
+<link rel="stylesheet" href="../IconButton/index.css">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · TABELA</div>
+  <h1 class="pg-title">DataTable</h1>
+  <span class="pg-codename">import DataTable from "ui_kits/components/DataTable"</span>
+  <p class="pg-desc">Tabela completa com ordenação, seleção, densidade configurável e render customizado por célula. Integra-se automaticamente com <code>Checkbox</code> e <code>EmptyState</code> quando disponíveis.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Checkbox/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Avatar/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../EmptyState/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:'stretch'}}>{children}</div></div>);
+}
+
+const ROWS = [
+  { id:1, cliente:"Contábil Silva & Cia",  status:"conciliado",  valor: 128450.20, resp:"Ana Lima",     data:"12/03/2025" },
+  { id:2, cliente:"Escritório Nova Era",   status:"pendente",    valor:  34200.00, resp:"Bruno Castro", data:"11/03/2025" },
+  { id:3, cliente:"Prime Partners",        status:"divergente",  valor:  89120.75, resp:"Carla Diniz",  data:"11/03/2025" },
+  { id:4, cliente:"Martins Consultoria",   status:"conciliado",  valor:  12890.40, resp:"Daniel Efe",   data:"10/03/2025" },
+  { id:5, cliente:"Grupo Horizonte",       status:"pendente",    valor: 256700.90, resp:"Elisa Faria",  data:"10/03/2025" },
+];
+
+const fmtBRL = (v:number) => v.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+
+function App() {
+  const [sel, setSel] = React.useState<Set<string|number>>(new Set([2]));
+
+  const cols = [
+    { id:"cliente", header:"Cliente", accessor:"cliente", sortable:true,
+      render:(v:string) => <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <Avatar name={v} size="sm" color="violet" /><span>{v}</span>
+      </div>
+    },
+    { id:"status", header:"Status", accessor:"status", sortable:true,
+      render:(v:string) => {
+        const variant = v==="conciliado" ? "success" : v==="pendente" ? "warning" : "danger";
+        const label = v.charAt(0).toUpperCase() + v.slice(1);
+        return <Badge variant={variant}>{label}</Badge>;
+      }
+    },
+    { id:"valor", header:"Valor", accessor:"valor", align:"right" as const, sortable:true,
+      render:(v:number) => <span style={{fontFamily:"var(--font-mono)",fontSize:13}}>{fmtBRL(v)}</span>
+    },
+    { id:"resp", header:"Responsável", accessor:"resp", sortable:true },
+    { id:"data", header:"Atualizado em", accessor:"data", align:"right" as const },
+    { id:"acoes", header:"", width:40, align:"right" as const,
+      render:() => <IconButton icon="dots-vertical" variant="ghost" size="sm" aria-label="Ações" />
+    },
+  ];
+
+  return (<>
+    <Sec title="Completa — seleção + ordenação + render customizado">
+      <DataTable columns={cols} rows={ROWS} selectable selected={sel} onSelectedChange={setSel} defaultSort={{id:"valor",dir:"desc"}} rowKey={(r)=>r.id} />
+      <p style={{fontSize:12,color:"var(--gray-500)",margin:0}}>
+        Selecionados: <code style={{fontFamily:"var(--font-mono)",background:"var(--violet-100)",color:"var(--violet-700)",padding:"1px 6px",borderRadius: "var(--radius-sm)"}}>{[...sel].join(", ") || "—"}</code>
+      </p>
+    </Sec>
+
+    <Sec title="Densidades">
+      <p style={{fontSize:11,color:"var(--gray-500)",margin:"0 0 -4px",textTransform:"uppercase",letterSpacing:".08em"}}>Compact</p>
+      <DataTable columns={cols.slice(0,4)} rows={ROWS} density="compact" rowKey={(r)=>r.id} />
+      <p style={{fontSize:11,color:"var(--gray-500)",margin:"12px 0 -4px",textTransform:"uppercase",letterSpacing:".08em"}}>Comfortable</p>
+      <DataTable columns={cols.slice(0,4)} rows={ROWS.slice(0,3)} density="comfortable" rowKey={(r)=>r.id} />
+    </Sec>
+
+    <Sec title="Vazio">
+      <DataTable columns={cols.slice(0,4)} rows={[]} emptyText="Nenhuma conciliação no período" emptyIcon="inbox" rowKey={(r)=>r.id} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["DataTable"]) || "render(<div>Sem exemplo para DataTable</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>columns</code></td><td>DTColumn[]</td><td>—</td><td class="desc">id · header · accessor · sortable · render · align · width</td></tr>
+  <tr><td><code>rows</code></td><td>any[]</td><td>—</td><td class="desc">Dados a exibir</td></tr>
+  <tr><td><code>rowKey</code></td><td>(row, i) =&gt; id</td><td>row.id ?? i</td><td class="desc">Chave estável de linha</td></tr>
+  <tr><td><code>selectable</code></td><td>boolean</td><td>false</td><td class="desc">Checkbox por linha + "selecionar todos"</td></tr>
+  <tr><td><code>density</code></td><td>string</td><td>"normal"</td><td class="desc">compact · normal · comfortable</td></tr>
+  <tr><td><code>stickyHeader</code></td><td>boolean</td><td>false</td><td class="desc">Cabeçalho fixo em scroll</td></tr>
+  <tr><td><code>sort</code>/<code>defaultSort</code></td><td>{id,dir}</td><td>null</td><td class="desc">Ordenação controlada/inicial</td></tr>
+  <tr><td><code>onRowClick</code></td><td>(row) =&gt; void</td><td>—</td><td class="desc">Click em linha inteira</td></tr>
+  <tr><td><code>emptyText</code>/<code>emptyIcon</code></td><td>ReactNode/IconName</td><td>"Sem dados"/"inbox"</td><td class="desc">Estado vazio</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Listas tabulares com ordenação, seleção em lote e densidade configurável.</li>
+      <li>Primeira coluna com identidade (nome/descrição), últimas com ações.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Cards disfarçados de tabela — se cada linha tem 3+ ações, reconsidere.</li>
+      <li>Scroll horizontal sem coluna fixa.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

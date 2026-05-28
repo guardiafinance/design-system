@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>MetricCard · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">KPI · MÉTRICA</div>
+  <h1 class="pg-title">MetricCard</h1>
+  <span class="pg-codename">import MetricCard from "ui_kits/components/MetricCard"</span>
+  <p class="pg-desc">KPI compacto com rótulo, valor e delta comparativo. O sinal do delta deriva automaticamente o tom (verde/vermelho); use <code>deltaType="neutral"</code> para silenciar.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{alignItems:"stretch",flexWrap:"wrap",gap:16}}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Grid de KPIs">
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4, minmax(180px, 1fr))",gap:12,width:"100%"}}>
+        <MetricCard icon="file-text"       label="Lançamentos"       value="2.487" delta={12.4} caption="vs. 30d anteriores" />
+        <MetricCard icon="arrow-left-right" label="Conciliação"        value="96"    suffix="%" delta={2.1} />
+        <MetricCard icon="triangle-alert"  label="Pendências"         value="11"    delta={-18.2} caption="resolvidas essa semana" />
+        <MetricCard icon="bot"             label="Horas economizadas" value="32"    suffix="h" delta={8.7} />
+      </div>
+    </Sec>
+
+    <Sec title="Tamanhos">
+      <MetricCard size="sm" label="MRR" prefix="R$ " value="38.490" delta={4.2} />
+      <MetricCard size="md" label="MRR" prefix="R$ " value="38.490" delta={4.2} />
+      <MetricCard size="lg" label="MRR" prefix="R$ " value="38.490" delta={4.2} caption="vs. mês anterior" />
+    </Sec>
+
+    <Sec title="Deltas: up · down · neutral · string custom">
+      <MetricCard label="Conciliado" value="96" suffix="%" delta={2.1} />
+      <MetricCard label="Falhas"     value="3"  delta={-42.0} />
+      <MetricCard label="Estável"    value="1.000" deltaType="neutral" delta={0} />
+      <MetricCard label="vs. meta"   value="84" suffix="%" delta="atingido 84% do trimestre" deltaType="neutral" />
+    </Sec>
+
+    <Sec title="Sem delta (contexto)">
+      <MetricCard icon="building-2" label="Empresas ativas" value="38" caption="de 40 no plano" />
+      <MetricCard icon="bot"        label="Agentes rodando" value="6"  caption="em produção" />
+    </Sec>
+
+    <Sec title="Com prefix/suffix monetário">
+      <MetricCard icon="circle-dollar-sign" label="Receita processada" prefix="R$ " value="2,4" suffix=" mi" delta={5.8} />
+      <MetricCard icon="receipt-text"       label="Nota média"          prefix="R$ " value="487,20" delta={-3.1} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["MetricCard"]) || "render(<div>Sem exemplo para MetricCard</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>label</code></td><td>node</td><td>—</td><td class="desc">Rótulo (pequeno, acima)</td></tr>
+  <tr><td><code>value</code></td><td>node</td><td>—</td><td class="desc">Número grande central</td></tr>
+  <tr><td><code>prefix</code> · <code>suffix</code></td><td>node</td><td>—</td><td class="desc">Ex.: "R$ ", " %", " h"</td></tr>
+  <tr><td><code>delta</code></td><td>number | string</td><td>—</td><td class="desc">Variação. Number ⇒ formatado com %; string ⇒ exibido como veio</td></tr>
+  <tr><td><code>deltaType</code></td><td>string</td><td>auto</td><td class="desc">up · down · neutral — sobrepõe o tom derivado do sinal</td></tr>
+  <tr><td><code>caption</code></td><td>node</td><td>—</td><td class="desc">Legenda complementar</td></tr>
+  <tr><td><code>icon</code></td><td>string</td><td>—</td><td class="desc">Ícone Lucide no canto superior direito</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>KPI de dashboard: valor, unidade, delta vs período anterior.</li>
+      <li>Ícone temático à esquerda; sparkline opcional.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Delta sem direção (↑/↓) ou contexto de período.</li>
+      <li>Mais de 4 MetricCards na mesma fila.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

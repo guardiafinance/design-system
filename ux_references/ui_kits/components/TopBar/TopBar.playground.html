@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>TopBar · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../IconButton/index.css">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Avatar/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">NAVEGAÇÃO · BARRA SUPERIOR</div>
+  <h1 class="pg-title">TopBar</h1>
+  <span class="pg-codename">import TopBar from "ui_kits/components/TopBar"</span>
+  <p class="pg-desc">Barra superior composável: left / center / right. O shell define o layout; os conteúdos vêm por prop.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Avatar/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:0,flexDirection:"column",alignItems:"stretch",gap:0}}>{children}</div></div>);
+}
+function Stub() {
+  return <div style={{minHeight:160,background:"var(--gray-50)",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--gray-400)",fontSize:13}}>— conteúdo da página —</div>;
+}
+
+function App() {
+  return (<>
+    <Sec title="Control Center — logo + busca global + ações">
+      <TopBar
+        sticky={false}
+        left={<><strong style={{fontSize:15,color:"var(--fg)"}}>Guardia</strong><span style={{color:"var(--gray-400)",fontSize:13,marginLeft:8}}>/ Control Center</span></>}
+        center={<Input leftIcon="search" placeholder="Buscar empresa, NF, extrato…  ⌘K" style={{width:"100%"}} />}
+        right={<>
+          <IconButton icon="bell" variant="ghost" />
+          <IconButton icon="help-circle" variant="ghost" />
+          <Avatar name="Luana Rocha" size="sm" />
+        </>}
+      />
+      <Stub />
+    </Sec>
+
+    <Sec title="Página de entidade — breadcrumb no left, ações no right">
+      <TopBar
+        sticky={false}
+        left={<span style={{color:"var(--gray-500)",fontSize:13}}>Empresas <span style={{color:"var(--gray-300)",margin:"0 6px"}}>/</span> <b style={{color:"var(--fg)",fontWeight:600}}>Alfa Comércio LTDA</b></span>}
+        right={<>
+          <button className="grd-btn grd-btn-ghost">Exportar</button>
+          <button className="grd-btn grd-btn-secondary">Ver histórico</button>
+          <button className="grd-btn grd-btn-primary">+ Novo lançamento</button>
+        </>}
+      />
+      <Stub />
+    </Sec>
+
+    <Sec title="Mínima — só marca + conta">
+      <TopBar
+        sticky={false}
+        left={<strong style={{fontSize:15,color:"var(--fg)"}}>Guardia</strong>}
+        right={<><Badge tone="violet" variant="soft">Plano Pro</Badge><Avatar name="Luana Rocha" size="sm" /></>}
+      />
+      <Stub />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["TopBar"]) || "render(<div>Sem exemplo para TopBar</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>left</code> · <code>center</code> · <code>right</code></td><td>node</td><td>—</td><td class="desc">Slots composáveis. <code>center</code> cresce para preencher.</td></tr>
+  <tr><td><code>sticky</code></td><td>boolean</td><td>true</td><td class="desc">Fixa no topo ao rolar</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Header global: logo + busca + atalhos + perfil.</li>
+      <li>Altura 56-64px; permanece visível em scroll.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>TopBar com > 5 ações à direita.</li>
+      <li>Esconder busca em breakpoints médios.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

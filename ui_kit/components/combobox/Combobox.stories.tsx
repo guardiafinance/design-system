@@ -137,3 +137,51 @@ export const EmptyState: Story = {
     emptyText: "Nenhum plano encontrado",
   },
 };
+
+/**
+ * Combobox no tema dark.
+ *
+ * Força `globals.theme="dark"` no nível da story (não apenas via toolbar
+ * global) e renderiza matriz dos estados visuais críticos: trigger fechado
+ * em cada variante relevante (Default, com seleção, Invalid, Disabled),
+ * Clearable com valor, e com `leftIcon`. Segue o padrão estabelecido pelo
+ * Avatar (`Avatar.stories.tsx::DarkTheme`, PR #119) e replicado em Button
+ * (#209), IconButton (#205), ButtonGroup (#206).
+ *
+ * WHY não força open: o `<Popover.Portal>` do Radix renderiza fora do
+ * decorator de tema da story, então um estado open visual no dark exigiria
+ * portal customizado. A cobertura a11y em ambos os temas (incluindo open
+ * com seleção e opened-no-results) fica em `combobox.test.tsx` via
+ * `axeInThemes`, que alterna `data-theme` no `<html>` — toolkit dedicado.
+ *
+ * Background "dark" definido em `.storybook/preview.tsx`
+ * (parameters.backgrounds.values + applyThemeSync). Todos os tokens
+ * (`bg-background`, `text-fg`, `border-border-strong`, `bg-action`,
+ * `text-button-fg`, etc.) flipam via `[data-theme="dark"]` no `<html>`.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz dos estados visuais críticos do Combobox no tema dark — trigger fechado em cada variante, com seleção, invalid, disabled, clearable e com leftIcon. Cada estado mantém contraste WCAG AA conforme tokens do design-system em dark mode.",
+      },
+    },
+  },
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <Combobox options={PLANOS} placeholder="Default — Selecione…" />
+      <Combobox options={PLANOS} defaultValue="pro" />
+      <Combobox options={PLANOS} invalid placeholder="Invalid state" />
+      <Combobox options={PLANOS} disabled defaultValue="business" />
+      <Combobox options={PLANOS} defaultValue="enterprise" clearable />
+      <Combobox
+        options={CLIENTES}
+        leftIcon={<Building2 width={16} height={16} />}
+        defaultValue="03"
+      />
+    </div>
+  ),
+};

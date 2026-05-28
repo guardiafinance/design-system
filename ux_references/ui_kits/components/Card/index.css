@@ -1,0 +1,46 @@
+
+.grd-card {
+  font-family: var(--font-sans);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  text-align: left;
+  display: flex; flex-direction: column;
+  color: var(--fg);
+  border: 1px solid transparent;
+}
+.grd-card-plain    { background: transparent; }
+.grd-card-outlined { border-color: var(--border); }
+.grd-card-filled   { background: var(--gray-50); }
+.grd-card-elevated { box-shadow: var(--shadow-md); }
+
+.grd-card-p-none { padding: 0; }
+.grd-card-p-sm   { padding: 12px; }
+.grd-card-p-md   { padding: 16px; }
+.grd-card-p-lg   { padding: 20px; }
+
+.grd-card-ia { cursor: pointer; transition: box-shadow 160ms var(--ease-standard), border-color 160ms, transform 160ms; }
+button.grd-card { font-family: inherit; width: 100%; }
+.grd-card-ia:hover { border-color: var(--violet-300); box-shadow: var(--shadow-lg); }
+.grd-card-ia:active { transform: translateY(1px); }
+
+.grd-card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.grd-card-head-ic {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: var(--radius-md);
+  background: var(--violet-100); color: var(--violet-500);
+}
+.grd-card-head-text { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.grd-card-head-title { font-size: 15px; font-weight: 600; color: var(--fg); margin: 0; line-height: 1.35; }
+.grd-card-head-desc { font-size: 13px; color: var(--fg-muted); margin: 0; line-height: 1.5; }
+.grd-card-head-act { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; }
+
+.grd-card-body { font-size: 13.5px; color: var(--fg); line-height: 1.55; }
+.grd-card-foot {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+
+/* Quando Card tem padding="none", Header/Body/Footer trazem seu próprio padding */
+.grd-card-p-none > .grd-card-head { padding: 20px 24px 0; margin-bottom: 16px; }
+.grd-card-p-none > .grd-card-body { padding: 4px 24px 20px; }
+.grd-card-p-none > .grd-card-foot { padding: 14px 24px; margin-top: 0; }

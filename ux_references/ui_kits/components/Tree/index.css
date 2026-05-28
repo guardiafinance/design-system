@@ -1,0 +1,141 @@
+
+/* ===================================================================
+ * Tree
+ * ================================================================= */
+
+.grd-tr {
+  list-style: none; margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--fg);
+  --tr-row-h: 30px;
+  --tr-gap: 6px;
+}
+.grd-tr-sm { --tr-row-h: 26px; --tr-gap: 4px; }
+
+.grd-tr-children { list-style: none; margin: 0; padding: 0; }
+
+/* ---------- Row ---------- */
+.grd-tr-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tr-row-h);
+  padding: 2px 8px 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  position: relative;
+  transition: background 120ms, color 120ms;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.grd-tr-sm .grd-tr-row { font-size: 12.5px; gap: 5px; padding: 1px 6px 1px 6px; }
+
+.grd-tr-row:hover { background: var(--gray-50); }
+.grd-tr-row-sel  { background: var(--violet-50); color: var(--violet-700); }
+.grd-tr-row-sel:hover { background: var(--violet-100); }
+.grd-tr-row-disabled { opacity: .45; cursor: not-allowed; }
+.grd-tr-row-disabled:hover { background: transparent; }
+
+/* ---------- Caret ---------- */
+.grd-tr-caret {
+  width: 18px; height: 18px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; background: transparent; cursor: pointer;
+  border-radius: var(--radius-xs);
+  color: var(--fg-muted);
+  transition: transform 140ms, background 120ms;
+  padding: 0;
+}
+.grd-tr-sm .grd-tr-caret { width: 16px; height: 16px; }
+.grd-tr-caret:hover { background: var(--gray-100); color: var(--fg); }
+.grd-tr-caret-open { transform: rotate(90deg); }
+.grd-tr-caret-leaf { cursor: default; pointer-events: none; }
+
+/* ---------- Guia vertical (showLines) ---------- */
+.grd-tr-lines .grd-tr-children {
+  position: relative;
+}
+.grd-tr-lines .grd-tr-children::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 6px;
+  left: calc(8px + 9px);            /* alinhado com centro do caret */
+  width: 1px;
+  background: var(--gray-200);
+  pointer-events: none;
+}
+.grd-tr-sm.grd-tr-lines .grd-tr-children::before {
+  left: calc(6px + 8px);
+}
+
+/* ---------- Checkbox (multi) ---------- */
+.grd-tr-cb {
+  width: 15px; height: 15px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface);
+  color: #fff;
+  transition: background 120ms, border-color 120ms;
+}
+.grd-tr-sm .grd-tr-cb { width: 13px; height: 13px; }
+.grd-tr-cb-all {
+  background: var(--violet-600);
+  border-color: var(--violet-600);
+}
+.grd-tr-cb-partial {
+  background: var(--violet-600);
+  border-color: var(--violet-600);
+}
+.grd-tr-cb-bar {
+  width: 7px; height: 2px; background: #fff; border-radius: 1px;
+}
+
+/* ---------- Ícone + label ---------- */
+.grd-tr-ico {
+  width: 16px; height: 16px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fg-muted);
+}
+.grd-tr-row-sel .grd-tr-ico { color: var(--violet-600); }
+
+.grd-tr-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.grd-tr-label-main {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grd-tr-row-sel .grd-tr-label-main { font-weight: 600; }
+.grd-tr-label-desc {
+  font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grd-tr-sm .grd-tr-label-desc { font-size: 11px; }
+
+.grd-tr-meta {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 8px;
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.grd-tr-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--fg-muted);
+}

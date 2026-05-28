@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>EmptyState · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FEEDBACK · ESTADO VAZIO</div>
+  <h1 class="pg-title">EmptyState</h1>
+  <span class="pg-codename">import EmptyState from "ui_kits/components/EmptyState"</span>
+  <p class="pg-desc">Orientação quando não há nada a mostrar: nenhuma busca, lista vazia, caixa limpa. Sempre acompanhe de uma <b>ação clara</b> — nunca deixe o usuário sem próximo passo.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",gap:12}}>{children}</div></div>);
+}
+function Frame({ children }: any) {
+  return <div style={{background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-md)",padding:"8px"}}>{children}</div>;
+}
+function App() {
+  return (<>
+    <Sec title="Tamanhos">
+      <Frame><EmptyState size="sm" icon="inbox" title="Nada por aqui" description="Quando houver lançamentos, eles aparecem nessa lista." /></Frame>
+      <Frame><EmptyState size="md" icon="inbox" title="Caixa de entrada vazia" description="Todos os lançamentos foram processados pela Guardia." /></Frame>
+      <Frame><EmptyState size="lg" icon="inbox" title="Tudo em dia" description="Nenhum item pendente de revisão neste período." /></Frame>
+    </Sec>
+
+    <Sec title="Com ação primária">
+      <Frame>
+        <EmptyState
+          icon="building-2"
+          title="Nenhuma empresa conectada ainda"
+          description="Conecte seu primeiro cliente para começar a receber lançamentos automaticamente."
+          action={<button className="grd-btn grd-btn-primary">+ Conectar empresa</button>}
+        />
+      </Frame>
+    </Sec>
+
+    <Sec title="Sem resultado de busca">
+      <Frame>
+        <EmptyState
+          icon="search-x"
+          title={<>Nenhum resultado para <b style={{color:"var(--violet-500)"}}>"NF 4891"</b></>}
+          description="Verifique a ortografia ou tente buscar por CNPJ, fornecedor ou valor."
+          action={<button className="grd-btn grd-btn-ghost">Limpar filtros</button>}
+        />
+      </Frame>
+    </Sec>
+
+    <Sec title="Erro / integração">
+      <Frame>
+        <EmptyState
+          icon="plug-2"
+          title="Integração não conectada"
+          description="Não encontramos um certificado A1 ativo para esta empresa. Configure para habilitar o envio de notas fiscais."
+          action={
+            <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+              <button className="grd-btn grd-btn-primary">Configurar certificado</button>
+              <button className="grd-btn grd-btn-ghost">Saber mais</button>
+            </div>
+          }
+        />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["EmptyState"]) || "render(<div>Sem exemplo para EmptyState</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>icon</code></td><td>string</td><td>"inbox"</td><td class="desc">Nome Lucide central</td></tr>
+  <tr><td><code>title</code></td><td>node</td><td>—</td><td class="desc">Título em destaque</td></tr>
+  <tr><td><code>description</code></td><td>node</td><td>—</td><td class="desc">Texto de apoio</td></tr>
+  <tr><td><code>action</code></td><td>node</td><td>—</td><td class="desc">Botão/grupo de ações — idealmente obrigatório</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Primeira-vez, sem resultados de filtro, ou estado pós-conclusão.</li>
+      <li>Ilustração/ícone + título + descrição curta + ação concreta ("Criar primeiro cliente").</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Apenas "Nenhum resultado" sem próximo passo.</li>
+      <li>Ilustrações decorativas sem relação com o contexto.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

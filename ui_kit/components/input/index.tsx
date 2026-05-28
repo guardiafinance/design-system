@@ -59,7 +59,7 @@ const wrapperVariants = cva(
         // (per [Notion > Branding > Cores > Dark Mode](https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b)),
         // garantindo contraste WCAG AA nos dois temas. Substitui o literal
         // `hover:border-guardia-purple-500` que ignorava o tema.
-        default: "border-border-strong hover:border-action",
+        default: "border-primary hover:border-primary",
         error:
           "border-destructive hover:border-destructive focus-within:ring-destructive",
         success:

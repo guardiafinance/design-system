@@ -125,3 +125,80 @@ export const SearchInput: Story = {
     type: "search",
   },
 };
+
+/**
+ * DarkTheme — matriz consolidada dos estados visuais críticos do Input no
+ * tema dark, replicando o padrão estabelecido em Avatar (PR #119) e
+ * mantido em Button (#209), IconButton (#205), ButtonGroup (#206),
+ * Checkbox, DatePicker e Combobox (PR #219). Cobre `default`, `error`,
+ * `success`, `disabled`, prefix/suffix, leftIcon/rightIcon e os três
+ * tamanhos sobre `bg-background` forçado a dark via toolbar global.
+ *
+ * Cada estado consome tokens semânticos brand-aware
+ * (`bg-background`, `text-fg`, `border-border-strong`, `text-fg-muted`,
+ * `border-destructive`, `border-signal-green`, `focus-within:ring-ring`,
+ * `hover:border-action`) — em dark, `action` resolve para Laranja 500
+ * conforme [Notion > Branding > Dark Mode](https://www.notion.so/Dark-Mode-36736f91ebd2812fa9bdf58d8bbac59b),
+ * garantindo contraste WCAG AA. A divergência conhecida
+ * `--primary`/`--ring` (Plan #208) é herdada — este Plan não altera tokens.
+ */
+export const DarkTheme: Story = {
+  globals: { theme: "dark" },
+  parameters: {
+    backgrounds: { default: "dark" },
+    docs: {
+      description: {
+        story:
+          "Matriz dos estados visuais críticos do Input no tema dark — default, error, success, disabled, prefix/suffix, leftIcon/rightIcon e os três tamanhos. Cada estado mantém contraste WCAG AA conforme tokens semânticos brand-aware do design-system em dark mode.",
+      },
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div className="flex w-full max-w-md flex-col gap-3 p-4">
+        <Story />
+      </div>
+    ),
+  ],
+  // WHY: a11y `label` rule (WCAG 4.1.2 Name, Role, Value) requires each
+  // <input> to expose an accessible name. Inputs with placeholder satisfy
+  // it via the placeholder attribute; inputs WITH only `defaultValue`
+  // (filled / invalid / success / disabled below) carry an aria-label so
+  // the showcase passes axe in both themes without altering the visual.
+  // Detected by the regenerate-baselines workflow on PR #226 — root cause
+  // pre-existed since #220 (Plan #47); fixed here so #208 can land its
+  // Ubuntu-rendered visual baselines.
+  render: () => (
+    <>
+      <Input placeholder="Default — Digite algo" />
+      <Input aria-label="Filled" defaultValue="Filled — conteúdo digitado" />
+      <Input
+        leftIcon={<Search width={16} height={16} />}
+        placeholder="Buscar lançamentos…"
+        type="search"
+      />
+      <Input
+        rightIcon={<Mail width={16} height={16} />}
+        placeholder="user@guardia.finance"
+        type="email"
+      />
+      <Input prefix="R$" placeholder="0,00" inputMode="decimal" />
+      <Input suffix=".finance" placeholder="empresa" />
+      <Input
+        prefix={<AtSign width={14} height={14} />}
+        suffix=".com"
+        placeholder="username"
+      />
+      <Input aria-label="Invalid state" invalid defaultValue="invalid@" />
+      <Input
+        aria-label="Success state"
+        state="success"
+        defaultValue="ok@guardia.finance"
+      />
+      <Input aria-label="Disabled state" disabled defaultValue="leitura" />
+      <Input size="sm" placeholder="Small (32px)" />
+      <Input size="md" placeholder="Medium · default (38px)" />
+      <Input size="lg" placeholder="Large (46px)" />
+    </>
+  ),
+};

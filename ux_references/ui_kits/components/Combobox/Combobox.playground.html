@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Combobox · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Label/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · SELEÇÃO COM BUSCA</div>
+  <h1 class="pg-title">Combobox</h1>
+  <span class="pg-codename">import Combobox from "ui_kits/components/Combobox"</span>
+  <p class="pg-desc">Select com busca — para listas longas (clientes, contas, CNAEs). Aceita metadado por item e estado limpável.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Label/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+const EMPRESAS = [
+  { value: "alfa",    label: "Alfa Comércio LTDA",        meta: "42.110.877/0001-55" },
+  { value: "beta",    label: "Beta Serviços S.A.",        meta: "18.441.002/0001-10" },
+  { value: "casa",    label: "Casa & Jardim ME",          meta: "32.981.544/0001-22" },
+  { value: "delta",   label: "Delta Indústria",           meta: "77.112.655/0001-03" },
+  { value: "epsilon", label: "Epsilon Transportes",       meta: "09.338.211/0001-78" },
+  { value: "fenix",   label: "Fênix Consultoria",         meta: "14.005.900/0001-41" },
+  { value: "gama",    label: "Gama Logística",            meta: "22.776.812/0001-09" },
+  { value: "horus",   label: "Hórus Tecnologia ME",       meta: "38.441.905/0001-67" },
+];
+
+const CONTAS = [
+  { value: "1.1.01", label: "1.1.01 — Caixa" },
+  { value: "1.1.02", label: "1.1.02 — Bancos conta movimento" },
+  { value: "1.1.03", label: "1.1.03 — Aplicações financeiras" },
+  { value: "1.2.01", label: "1.2.01 — Duplicatas a receber" },
+  { value: "2.1.01", label: "2.1.01 — Fornecedores nacionais" },
+  { value: "2.1.02", label: "2.1.02 — Salários a pagar" },
+  { value: "3.1.01", label: "3.1.01 — Receita de serviços" },
+  { value: "4.1.01", label: "4.1.01 — Despesas administrativas", disabled: true },
+];
+
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,flexDirection:"column",alignItems:"flex-start",gap:14,maxWidth:520}}>{children}</div></div>);
+}
+
+function App() {
+  const [empresa, setEmpresa] = React.useState("beta");
+  const [conta, setConta] = React.useState("");
+  return (<>
+    <Sec title="Seleção de empresa (com meta)">
+      <Label>Empresa</Label>
+      <Combobox
+        options={EMPRESAS} value={empresa}
+        onChange={setEmpresa}
+        placeholder="Selecione uma empresa…"
+        searchPlaceholder="Buscar por razão ou CNPJ…"
+        clearable
+        leftIcon="building-2"
+      />
+    </Sec>
+    <Sec title="Plano de contas (item disabled)">
+      <Label>Conta contábil</Label>
+      <Combobox
+        options={CONTAS}
+        value={conta} onChange={setConta}
+        placeholder="Selecione uma conta…"
+        emptyText="Nenhuma conta encontrada"
+      />
+    </Sec>
+    <Sec title="Tamanhos">
+      <Combobox size="sm" options={EMPRESAS.slice(0,4)} placeholder="sm" />
+      <Combobox size="md" options={EMPRESAS.slice(0,4)} placeholder="md (padrão)" />
+      <Combobox size="lg" options={EMPRESAS.slice(0,4)} placeholder="lg" />
+    </Sec>
+    <Sec title="Estados">
+      <Combobox options={EMPRESAS.slice(0,3)} placeholder="Padrão" />
+      <Combobox options={EMPRESAS.slice(0,3)} placeholder="Inválido" invalid />
+      <Combobox options={EMPRESAS.slice(0,3)} placeholder="Desabilitado" disabled />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Combobox"]) || "render(<div>Sem exemplo para Combobox</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>options</code></td><td>{`{value,label,meta?,disabled?}[]`}</td><td>—</td><td class="desc">Lista filtrável</td></tr>
+  <tr><td><code>value</code> · <code>onChange</code></td><td>string · fn</td><td>—</td><td class="desc">Controlado</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>leftIcon</code></td><td>string</td><td>—</td><td class="desc">Ícone Lucide à esquerda</td></tr>
+  <tr><td><code>clearable</code></td><td>boolean</td><td>false</td><td class="desc">Botão X para limpar</td></tr>
+  <tr><td><code>invalid</code> · <code>disabled</code></td><td>boolean</td><td>—</td><td class="desc">Estados</td></tr>
+  <tr><td><code>emptyText</code> · <code>searchPlaceholder</code></td><td>string</td><td>—</td><td class="desc">Copy da busca</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Seleção em lista grande com busca — plano de contas, fornecedores, CFOPs.</li>
+      <li>Mostrar chave + descrição ("3.1.4.05 · Despesas com tecnologia").</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Listas curtas (< 7 itens) — use <code>Select</code> simples.</li>
+      <li>Combobox sem placeholder indicando o que se busca.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

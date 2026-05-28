@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tabs · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">NAVEGAÇÃO · TABS</div>
+  <h1 class="pg-title">Tabs</h1>
+  <span class="pg-codename">import Tabs from "ui_kits/components/Tabs"</span>
+  <p class="pg-desc">Alternância entre views dentro de uma mesma tela. Três variantes: <code>underline</code> (padrão, para tabs de página), <code>pills</code> (filtros leves) e <code>boxed</code> (seções compactas).</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",gap:14}}>{children}</div></div>);
+}
+
+const PAGINA = [
+  { value: "visao", label: "Visão geral", icon: "layout-dashboard" },
+  { value: "lanc", label: "Lançamentos", icon: "file-text", badge: 248 },
+  { value: "conc", label: "Conciliação", icon: "arrow-left-right", badge: 11 },
+  { value: "fisc", label: "Fiscal", icon: "receipt-text" },
+  { value: "rel", label: "Relatórios", icon: "line-chart" },
+];
+
+const PERIODO = [
+  { value: "hoje", label: "Hoje" },
+  { value: "7d", label: "7 dias" },
+  { value: "30d", label: "30 dias" },
+  { value: "ano", label: "Este ano" },
+];
+
+function App() {
+  const [page, setPage] = React.useState("lanc");
+  return (<>
+    <Sec title="Underline · tabs de página (com ícones e badges)">
+      <div style={{background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-md)",padding:"4px 16px 0"}}>
+        <Tabs items={PAGINA} value={page} onChange={setPage} />
+      </div>
+      <div style={{fontSize:13,color:"var(--gray-600)",paddingLeft:2}}>Tab ativa: <b style={{color:"var(--orange-500)"}}>{page}</b></div>
+    </Sec>
+
+    <Sec title="Pills · filtros leves">
+      <Tabs variant="pills" items={PERIODO} defaultValue="30d" />
+    </Sec>
+
+    <Sec title="Boxed · seções compactas">
+      <Tabs variant="boxed" items={[
+        { value: "json", label: "JSON" },
+        { value: "yaml", label: "YAML" },
+        { value: "curl", label: "cURL" },
+        { value: "node", label: "Node.js" },
+      ]} defaultValue="json" />
+    </Sec>
+
+    <Sec title="Tamanho sm">
+      <Tabs size="sm" items={PERIODO} defaultValue="hoje" />
+      <Tabs size="sm" variant="pills" items={PERIODO} defaultValue="hoje" />
+    </Sec>
+
+    <Sec title="Com item desabilitado">
+      <Tabs items={[
+        { value: "a", label: "Ativos" },
+        { value: "b", label: "Arquivados" },
+        { value: "c", label: "Em migração", disabled: true },
+      ]} defaultValue="a" />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Tabs"]) || "render(<div>Sem exemplo para Tabs</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>items</code></td><td>array</td><td>—</td><td class="desc">{`{ value, label, icon?, badge?, disabled? }[]`}</td></tr>
+  <tr><td><code>value</code> · <code>defaultValue</code></td><td>string</td><td>—</td><td class="desc">Tab ativa controlada/inicial</td></tr>
+  <tr><td><code>onChange</code></td><td>(v) ⇒ void</td><td>—</td><td class="desc">Callback da troca</td></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"underline"</td><td class="desc">underline · pills · boxed</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Visões paralelas do mesmo recurso (Resumo / Lançamentos / Auditoria de um cliente).</li>
+      <li>2-5 tabs; primeira como padrão.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Navegação principal — use <code>SidebarNav</code>.</li>
+      <li>Tabs com badge de contagem fora da paleta.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

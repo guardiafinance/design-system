@@ -271,6 +271,7 @@ describe("Radio", () => {
 
   describe("a11y", () => {
     it("has no WCAG 2.1 AA violations in light + dark (group, no selection)", async () => {
+      // AC-7(ii) — RadioGroup with 3+ options, no selection
       const { container } = render(
         <RadioGroup aria-label="Frequência">
           <Radio value="now" label="Imediato" description="Agora" />
@@ -282,6 +283,7 @@ describe("Radio", () => {
     });
 
     it("has no WCAG 2.1 AA violations in light + dark (group with default selection)", async () => {
+      // AC-7(iii) — RadioGroup with default selection
       const { container } = render(
         <RadioGroup aria-label="Frequência" defaultValue="daily">
           <Radio value="now" label="Imediato" />
@@ -301,13 +303,178 @@ describe("Radio", () => {
       await axeInThemes(container);
     });
 
-    it("has no WCAG 2.1 AA violations in light + dark (disabled)", async () => {
+    it("has no WCAG 2.1 AA violations in light + dark (disabled option mixed with enabled)", async () => {
+      // AC-7(iv) — RadioGroup with disabled option among enabled siblings
       const { container } = render(
-        <RadioGroup aria-label="Opção">
-          <Radio value="x" disabled label="Indisponível" />
+        <RadioGroup aria-label="Plano">
+          <Radio value="starter" label="Starter" />
+          <Radio value="pro" label="Pro" />
+          <Radio value="enterprise" label="Apenas Enterprise" disabled />
         </RadioGroup>,
       );
       await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (single standalone Radio, no group)", async () => {
+      // AC-7(i) — Standalone single Radio inside a minimal RadioGroup (no compound label)
+      const { container } = render(
+        <RadioGroup aria-label="Aceito os termos">
+          <div className="flex items-center gap-2">
+            <Radio id="r-standalone" value="agree" />
+            <label htmlFor="r-standalone" className="text-sm">
+              Aceito
+            </label>
+          </div>
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (external label via htmlFor)", async () => {
+      // AC-7(v) — RadioGroup with external <label htmlFor> association pattern (Standalone story)
+      const { container } = render(
+        <RadioGroup aria-label="Layout">
+          <div className="flex items-center gap-2">
+            <Radio id="r-a" value="a" />
+            <label htmlFor="r-a" className="text-sm">
+              Opção A
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Radio id="r-b" value="b" />
+            <label htmlFor="r-b" className="text-sm">
+              Opção B
+            </label>
+          </div>
+        </RadioGroup>,
+      );
+      await axeInThemes(container);
+    });
+
+    it("has no WCAG 2.1 AA violations in light + dark (fieldset + legend grouping)", async () => {
+      // AC-7(vi) — <fieldset><legend>...</legend><RadioGroup>...</RadioGroup></fieldset>
+      const { container } = render(
+        <fieldset className="flex flex-col gap-3">
+          <legend className="text-sm font-semibold">Plano</legend>
+          <RadioGroup name="plano" defaultValue="pro">
+            <Radio value="starter" label="Starter" description="Até 1k transações/mês" />
+            <Radio value="pro" label="Pro" description="Até 10k transações/mês" />
+            <Radio value="enterprise" label="Enterprise" description="Personalizado" />
+          </RadioGroup>
+        </fieldset>,
+      );
+      await axeInThemes(container);
+    });
+  });
+
+  describe("group semantics (per v0.1.0 DoD)", () => {
+    it("clicking another option deselects the previously selected one (single-selection)", async () => {
+      // AC-5(a) — single-selection semantics: only one radio is checked at a time
+      const user = userEvent.setup();
+      render(
+        <RadioGroup aria-label="Frequência" defaultValue="now">
+          <Radio value="now" label="Imediato" />
+          <Radio value="daily" label="Diário" />
+        </RadioGroup>,
+      );
+      const radios = screen.getAllByRole("radio");
+      expect(radios[0]).toHaveAttribute("data-state", "checked");
+      expect(radios[1]).toHaveAttribute("data-state", "unchecked");
+      await user.click(radios[1]!);
+      expect(radios[0]).toHaveAttribute("data-state", "unchecked");
+      expect(radios[1]).toHaveAttribute("data-state", "checked");
+    });
+
+    it("ArrowUp moves the focus to the previous radio (Radix roving tabindex)", async () => {
+      // AC-5(b) — keyboard navigation ArrowUp closes the cycle started by the existing ArrowDown test
+      const user = userEvent.setup();
+      setup({ defaultValue: "daily" });
+      const radios = screen.getAllByRole("radio");
+      radios[1]!.focus();
+      expect(document.activeElement).toBe(radios[1]);
+      await user.keyboard("{ArrowUp}");
+      expect(document.activeElement).toBe(radios[0]);
+    });
+
+    it("Tab from a focused radio moves focus outside the group (roving tabindex exits)", async () => {
+      // AC-5(d) — Tab exits the group; Arrow keys cycle within it
+      const user = userEvent.setup();
+      render(
+        <>
+          <RadioGroup aria-label="Frequência" defaultValue="now">
+            <Radio value="now" label="Imediato" />
+            <Radio value="daily" label="Diário" />
+          </RadioGroup>
+          <button type="button">Next</button>
+        </>,
+      );
+      const radios = screen.getAllByRole("radio");
+      radios[0]!.focus();
+      expect(document.activeElement).toBe(radios[0]);
+      await user.tab();
+      expect(document.activeElement).toBe(
+        screen.getByRole("button", { name: /next/i }),
+      );
+    });
+
+    it("checked radio reports aria-checked=true (semantic, not only data-state)", () => {
+      // AC-5(g) — aria-checked correctness for assistive technologies
+      render(
+        <RadioGroup aria-label="Plano" defaultValue="pro">
+          <Radio value="starter" label="Starter" />
+          <Radio value="pro" label="Pro" />
+        </RadioGroup>,
+      );
+      const radios = screen.getAllByRole("radio");
+      expect(radios[0]).toHaveAttribute("aria-checked", "false");
+      expect(radios[1]).toHaveAttribute("aria-checked", "true");
+    });
+
+    it("RadioGroup with aria-label is queryable by accessible name", () => {
+      // AC-5(h) — getByRole("radiogroup", { name }) resolves correctly
+      render(
+        <RadioGroup aria-label="Frequência de notificação">
+          <Radio value="now" label="Imediato" />
+          <Radio value="daily" label="Diário" />
+        </RadioGroup>,
+      );
+      expect(
+        screen.getByRole("radiogroup", { name: /frequência de notificação/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("RadioGroup required propagates aria-required=true (Radix passthrough)", () => {
+      // AC-5(i) — required pattern: Radix exposes aria-required on the root
+      const { container } = render(
+        <RadioGroup aria-label="Opção obrigatória" required>
+          <Radio value="a" label="A" />
+          <Radio value="b" label="B" />
+        </RadioGroup>,
+      );
+      // Radix forwards `required` to aria-required on the Root
+      const group = container.querySelector('[role="radiogroup"]');
+      expect(group).toHaveAttribute("aria-required", "true");
+    });
+
+    it("fieldset + legend exposes the legend as the group's accessible name", () => {
+      // AC-6 — semantic grouping: legend is announced as the fieldset name
+      render(
+        <fieldset>
+          <legend>Plano de assinatura</legend>
+          <RadioGroup aria-label="Plano">
+            <Radio value="starter" label="Starter" />
+            <Radio value="pro" label="Pro" />
+          </RadioGroup>
+        </fieldset>,
+      );
+      // The <fieldset> reports role="group" with the legend as accessible name
+      expect(
+        screen.getByRole("group", { name: /plano de assinatura/i }),
+      ).toBeInTheDocument();
+      // And the inner radiogroup remains queryable by its own aria-label
+      expect(
+        screen.getByRole("radiogroup", { name: /plano/i }),
+      ).toBeInTheDocument();
     });
   });
 });

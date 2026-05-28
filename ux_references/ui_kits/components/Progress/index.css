@@ -1,0 +1,47 @@
+
+.grd-pg { font-family: var(--font-sans); }
+
+/* Linear */
+.grd-pg-linear { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.grd-pg-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; }
+.grd-pg-label { color: var(--fg); font-weight: 500; }
+.grd-pg-val { color: var(--fg-muted); font-weight: 600; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.grd-pg-track { background: var(--gray-200); border-radius: var(--radius-pill); overflow: hidden; }
+.grd-pg-sm .grd-pg-track { height: 4px; }
+.grd-pg-md .grd-pg-track { height: 6px; }
+.grd-pg-lg .grd-pg-track { height: 10px; }
+.grd-pg-fill {
+  height: 100%; border-radius: var(--radius-pill);
+  transition: width 280ms var(--ease-standard);
+  background: var(--violet-500);
+}
+.grd-pg-violet .grd-pg-fill { background: var(--violet-500); }
+.grd-pg-green .grd-pg-fill  { background: var(--signal-green); }
+.grd-pg-amber .grd-pg-fill  { background: var(--signal-yellow); }
+.grd-pg-red .grd-pg-fill    { background: var(--signal-red); }
+
+.grd-pg-ind .grd-pg-fill {
+  width: 40% !important;
+  background: linear-gradient(90deg, transparent, var(--violet-500), transparent);
+  animation: grd-pg-slide 1.2s linear infinite;
+}
+@keyframes grd-pg-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Circular */
+.grd-pg-circular { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.grd-pg-c-bg { color: var(--gray-200); }
+.grd-pg-c-fg { color: var(--violet-500); transition: stroke-dasharray 280ms var(--ease-standard); }
+.grd-pg-green.grd-pg-circular .grd-pg-c-fg { color: var(--signal-green); }
+.grd-pg-amber.grd-pg-circular .grd-pg-c-fg { color: var(--signal-yellow); }
+.grd-pg-red.grd-pg-circular .grd-pg-c-fg   { color: var(--signal-red); }
+.grd-pg-c-val {
+  position: absolute; inset: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--fg);
+  font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+}
+.grd-pg-ind.grd-pg-circular svg { animation: grd-pg-spin 1s linear infinite; }
+@keyframes grd-pg-spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Radio · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · SELEÇÃO ÚNICA</div>
+  <h1 class="pg-title">Radio · RadioGroup</h1>
+  <span class="pg-codename">import { Radio, RadioGroup } from "ui_kits/components/Radio"</span>
+  <p class="pg-desc">Seleção exclusiva entre alternativas. Use <code>RadioGroup</code> para agrupar; ele cuida do <code>name</code>, do estado <code>checked</code> e dispara <code>onChange(value)</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch"}}>{children}</div></div>);
+}
+function App() {
+  const [regime, setRegime] = React.useState("simples");
+  return (<>
+    <Sec title="Tamanhos">
+      <Radio name="s1" size="sm" value="a" label="Tamanho sm" defaultChecked />
+      <Radio name="s2" size="md" value="a" label="Tamanho md (padrão)" defaultChecked />
+    </Sec>
+
+    <Sec title="Grupo com descrição">
+      <RadioGroup name="regime" value={regime} onChange={setRegime}>
+        <Radio value="mei" label="MEI" description="Receita bruta anual até R$ 81 mil." />
+        <Radio value="simples" label="Simples Nacional" description="Apuração unificada em DAS mensal." />
+        <Radio value="presumido" label="Lucro Presumido" description="Margem de lucro pré-definida por atividade." />
+        <Radio value="real" label="Lucro Real" description="Apuração sobre o lucro efetivo do período." />
+      </RadioGroup>
+      <div style={{marginTop:12,fontSize:13,color:"var(--gray-600)"}}>Selecionado: <b style={{color:"var(--orange-500)"}}>{regime}</b></div>
+    </Sec>
+
+    <Sec title="Em linha">
+      <RadioGroup name="periodo" defaultValue="mes" direction="row" gap={20}>
+        <Radio value="hoje" label="Hoje" />
+        <Radio value="semana" label="Semana" />
+        <Radio value="mes" label="Mês" />
+        <Radio value="tri" label="Trimestre" />
+      </RadioGroup>
+    </Sec>
+
+    <Sec title="Estados">
+      <Radio name="st" value="a" label="Marcado" defaultChecked />
+      <Radio name="st" value="b" label="Desmarcado" />
+      <Radio name="st2" value="a" label="Desabilitado marcado" defaultChecked disabled />
+      <Radio name="st2" value="b" label="Desabilitado" disabled />
+      <Radio name="st3" value="a" label="Com erro" invalid />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Radio"]) || "render(<div>Sem exemplo para Radio</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">Radio</th></tr>
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>value</code></td><td>string</td><td>—</td><td class="desc">Valor identificador (obrigatório)</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+  <tr><td><code>label</code></td><td>node</td><td>—</td><td class="desc">Rótulo principal</td></tr>
+  <tr><td><code>description</code></td><td>node</td><td>—</td><td class="desc">Texto de apoio abaixo do rótulo</td></tr>
+  <tr><td><code>invalid</code></td><td>boolean</td><td>false</td><td class="desc">Estado de erro</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">RadioGroup</th></tr>
+  <tr><td><code>name</code></td><td>string</td><td>—</td><td class="desc">Nome compartilhado entre os radios</td></tr>
+  <tr><td><code>value</code> · <code>defaultValue</code></td><td>string</td><td>—</td><td class="desc">Valor controlado/inicial</td></tr>
+  <tr><td><code>onChange</code></td><td>(v) ⇒ void</td><td>—</td><td class="desc">Dispara com o novo value selecionado</td></tr>
+  <tr><td><code>direction</code></td><td>string</td><td>"column"</td><td class="desc">column · row</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Escolha única entre 2-5 opções visíveis simultaneamente.</li>
+      <li>Label clicável; opção default pré-selecionada quando fizer sentido.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Mais de 5 opções — use <code>Select</code>.</li>
+      <li>Radios soltos sem <code>fieldset</code>/<code>legend</code>.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

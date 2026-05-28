@@ -11,6 +11,17 @@ paths:
 
 > **Every Guardia piece (interface, material, document, post, slide, email) MUST use exclusively the official palette — Bright Yellow #FFC30A, Warm Orange #E07400, Soft Pink #DB6286, Deep Violet #4F186D, Baltic Gray #3A3A44, Mono White #FDFDFD, and Mono Black #0E1016, with the 100/200/500/700/900 scales — and MUST meet WCAG 2.1 AA (4.5:1 normal text, 3:1 large text/UI). The combination Yellow 500 over White (1.61:1) is FORBIDDEN. Combinations in the 3:1–4.5:1 range are restricted to titles, buttons, and badges. Signal colors (Green #00BF63, Yellow #FFDE59, Red #FF3131, Blue #004AAD) are reserved for data viz and critical system states.**
 
+## CTA hierarchy by theme (Notion-canonical)
+
+Notion Brand ([Cores](https://www.notion.so/34536f91ebd28142a3f1e0e58fd62c4b), [Branding](https://www.notion.so/Branding-34536f91ebd280a69efacbadab3861c6)) is the source of truth for the primary/secondary CTA hierarchy. The local design-system tokens (`--primary`, `--secondary`, `--accent`, `--ring`) MUST mirror Notion per theme:
+
+| Token | Light mode | Dark mode | Notion role |
+|---|---|---|---|
+| `--primary` (CTA principal: Confirmar, continuar, salvar, contratar) | **Deep Violet 500 `#4F186D`** (7.85:1 AAA over white) | **Warm Orange 500 `#E07400`** (5.68:1 AA over dark surfaces) | Authoritative action |
+| `--secondary` (ação secundária) | **Warm Orange 500 `#E07400`** (3.36:1 AA-large over white; permitted band for buttons/UI) | Gray 700 surface (`#28282F`) — Violet 500 fails contrast on dark, replaced by Surface 2 | Supporting action |
+
+This hierarchy is encoded in `ui_kit/styles/index.css` § "SEMANTIC TOKENS — LIGHT THEME" and § dark override at `:root[data-theme="dark"]`. Any divergence between local tokens and the Notion canonical pages MUST be resolved in favor of Notion ([Plan #21 DoD](https://github.com/guardiatechnology/design-system/issues/21): *"em divergência com `lex-brand-*` / `codex-brand-*` locais, Notion prevalece e o espelho local é atualizado antes da aprovação"*).
+
 ## Coverage
 
 - **Applies to:** UI (platform, site, app), commercial and institutional materials, decks, documents, emails, social media posts, icons, and illustrations.

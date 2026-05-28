@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Logotipo · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<style>
+  .lt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
+  .lt-tile { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: #fff; }
+  .lt-stage { height: 160px; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .lt-bg-light  { background: #FDFDFD; }
+  .lt-bg-dark   { background: var(--violet-900); }
+  .lt-bg-violet { background: var(--violet-700); }
+  .lt-meta { padding: 12px 16px 14px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 10.5px; color: var(--violet-700); line-height: 1.55; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .lt-meta .lt-label { display: block; font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--violet-500); margin-bottom: 3px; }
+  .lt-meta .lt-use { display: block; font-family: var(--font-sans); font-size: 11px; color: var(--gray-500); margin-top: 4px; line-height: 1.45; max-width: 260px; }
+  .lt-dl { flex-shrink: 0; width: 26px; height: 26px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; color: var(--gray-500); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; text-decoration: none; }
+  .lt-dl:hover { background: var(--violet-100); border-color: var(--violet-300); color: var(--violet-500); }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">BRAND · ASSINATURA</div>
+  <h1 class="pg-title">Logotipo</h1>
+  <span class="pg-codename">import Logotipo from "ui_kits/components/Logotipo"</span>
+  <p class="pg-desc">Símbolo + palavra "Guardia" em tipografia Lastica. Usado em cabeçalhos, rodapés, landing pages, splash screens e qualquer contexto onde a marca precisa ser apresentada por extenso. Quatro variantes. Clique no ícone de download em cada tile para baixar o SVG original.</p>
+</div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx">
+const FILE: Record<string,string> = {
+  "purple":     "guardia-logotipo-purple.svg",
+  "orange":     "guardia-logotipo-orange.svg",
+  "mono-black": "guardia-logotipo-mono-black.svg",
+  "mono-white": "guardia-logotipo-mono-white.svg",
+};
+
+function Tile({ variant, bg, label, use }:{ variant: string; bg: string; label: string; use: string }) {
+  const file = FILE[variant];
+  const href = `../../../assets/logo/${file}`;
+  return (
+    <div className="lt-tile">
+      <div className={"lt-stage " + bg}><Logotipo variant={variant as any} height={56} /></div>
+      <div className="lt-meta">
+        <div>
+          <span className="lt-label">{label}</span>
+          variant="{variant}"
+          <span className="lt-use">{use}</span>
+        </div>
+        <a className="lt-dl" href={href} download={file} title={`Baixar ${file}`} aria-label={`Baixar ${file}`}>
+          <Icon name="download" size={14} />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (<>
+    <div className="pg-sec">
+      <p className="pg-sec-title">Variantes</p>
+      <div className="lt-grid">
+        <Tile variant="purple"     bg="lt-bg-light"  label="Principal · fundos claros" use="Padrão. Símbolo violeta com G laranja + palavra Guardia em Lastica violeta." />
+        <Tile variant="orange"     bg="lt-bg-violet" label="Secundário · fundos violeta" use="Reservado ao espectro do violeta. Símbolo laranja com G violeta + palavra Guardia em laranja." />
+        <Tile variant="mono-black" bg="lt-bg-light"  label="Mono preto" use="Impressões P&B, documentos oficiais, selos, gravações técnicas." />
+        <Tile variant="mono-white" bg="lt-bg-dark"   label="Mono branco" use="Fundos escuros ou saturados onde cor não garante contraste." />
+      </div>
+    </div>
+
+    <div className="pg-sec">
+      <p className="pg-sec-title">Escala (height)</p>
+      <div className="pg-stage" style={{gap:28, padding:28, alignItems:"flex-end", flexWrap:"wrap"}}>
+        {[20, 28, 40, 56, 72].map(h => (
+          <div key={h} style={{display:"flex", flexDirection:"column", alignItems:"center", gap:8}}>
+            <Logotipo height={h} />
+            <span style={{fontFamily:"var(--font-mono)", fontSize:10, color:"var(--gray-500)"}}>height={h}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Logotipo"]) || "render(<Logotipo height={40} />);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"purple"</td><td class="desc">purple · orange · mono-black · mono-white</td></tr>
+  <tr><td><code>height</code></td><td>number</td><td>32</td><td class="desc">Altura em px. Largura ajusta proporcionalmente.</td></tr>
+  <tr><td><code>alt</code></td><td>string</td><td>"Guardia"</td><td class="desc">Texto alternativo para acessibilidade</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Cabeçalho principal, splash screen, rodapé institucional.</li>
+      <li>Primeira apresentação da marca em uma página ou documento.</li>
+      <li>Materiais impressos e e-mails transacionais.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Altura menor que 20px — palavra fica ilegível; use <code>&lt;Logo /&gt;</code>.</li>
+      <li>Variante purple sobre fundo violeta — use orange ou mono-white.</li>
+      <li>Cortar, distorcer ou recriar a palavra em outra fonte.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

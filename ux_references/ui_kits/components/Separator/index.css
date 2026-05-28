@@ -1,0 +1,77 @@
+/* Separator
+   Usa background (não border) para controle sub-pixel e dashes consistentes
+   entre Chrome/Safari/FF. Cor padrão = --border (neutro com viés violeta). */
+
+/* Horizontal solid */
+.grd-sep-horizontal:not(.grd-sep-labeled) {
+  width: 100%; height: 1px;
+  background: var(--border);
+  border: 0;
+}
+.grd-sep-horizontal.grd-sep-dashed:not(.grd-sep-labeled) {
+  height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--border) 0 6px,
+    transparent 6px 12px
+  );
+}
+.grd-sep-horizontal.grd-sep-dotted:not(.grd-sep-labeled) {
+  height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--border) 0 2px,
+    transparent 2px 5px
+  );
+}
+
+/* Vertical */
+.grd-sep-vertical {
+  width: 1px; align-self: stretch;
+  background: var(--border);
+  border: 0;
+  min-height: 16px;
+}
+.grd-sep-vertical.grd-sep-dashed {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0 4px,
+    transparent 4px 8px
+  );
+}
+.grd-sep-vertical.grd-sep-dotted {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0 2px,
+    transparent 2px 5px
+  );
+}
+
+/* Labeled: "linha — texto — linha" */
+.grd-sep-labeled {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--gray-500);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 0; background: transparent;
+}
+.grd-sep-labeled .grd-sep-line {
+  flex: 1; height: 1px;
+  background: var(--border);
+  border: 0;
+}
+.grd-sep-labeled.grd-sep-dashed .grd-sep-line {
+  background: repeating-linear-gradient(
+    to right,
+    var(--border) 0 6px,
+    transparent 6px 12px
+  );
+}
+.grd-sep-labeled.grd-sep-dotted .grd-sep-line {
+  background: repeating-linear-gradient(
+    to right,
+    var(--border) 0 2px,
+    transparent 2px 5px
+  );
+}
+.grd-sep-labeled .grd-sep-label { flex-shrink: 0; }

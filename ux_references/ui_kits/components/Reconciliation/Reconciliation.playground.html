@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Reconciliation · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=11">
+<link rel="stylesheet" href="../ConfidenceIndicator/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · CONCILIAÇÃO</div>
+  <h1 class="pg-title">Reconciliation</h1>
+  <span class="pg-codename">import Reconciliation from "ui_kits/components/Reconciliation"</span>
+  <p class="pg-desc">Linha de conciliação: sistema × banco, status do par, confidence e ações.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../ConfidenceIndicator/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=11"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:24,flexDirection:"column",alignItems:"stretch",gap:10,maxWidth:920}}>{children}</div></div>);
+}
+
+function App() {
+  return (<>
+    <Sec title="Em contexto · auto-conciliado (extrato Itaú ↔ NF fornecedor)">
+      <Reconciliation
+        status="match" confidence="high"
+        left={{  source: "Extrato Itaú",     label: "TED PAPELARIA BETA",    amount: 12480.00, date: "05/11/2025", meta: "Ag. 0478 · CC 91234-0" }}
+        right={{ source: "Lançamento contábil", label: "NF 8.421 · Papelaria Beta", amount: 12480.00, date: "05/11/2025", meta: "3.1.4.05 · Material de escritório" }}
+        onOpen={() => {}} onConfirm={() => {}} onReject={() => {}}
+      />
+      <div style={{padding:"12px 16px",background:"var(--success-soft)",borderRadius: "var(--radius-md)",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,fontSize:13,color:"color-mix(in oklab, var(--signal-green) 52%, black)"}}>
+        <span><b>Auto-conciliado pelo agente</b> · valor, data e fornecedor idênticos</span>
+      </div>
+    </Sec>
+
+    <Sec title="Em contexto · divergência que exige revisão humana">
+      <Reconciliation
+        status="diff" confidence="medium"
+        left={{  source: "Extrato Itaú",     label: "DEB AUTOMATICO ENERGIA", amount: 1230.00, date: "05/11/2025" }}
+        right={{ source: "Lançamento contábil", label: "Fatura CPFL · 10/2025", amount: 1280.00, date: "04/11/2025", meta: "Divergência em data e valor" }}
+        onOpen={() => {}} onConfirm={() => {}} onReject={() => {}}
+      />
+      <div style={{padding:"12px 16px",background:"var(--warning-soft)",borderRadius: "var(--radius-md)",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,fontSize:13,color:"var(--yellow-900)"}}>
+        <span>Diferença de <b>R$ 50,00</b> no valor · data com 1 dia a mais — agente pediu revisão</span>
+      </div>
+    </Sec>
+
+    <Sec title="Match · alta confiança">
+      <Reconciliation
+        status="match" confidence="high"
+        left={{  source: "Sistema", label: "NF 4891 — Alfa Comércio", amount: 12480.00, date: "12/10/2026", meta: "Receita de serviços" }}
+        right={{ source: "Itaú",    label: "TED recebida de Alfa Comércio", amount: 12480.00, date: "12/10/2026", meta: "Ag. 0478 · CC 91234-0" }}
+        onOpen={() => {}} onConfirm={() => {}} onReject={() => {}}
+      />
+    </Sec>
+
+    <Sec title="Divergência · confidence média">
+      <Reconciliation
+        status="diff" confidence="medium"
+        left={{  source: "Sistema", label: "Pagamento fornecedor Delta", amount: 8432.10, date: "15/10/2026", meta: "Duplicata #3320" }}
+        right={{ source: "Bradesco", label: "DOC Delta Indústria", amount: 8412.10, date: "15/10/2026", meta: "Tarifa R$ 20,00" }}
+        onOpen={() => {}} onConfirm={() => {}} onReject={() => {}}
+      />
+    </Sec>
+
+    <Sec title="Sem par">
+      <Reconciliation
+        status="unmatched" confidence="low"
+        left={{ source: "Sistema", label: "Transferência agendada — Horus", amount: 15200.00, date: "20/10/2026", meta: "Aguardando confirmação" }}
+        onOpen={() => {}} onReject={() => {}}
+      />
+    </Sec>
+
+    <Sec title="Em lote — empilhadas (sem ações)">
+      <Reconciliation
+        status="match" confidence="high"
+        left={{  source: "Sistema", label: "NF 4892 — Beta Serviços", amount: 4150.00, date: "13/10", meta: "Receita de serviços" }}
+        right={{ source: "Itaú",    label: "TED recebida de Beta",     amount: 4150.00, date: "13/10" }}
+      />
+      <Reconciliation
+        status="match" confidence="high"
+        left={{  source: "Sistema", label: "NF 4893 — Casa & Jardim",  amount: 890.50,  date: "13/10", meta: "Receita de serviços" }}
+        right={{ source: "Itaú",    label: "PIX recebido de Casa",     amount: 890.50,  date: "13/10" }}
+      />
+      <Reconciliation
+        status="diff" confidence="medium"
+        left={{  source: "Sistema", label: "NF 4894 — Epsilon",        amount: 2310.00, date: "14/10" }}
+        right={{ source: "Itaú",    label: "TED recebida de Epsilon",  amount: 2300.00, date: "14/10", meta: "Tarifa R$ 10,00" }}
+      />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Reconciliation"]) || "render(<div>Sem exemplo para Reconciliation</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>left</code></td><td>RecSide</td><td>—</td><td class="desc">Lado sistema (fonte interna)</td></tr>
+  <tr><td><code>right</code></td><td>RecSide?</td><td>—</td><td class="desc">Lado banco (ou omitir p/ unmatched)</td></tr>
+  <tr><td><code>status</code></td><td>string</td><td>"match"</td><td class="desc">match · diff · unmatched</td></tr>
+  <tr><td><code>confidence</code></td><td>string</td><td>—</td><td class="desc">high · medium · low — chip no centro</td></tr>
+  <tr><td><code>onOpen</code> · <code>onConfirm</code> · <code>onReject</code></td><td>fn</td><td>—</td><td class="desc">Ações à direita (renderizadas quando passadas)</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">RecSide</th></tr>
+  <tr><td><code>label</code></td><td>node</td><td>—</td><td class="desc">Descrição do lançamento</td></tr>
+  <tr><td><code>amount</code></td><td>number</td><td>—</td><td class="desc">Valor em BRL (formatado automaticamente)</td></tr>
+  <tr><td><code>date</code> · <code>meta</code> · <code>source</code></td><td>node</td><td>—</td><td class="desc">Metadados visuais</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Side-by-side sistema × banco com match score central.</li>
+      <li>Destacar campos divergentes em amarelo; ação explícita em divergências.</li>
+      <li>Auto-conciliar só quando confidence ≥ 95% e com trilha de auditoria.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Auto-conciliação silenciosa sem feedback.</li>
+      <li>Cores de status em campos individuais — destaque só a divergência.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

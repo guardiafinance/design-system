@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Switch · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORMS · TOGGLE</div>
+  <h1 class="pg-title">Switch</h1>
+  <span class="pg-codename">import Switch from "ui_kits/components/Switch"</span>
+  <p class="pg-desc">Alternador on/off para ações com efeito imediato — prefira sobre checkbox quando a mudança afeta estado do sistema (notificações, integrações, automações). Dois tamanhos, label e descrição opcionais.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, variant }: { title: string; children: React.ReactNode; variant?: string }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className={"pg-stage col "+(variant||"")}>{children}</div></div>);
+}
+function App() {
+  const [notifs, setNotifs] = React.useState(true);
+  const [daily, setDaily]   = React.useState(false);
+  return (<>
+    <Sec title="Tamanhos">
+      <Switch size="sm" label="Small — 30×18" defaultChecked />
+      <Switch size="md" label="Medium — 38×22 (default)" defaultChecked />
+    </Sec>
+    <Sec title="Com descrição">
+      <Switch label="Notificações por e-mail" description="Receba um resumo diário ao fim do expediente" defaultChecked />
+      <Switch label="Autopilot de conciliação" description="O agente concilia automaticamente matches com confiança &gt; 95%" />
+      <Switch label="Relatório semanal" description="Todo domingo 18h, PDF + link no Control Center" defaultChecked />
+    </Sec>
+    <Sec title="Estados">
+      <Switch label="Ativado" defaultChecked />
+      <Switch label="Desativado" />
+      <Switch label="Bloqueado (on)" defaultChecked disabled />
+      <Switch label="Bloqueado (off)" disabled />
+    </Sec>
+    <Sec title="Controlado">
+      <Switch label="Notificações" description={`estado: ${notifs ? "ligado" : "desligado"}`} checked={notifs} onChange={(e) => setNotifs(e.target.checked)} />
+      <Switch label="Resumo diário 18h" description={daily ? "ativo" : "inativo"} checked={daily} onChange={(e) => setDaily(e.target.checked)} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+function ExampleApp() {
+  const code = `
+function Preferencias() {
+  const [auto, setAuto] = React.useState(true);
+
+  return (
+    <div style={{ width: 360 }}>
+      <Switch
+        label="Autopilot de conciliação"
+        description="Matches com confiança > 95% são aprovados sem revisão"
+        checked={auto}
+        onChange={(e) => setAuto(e.target.checked)}
+      />
+    </div>
+  );
+}
+
+render(<Preferencias />);
+`;
+  return <LiveCode code={code} />;
+}
+ReactDOM.createRoot(document.getElementById('example-root')!).render(<ExampleApp />);
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>size</code></td><td>string</td><td><code>"md"</code></td><td class="desc">sm · md</td></tr>
+  <tr><td><code>label</code></td><td>ReactNode</td><td>—</td><td class="desc">Texto principal ao lado do toggle</td></tr>
+  <tr><td><code>description</code></td><td>ReactNode</td><td>—</td><td class="desc">Texto de apoio abaixo do label</td></tr>
+  <tr><td><code>checked</code></td><td>boolean</td><td>—</td><td class="desc">Uso controlado</td></tr>
+  <tr><td><code>defaultChecked</code></td><td>boolean</td><td>—</td><td class="desc">Uso não-controlado</td></tr>
+  <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Bloqueia interação</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Liga/desliga aplicado imediatamente (auto-conciliação, notificações).</li>
+      <li>Label à esquerda; estado on = laranja.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Configurações que precisam "salvar" — use <code>Checkbox</code>.</li>
+      <li>Switch para ação temporária (filtros).</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>
