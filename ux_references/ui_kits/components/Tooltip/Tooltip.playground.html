@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tooltip · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../IconButton/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">OVERLAY · DICA</div>
+  <h1 class="pg-title">Tooltip</h1>
+  <span class="pg-codename">import Tooltip from "ui_kits/components/Tooltip"</span>
+  <p class="pg-desc">Dica curta no hover/focus do elemento filho. Sempre texto conciso — para conteúdo rico, use <code>Popover</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{gap:18,padding:40,flexWrap:"wrap"}}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Lados">
+      <Tooltip content="Abrir acima" side="top"><button className="grd-btn grd-btn-secondary">Top</button></Tooltip>
+      <Tooltip content="À direita"    side="right"><button className="grd-btn grd-btn-secondary">Right</button></Tooltip>
+      <Tooltip content="Abaixo"       side="bottom"><button className="grd-btn grd-btn-secondary">Bottom</button></Tooltip>
+      <Tooltip content="À esquerda"   side="left"><button className="grd-btn grd-btn-secondary">Left</button></Tooltip>
+    </Sec>
+    <Sec title="Em icon-buttons (uso comum)">
+      <Tooltip content="Aprovar lançamento"><IconButton icon="check" variant="ghost" /></Tooltip>
+      <Tooltip content="Rejeitar"><IconButton icon="x" variant="ghost" /></Tooltip>
+      <Tooltip content="Abrir detalhes"><IconButton icon="external-link" variant="ghost" /></Tooltip>
+      <Tooltip content="Mais opções"><IconButton icon="more-horizontal" variant="ghost" /></Tooltip>
+    </Sec>
+    <Sec title="Tamanhos">
+      <Tooltip size="sm" content="sm — 11.5px"><button className="grd-btn grd-btn-secondary">sm</button></Tooltip>
+      <Tooltip size="md" content="md — 12.5px (padrão)"><button className="grd-btn grd-btn-secondary">md</button></Tooltip>
+    </Sec>
+    <Sec title="Conteúdo rico (mini)">
+      <Tooltip content={<><b>⌘K</b> · Buscar tudo</>}><button className="grd-btn grd-btn-ghost">Hover</button></Tooltip>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Tooltip"]) || "render(<div>Sem exemplo para Tooltip</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>content</code></td><td>node</td><td>—</td><td class="desc">Texto/conteúdo da dica</td></tr>
+  <tr><td><code>side</code></td><td>string</td><td>"top"</td><td class="desc">top · right · bottom · left</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+  <tr><td><code>delay</code></td><td>number</td><td>200</td><td class="desc">ms antes de abrir</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Explicação curta sob hover/focus em <code>IconButton</code>, campos abreviados, siglas fiscais.</li>
+      <li>Delay 300ms; posicionamento automático.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Conteúdo crítico em tooltip (não acessível em mobile).</li>
+      <li>Tooltips longos — use <code>Popover</code>.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

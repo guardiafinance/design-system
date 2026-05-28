@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>IconButton · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">PRIMITIVO · AÇÃO</div>
+  <h1 class="pg-title">IconButton</h1>
+  <span class="pg-codename">import IconButton from "ui_kits/components/IconButton"</span>
+  <p class="pg-desc">Botão apenas com ícone para toolbars, cabeçalhos de tabela e ações compactas. 5 variantes, 3 tamanhos, 2 shapes. <b>Sempre</b> receber <code>aria-label</code> — acessibilidade obrigatória.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage">{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Variantes">
+      <IconButton icon="plus" variant="primary"     aria-label="Adicionar" />
+      <IconButton icon="arrow-right" variant="accent" aria-label="Continuar" />
+      <IconButton icon="settings" variant="outline" aria-label="Configurações" />
+      <IconButton icon="more-vertical" variant="ghost" aria-label="Mais opções" />
+      <IconButton icon="trash" variant="destructive" aria-label="Excluir" />
+    </Sec>
+    <Sec title="Tamanhos">
+      <IconButton icon="search" size="sm" variant="outline" aria-label="Buscar" />
+      <IconButton icon="search" size="md" variant="outline" aria-label="Buscar" />
+      <IconButton icon="search" size="lg" variant="outline" aria-label="Buscar" />
+    </Sec>
+    <Sec title="Shape · circle">
+      <IconButton icon="user" shape="circle" variant="primary" aria-label="Perfil" />
+      <IconButton icon="bell" shape="circle" variant="outline" aria-label="Notificações" />
+      <IconButton icon="x" shape="circle" variant="ghost" aria-label="Fechar" />
+    </Sec>
+    <Sec title="Estados">
+      <IconButton icon="refresh" aria-label="Atualizar" />
+      <IconButton icon="refresh" aria-label="Atualizar" disabled />
+    </Sec>
+    <Sec title="Em toolbar (uso real)">
+      <div style={{display:"flex",gap:2,padding:4,background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-sm)"}}>
+        <IconButton icon="bold" size="sm" aria-label="Negrito" />
+        <IconButton icon="italic" size="sm" aria-label="Itálico" />
+        <IconButton icon="underline" size="sm" aria-label="Sublinhado" />
+        <span style={{width:1,background:"var(--border)",margin:"4px 2px"}} />
+        <IconButton icon="align-left" size="sm" aria-label="Alinhar esquerda" />
+        <IconButton icon="align-center" size="sm" aria-label="Centralizar" />
+        <IconButton icon="align-right" size="sm" aria-label="Alinhar direita" />
+      </div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["IconButton"]) || "render(<div>Sem exemplo para IconButton</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>icon</code></td><td>IconName</td><td>—</td><td class="desc">Nome do glifo (obrigatório)</td></tr>
+  <tr><td><code>aria-label</code></td><td>string</td><td>—</td><td class="desc">Obrigatório — descrição para leitores de tela</td></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"ghost"</td><td class="desc">primary · accent · outline · ghost · destructive</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm (28) · md (36) · lg (44)</td></tr>
+  <tr><td><code>shape</code></td><td>string</td><td>"square"</td><td class="desc">square · circle</td></tr>
+  <tr><td><code>disabled</code></td><td>boolean</td><td>false</td><td class="desc">Bloqueia interação</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Ação secundária em toolbars densas onde o ícone é autoexplicativo (editar, mais opções, fechar).</li>
+      <li>Sempre com <code>aria-label</code> descritivo.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Ações ambíguas sem <code>Tooltip</code>.</li>
+      <li>Botão icônico como CTA principal de uma tela.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

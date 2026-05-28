@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>ChatMessage · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../ConfidenceIndicator/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../IconButton/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">CONTEÚDO · CHAT</div>
+  <h1 class="pg-title">ChatMessage</h1>
+  <span class="pg-codename">import ChatMessage from "ui_kits/components/ChatMessage"</span>
+  <p class="pg-desc">Bolha de conversa para copilots e transcrições. Roles: user, assistant, system. Inclui confidence e ações.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=3"></script>
+<script type="text/babel" data-presets="tsx" src="../ConfidenceIndicator/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,flexDirection:"column",alignItems:"stretch",gap:12,maxWidth:720}}>{children}</div></div>);
+}
+
+function App() {
+  return (<>
+    <Sec title="Em contexto · copiloto classificando lançamentos">
+      <div style={{background:"var(--bg-subtle)",padding:20,borderRadius: "var(--radius-lg)",display:"flex",flexDirection:"column",gap:12}}>
+        <ChatMessage role="assistant" name="Agente Contábil" avatarIcon="bot" timestamp="14:32">
+          Encontrei 14 lançamentos com score abaixo de 85%. Quer que eu reclassifique com base no padrão dos últimos 6 meses?
+        </ChatMessage>
+        <ChatMessage role="user" name="Maria Santos" timestamp="14:32">
+          Sim, mas confirma cada um antes de aplicar.
+        </ChatMessage>
+        <ChatMessage
+          role="assistant" name="Agente Contábil" avatarIcon="bot" timestamp="14:33"
+          confidence="high"
+          actions={<>
+            <button className="grd-btn grd-btn-ghost grd-btn-sm">Pular</button>
+            <button className="grd-btn grd-btn-primary grd-btn-sm">Aprovar</button>
+          </>}
+        >
+          Começando pela <b>NF 8.394</b> — fornecedor AWS Brasil, R$ 4.280,00.<br/>
+          Sugestão: <b>3.1.4.06 · Infra cloud</b> (baseado em 22 transações similares).
+        </ChatMessage>
+        <ChatMessage role="system" avatarIcon="info" timestamp="14:33">
+          O agente criou um fluxo de revisão com 14 itens. Tempo estimado: 3 min.
+        </ChatMessage>
+        <ChatMessage role="user" name="Maria Santos" timestamp="14:34">
+          Aprovo a primeira. Veja as próximas.
+        </ChatMessage>
+      </div>
+    </Sec>
+
+    <Sec title="Conversa com agente contábil">
+      <ChatMessage role="system" avatarIcon="info" name="Guardia" timestamp="09:12">
+        Você iniciou uma nova sessão com o <b>Agente Contábil</b>. Contexto: Alfa Comércio LTDA — setembro/2026.
+      </ChatMessage>
+
+      <ChatMessage role="user" name="Luana" timestamp="09:13">
+        O que você fez com as 11 notas que ficaram pendentes ontem?
+      </ChatMessage>
+
+      <ChatMessage
+        role="assistant" name="Agente Contábil" avatarIcon="bot" timestamp="09:13"
+        confidence="high"
+        actions={<>
+          <button className="grd-btn grd-btn-ghost grd-btn-sm">Ver detalhes</button>
+          <button className="grd-btn grd-btn-secondary grd-btn-sm">Aplicar</button>
+        </>}
+      >
+        Das 11 pendentes, reclassifiquei 9 para a conta <code>4.1.02 — Despesas comerciais</code> com base no histórico do fornecedor.
+        As 2 restantes têm CFOP ambíguo (1102 vs 1403) e aguardam sua decisão.
+      </ChatMessage>
+
+      <ChatMessage role="user" name="Luana" timestamp="09:14">
+        Pode abrir o comparativo das duas pra mim?
+      </ChatMessage>
+
+      <ChatMessage
+        role="assistant" name="Agente Contábil" avatarIcon="bot" timestamp="09:14"
+        confidence="medium"
+        actions={<>
+          <button className="grd-btn grd-btn-secondary grd-btn-sm">Abrir comparativo</button>
+        </>}
+      >
+        Preparei o comparativo lado a lado. <b>NF 4891</b> tem natureza de revenda; <b>NF 4892</b>, de consumo interno — recomendo CFOPs distintos.
+      </ChatMessage>
+    </Sec>
+
+    <Sec title="Estados de confidence">
+      <ChatMessage role="assistant" name="Guardia" avatarIcon="bot" confidence="high" timestamp="agora">
+        Aprovei automaticamente os 237 lançamentos do lote atual.
+      </ChatMessage>
+      <ChatMessage role="assistant" name="Guardia" avatarIcon="bot" confidence="medium" timestamp="agora">
+        Encontrei 3 lançamentos que precisam da sua confirmação antes de aprovar.
+      </ChatMessage>
+      <ChatMessage role="assistant" name="Guardia" avatarIcon="bot" confidence="low" timestamp="agora">
+        Não tenho dados suficientes para classificar este lançamento com segurança.
+      </ChatMessage>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["ChatMessage"]) || "render(<div>Sem exemplo para ChatMessage</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>role</code></td><td>string</td><td>"assistant"</td><td class="desc">user · assistant · system</td></tr>
+  <tr><td><code>name</code></td><td>node</td><td>—</td><td class="desc">Nome exibido</td></tr>
+  <tr><td><code>avatar</code> · <code>avatarIcon</code></td><td>string</td><td>—</td><td class="desc">URL de imagem ou ícone Lucide fallback</td></tr>
+  <tr><td><code>timestamp</code></td><td>node</td><td>—</td><td class="desc">Horário</td></tr>
+  <tr><td><code>confidence</code></td><td>string</td><td>—</td><td class="desc">high · medium · low — mostra ConfidenceIndicator no rodapé</td></tr>
+  <tr><td><code>actions</code></td><td>node</td><td>—</td><td class="desc">Botões de ação</td></tr>
+  <tr><td><code>children</code></td><td>node</td><td>—</td><td class="desc">Corpo da mensagem</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Avatar <code>bot</code> em laranja à esquerda; humano à direita; sistema cinza centralizado.</li>
+      <li>Ações inline (aprovar/rejeitar) dentro da mensagem do agente quando houver decisão.</li>
+      <li>Incluir nome do agente e timestamp para rastreabilidade.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>"Typing" prolongado sem resposta concreta.</li>
+      <li>Mensagens do agente sem rastreabilidade (qual agente respondeu).</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

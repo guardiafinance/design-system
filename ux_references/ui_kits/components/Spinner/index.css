@@ -1,0 +1,11 @@
+/* Spinner */
+.grd-spinner {
+  display: inline-flex; align-items: center; justify-content: center;
+  animation: grd-spinner-spin 900ms linear infinite;
+  color: currentColor;
+}
+.grd-spinner-brand   { color: var(--violet-500); }
+.grd-spinner-accent  { color: var(--orange-500); }
+.grd-spinner-white   { color: #fff; }
+.grd-spinner svg { display: block; }
+@keyframes grd-spinner-spin { to { transform: rotate(360deg); } }

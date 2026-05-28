@@ -1,0 +1,70 @@
+
+.grd-rc {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+/* Barra de status à esquerda — bloco retangular, sem raio (remete ao símbolo G).
+   Não é "border-left accent"; é um indicador pleno que pertence à geometria
+   modular da marca. */
+.grd-rc::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px; background: var(--signal-green);
+}
+.grd-rc-diff::before      { background: var(--signal-yellow); }
+.grd-rc-unmatched::before { background: var(--signal-red); }
+
+.grd-rc-side { min-width: 0; }
+.grd-rc-src {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--fg-muted); margin-bottom: 3px;
+}
+.grd-rc-label { font-size: 13px; font-weight: 500; color: var(--fg); line-height: 1.35; }
+.grd-rc-amount {
+  font-size: 15px; font-weight: 600; color: var(--fg);
+  font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.grd-rc-meta { font-size: 11.5px; color: var(--fg-muted); margin-top: 2px; }
+.grd-rc-right { text-align: right; }
+
+.grd-rc-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.grd-rc-status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11.5px; font-weight: 600;
+  padding: 3px 8px; border-radius: var(--radius-pill);
+}
+.grd-rc-status-match     { background: var(--success-soft); color: color-mix(in oklab, var(--signal-green) 52%, black); }
+.grd-rc-status-diff      { background: var(--yellow-100);   color: var(--yellow-900); }
+.grd-rc-status-unmatched { background: var(--danger-soft);  color: color-mix(in oklab, var(--signal-red) 45%, black); }
+.grd-rc-delta {
+  font-size: 11px; color: var(--fg-muted);
+  font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+}
+
+.grd-rc-empty {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--fg-muted); font-style: italic;
+}
+
+.grd-rc-actions { display: inline-flex; gap: 4px; align-items: center; }
+.grd-rc-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 1px solid transparent; border-radius: var(--radius-md);
+  padding: 5px 10px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  transition: background 140ms, border-color 140ms, color 140ms;
+}
+.grd-rc-btn-primary { background: var(--violet-500); color: #fff; }
+.grd-rc-btn-primary:hover { background: var(--violet-600); }
+.grd-rc-btn-ghost { background: transparent; color: var(--fg); }
+.grd-rc-btn-ghost:hover { background: var(--gray-100); }
+.grd-rc-btn-danger { background: transparent; color: var(--signal-red); padding: 5px 7px; }
+.grd-rc-btn-danger:hover { background: var(--danger-soft); }

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Timeline · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Badge/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · HISTÓRICO</div>
+  <h1 class="pg-title">Timeline</h1>
+  <span class="pg-codename">import Timeline from "ui_kits/components/Timeline"</span>
+  <p class="pg-desc">Linha do tempo vertical. Marcador com ícone, título, descrição, timestamp, meta e tom por item.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,gap:40,alignItems:"flex-start",flexWrap:"wrap"}}>{children}</div></div>);
+}
+function Frame({ children, w=460 }: { children: React.ReactNode; w?: number }) {
+  return (<div style={{width:w,background:"var(--papel)",border:"1px solid var(--gray-200)",borderRadius:"var(--radius-lg)",padding:"18px 22px"}}>{children}</div>);
+}
+
+const AUDITORIA = [
+  { id: "1", tone: "violet" as const, icon: "upload-cloud", title: "Extrato Itaú importado", description: "237 lançamentos via OFX", timestamp: "hoje · 09:12" },
+  { id: "2", tone: "green"  as const, icon: "check",        title: "248 lançamentos aprovados automaticamente", description: "Confiança média 97,3% — regras fiscais aplicadas", timestamp: "09:14", meta: <Badge tone="green" variant="soft">Automático</Badge> },
+  { id: "3", tone: "amber"  as const, icon: "flag",         title: "11 lançamentos marcados para revisão", description: "Confiança abaixo do limiar de 95%", timestamp: "09:15", meta: <Badge tone="amber" variant="soft">Pendente</Badge> },
+  { id: "4", tone: "violet" as const, icon: "user",         title: "Luana aprovou 9 lançamentos", description: "2 reclassificados · NF 4891 corrigida", timestamp: "10:42", meta: <Badge tone="neutral" variant="soft">Humano</Badge> },
+  { id: "5", tone: "green"  as const, icon: "circle-check", title: "Conciliação Itaú concluída", description: "Balanço fechado · diferença R$ 0,00", timestamp: "10:44" },
+];
+
+const ERROS = [
+  { id: "1", tone: "neutral" as const, icon: "clock",         title: "Fechamento de setembro iniciado", timestamp: "01/10 · 08:00" },
+  { id: "2", tone: "red"     as const, icon: "triangle-alert", title: "Falha ao sincronizar com o Domínio", description: "Credencial expirada", timestamp: "01/10 · 08:03" },
+  { id: "3", tone: "amber"   as const, icon: "refresh-cw",    title: "Reprocessamento em fila", description: "3 tentativas restantes", timestamp: "01/10 · 08:12" },
+  { id: "4", tone: "green"   as const, icon: "check",         title: "Sincronização restabelecida", timestamp: "01/10 · 09:28" },
+];
+
+function App() {
+  return (<>
+    <Sec title="Auditoria de um fechamento (padrão)">
+      <Frame>
+        <Timeline items={AUDITORIA} />
+      </Frame>
+    </Sec>
+    <Sec title="Tons múltiplos + conector tracejado + sm">
+      <Frame w={420}>
+        <Timeline items={ERROS} size="sm" connector="dashed" />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Timeline"]) || "render(<div>Sem exemplo para Timeline</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>items</code></td><td>TimelineItem[]</td><td>—</td><td class="desc">Eventos em ordem cronológica</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+  <tr><td><code>connector</code></td><td>string</td><td>"solid"</td><td class="desc">solid · dashed</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">TimelineItem</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>—</td><td class="desc">Chave única</td></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>node</td><td>—</td><td class="desc">Conteúdo</td></tr>
+  <tr><td><code>timestamp</code></td><td>node</td><td>—</td><td class="desc">Horário à direita</td></tr>
+  <tr><td><code>icon</code></td><td>string</td><td>—</td><td class="desc">Ícone no marcador</td></tr>
+  <tr><td><code>tone</code></td><td>string</td><td>"violet"</td><td class="desc">violet · green · amber · red · neutral</td></tr>
+  <tr><td><code>meta</code></td><td>node</td><td>—</td><td class="desc">Badges/ações extras</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Histórico temporal com atores: quem fez o quê, quando (lançamento, agente, usuário).</li>
+      <li>Ícone por tipo de evento; timestamp relativo + absoluto no hover.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Timeline para listagem não-cronológica.</li>
+      <li>Itens sem ator identificado.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

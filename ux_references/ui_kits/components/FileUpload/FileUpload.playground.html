@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>FileUpload · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · UPLOAD</div>
+  <h1 class="pg-title">FileUpload</h1>
+  <span class="pg-codename">import FileUpload from "ui_kits/components/FileUpload"</span>
+  <p class="pg-desc">Dropzone com seleção por clique, lista de arquivos e progresso.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=3"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,flexDirection:"column",alignItems:"stretch",gap:10,maxWidth:620}}>{children}</div></div>);
+}
+
+function App() {
+  const [files, setFiles] = React.useState<any[]>([
+    { name: "NF_4891_alfa.pdf",      size: 284_120, status: "done" },
+    { name: "NF_4892_alfa.xml",      size: 12_380,  status: "done" },
+    { name: "recibo_outubro.pdf",    size: 1_240_500, status: "uploading", progress: 64 },
+    { name: "planilha_razao.xlsx",   size: 2_860_000, status: "error", error: "Formato não suportado" },
+  ]);
+  function onFiles(fl: File[]) {
+    const mapped = fl.map(f => ({ name: f.name, size: f.size, status: "done" as const }));
+    setFiles(prev => [...prev, ...mapped]);
+  }
+  function onRemove(i: number) {
+    setFiles(prev => prev.filter((_, j) => j !== i));
+  }
+  return (<>
+    <Sec title="Com arquivos e estados (done, uploading, error)">
+      <FileUpload
+        multiple
+        accept=".pdf,.xml,.xlsx,.csv"
+        maxSize={10 * 1024 * 1024}
+        hint="PDF, XML, XLSX ou CSV · até 10MB por arquivo"
+        files={files}
+        onFiles={onFiles}
+        onRemove={onRemove}
+      />
+    </Sec>
+    <Sec title="Compacto (single)">
+      <FileUpload
+        compact
+        accept="image/*"
+        hint="PNG ou JPG — logo da empresa"
+      />
+    </Sec>
+    <Sec title="Desabilitado">
+      <FileUpload disabled hint="Aguardando liberação" />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["FileUpload"]) || "render(<div>Sem exemplo para FileUpload</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>accept</code></td><td>string</td><td>—</td><td class="desc">Extensões ou MIME (ex.: <code>.pdf,.xml</code>)</td></tr>
+  <tr><td><code>multiple</code></td><td>boolean</td><td>false</td><td class="desc">Múltiplos arquivos</td></tr>
+  <tr><td><code>maxSize</code></td><td>number (bytes)</td><td>—</td><td class="desc">Exibe na hint; validação do host</td></tr>
+  <tr><td><code>files</code></td><td>UploadFile[]</td><td>[]</td><td class="desc">{`{name,size,status,progress?,error?}`}</td></tr>
+  <tr><td><code>onFiles</code> · <code>onRemove</code></td><td>fn</td><td>—</td><td class="desc">Seleção e remoção</td></tr>
+  <tr><td><code>compact</code></td><td>boolean</td><td>false</td><td class="desc">Dropzone reduzido</td></tr>
+  <tr><td><code>hint</code></td><td>node</td><td>—</td><td class="desc">Texto auxiliar</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Upload de NFe/XML, balancete, OFX — aceita drag-and-drop e múltiplos arquivos.</li>
+      <li>Validação de extensão e tamanho antes de enviar; progresso por arquivo.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Upload silencioso sem feedback de progresso.</li>
+      <li>Sem lista de tipos aceitos visível.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

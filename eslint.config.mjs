@@ -1,6 +1,6 @@
 /**
  * Flat ESLint config (ESLint 9).
- * Runs against ui_kit/ and .storybook/, ignores dist, docs, wip.
+ * Runs against ui_kit/ and .storybook/, ignores dist, docs, wip, ux_references.
  */
 import js from "@eslint/js";
 import ts from "typescript-eslint";
@@ -16,6 +16,7 @@ export default ts.config(
             "dist/**",
             "docs/**",
             "wip/**",
+            "ux_references/**",
             "storybook-static/**",
             "coverage/**",
             "node_modules/**",

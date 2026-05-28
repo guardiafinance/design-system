@@ -1,0 +1,291 @@
+
+/* ─────────────────────────────────────────────────────────
+   FormLayout — esqueleto de formulários
+   Prefixo: grd-form-
+   ───────────────────────────────────────────────────────── */
+
+.grd-form {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  color: var(--fg);
+  width: 100%;
+}
+
+/* ─── Densidade ─────────────────────────────────────────── */
+
+.grd-form-comfy   { gap: 32px; }
+.grd-form-compact { gap: 20px; }
+
+/* ─── Header ────────────────────────────────────────────── */
+
+.grd-form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.grd-form-header-text { min-width: 0; flex: 1; }
+.grd-form-header-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.grd-form-header-desc {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+  max-width: 680px;
+  text-wrap: pretty;
+}
+.grd-form-header-actions {
+  display: flex; gap: 8px; flex-shrink: 0;
+}
+
+/* ─── Section ───────────────────────────────────────────── */
+
+.grd-form-section {
+  display: flex; flex-direction: column;
+}
+.grd-form-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.grd-form-section-head-text { min-width: 0; flex: 1; }
+.grd-form-section-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+}
+.grd-form-section-desc {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.grd-form-section-aside {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: var(--fg-muted);
+}
+
+/* stacked: título em cima, campos abaixo */
+.grd-form-section-stacked {
+  gap: 14px;
+}
+.grd-form-comfy   .grd-form-section-stacked { gap: 18px; }
+.grd-form-compact .grd-form-section-stacked { gap: 12px; }
+
+/* split: título à esquerda, campos à direita (desktop) */
+.grd-form-section-split {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+.grd-form-section-split .grd-form-section-head {
+  flex-direction: column;
+  align-items: stretch;
+  position: sticky;
+  top: 16px;
+}
+.grd-form-section-split .grd-form-section-desc { max-width: 260px; }
+.grd-form-section-split .grd-form-section-body {
+  display: flex; flex-direction: column;
+}
+.grd-form-comfy   .grd-form-section-split .grd-form-section-body { gap: 18px; }
+.grd-form-compact .grd-form-section-split .grd-form-section-body { gap: 12px; }
+
+/* inline: labels à esquerda, denso */
+.grd-form-section-inline {
+  gap: 12px;
+}
+
+/* body padrão (stacked/inline) */
+.grd-form-section-stacked > .grd-form-section-body,
+.grd-form-section-inline  > .grd-form-section-body {
+  display: flex; flex-direction: column;
+}
+.grd-form-comfy   .grd-form-section-stacked > .grd-form-section-body { gap: 18px; }
+.grd-form-compact .grd-form-section-stacked > .grd-form-section-body { gap: 12px; }
+.grd-form-section-inline > .grd-form-section-body { gap: 10px; }
+
+/* responsive: split vira stacked em telas menores */
+@media (max-width: 760px) {
+  .grd-form-section-split {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .grd-form-section-split .grd-form-section-head { position: static; }
+}
+
+/* ─── Row (grid) ────────────────────────────────────────── */
+
+.grd-form-row {
+  display: grid;
+  gap: 16px;
+}
+.grd-form-compact .grd-form-row { gap: 12px; }
+
+/* responsive: colunas colapsam em telas pequenas */
+@media (max-width: 640px) {
+  .grd-form-row {
+    grid-template-columns: 1fr !important;
+  }
+  .grd-form-field[style*="grid-column"] {
+    grid-column: span 1 !important;
+  }
+}
+
+/* ─── Field ─────────────────────────────────────────────── */
+
+.grd-form-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.grd-form-field-labelrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.grd-form-field-label {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+.grd-form-field-required {
+  color: var(--signal-red);
+  font-weight: 600;
+  margin-left: 1px;
+}
+.grd-form-field-optional {
+  color: var(--gray-500);
+  font-weight: 400;
+  font-size: 11.5px;
+  margin-left: 4px;
+}
+.grd-form-field-aside {
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+.grd-form-field-control {
+  display: flex;
+  min-width: 0;
+}
+.grd-form-field-control > * {
+  flex: 1;
+  min-width: 0;
+}
+.grd-form-field-hint,
+.grd-form-field-error-msg {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+.grd-form-field-hint { color: var(--fg-muted); }
+.grd-form-field-error-msg {
+  color: var(--signal-red);
+  font-weight: 500;
+  display: flex; align-items: flex-start; gap: 5px;
+}
+.grd-form-field-error-msg::before {
+  content: "";
+  flex-shrink: 0;
+  width: 4px; height: 4px;
+  margin-top: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--signal-red);
+}
+
+/* inline variant: label à esquerda, controle à direita */
+.grd-form-field-inline {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+.grd-form-field-inline .grd-form-field-labelrow {
+  margin-bottom: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.grd-form-field-inline .grd-form-field-hint,
+.grd-form-field-inline .grd-form-field-error-msg {
+  grid-column: 2;
+}
+@media (max-width: 640px) {
+  .grd-form-field-inline {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .grd-form-field-inline .grd-form-field-hint,
+  .grd-form-field-inline .grd-form-field-error-msg {
+    grid-column: 1;
+  }
+}
+
+/* ─── Actions ───────────────────────────────────────────── */
+
+.grd-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-100);
+}
+.grd-form-compact .grd-form-actions { padding-top: 14px; }
+.grd-form-actions-start   { justify-content: flex-start; }
+.grd-form-actions-center  { justify-content: center; }
+.grd-form-actions-end     { justify-content: flex-end; }
+.grd-form-actions-between { justify-content: space-between; }
+
+.grd-form-actions-sticky {
+  position: sticky;
+  bottom: 0;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: saturate(140%) blur(6px);
+  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  padding: 14px 16px;
+  margin: 0 -16px -16px;
+  border-top: 1px solid var(--gray-200);
+  z-index: 2;
+}
+
+/* ─── Divider ───────────────────────────────────────────── */
+
+.grd-form-divider {
+  border: 0;
+  border-top: 1px solid var(--gray-100);
+  margin: 0;
+}
+
+/* ─── Dark mode — ajustes finos ─────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .grd-form-actions {
+    border-top-color: var(--gray-800, var(--gray-200));
+  }
+  .grd-form-actions-sticky {
+    border-top-color: var(--gray-800, var(--gray-200));
+  }
+  .grd-form-divider {
+    border-top-color: var(--gray-800, var(--gray-100));
+  }
+}

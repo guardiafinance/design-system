@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DatePicker · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Label/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · DATA</div>
+  <h1 class="pg-title">DatePicker</h1>
+  <span class="pg-codename">import DatePicker from "ui_kits/components/DatePicker"</span>
+  <p class="pg-desc">Seletor de data única. Calendário em pt-BR, formato <code>dd/mm/aaaa</code>, com "Hoje" e limpar.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Label/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,gap:14,flexWrap:"wrap"}}>{children}</div></div>);
+}
+
+function App() {
+  const [d1, setD1] = React.useState<Date | null>(new Date(2026, 3, 15));
+  const [d2, setD2] = React.useState<Date | null>(null);
+  const today = new Date();
+  const minBiz = new Date(today.getFullYear(), today.getMonth(), 1);
+  const maxBiz = new Date(today.getFullYear(), today.getMonth() + 3, 0);
+
+  return (<>
+    <Sec title="Padrão">
+      <div style={{display:"flex",flexDirection:"column",gap:6,minWidth:220}}>
+        <Label>Data de competência</Label>
+        <DatePicker value={d1} onChange={setD1} />
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:6,minWidth:220}}>
+        <Label>Vencimento</Label>
+        <DatePicker value={d2} onChange={setD2} placeholder="Escolha a data" />
+      </div>
+    </Sec>
+
+    <Sec title="Com limites (min/max)">
+      <div style={{display:"flex",flexDirection:"column",gap:6,minWidth:240}}>
+        <Label>Data de vencimento (próximos 3 meses)</Label>
+        <DatePicker min={minBiz} max={maxBiz} />
+      </div>
+    </Sec>
+
+    <Sec title="Tamanhos">
+      <DatePicker size="sm" placeholder="sm" />
+      <DatePicker size="md" placeholder="md (padrão)" />
+      <DatePicker size="lg" placeholder="lg" />
+    </Sec>
+
+    <Sec title="Estados">
+      <DatePicker placeholder="Inválido" invalid />
+      <DatePicker placeholder="Desabilitado" disabled defaultValue={new Date()} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["DatePicker"]) || "render(<div>Sem exemplo para DatePicker</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>value</code> · <code>onChange</code></td><td>Date|null · fn</td><td>—</td><td class="desc">Controlado</td></tr>
+  <tr><td><code>defaultValue</code></td><td>Date|null</td><td>—</td><td class="desc">Não controlado</td></tr>
+  <tr><td><code>min</code> · <code>max</code></td><td>Date</td><td>—</td><td class="desc">Limites inclusivos</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>invalid</code> · <code>disabled</code></td><td>boolean</td><td>—</td><td class="desc">Estados</td></tr>
+  <tr><td><code>placeholder</code></td><td>string</td><td>"dd/mm/aaaa"</td><td class="desc">Texto vazio</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Selecionar datas fiscais, períodos contábeis; presets "hoje/semana/mês" quando houver range.</li>
+      <li>Formato <code>dd/mm/aaaa</code> por padrão.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Campos de data sem máscara em inputs críticos.</li>
+      <li>Permitir datas futuras em apuração retroativa.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

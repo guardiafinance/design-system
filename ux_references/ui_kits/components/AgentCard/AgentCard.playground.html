@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>AgentCard · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="../IconButton/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">CONTEÚDO · AGENTES</div>
+  <h1 class="pg-title">AgentCard</h1>
+  <span class="pg-codename">import AgentCard from "ui_kits/components/AgentCard"</span>
+  <p class="pg-desc">Card resumo de um agente de IA no Control Center. Exibe nome, papel, status em tempo real, métricas-chave e última execução. Quatro cores de accent e quatro estados.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p>
+    <div className="pg-stage" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:14}}>{children}</div>
+  </div>);
+}
+
+function App() {
+  return (<>
+    <Sec title="Accents · estados">
+      <AgentCard
+        name="Bia" role="Conciliação Bancária" icon="arrow-left-right"
+        status="active" statusLabel="Conciliando"
+        accent="violet"
+        metrics={[{label:"conciliado hoje",value:"248"},{label:"taxa match",value:"97%"},{label:"pendentes",value:"3"}]}
+        lastRun="há 2 min"
+        actions={<IconButton icon="more-vertical" variant="ghost" size="sm" />}
+      />
+      <AgentCard
+        name="Theo" role="Fiscal Agent" icon="receipt-text"
+        status="idle"
+        accent="orange"
+        metrics={[{label:"NFes processadas",value:"1.2k"},{label:"erros fiscais",value:"0"},{label:"uptime",value:"99.8%"}]}
+        lastRun="há 14 min"
+      />
+      <AgentCard
+        name="Nora" role="Análise de Balanço" icon="file-chart-column"
+        status="paused" statusLabel="Aguardando dados"
+        accent="blue"
+        metrics={[{label:"relatórios",value:"12"},{label:"alertas",value:"4"},{label:"clientes",value:"8"}]}
+        lastRun="há 1h"
+      />
+      <AgentCard
+        name="Caio" role="Coleta Fiscal" icon="download"
+        status="error" statusLabel="Falha no login SEFAZ"
+        accent="green"
+        metrics={[{label:"último sucesso",value:"07/03"},{label:"tentativas",value:"3"},{label:"timeout",value:"30s"}]}
+        lastRun="há 3h"
+        actions={<Button size="sm" variant="outline" leftIcon="refresh">Tentar</Button>}
+      />
+    </Sec>
+
+    <Sec title="Mínimo · sem métricas">
+      <AgentCard name="Rita" role="Auditoria" icon="scan-search" status="active" accent="violet" lastRun="ativa agora" />
+      <AgentCard name="Léo" role="Tributário" icon="scale" status="idle" accent="orange" />
+      <AgentCard name="Miro" role="Faturamento" icon="file-text" status="active" accent="blue" />
+    </Sec>
+
+    <Sec title="Clicável (card inteiro como botão)">
+      <AgentCard name="Bia" role="Conciliação · clique para abrir" icon="arrow-left-right"
+        status="active" accent="violet"
+        metrics={[{label:"hoje",value:"248"},{label:"match",value:"97%"}]}
+        lastRun="há 2 min"
+        onClick={() => alert("Abrindo Bia...")} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["AgentCard"]) || "render(<div>Sem exemplo para AgentCard</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>name</code></td><td>ReactNode</td><td>—</td><td class="desc">Nome do agente</td></tr>
+  <tr><td><code>role</code></td><td>ReactNode</td><td>—</td><td class="desc">Papel / especialidade</td></tr>
+  <tr><td><code>icon</code></td><td>IconName</td><td>"bot"</td><td class="desc">Glifo do avatar</td></tr>
+  <tr><td><code>status</code></td><td>string</td><td>"idle"</td><td class="desc">active · idle · paused · error</td></tr>
+  <tr><td><code>statusLabel</code></td><td>ReactNode</td><td>auto</td><td class="desc">Sobrescreve o rótulo do status</td></tr>
+  <tr><td><code>metrics</code></td><td>&#123;label,value&#125;[]</td><td>—</td><td class="desc">Até 3 KPIs em grid</td></tr>
+  <tr><td><code>lastRun</code></td><td>ReactNode</td><td>—</td><td class="desc">Timestamp humano (ex: "há 2 min")</td></tr>
+  <tr><td><code>actions</code></td><td>ReactNode</td><td>—</td><td class="desc">Slot no footer (IconButton, Button, etc)</td></tr>
+  <tr><td><code>accent</code></td><td>string</td><td>"violet"</td><td class="desc">violet · orange · blue · green</td></tr>
+  <tr><td><code>onClick</code></td><td>() =&gt; void</td><td>—</td><td class="desc">Torna o card inteiro clicável</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Laranja quando o agente está executando; violeta em idle; vermelho em erro.</li>
+      <li>Ícone <code>bot</code> + 2-3 métricas-chave (execuções, taxa de acerto, última execução).</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Humanizar o agente com foto — são sistemas, use ícone temático.</li>
+      <li>Métricas vagas ("ótimo desempenho") ou mais de 3 KPIs por card.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>
