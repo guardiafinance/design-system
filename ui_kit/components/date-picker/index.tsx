@@ -257,11 +257,14 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
         setPendingFrom(triggerDate);
         return;
       }
-      /* Second click → auto-swap if needed → commit complete range. */
+      /* Second click → auto-swap if needed → commit complete range.
+       * WHY: do NOT auto-close in range mode — user needs to verify the
+       * selected range visually (calendar highlight + trigger text) before
+       * dismissing via Esc/click-outside. Single-click mode still closes
+       * because there is nothing to verify after one pick. */
       const next = sortAscending(pendingFrom, triggerDate);
       setPendingFrom(null);
       commitRange(next);
-      setOpen(false);
     }
 
     /* -------------------------- clear / today ----------------------------*/
@@ -281,10 +284,11 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
         if (pendingFrom === null) {
           setPendingFrom(t);
         } else {
+          /* WHY: range completion via "Hoje" follows the same no-auto-close
+           * policy as a normal second click — user verifies before dismissing. */
           const next = sortAscending(pendingFrom, t);
           setPendingFrom(null);
           commitRange(next);
-          setOpen(false);
         }
       } else {
         commitSingle(t);

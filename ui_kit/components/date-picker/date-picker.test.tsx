@@ -483,7 +483,7 @@ describe("DatePicker — range mode (Plan #220, ADR-004)", () => {
     expect(screen.queryByRole("dialog")).toBeInTheDocument();
   });
 
-  it("AC-8: segundo clique commit range completo, fecha popover, onChange dispara uma vez", async () => {
+  it("AC-8: segundo clique commit range completo, popover permanece aberto pra verificação visual, onChange dispara uma vez", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const onChange = vi.fn();
     render(
@@ -507,9 +507,11 @@ describe("DatePicker — range mode (Plan #220, ADR-004)", () => {
     expect(arg.to.getDate()).toBe(20);
     expect(arg.from.getMonth()).toBe(4); /* May = 4 */
     expect(arg.to.getMonth()).toBe(4);
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
+    /* WHY: range mode does NOT auto-close after second pick — user needs
+     * to verify the highlighted range visually before dismissing via
+     * Esc/click-outside. Single mode keeps auto-close because there is
+     * nothing to verify after one pick. */
+    expect(screen.queryByRole("dialog")).toBeInTheDocument();
   });
 
   it("AC-9: to < from auto-swap antes de disparar onChange", async () => {
