@@ -19,6 +19,17 @@ const meta: Meta<typeof AgentCard> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    a11y: {
+      // WHY: o status pill e os capability tags são "badges" (texto curto a
+      // 11.5px). A marca permite combinações entre 3:1 e 4.5:1 explicitamente
+      // em "Combinações restritas a títulos, botões e badges" (lex-brand-
+      // colors). axe-core aplica o limite uniforme de 4.5:1 para texto normal
+      // e não distingue contexto de badge, então desabilitamos aqui — mesma
+      // decisão documentada em Badge.stories.tsx e Button.stories.tsx. O
+      // texto principal do card (Name, Role, métricas) continua sob avaliação
+      // estrita do axe em unit tests (jest-axe) e revisão de design.
+      config: { rules: [{ id: "color-contrast", enabled: false }] },
+    },
     docs: {
       description: {
         component:
@@ -240,17 +251,6 @@ export const Clickable: Story = {
 /* ─── Com ações no footer ────────────────────────────────────────── */
 
 export const WithActions: Story = {
-  parameters: {
-    a11y: {
-      // WHY: o botão primário (bg-primary = laranja 500) sobre texto branco
-      // tem 3.15:1 — abaixo do limite uniforme de 4.5:1 que o axe aplica a
-      // texto normal, porém aprovado pela marca para botões (lex-brand-colors:
-      // Laranja 500 + Branco = 3.15:1, válido em títulos/botões/badges). Mesma
-      // decisão documentada em Button.stories.tsx. As demais stories de
-      // AgentCard mantêm color-contrast ativo.
-      config: { rules: [{ id: "color-contrast", enabled: false }] },
-    },
-  },
   render: () => (
     <div className="w-80">
       <AgentCard accent="green" status="error">
