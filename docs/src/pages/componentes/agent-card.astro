@@ -3,11 +3,10 @@ import ComponentPreview from "../../layouts/ComponentPreview.astro";
 import HighlightedCode from "../../components/HighlightedCode.astro";
 import {
   BasicRow,
-  StatusesRow,
-  VariantsRow,
-  WithImageRow,
-  InteractiveRow,
-  FooterRow,
+  AccentsRow,
+  MinimalRow,
+  ClickableRow,
+  ActionsRow,
 } from "../../previews/agent-card";
 import { LiveAgentCardSnippet } from "../../previews/agent-card-live";
 import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
@@ -19,95 +18,79 @@ import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
   group="Dados & conteúdo"
   storybookId="components-agentcard--default"
   sourcePath="ui_kit/components/agent-card"
-  lede='Cartão de identidade de um agente de IA. Reúne <b>identidade</b> (avatar, nome, papel), <b>status operacional</b> (<code class="inline">idle · working · active · paused · error · offline</code>) e <b>capabilities</b>, no padrão composto do <code class="inline">Card</code>. Apenas tokens semânticos; o status usa as cores de sinal da marca.'
+  lede='Cartão-resumo de um agente de IA no Control Center. Reúne <b>identidade</b> (ícone temático + nome + papel), <b>status operacional</b>, <b>KPIs</b> (até 3) e <b>última execução</b>. Quatro accents (<code class="inline">violet · orange · blue · green</code>) e seis status (<code class="inline">idle · working · active · paused · error · offline</code>). Apenas tokens semânticos.'
 >
   <!-- ============ BASIC ============ -->
   <section class="sec">
     <div class="sec-hdr">
       <h2>Padrão</h2>
-      <small>identidade + status + capabilities</small>
+      <small>identidade + status + métricas + última execução</small>
     </div>
     <div class="preview">
       <BasicRow client:load />
     </div>
     <p class="preview-caption">
-      O <code class="inline">status</code> da raiz cascateia para
-      <code class="inline">AgentCard.Status</code> (badge com rótulo) e para o
-      ponto decorativo do <code class="inline">AgentCard.Avatar</code>.
+      O <code class="inline">accent</code> da raiz pinta a barra lateral e o
+      tint do avatar; o <code class="inline">status</code> cascateia para o
+      pill (com texto + dot). Texto + cor sempre — a cor isolada não comunica
+      estado.
     </p>
   </section>
 
-  <!-- ============ STATUSES ============ -->
+  <!-- ============ ACCENTS · STATES ============ -->
   <section class="sec">
     <div class="sec-hdr">
-      <h2>Status</h2>
-      <small>idle · working · active · paused · error · offline</small>
+      <h2>Accents · estados</h2>
+      <small>violet · orange · blue · green · active · idle · paused · error</small>
     </div>
     <div class="preview">
-      <StatusesRow client:load />
+      <AccentsRow client:load />
     </div>
     <p class="preview-caption">
-      O estado é comunicado por <b>cor + texto</b> (nunca cor sozinha): o badge
-      anuncia o rótulo via <code class="inline">role="status"</code>; o ponto no
-      avatar é decorativo (<code class="inline">aria-hidden</code>). As cores
-      seguem a convenção de sinal da marca — verde positivo, amarelo atenção,
-      vermelho exceção, laranja em movimento.
+      Brand: <b>laranja</b> sinaliza agente em ação; <b>violeta</b> é o estado
+      base (idle/active discreto); <b>vermelho</b> aparece em erro; <b>verde</b>
+      indica conclusão/saúde. O accent define a hierarquia visual; o status,
+      o estado momentâneo.
     </p>
   </section>
 
-  <!-- ============ VARIANTS ============ -->
+  <!-- ============ MINIMAL ============ -->
   <section class="sec">
     <div class="sec-hdr">
-      <h2>Variantes</h2>
-      <small>default · elevated · outlined</small>
+      <h2>Mínimo · sem métricas</h2>
+      <small>quando a lista é densa ou os KPIs ainda não estão maduros</small>
     </div>
     <div class="preview">
-      <VariantsRow client:load />
+      <MinimalRow client:load />
     </div>
   </section>
 
-  <!-- ============ WITH IMAGE ============ -->
+  <!-- ============ CLICKABLE ============ -->
   <section class="sec">
     <div class="sec-hdr">
-      <h2>Com imagem</h2>
-      <small>avatar com src · fallback de iniciais</small>
+      <h2>Clicável</h2>
+      <small>card inteiro como ação</small>
     </div>
     <div class="preview">
-      <WithImageRow client:load />
-    </div>
-    <p class="preview-caption">
-      Com <code class="inline">src</code>, o avatar mostra a imagem; sem
-      <code class="inline">src</code>, recai nas iniciais derivadas de
-      <code class="inline">name</code>.
-    </p>
-  </section>
-
-  <!-- ============ INTERACTIVE ============ -->
-  <section class="sec">
-    <div class="sec-hdr">
-      <h2>Interativo</h2>
-      <small>card inteiro clicável</small>
-    </div>
-    <div class="preview">
-      <InteractiveRow client:load />
+      <ClickableRow client:load />
     </div>
     <p class="preview-caption">
       Com <code class="inline">interactive</code>, a raiz fica focável
       (<code class="inline">tabindex=0</code>), ganha anel de foco e ativa
       <code class="inline">onClick</code> por mouse, <b>Enter</b> e
-      <b>Espaço</b>. Forneça um <code class="inline">aria-label</code>
-      descritivo quando o card todo for a ação.
+      <b>Espaço</b>. <b>Enter/Espaço em filhos focáveis</b> (botão no Footer)
+      não são sequestrados — o card só ativa quando o evento sai dele mesmo.
     </p>
   </section>
 
-  <!-- ============ FOOTER / ACTIONS ============ -->
+  <!-- ============ ACTIONS ============ -->
   <section class="sec">
     <div class="sec-hdr">
       <h2>Com ações</h2>
-      <small>AgentCard.Footer</small>
+      <small>AgentCard.Footer + Button</small>
     </div>
     <div class="preview">
-      <FooterRow client:load />
+      <ActionsRow client:load />
     </div>
   </section>
 
@@ -133,10 +116,16 @@ import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
         </thead>
         <tbody>
           <tr>
+            <td class="name">accent</td>
+            <td class="type">"violet" | "orange" | "blue" | "green"</td>
+            <td class="default">"violet"</td>
+            <td class="desc">Cor do acento (barra lateral + tint do avatar). Cascateia via contexto.</td>
+          </tr>
+          <tr>
             <td class="name">status</td>
             <td class="type">AgentStatus</td>
             <td class="default">"idle"</td>
-            <td class="desc">Estado operacional. Cascateia via contexto para Status e Avatar.</td>
+            <td class="desc">idle · working · active · paused · error · offline. Cascateia via contexto.</td>
           </tr>
           <tr>
             <td class="name">variant</td>
@@ -158,9 +147,9 @@ import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
           </tr>
           <tr>
             <td class="name">AgentCard.Avatar</td>
-            <td class="type">{`{ name?, src?, alt?, size?, status?, hideStatusDot? }`}</td>
-            <td class="default">size "lg"</td>
-            <td class="desc">Avatar do agente + ponto de status decorativo.</td>
+            <td class="type">{`{ icon?: ReactNode, accent? }`}</td>
+            <td class="default">{`<Bot />`}</td>
+            <td class="desc">Ícone temático em quadrado 44×44 com tint do accent. Agentes são sistemas — sem foto.</td>
           </tr>
           <tr>
             <td class="name">AgentCard.Name</td>
@@ -170,24 +159,35 @@ import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
           </tr>
           <tr>
             <td class="name">AgentCard.Status</td>
-            <td class="type">{`{ status?, label?, ...BadgeProps }`}</td>
+            <td class="type">{`{ status?, label? }`}</td>
             <td class="default">herda do root</td>
-            <td class="desc">Badge com role="status"; rótulo localizado por status.</td>
+            <td class="desc">Pill com role="status"; dot + rótulo localizado; glow ring em "active".</td>
           </tr>
           <tr>
-            <td class="name">AgentCard.Capability</td>
-            <td class="type">{`{ ...BadgeProps }`}</td>
-            <td class="default">neutral / soft</td>
-            <td class="desc">Item de capability (li + Badge) dentro de AgentCard.Capabilities.</td>
+            <td class="name">AgentCard.Metric</td>
+            <td class="type">{`{ label, value }`}</td>
+            <td class="default">—</td>
+            <td class="desc">KPI individual (label + value). Use até 3 por card.</td>
+          </tr>
+          <tr>
+            <td class="name">AgentCard.LastRun</td>
+            <td class="type">{`{ icon?: ReactNode | null }`}</td>
+            <td class="default">{`<Clock />`}</td>
+            <td class="desc">Timestamp humano (ex.: "há 2 min"). Passe icon={`{null}`} para ocultar o ícone.</td>
           </tr>
         </tbody>
       </table>
     </div>
     <p class="preview-caption">
-      A raiz aceita os atributos nativos de <code class="inline">&lt;article&gt;</code>
-      (incluindo <code class="inline">onClick</code> e
-      <code class="inline">aria-label</code>). Subcomponentes: Header, Avatar,
-      Name, Role, Status, Description, Capabilities, Capability, Footer.
+      Demais slots: <code class="inline">Header</code>,
+      <code class="inline">Role</code>, <code class="inline">Description</code>,
+      <code class="inline">Capabilities</code> / <code class="inline">Capability</code>
+      (tags opcionais), <code class="inline">Metrics</code>,
+      <code class="inline">Footer</code>. Helpers públicos:
+      <code class="inline">AGENT_STATUS_LABELS</code>,
+      <code class="inline">agentStatusToBadgeVariant</code>, tipos
+      <code class="inline">AgentStatus</code> /
+      <code class="inline">AgentAccent</code>.
     </p>
   </section>
 
@@ -215,11 +215,11 @@ import agentCardSource from "@ds/components/agent-card/index.tsx?raw";
     <div class="a11y">
       <ul>
         <li><span>A raiz é um <b><code class="inline">&lt;article&gt;</code></b> semântico (ou <code class="inline">section</code>/<code class="inline">div</code> via <code class="inline">as</code>).</span></li>
-        <li><span><b>Status por cor + texto</b>: o badge anuncia o rótulo via <code class="inline">role="status"</code>; o ponto colorido é decorativo (<code class="inline">aria-hidden</code>) — a cor nunca é o único indicador.</span></li>
-        <li><span><b>Capabilities</b> são uma lista (<code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;li&gt;</code>) navegável por leitor de tela.</span></li>
-        <li><span><b>Interativo</b>: a raiz fica focável (<code class="inline">tabindex=0</code>), com anel de foco visível, e ativa por <b>Enter</b>/<b>Espaço</b> além do clique. Use <code class="inline">aria-label</code> quando o card todo for a ação.</span></li>
-        <li><span><b>Heading configurável</b>: <code class="inline">AgentCard.Name</code> aceita <code class="inline">as</code> para respeitar a hierarquia da página.</span></li>
-        <li><span><b>Contraste</b>: status e superfícies usam tokens já validados em AA contra os fundos light e dark (badges de sinal + tokens <code class="inline">--card</code> / <code class="inline">--fg-muted</code>).</span></li>
+        <li><span><b>Status por cor + texto</b>: o pill anuncia o rótulo via <code class="inline">role="status"</code>; o ponto colorido é decorativo (<code class="inline">aria-hidden</code>). A cor nunca é o único indicador.</span></li>
+        <li><span><b>Métricas</b> são <code class="inline">&lt;dl&gt;</code> com pares <code class="inline">&lt;dt&gt;</code> (label) + <code class="inline">&lt;dd&gt;</code> (valor) — leitor de tela anuncia como lista de definições.</span></li>
+        <li><span><b>Interativo</b>: a raiz fica focável (<code class="inline">tabindex=0</code>), com anel de foco visível, ativa por <b>Enter</b>/<b>Espaço</b>, e não sequestra teclado de filhos focáveis. Use <code class="inline">aria-label</code> quando o card todo for a ação.</span></li>
+        <li><span><b>Ícones decorativos</b> (avatar, dot, accent-stripe) ficam ocultos para leitor de tela — a informação está no texto.</span></li>
+        <li><span><b>Contraste</b>: tokens semânticos validados em AA contra fundos light e dark (<code class="inline">--success-soft + --signal-green-700</code>, <code class="inline">--danger-soft + --signal-red-700</code>, <code class="inline">--guardia-yellow-100 + --guardia-yellow-900</code>).</span></li>
       </ul>
     </div>
   </section>

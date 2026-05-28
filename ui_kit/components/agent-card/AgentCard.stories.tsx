@@ -1,4 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import {
+  ArrowLeftRight,
+  ReceiptText,
+  FileBarChart,
+  Download,
+  ScanSearch,
+  Scale,
+  FileText,
+  RefreshCw,
+} from "lucide-react";
 
 import { AgentCard, type AgentStatus, AGENT_STATUS_LABELS } from "./index";
 import { Button } from "../button";
@@ -12,7 +22,7 @@ const meta: Meta<typeof AgentCard> = {
     docs: {
       description: {
         component:
-          "Cartão de identidade de um agente de IA (Guardia-specific). Reúne identidade (avatar + nome + papel), status operacional (`idle · working · active · paused · error · offline`) e capabilities. Padrão composto (`AgentCard.Header/.Avatar/.Name/.Role/.Status/.Description/.Capabilities/.Capability/.Footer`). Apenas tokens semânticos; status usa as cores de sinal da marca.",
+          "Cartão-resumo de um agente de IA no Control Center: identidade (ícone temático + nome + papel), status operacional, KPIs e última execução. Padrão composto (`AgentCard.Header/.Avatar/.Name/.Role/.Status/.Metrics/.Metric/.LastRun/.Footer`). 4 accents (violet/orange/blue/green) e 6 status (idle/working/active/paused/error/offline).",
       },
     },
   },
@@ -20,6 +30,10 @@ const meta: Meta<typeof AgentCard> = {
     status: {
       control: "select",
       options: ["idle", "working", "active", "paused", "error", "offline"],
+    },
+    accent: {
+      control: "radio",
+      options: ["violet", "orange", "blue", "green"],
     },
     variant: { control: "radio", options: ["default", "elevated", "outlined"] },
     interactive: { control: "boolean" },
@@ -29,122 +43,203 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-function Isac() {
+function Bia() {
   return (
     <>
       <AgentCard.Header>
-        <AgentCard.Avatar name="Isac" />
+        <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
         <div>
-          <AgentCard.Name>Isac</AgentCard.Name>
-          <AgentCard.Role>Assistente contábil</AgentCard.Role>
+          <AgentCard.Name>Bia</AgentCard.Name>
+          <AgentCard.Role>Conciliação Bancária</AgentCard.Role>
         </div>
-        <AgentCard.Status />
+        <AgentCard.Status label="Conciliando" />
       </AgentCard.Header>
-      <AgentCard.Description>
-        Concilia lançamentos, audita movimentações e responde dúvidas
-        contábeis, financeiras, tributárias e fiscais.
-      </AgentCard.Description>
-      <AgentCard.Capabilities>
-        <AgentCard.Capability>Conciliação</AgentCard.Capability>
-        <AgentCard.Capability>Auditoria</AgentCard.Capability>
-        <AgentCard.Capability>Relatórios</AgentCard.Capability>
-      </AgentCard.Capabilities>
+      <AgentCard.Metrics>
+        <AgentCard.Metric label="conciliado hoje" value="248" />
+        <AgentCard.Metric label="taxa match" value="97%" />
+        <AgentCard.Metric label="pendentes" value="3" />
+      </AgentCard.Metrics>
+      <AgentCard.Footer>
+        <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+      </AgentCard.Footer>
     </>
   );
 }
 
+/* ─── Default ─────────────────────────────────────────────────── */
+
 export const Default: Story = {
-  args: { status: "active" },
+  args: { accent: "violet", status: "active" },
   render: (args) => (
     <div className="w-80">
       <AgentCard {...args}>
-        <Isac />
+        <Bia />
       </AgentCard>
     </div>
   ),
 };
 
-export const AllStatuses: Story = {
-  render: () => (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {(Object.keys(AGENT_STATUS_LABELS) as AgentStatus[]).map((status) => (
-        <AgentCard key={status} status={status}>
-          <AgentCard.Header>
-            <AgentCard.Avatar name="Isac" />
-            <div>
-              <AgentCard.Name>Isac</AgentCard.Name>
-              <AgentCard.Role>Assistente contábil</AgentCard.Role>
-            </div>
-            <AgentCard.Status />
-          </AgentCard.Header>
-          <AgentCard.Description>
-            Status atual: {AGENT_STATUS_LABELS[status]}.
-          </AgentCard.Description>
-        </AgentCard>
-      ))}
-    </div>
-  ),
-};
+/* ─── Accents + estados (playground) ─────────────────────────────── */
 
-export const Variants: Story = {
+export const AccentsAndStates: Story = {
   render: () => (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      {(["default", "elevated", "outlined"] as const).map((variant) => (
-        <AgentCard key={variant} variant={variant} status="working">
-          <AgentCard.Header>
-            <AgentCard.Avatar name="Isac" />
-            <div>
-              <AgentCard.Name>Isac</AgentCard.Name>
-              <AgentCard.Role className="capitalize">{variant}</AgentCard.Role>
-            </div>
-            <AgentCard.Status />
-          </AgentCard.Header>
-        </AgentCard>
-      ))}
-    </div>
-  ),
-};
-
-export const WithImage: Story = {
-  render: () => (
-    <div className="w-80">
-      <AgentCard status="active">
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      <AgentCard accent="violet" status="active">
         <AgentCard.Header>
-          <AgentCard.Avatar
-            name="Ana Reis"
-            src="https://i.pravatar.cc/96?img=47"
-          />
+          <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Ana Reis</AgentCard.Name>
-            <AgentCard.Role>Agente de cobrança</AgentCard.Role>
+            <AgentCard.Name>Bia</AgentCard.Name>
+            <AgentCard.Role>Conciliação Bancária</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Conciliando" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="conciliado hoje" value="248" />
+          <AgentCard.Metric label="taxa match" value="97%" />
+          <AgentCard.Metric label="pendentes" value="3" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="orange" status="idle">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<ReceiptText aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Theo</AgentCard.Name>
+            <AgentCard.Role>Fiscal Agent</AgentCard.Role>
           </div>
           <AgentCard.Status />
         </AgentCard.Header>
-        <AgentCard.Description>
-          Negocia e acompanha recebíveis em atraso.
-        </AgentCard.Description>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="NFes processadas" value="1.2k" />
+          <AgentCard.Metric label="erros fiscais" value="0" />
+          <AgentCard.Metric label="uptime" value="99.8%" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 14 min</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="blue" status="paused">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<FileBarChart aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Nora</AgentCard.Name>
+            <AgentCard.Role>Análise de Balanço</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Aguardando dados" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="relatórios" value="12" />
+          <AgentCard.Metric label="alertas" value="4" />
+          <AgentCard.Metric label="clientes" value="8" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 1h</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="green" status="error">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<Download aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Caio</AgentCard.Name>
+            <AgentCard.Role>Coleta Fiscal</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Falha no login SEFAZ" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="último sucesso" value="07/03" />
+          <AgentCard.Metric label="tentativas" value="3" />
+          <AgentCard.Metric label="timeout" value="30s" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 3h</AgentCard.LastRun>
+        </AgentCard.Footer>
       </AgentCard>
     </div>
   ),
 };
 
-export const Interactive: Story = {
+/* ─── Mínimo · sem métricas ──────────────────────────────────────── */
+
+export const MinimalNoMetrics: Story = {
+  render: () => (
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+      <AgentCard accent="violet" status="active">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<ScanSearch aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Rita</AgentCard.Name>
+            <AgentCard.Role>Auditoria</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="ativa agora" />
+        </AgentCard.Header>
+      </AgentCard>
+
+      <AgentCard accent="orange" status="idle">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<Scale aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Léo</AgentCard.Name>
+            <AgentCard.Role>Tributário</AgentCard.Role>
+          </div>
+          <AgentCard.Status />
+        </AgentCard.Header>
+      </AgentCard>
+
+      <AgentCard accent="blue" status="active">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<FileText aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Miro</AgentCard.Name>
+            <AgentCard.Role>Faturamento</AgentCard.Role>
+          </div>
+          <AgentCard.Status />
+        </AgentCard.Header>
+      </AgentCard>
+    </div>
+  ),
+};
+
+/* ─── Clicável (card como botão) ─────────────────────────────────── */
+
+export const Clickable: Story = {
   render: () => (
     <div className="w-80">
       <AgentCard
-        status="paused"
+        accent="violet"
+        status="active"
         variant="elevated"
         interactive
-        onClick={() => alert("Abrir agente Isac")}
-        aria-label="Abrir detalhes do agente Isac"
+        onClick={() => alert("Abrindo Bia…")}
+        aria-label="Abrir detalhes do agente Bia"
       >
-        <Isac />
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Bia</AgentCard.Name>
+            <AgentCard.Role>Conciliação · clique para abrir</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Conciliando" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="hoje" value="248" />
+          <AgentCard.Metric label="match" value="97%" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+        </AgentCard.Footer>
       </AgentCard>
     </div>
   ),
 };
 
-export const WithFooter: Story = {
+/* ─── Com ações no footer ────────────────────────────────────────── */
+
+export const WithActions: Story = {
   parameters: {
     a11y: {
       // WHY: o botão primário (bg-primary = laranja 500) sobre texto branco
@@ -152,32 +247,56 @@ export const WithFooter: Story = {
       // texto normal, porém aprovado pela marca para botões (lex-brand-colors:
       // Laranja 500 + Branco = 3.15:1, válido em títulos/botões/badges). Mesma
       // decisão documentada em Button.stories.tsx. As demais stories de
-      // AgentCard (sem Button) mantêm color-contrast ativo.
+      // AgentCard mantêm color-contrast ativo.
       config: { rules: [{ id: "color-contrast", enabled: false }] },
     },
   },
   render: () => (
     <div className="w-80">
-      <AgentCard status="error">
+      <AgentCard accent="green" status="error">
         <AgentCard.Header>
-          <AgentCard.Avatar name="Isac" />
+          <AgentCard.Avatar icon={<Download aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Isac</AgentCard.Name>
-            <AgentCard.Role>Assistente contábil</AgentCard.Role>
+            <AgentCard.Name>Caio</AgentCard.Name>
+            <AgentCard.Role>Coleta Fiscal</AgentCard.Role>
           </div>
-          <AgentCard.Status />
+          <AgentCard.Status label="Falha no login SEFAZ" />
         </AgentCard.Header>
-        <AgentCard.Description>
-          Falha ao acessar a fonte de dados. Revise a integração e tente
-          novamente.
-        </AgentCard.Description>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="último sucesso" value="07/03" />
+          <AgentCard.Metric label="tentativas" value="3" />
+        </AgentCard.Metrics>
         <AgentCard.Footer>
+          <AgentCard.LastRun>há 3h</AgentCard.LastRun>
           <Button size="sm" variant="outline">
-            Ver log
+            <RefreshCw aria-hidden="true" />
+            Tentar
           </Button>
-          <Button size="sm">Reativar</Button>
         </AgentCard.Footer>
       </AgentCard>
+    </div>
+  ),
+};
+
+/* ─── Todos os status (cobertura do enum estendido) ─────────────── */
+
+export const AllStatuses: Story = {
+  render: () => (
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+      {(Object.keys(AGENT_STATUS_LABELS) as AgentStatus[]).map((status) => (
+        <AgentCard key={status} status={status}>
+          <AgentCard.Header>
+            <AgentCard.Avatar />
+            <div>
+              <AgentCard.Name>Isac</AgentCard.Name>
+              <AgentCard.Role>
+                Status: {AGENT_STATUS_LABELS[status]}
+              </AgentCard.Role>
+            </div>
+            <AgentCard.Status />
+          </AgentCard.Header>
+        </AgentCard>
+      ))}
     </div>
   ),
 };

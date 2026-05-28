@@ -1,145 +1,216 @@
-import { AgentCard, type AgentStatus, AGENT_STATUS_LABELS } from "@ds/components/agent-card";
-import { Button } from "@ds/components/button";
+import {
+  ArrowLeftRight,
+  ReceiptText,
+  FileBarChart,
+  Download,
+  ScanSearch,
+  Scale,
+  FileText,
+  RefreshCw,
+} from "lucide-react";
 
-function IsacBody() {
-  return (
-    <>
-      <AgentCard.Description>
-        Concilia lançamentos, audita movimentações e responde dúvidas
-        contábeis, financeiras, tributárias e fiscais.
-      </AgentCard.Description>
-      <AgentCard.Capabilities>
-        <AgentCard.Capability>Conciliação</AgentCard.Capability>
-        <AgentCard.Capability>Auditoria</AgentCard.Capability>
-        <AgentCard.Capability>Relatórios</AgentCard.Capability>
-      </AgentCard.Capabilities>
-    </>
-  );
-}
+import { AgentCard } from "@ds/components/agent-card";
+import { Button } from "@ds/components/button";
 
 export function BasicRow() {
   return (
     <div className="w-full max-w-sm">
-      <AgentCard status="active">
+      <AgentCard accent="violet" status="active">
         <AgentCard.Header>
-          <AgentCard.Avatar name="Isac" />
+          <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Isac</AgentCard.Name>
-            <AgentCard.Role>Assistente contábil</AgentCard.Role>
+            <AgentCard.Name>Bia</AgentCard.Name>
+            <AgentCard.Role>Conciliação Bancária</AgentCard.Role>
           </div>
-          <AgentCard.Status />
+          <AgentCard.Status label="Conciliando" />
         </AgentCard.Header>
-        <IsacBody />
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="conciliado hoje" value="248" />
+          <AgentCard.Metric label="taxa match" value="97%" />
+          <AgentCard.Metric label="pendentes" value="3" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+        </AgentCard.Footer>
       </AgentCard>
     </div>
   );
 }
 
-export function StatusesRow() {
+export function AccentsRow() {
   return (
-    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {(Object.keys(AGENT_STATUS_LABELS) as AgentStatus[]).map((status) => (
-        <AgentCard key={status} status={status}>
-          <AgentCard.Header>
-            <AgentCard.Avatar name="Isac" />
-            <div>
-              <AgentCard.Name>Isac</AgentCard.Name>
-              <AgentCard.Role>Assistente contábil</AgentCard.Role>
-            </div>
-            <AgentCard.Status />
-          </AgentCard.Header>
-        </AgentCard>
-      ))}
-    </div>
-  );
-}
-
-export function VariantsRow() {
-  return (
-    <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
-      {(["default", "elevated", "outlined"] as const).map((variant) => (
-        <AgentCard key={variant} variant={variant} status="working">
-          <AgentCard.Header>
-            <AgentCard.Avatar name="Isac" />
-            <div>
-              <AgentCard.Name>Isac</AgentCard.Name>
-              <AgentCard.Role className="capitalize">{variant}</AgentCard.Role>
-            </div>
-            <AgentCard.Status />
-          </AgentCard.Header>
-        </AgentCard>
-      ))}
-    </div>
-  );
-}
-
-export function WithImageRow() {
-  return (
-    <div className="w-full max-w-sm">
-      <AgentCard status="active">
+    <div className="grid w-full grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      <AgentCard accent="violet" status="active">
         <AgentCard.Header>
-          <AgentCard.Avatar name="Ana Reis" src="https://i.pravatar.cc/96?img=47" />
+          <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Ana Reis</AgentCard.Name>
-            <AgentCard.Role>Agente de cobrança</AgentCard.Role>
+            <AgentCard.Name>Bia</AgentCard.Name>
+            <AgentCard.Role>Conciliação Bancária</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Conciliando" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="hoje" value="248" />
+          <AgentCard.Metric label="match" value="97%" />
+          <AgentCard.Metric label="pendentes" value="3" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="orange" status="idle">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<ReceiptText aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Theo</AgentCard.Name>
+            <AgentCard.Role>Fiscal Agent</AgentCard.Role>
           </div>
           <AgentCard.Status />
         </AgentCard.Header>
-        <AgentCard.Description>
-          Negocia e acompanha recebíveis em atraso.
-        </AgentCard.Description>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="NFes" value="1.2k" />
+          <AgentCard.Metric label="erros" value="0" />
+          <AgentCard.Metric label="uptime" value="99.8%" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 14 min</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="blue" status="paused">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<FileBarChart aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Nora</AgentCard.Name>
+            <AgentCard.Role>Análise de Balanço</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Aguardando dados" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="relatórios" value="12" />
+          <AgentCard.Metric label="alertas" value="4" />
+          <AgentCard.Metric label="clientes" value="8" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 1h</AgentCard.LastRun>
+        </AgentCard.Footer>
+      </AgentCard>
+
+      <AgentCard accent="green" status="error">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<Download aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Caio</AgentCard.Name>
+            <AgentCard.Role>Coleta Fiscal</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="Falha no login SEFAZ" />
+        </AgentCard.Header>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="último sucesso" value="07/03" />
+          <AgentCard.Metric label="tentativas" value="3" />
+          <AgentCard.Metric label="timeout" value="30s" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 3h</AgentCard.LastRun>
+        </AgentCard.Footer>
       </AgentCard>
     </div>
   );
 }
 
-export function InteractiveRow() {
+export function MinimalRow() {
+  return (
+    <div className="grid w-full grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+      <AgentCard accent="violet" status="active">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<ScanSearch aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Rita</AgentCard.Name>
+            <AgentCard.Role>Auditoria</AgentCard.Role>
+          </div>
+          <AgentCard.Status label="ativa agora" />
+        </AgentCard.Header>
+      </AgentCard>
+
+      <AgentCard accent="orange" status="idle">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<Scale aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Léo</AgentCard.Name>
+            <AgentCard.Role>Tributário</AgentCard.Role>
+          </div>
+          <AgentCard.Status />
+        </AgentCard.Header>
+      </AgentCard>
+
+      <AgentCard accent="blue" status="active">
+        <AgentCard.Header>
+          <AgentCard.Avatar icon={<FileText aria-hidden="true" />} />
+          <div>
+            <AgentCard.Name>Miro</AgentCard.Name>
+            <AgentCard.Role>Faturamento</AgentCard.Role>
+          </div>
+          <AgentCard.Status />
+        </AgentCard.Header>
+      </AgentCard>
+    </div>
+  );
+}
+
+export function ClickableRow() {
   return (
     <div className="w-full max-w-sm">
       <AgentCard
-        status="paused"
+        accent="violet"
+        status="active"
         variant="elevated"
         interactive
         onClick={() => {}}
-        aria-label="Abrir detalhes do agente Isac"
+        aria-label="Abrir detalhes do agente Bia"
       >
         <AgentCard.Header>
-          <AgentCard.Avatar name="Isac" />
+          <AgentCard.Avatar icon={<ArrowLeftRight aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Isac</AgentCard.Name>
-            <AgentCard.Role>Assistente contábil</AgentCard.Role>
+            <AgentCard.Name>Bia</AgentCard.Name>
+            <AgentCard.Role>Conciliação · clique para abrir</AgentCard.Role>
           </div>
-          <AgentCard.Status />
+          <AgentCard.Status label="Conciliando" />
         </AgentCard.Header>
-        <AgentCard.Description>
-          Card inteiro clicável — foco visível e ativação por Enter/Espaço.
-        </AgentCard.Description>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="hoje" value="248" />
+          <AgentCard.Metric label="match" value="97%" />
+        </AgentCard.Metrics>
+        <AgentCard.Footer>
+          <AgentCard.LastRun>há 2 min</AgentCard.LastRun>
+        </AgentCard.Footer>
       </AgentCard>
     </div>
   );
 }
 
-export function FooterRow() {
+export function ActionsRow() {
   return (
     <div className="w-full max-w-sm">
-      <AgentCard status="error">
+      <AgentCard accent="green" status="error">
         <AgentCard.Header>
-          <AgentCard.Avatar name="Isac" />
+          <AgentCard.Avatar icon={<Download aria-hidden="true" />} />
           <div>
-            <AgentCard.Name>Isac</AgentCard.Name>
-            <AgentCard.Role>Assistente contábil</AgentCard.Role>
+            <AgentCard.Name>Caio</AgentCard.Name>
+            <AgentCard.Role>Coleta Fiscal</AgentCard.Role>
           </div>
-          <AgentCard.Status />
+          <AgentCard.Status label="Falha no login SEFAZ" />
         </AgentCard.Header>
-        <AgentCard.Description>
-          Falha ao acessar a fonte de dados. Revise a integração e tente
-          novamente.
-        </AgentCard.Description>
+        <AgentCard.Metrics>
+          <AgentCard.Metric label="último sucesso" value="07/03" />
+          <AgentCard.Metric label="tentativas" value="3" />
+        </AgentCard.Metrics>
         <AgentCard.Footer>
+          <AgentCard.LastRun>há 3h</AgentCard.LastRun>
           <Button size="sm" variant="outline">
-            Ver log
+            <RefreshCw aria-hidden="true" />
+            Tentar
           </Button>
-          <Button size="sm">Reativar</Button>
         </AgentCard.Footer>
       </AgentCard>
     </div>
