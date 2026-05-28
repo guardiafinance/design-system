@@ -1,11 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 
-import { DatePicker } from "./index";
+import {
+  DatePicker,
+  type DateRange,
+  type DatePickerSingleProps,
+  type DatePickerRangeProps,
+} from "./index";
 
-const meta: Meta<typeof DatePicker> = {
+/* WHY: Meta is parameterized on the single-mode props variant so the
+   existing single-mode StoryObj `args` typecheck unchanged. Range
+   stories live in their own block at the bottom with their own typing
+   (`DatePickerRangeProps`). The DatePicker component itself accepts
+   the full discriminated union — this is purely a type-level routing
+   for Storybook's `args` inference. */
+const meta: Meta<DatePickerSingleProps> = {
   title: "Components/DatePicker",
-  component: DatePicker,
+  component: DatePicker as React.ComponentType<DatePickerSingleProps>,
   tags: ["autodocs"],
   decorators: [
     (Story) => (
@@ -26,7 +37,7 @@ const meta: Meta<typeof DatePicker> = {
     docs: {
       description: {
         component:
-          "Seletor de data única em popover, com formato `dd/mm/aaaa` e localização pt-BR. Base no `react-day-picker` (a11y completa de calendar grid) + Radix Popover (focus management e dismissal).",
+          "Seletor de data única (default) ou intervalo (`mode=\"range\"`) em popover, com formato `dd/mm/aaaa` e localização pt-BR. Base no `react-day-picker` (a11y completa de calendar grid) + Radix Popover (focus management e dismissal). API com discriminated union por `mode` — ver ADR-004 para o trade-off de design.",
       },
     },
   },
@@ -40,7 +51,7 @@ const meta: Meta<typeof DatePicker> = {
 };
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<DatePickerSingleProps>;
 
 export const Default: Story = {};
 
@@ -95,4 +106,90 @@ export const NoToday: Story = {
 
 export const NotClearable: Story = {
   args: { defaultValue: new Date(), clearable: false },
+};
+
+/* -------------------------------------------------------------------------
+   Range mode stories
+   -------------------------------------------------------------------------
+   Per Plan #208 lesson — every story-level interactive element MUST have an
+   accessible name (label / aria-label / wrapping <label>) or axe's `label`
+   rule blocks Storybook's accessibility tests. The DatePicker in range mode
+   defaults its `aria-label` to "Selecionar intervalo de datas"; every range
+   story below either accepts that default or sets an explicit `aria-label`. */
+
+type RangeStory = StoryObj<DatePickerRangeProps>;
+
+const RangeDatePicker = DatePicker as React.ComponentType<DatePickerRangeProps>;
+
+const RANGE_PRESELECTED: DateRange = {
+  from: new Date(2026, 2, 1),
+  to: new Date(2026, 2, 15),
+};
+
+export const RangeDefault: RangeStory = {
+  args: { mode: "range" },
+  render: (args) => <RangeDatePicker {...args} />,
+};
+
+export const RangePreselected: RangeStory = {
+  args: { mode: "range", defaultValue: RANGE_PRESELECTED },
+  render: (args) => <RangeDatePicker {...args} />,
+};
+
+export const RangePartialState: RangeStory = {
+  args: { mode: "range" },
+  render: function RangePartialStory() {
+    const [range, setRange] = useState<DateRange | null>(null);
+    return (
+      <div className="flex flex-col gap-2">
+        <RangeDatePicker
+          mode="range"
+          value={range}
+          onChange={setRange}
+          aria-label="Selecionar intervalo (estado parcial)"
+        />
+        <p className="text-xs text-fg-muted">
+          Clique uma vez para começar — durante a seleção, o trigger mostra{" "}
+          <code className="font-mono">dd/mm/aaaa — </code>. Esc descarta.
+        </p>
+      </div>
+    );
+  },
+};
+
+export const RangeWithMinMax: RangeStory = {
+  args: {
+    mode: "range",
+    minDate: new Date(),
+    maxDate: new Date(new Date().setDate(new Date().getDate() + 60)),
+    placeholder: "Próximos 60 dias",
+  },
+  render: (args) => <RangeDatePicker {...args} />,
+};
+
+export const RangeDisabled: RangeStory = {
+  args: {
+    mode: "range",
+    disabled: true,
+    defaultValue: RANGE_PRESELECTED,
+  },
+  render: (args) => <RangeDatePicker {...args} />,
+};
+
+export const RangeDarkTheme: RangeStory = {
+  args: { mode: "range", defaultValue: RANGE_PRESELECTED },
+  parameters: {
+    backgrounds: { default: "dark" },
+    themes: { themeOverride: "dark" },
+  },
+  decorators: [
+    (Story) => (
+      <div data-theme="dark" className="bg-background p-6">
+        <div className="w-72">
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+  render: (args) => <RangeDatePicker {...args} />,
 };
