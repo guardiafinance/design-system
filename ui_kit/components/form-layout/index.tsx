@@ -351,6 +351,19 @@ function FormField({
         newProps.invalid = true;
       }
     }
+    if (required) {
+      /* a11y: WCAG 2.1 AA + lex-frontend-accessibility § 4 Forms point 2
+       * exige `aria-required="true"` em campos obrigatórios — não basta o
+       * asterisco visual. Só injeta se o consumer não declarou explicitamente. */
+      if (childProps["aria-required"] == null) {
+        newProps["aria-required"] = true;
+      }
+      /* HTML5 `required` em DOM elements (<input>/<select>/<textarea>);
+       * componentes custom carregam sua própria semântica de required. */
+      if (typeof onlyChild.type === "string" && childProps.required == null) {
+        newProps.required = true;
+      }
+    }
     enhancedChildren = React.cloneElement(onlyChild, newProps);
   }
 

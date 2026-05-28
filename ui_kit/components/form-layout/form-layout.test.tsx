@@ -231,6 +231,47 @@ describe("FormLayout.Field", () => {
     expect(document.getElementById(hintId!)).toHaveTextContent("Apenas dígitos");
   });
 
+  it("required injeta aria-required='true' no child (WCAG 2.1 AA / lex-frontend-accessibility § 4)", () => {
+    render(
+      <FormLayout>
+        <FormLayout.Field label="CNPJ" required htmlFor="cnpj">
+          <input />
+        </FormLayout.Field>
+      </FormLayout>,
+    );
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-required", "true");
+    /* HTML5 `required` também injetado em DOM elements */
+    expect(input).toBeRequired();
+  });
+
+  it("sem required, child não recebe aria-required nem required", () => {
+    render(
+      <FormLayout>
+        <FormLayout.Field label="Observação" htmlFor="obs">
+          <input />
+        </FormLayout.Field>
+      </FormLayout>,
+    );
+    const input = screen.getByRole("textbox");
+    expect(input).not.toHaveAttribute("aria-required");
+    expect(input).not.toBeRequired();
+  });
+
+  it("consumer já declarou aria-required no child — Field respeita o valor original", () => {
+    render(
+      <FormLayout>
+        <FormLayout.Field label="Custom" required htmlFor="c">
+          <input aria-required="false" />
+        </FormLayout.Field>
+      </FormLayout>,
+    );
+    expect(screen.getByRole("textbox")).toHaveAttribute(
+      "aria-required",
+      "false",
+    );
+  });
+
   it("error sobrescreve o hint e adiciona aria-invalid no child", () => {
     render(
       <FormLayout>
