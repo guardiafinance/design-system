@@ -9,7 +9,16 @@ import {
   StatesRow,
   FormSubmitRow,
 } from "../../previews/date-picker";
+import {
+  RangeBasicRow,
+  RangePreselectedRow,
+  RangeMinMaxRow,
+  RangePartialPreviewRow,
+  RangeStatesRow,
+  RangeFormSubmitRow,
+} from "../../previews/date-picker-range";
 import { LiveDatePickerSnippet } from "../../previews/date-picker-live";
+import { LiveDateRangeSnippet } from "../../previews/date-picker-range-live";
 import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
 ---
 
@@ -19,7 +28,7 @@ import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
   group="Forms"
   storybookId="components-datepicker--default"
   sourcePath="ui_kit/components/date-picker"
-  lede='Seletor de data única em popover. Formato <code class="inline">dd/mm/aaaa</code>, locale pt-BR, base no <b>react-day-picker</b> (a11y de calendar grid completa) + Radix Popover. Submissão em formulário usa formato ISO via <code class="inline">name</code>.'
+  lede='Seletor de data única (default) ou intervalo (<code class="inline">mode="range"</code>) em popover. Formato <code class="inline">dd/mm/aaaa</code>, locale pt-BR, base no <b>react-day-picker</b> (a11y de calendar grid completa) + Radix Popover. Submissão em formulário usa formato ISO via <code class="inline">name</code>. API com discriminated union por <code class="inline">mode</code> — ver <a href="/adr/ADR-004-datepicker-range-discriminated-union">ADR-004</a> para o trade-off de design.'
 >
   <!-- ============ BASIC ============ -->
   <section class="sec">
@@ -97,13 +106,92 @@ import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
     </p>
   </section>
 
-  <!-- ============ PLAYGROUND ============ -->
+  <!-- ============ RANGE MODE ============ -->
   <section class="sec">
     <div class="sec-hdr">
-      <h2>Playground</h2>
-      <small>edite o JSX e veja ao vivo</small>
+      <h2>Modo intervalo</h2>
+      <small>mode="range" · discriminated union (ADR-004)</small>
+    </div>
+    <p class="preview-caption">
+      Ative com <code class="inline">mode="range"</code>. O <code class="inline">value</code>
+      passa a ser <code class="inline">DateRange | null</code>
+      (<code class="inline">&#123; from: Date; to: Date &#125;</code>);
+      <code class="inline">onChange</code> dispara <strong>apenas</strong> em
+      range completo ou clear (estado parcial é interno). Se o usuário escolher
+      <code class="inline">to &lt; from</code>, os valores são <strong>auto-trocados</strong>
+      antes do <code class="inline">onChange</code> (ADR-004 §2).
+    </p>
+    <div class="preview">
+      <RangeBasicRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Intervalo pré-selecionado</h2>
+      <small>defaultValue uncontrolled</small>
+    </div>
+    <div class="preview">
+      <RangePreselectedRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estado parcial</h2>
+      <small>primeiro clique commit como pending; segundo fecha</small>
+    </div>
+    <div class="preview">
+      <RangePartialPreviewRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Intervalo com limites</h2>
+      <small>minDate e maxDate aplicam-se aos dois endpoints</small>
+    </div>
+    <div class="preview">
+      <RangeMinMaxRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados (range)</h2>
+      <small>default · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <RangeStatesRow client:load />
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Intervalo em formulário</h2>
+      <small>name="period" → period_from + period_to (ISO)</small>
+    </div>
+    <div class="preview">
+      <RangeFormSubmitRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND (single) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground · single</h2>
+      <small>edite o JSX e veja ao vivo · useState controlado</small>
     </div>
     <LiveDatePickerSnippet client:load />
+  </section>
+
+  <!-- ============ PLAYGROUND (range) ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground · range</h2>
+      <small>mode="range" · contador dinâmico de dias</small>
+    </div>
+    <LiveDateRangeSnippet client:load />
   </section>
 
   <!-- ============ PROPS ============ -->
@@ -119,16 +207,34 @@ import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
         </thead>
         <tbody>
           <tr>
-            <td class="name">value / defaultValue</td>
-            <td class="type">Date | null</td>
-            <td class="default">null</td>
-            <td class="desc">Controlled / uncontrolled.</td>
+            <td class="name">mode</td>
+            <td class="type">"single" | "range"</td>
+            <td class="default">"single"</td>
+            <td class="desc">Discriminante da API. <code class="inline">"single"</code> mantém o comportamento original; <code class="inline">"range"</code> tipa <code class="inline">value</code> / <code class="inline">onChange</code> sobre <code class="inline">DateRange</code> (ver ADR-004).</td>
           </tr>
           <tr>
-            <td class="name">onChange</td>
+            <td class="name">value / defaultValue (single)</td>
+            <td class="type">Date | null</td>
+            <td class="default">null</td>
+            <td class="desc">Controlled / uncontrolled, single mode.</td>
+          </tr>
+          <tr>
+            <td class="name">value / defaultValue (range)</td>
+            <td class="type">DateRange | null</td>
+            <td class="default">null</td>
+            <td class="desc"><code class="inline">DateRange = &#123; from: Date; to: Date &#125;</code>. Ambos os endpoints obrigatórios — o componente garante o invariante <code class="inline">to &gt;= from</code> via auto-swap antes de disparar <code class="inline">onChange</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">onChange (single)</td>
             <td class="type">(date: Date | null) =&gt; void</td>
             <td class="default">—</td>
             <td class="desc">Callback de seleção. <code class="inline">null</code> quando o usuário limpa.</td>
+          </tr>
+          <tr>
+            <td class="name">onChange (range)</td>
+            <td class="type">(range: DateRange | null) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Dispara <strong>apenas</strong> em range completo ou clear; estado parcial (apenas <code class="inline">from</code> escolhido) fica em estado interno e é descartado se o usuário pressionar <code class="inline">Esc</code>. Auto-swap quando <code class="inline">to &lt; from</code>.</td>
           </tr>
           <tr>
             <td class="name">size</td>
@@ -176,13 +282,13 @@ import datePickerSource from "@ds/components/date-picker/index.tsx?raw";
             <td class="name">name</td>
             <td class="type">string</td>
             <td class="default">—</td>
-            <td class="desc">Renderiza <code class="inline">&lt;input hidden&gt;</code> com data ISO (YYYY-MM-DD).</td>
+            <td class="desc">Em <code class="inline">mode="single"</code>: renderiza um <code class="inline">&lt;input hidden name=&#123;name&#125;&gt;</code> com data ISO (<code class="inline">YYYY-MM-DD</code>). Em <code class="inline">mode="range"</code>: renderiza <strong>dois</strong> inputs hidden — <code class="inline">&#123;name&#125;_from</code> e <code class="inline">&#123;name&#125;_to</code>.</td>
           </tr>
           <tr>
             <td class="name">aria-label</td>
             <td class="type">string</td>
-            <td class="default">"Selecionar data"</td>
-            <td class="desc">Rótulo acessível do trigger.</td>
+            <td class="default">single: "Selecionar data" · range: "Selecionar intervalo de datas"</td>
+            <td class="desc">Rótulo acessível do trigger. Default depende do <code class="inline">mode</code>.</td>
           </tr>
         </tbody>
       </table>
