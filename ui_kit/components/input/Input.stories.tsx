@@ -160,10 +160,18 @@ export const DarkTheme: Story = {
       </div>
     ),
   ],
+  // WHY: a11y `label` rule (WCAG 4.1.2 Name, Role, Value) requires each
+  // <input> to expose an accessible name. Inputs with placeholder satisfy
+  // it via the placeholder attribute; inputs WITH only `defaultValue`
+  // (filled / invalid / success / disabled below) carry an aria-label so
+  // the showcase passes axe in both themes without altering the visual.
+  // Detected by the regenerate-baselines workflow on PR #226 — root cause
+  // pre-existed since #220 (Plan #47); fixed here so #208 can land its
+  // Ubuntu-rendered visual baselines.
   render: () => (
     <>
       <Input placeholder="Default — Digite algo" />
-      <Input defaultValue="Filled — conteúdo digitado" />
+      <Input aria-label="Filled" defaultValue="Filled — conteúdo digitado" />
       <Input
         leftIcon={<Search width={16} height={16} />}
         placeholder="Buscar lançamentos…"
@@ -181,9 +189,13 @@ export const DarkTheme: Story = {
         suffix=".com"
         placeholder="username"
       />
-      <Input invalid defaultValue="invalid@" />
-      <Input state="success" defaultValue="ok@guardia.finance" />
-      <Input disabled defaultValue="leitura" />
+      <Input aria-label="Invalid state" invalid defaultValue="invalid@" />
+      <Input
+        aria-label="Success state"
+        state="success"
+        defaultValue="ok@guardia.finance"
+      />
+      <Input aria-label="Disabled state" disabled defaultValue="leitura" />
       <Input size="sm" placeholder="Small (32px)" />
       <Input size="md" placeholder="Medium · default (38px)" />
       <Input size="lg" placeholder="Large (46px)" />
