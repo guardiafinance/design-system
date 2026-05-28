@@ -116,10 +116,18 @@
  *       --destructive, --muted, --accent, --border, --input, --ring
  *       (exigido pelos 45 componentes herdados)
  *
- * Mapeamento estratégico:
- *   --primary   = accent    (laranja, CTA, shadcn default)
- *   --secondary = action    (violeta, autoridade)
+ * Mapeamento estratégico (light mode, Notion-canônico — issue #208):
+ *   --primary   = action    (Violeta 500 #4F186D, CTA principal Notion;
+ *                            7.85:1 AAA sobre branco)
+ *   --secondary = accent    (Laranja 500 #E07400, ação secundária)
  *   --destructive = danger  (signal-red)
+ *
+ * Histórico: até #207/#208 o mapeamento era invertido (--primary = Laranja,
+ * --secondary = Violeta) por continuidade shadcn-default. Notion Brand
+ * (lex-brand-colors) prevalece: Violeta é a primary CTA em light mode
+ * (Confirmar, continuar, salvar, contratar). Dark mode segue Notion
+ * via override em :root[data-theme="dark"] linha 297 (Laranja preferida
+ * sobre fundo escuro porque Violeta falha contraste em dark).
  *
  * shadcn tokens são triplos HSL (sem `hsl()`) para compor `hsl(var(--x))`.
  * ──────────────────────────────────────────────────────────────────────── */
@@ -183,21 +191,21 @@
   --card-foreground: 271 64% 26%;
   --popover: 0 0% 100%;
   --popover-foreground: 271 64% 26%;
-  /* primary = accent = orange-500 (#E07400 ≈ hsl(31 100% 44%)) */
-  --primary: 31 100% 44%;
-  --primary-foreground: 0 0% 100%;
-  /* secondary = action = violet-500 (#4F186D ≈ hsl(281 64% 26%)) */
-  --secondary: 281 64% 26%;
-  --secondary-foreground: 0 0% 100%;
+  /* primary = action = violet-500 (#4F186D ≈ hsl(281 64% 26%)) — Notion CTA */
+  --primary: 281 64% 26%;
+  --primary-foreground: 0 0% 100%;       /* white sobre violet-500 = 7.85:1 AAA */
+  /* secondary = accent = orange-500 (#E07400 ≈ hsl(31 100% 44%)) */
+  --secondary: 31 100% 44%;
+  --secondary-foreground: 0 0% 100%;     /* white sobre orange-500 = 3.36:1 AA-large (botões/UI permitido por lex-brand-colors) */
   --muted: 280 20% 96%;
   --muted-foreground: 240 4% 38%;
-  --accent: 31 100% 44%;                 /* alias of primary */
+  --accent: 281 64% 26%;                 /* alias of primary (violet-500) */
   --accent-foreground: 0 0% 100%;
   --destructive: 0 100% 59%;             /* signal-red (#FF3131) */
   --destructive-foreground: 0 0% 100%;
   --border: 280 22% 91%;                 /* #E7E3EC */
   --input: 280 22% 91%;
-  --ring: 31 100% 44%;                   /* orange-500 */
+  --ring: 281 64% 26%;                   /* violet-500 — foco segue primary */
 
   /* Radii — Guardia canon (2/3/6/8/10/14/999) */
   --radius: 0.5rem;                      /* 8px = radius-lg, default shadcn */
