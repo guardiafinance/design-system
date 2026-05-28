@@ -1,0 +1,20 @@
+
+.grd-pag {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+}
+.grd-pag-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; background: transparent;
+  color: var(--fg); cursor: pointer; font-family: inherit; font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: background 120ms, color 120ms, border-color 120ms;
+}
+.grd-pag-md .grd-pag-btn { min-width: 32px; height: 32px; padding: 0 8px; font-size: 13px; }
+.grd-pag-sm .grd-pag-btn { min-width: 28px; height: 28px; padding: 0 6px; font-size: 12px; }
+.grd-pag-btn:hover:not(:disabled) { background: var(--violet-50); color: var(--violet-700); }
+.grd-pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.grd-pag-btn-active,
+.grd-pag-btn-active:hover { background: var(--violet-500); color: #fff; }
+.grd-pag-ellipsis { padding: 0 4px; color: var(--fg-muted); user-select: none; }

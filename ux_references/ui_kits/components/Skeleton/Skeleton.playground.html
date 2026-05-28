@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Skeleton · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">PRIMITIVO · CARREGAMENTO</div>
+  <h1 class="pg-title">Skeleton</h1>
+  <span class="pg-codename">import Skeleton from "ui_kits/components/Skeleton"</span>
+  <p class="pg-desc">Placeholder animado (shimmer) para conteúdo que ainda está carregando. Variantes: <code>text</code>, <code>title</code>, <code>rect</code>, <code>circle</code>. Para blocos de texto multi-linha, passe <code>lines</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch"}}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Variantes">
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <Skeleton variant="circle" width={40} height={40} />
+        <Skeleton variant="title" width={220} />
+      </div>
+      <Skeleton variant="text" width="60%" />
+      <Skeleton variant="rect" width="100%" height={120} />
+    </Sec>
+
+    <Sec title="Bloco de texto (multi-linha)">
+      <Skeleton lines={4} />
+    </Sec>
+
+    <Sec title="Card mock (composição real)">
+      <div style={{background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-md)",padding:16,maxWidth:420}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+          <Skeleton variant="circle" width={36} height={36} />
+          <div style={{flex:1,display:"flex",flexDirection:"column",gap:4}}>
+            <Skeleton width="50%" />
+            <Skeleton width="30%" height={10} />
+          </div>
+        </div>
+        <Skeleton variant="rect" width="100%" height={100} style={{marginBottom:12}} />
+        <Skeleton lines={3} />
+      </div>
+    </Sec>
+
+    <Sec title="Linha de tabela mock">
+      <div style={{background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-md)",padding:"10px 14px"}}>
+        {Array.from({length:4}).map((_,i)=>(
+          <div key={i} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 80px",gap:16,alignItems:"center",padding:"12px 0",borderBottom:i<3?"1px solid var(--border)":"none"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <Skeleton variant="circle" width={28} height={28} />
+              <Skeleton width={140} />
+            </div>
+            <Skeleton width={80} />
+            <Skeleton width={70} />
+            <Skeleton width={60} />
+          </div>
+        ))}
+      </div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Skeleton"]) || "render(<div>Sem exemplo para Skeleton</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"text"</td><td class="desc">text · title · rect · circle</td></tr>
+  <tr><td><code>width</code></td><td>number | string</td><td>auto</td><td class="desc">Largura (px ou %)</td></tr>
+  <tr><td><code>height</code></td><td>number | string</td><td>auto</td><td class="desc">Altura (px ou %)</td></tr>
+  <tr><td><code>lines</code></td><td>number</td><td>1</td><td class="desc">Número de linhas (só com variant=text); última linha a 70%</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Loading de listas e cards quando a forma do conteúdo é previsível.</li>
+      <li>Mesmo shape do conteúdo final; animação sutil.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Skeleton para requests instantâneos (< 300ms).</li>
+      <li>Loader genérico no meio da tela quando dá pra mostrar estrutura.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

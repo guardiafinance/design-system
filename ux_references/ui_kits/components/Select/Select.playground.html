@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Select · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · SELEÇÃO</div>
+  <h1 class="pg-title">Select</h1>
+  <span class="pg-codename">import Select from "ui_kits/components/Select"</span>
+  <p class="pg-desc">Dropdown nativo. Ideal para listas curtas e conhecidas (até ~12 opções). Para listas longas, busca ou criação de novos valores, use <code>Combobox</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, w=360 }: { title: string; children: React.ReactNode; w?: number }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",maxWidth:w}}>{children}</div></div>);
+}
+
+const REGIMES = [
+  { value: "mei", label: "MEI" },
+  { value: "simples", label: "Simples Nacional" },
+  { value: "presumido", label: "Lucro Presumido" },
+  { value: "real", label: "Lucro Real" },
+];
+
+const PERIODOS = [
+  { value: "hoje", label: "Hoje" },
+  { value: "semana", label: "Esta semana" },
+  { value: "mes", label: "Este mês" },
+  { value: "tri", label: "Este trimestre" },
+  { value: "ano", label: "Este ano" },
+];
+
+function App() {
+  const [reg, setReg] = React.useState("simples");
+  return (<>
+    <Sec title="Tamanhos">
+      <Select size="sm" options={PERIODOS} defaultValue="mes" />
+      <Select size="md" options={PERIODOS} defaultValue="mes" />
+      <Select size="lg" options={PERIODOS} defaultValue="mes" />
+    </Sec>
+
+    <Sec title="Com placeholder + ícone esquerdo">
+      <Select leftIcon="building-2" options={REGIMES} placeholder="Selecione o regime tributário…" />
+    </Sec>
+
+    <Sec title="Estados">
+      <Select options={PERIODOS} defaultValue="mes" />
+      <Select options={PERIODOS} defaultValue="mes" state="error" />
+      <Select options={PERIODOS} defaultValue="mes" state="success" />
+      <Select options={PERIODOS} defaultValue="mes" disabled />
+    </Sec>
+
+    <Sec title="Controlado">
+      <Select
+        leftIcon="scale"
+        options={REGIMES}
+        value={reg}
+        onChange={e => setReg(e.target.value)}
+      />
+      <div style={{fontSize:13,color:"var(--gray-600)"}}>Regime selecionado: <b style={{color:"var(--orange-500)"}}>{REGIMES.find(r=>r.value===reg)?.label}</b></div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Select"]) || "render(<div>Sem exemplo para Select</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>state</code></td><td>string</td><td>"default"</td><td class="desc">default · error · success</td></tr>
+  <tr><td><code>leftIcon</code></td><td>string</td><td>—</td><td class="desc">Nome do ícone Lucide à esquerda</td></tr>
+  <tr><td><code>placeholder</code></td><td>string</td><td>—</td><td class="desc">Opção inicial desabilitada/oculta</td></tr>
+  <tr><td><code>options</code></td><td>array</td><td>—</td><td class="desc">{`{ value, label, disabled? }[]`} · alternativa a children</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Lista curta (< 15 itens) sem necessidade de busca.</li>
+      <li>Placeholder indicando o que selecionar.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Listas longas — use <code>Combobox</code>.</li>
+      <li>Selects dependentes (cascata) sem feedback de carregamento.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

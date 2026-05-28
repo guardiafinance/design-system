@@ -1,0 +1,29 @@
+/* Chip */
+.grd-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px 5px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--fg);
+  font-size: 12px; font-weight: 500; line-height: 1;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 140ms var(--ease-standard),
+              border-color 140ms var(--ease-standard),
+              color 140ms var(--ease-standard);
+}
+.grd-chip:hover:not(.grd-chip-disabled) { background: var(--violet-100); border-color: var(--violet-500); }
+.grd-chip-selected {
+  background: var(--violet-500); border-color: var(--violet-500); color: #fff;
+}
+.grd-chip-selected:hover { background: var(--violet-700); border-color: var(--violet-700); }
+.grd-chip-disabled { opacity: 0.5; cursor: not-allowed; }
+
+.grd-chip-remove {
+  background: none; border: none; padding: 0; margin-left: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: var(--radius-pill);
+  cursor: pointer; color: inherit; opacity: 0.7;
+}
+.grd-chip-remove:hover:not(:disabled) { opacity: 1; background: rgba(255,255,255,0.2); }
+.grd-chip:not(.grd-chip-selected) .grd-chip-remove:hover:not(:disabled) { background: var(--violet-100); }

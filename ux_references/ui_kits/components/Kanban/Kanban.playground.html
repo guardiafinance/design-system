@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Kanban · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=1">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<link rel="stylesheet" href="../Avatar/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · FLUXO</div>
+  <h1 class="pg-title">Kanban</h1>
+  <span class="pg-codename">import Kanban from "ui_kits/components/Kanban"</span>
+  <p class="pg-desc">Board de colunas com cards arrastáveis. Suporta reordenação dentro da coluna, swimlanes, colunas colapsáveis, filtro, adicionar card no rodapé, totais por coluna e indicador de confiança do agente. Cards customizáveis via <code>renderCard</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Avatar/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=1"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,alignItems:"stretch",flexDirection:"column",gap:24}}>{children}</div></div>);
+}
+function Frame({ children, label }: { children: React.ReactNode; label?: string }) {
+  return (
+    <div>
+      {label && <div style={{ fontSize: 11.5, color: "var(--fg-muted)", marginBottom: 10, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>{label}</div>}
+      <div style={{ background: "var(--surface)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", padding: "18px 20px" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Dados — equipe contábil                                            */
+/* ---------------------------------------------------------------- */
+
+const BRL = (n) => "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const COLUMNS = [
+  { id: "backlog", title: "Backlog",      color: "var(--gray-400)" },
+  { id: "todo",    title: "A fazer",      color: "var(--blue-500)" },
+  { id: "doing",   title: "Em andamento", color: "var(--signal-yellow)" },
+  { id: "review",  title: "Revisão",      color: "var(--violet-500)" },
+  { id: "done",    title: "Concluído",    color: "var(--signal-green)" },
+];
+
+const INITIAL_CARDS = [
+  { id: "c1", columnId: "backlog", laneId: "urgente",
+    displayId: "TSK-2418", priority: "high",
+    title: "Apurar ICMS-ST de Verona SP — 04/2026",
+    description: "Revisar NF-es de fornecedores e calcular substituição tributária.",
+    tags: [{ label: "ICMS", tone: "red" }, { label: "Verona SP", tone: "violet" }],
+    assignee: { name: "Luana Ribeiro" },
+    dueDate: "30 abr",
+    dueStatus: "warn",
+    value: BRL(24890.50),
+    confidence: 0.62,
+    commentsCount: 3,
+    attachmentsCount: 2,
+  },
+  { id: "c2", columnId: "backlog", laneId: "normal",
+    displayId: "TSK-2419", priority: "med",
+    title: "Fechar folha de pagamento — abril",
+    description: "Integrar SST e revisar rubricas com departamento pessoal.",
+    tags: [{ label: "Folha", tone: "blue" }, { label: "Domínio", tone: "neutral" }],
+    assignee: { name: "Marcos Aoki" },
+    dueDate: "05 mai",
+    dueStatus: "ok",
+    value: BRL(186420.00),
+    commentsCount: 1,
+  },
+  { id: "c3", columnId: "todo", laneId: "normal",
+    displayId: "TSK-2420", priority: "med",
+    title: "Conciliar Itaú — 04/2026",
+    tags: [{ label: "Conciliação", tone: "violet" }],
+    assignee: { name: "Bianca Silva" },
+    dueDate: "02 mai", dueStatus: "ok",
+    progress: 0.35,
+    confidence: 0.97,
+  },
+  { id: "c4", columnId: "todo", laneId: "urgente",
+    displayId: "TSK-2421", priority: "high",
+    title: "Resposta à Receita — cliente Padaria da Esquina",
+    description: "Responder intimação 04893-2026 sobre divergência de COFINS.",
+    tags: [{ label: "Fisco", tone: "red" }, { label: "Urgente", tone: "red" }],
+    assignee: { name: "Luana Ribeiro" },
+    dueDate: "28 abr", dueStatus: "danger",
+    commentsCount: 8,
+  },
+  { id: "c5", columnId: "doing", laneId: "normal",
+    displayId: "TSK-2410", priority: "med",
+    title: "Regras de plano de contas — grupo Verona",
+    description: "Mapear 87 novas contas do grupo e validar hierarquia.",
+    tags: [{ label: "Contas", tone: "neutral" }],
+    assignee: { name: "Thiago Matos" },
+    dueDate: "03 mai", dueStatus: "ok",
+    progress: 0.68,
+    attachmentsCount: 1,
+  },
+  { id: "c6", columnId: "doing", laneId: "urgente",
+    displayId: "TSK-2415", priority: "high",
+    title: "DCTF de março — 12 clientes pendentes",
+    tags: [{ label: "Obrig. acessórias", tone: "amber" }],
+    assignee: { name: "Carolina Duarte" },
+    dueDate: "25 abr", dueStatus: "danger",
+    progress: 0.40,
+    confidence: 0.88,
+  },
+  { id: "c7", columnId: "review", laneId: "normal",
+    displayId: "TSK-2401", priority: "low",
+    title: "DRE abril — Mercearia Flor",
+    description: "Agente gerou automaticamente; aguardando revisão humana.",
+    tags: [{ label: "DRE", tone: "green" }],
+    assignee: { name: "Bianca Silva" },
+    dueDate: "02 mai",
+    dueStatus: "ok",
+    confidence: 0.98,
+    value: BRL(42310.00),
+  },
+  { id: "c8", columnId: "review", laneId: "urgente",
+    displayId: "TSK-2402", priority: "high",
+    title: "Parecer — Verona Logística (Simples → Lucro Presumido)",
+    description: "Enquadramento tributário expirou prazo.",
+    tags: [{ label: "Tributário", tone: "red" }, { label: "Parecer", tone: "violet" }],
+    assignee: { name: "Thiago Matos" },
+    dueDate: "01 mai", dueStatus: "warn",
+    confidence: 0.71,
+    commentsCount: 4,
+  },
+  { id: "c9", columnId: "done", laneId: "normal",
+    displayId: "TSK-2389", priority: "med",
+    title: "Conciliação Bradesco — março",
+    tags: [{ label: "Conciliação", tone: "violet" }],
+    assignee: { name: "Bianca Silva" },
+    dueDate: "01 abr", dueStatus: "ok",
+    progress: 1.0,
+    confidence: 0.99,
+    value: BRL(312400.55),
+  },
+  { id: "c10", columnId: "done", laneId: "normal",
+    displayId: "TSK-2390", priority: "low",
+    title: "SPED Contribuições — março",
+    assignee: { name: "Carolina Duarte" },
+    dueDate: "10 abr", dueStatus: "ok",
+    progress: 1.0,
+    confidence: 1.0,
+  },
+  { id: "c11", columnId: "backlog", laneId: "normal",
+    displayId: "TSK-2430", priority: "low",
+    title: "Levantar inconsistências — Café Central",
+    tags: [{ label: "Diagnóstico", tone: "neutral" }],
+    assignee: { name: "Marcos Aoki" },
+    dueDate: "15 mai", dueStatus: "ok",
+  },
+];
+
+const SWIMLANES = [
+  { id: "urgente", title: "Urgente (≤ 7 dias ou em atraso)" },
+  { id: "normal",  title: "Normal" },
+];
+
+/* ---------------------------------------------------------------- */
+/* Exemplo principal                                                 */
+/* ---------------------------------------------------------------- */
+
+function KanbanExample() {
+  const [cards, setCards] = React.useState(INITIAL_CARDS);
+
+  const handleMove = (cardId, toColumnId, toLaneId, toIndex) => {
+    setCards((prev) => {
+      const moving = prev.find((c) => c.id === cardId);
+      if (!moving) return prev;
+      const remaining = prev.filter((c) => c.id !== cardId);
+      const updated = { ...moving, columnId: toColumnId, laneId: toLaneId ?? moving.laneId };
+
+      /* Reinsere na posição correta: conta o índice dentro do grupo (columnId + laneId) */
+      const newList = [];
+      let placed = false;
+      let laneColIdx = 0;
+      for (const c of remaining) {
+        const inSameBucket = c.columnId === toColumnId && (toLaneId ? c.laneId === toLaneId : c.laneId === moving.laneId);
+        if (inSameBucket && laneColIdx === toIndex && !placed) {
+          newList.push(updated);
+          placed = true;
+        }
+        newList.push(c);
+        if (inSameBucket) laneColIdx++;
+      }
+      if (!placed) newList.push(updated);
+      return newList;
+    });
+  };
+
+  const columnsWithAdd = COLUMNS.map((c, i) => ({
+    ...c,
+    onAdd: i < COLUMNS.length - 1 ? () => alert(`Adicionar card em "${c.title}"`) : undefined,
+    showTotals: c.id === "review" || c.id === "done",
+    sumValue: (card) => {
+      if (!card.value) return 0;
+      const n = parseFloat(String(card.value).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+      return isNaN(n) ? 0 : n;
+    },
+    sumFormat: (s) => BRL(s),
+    emptyState: c.id === "backlog" ? "Nada no backlog — 🎉" : c.id === "done" ? "Ainda sem concluídos" : undefined,
+  }));
+
+  return (
+    <Kanban
+      title="Tarefas da equipe"
+      columns={columnsWithAdd}
+      cards={cards}
+      swimlanes={SWIMLANES}
+      searchable
+      onCardMove={handleMove}
+    />
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Exemplo minimal                                                   */
+/* ---------------------------------------------------------------- */
+function KanbanMinimal() {
+  const [cards, setCards] = React.useState([
+    { id: "m1", columnId: "c1", title: "Importar OFX do Itaú" },
+    { id: "m2", columnId: "c1", title: "Validar SPED março" },
+    { id: "m3", columnId: "c2", title: "Conciliar cartão Nubank" },
+    { id: "m4", columnId: "c3", title: "Fechar DRE abril" },
+  ]);
+  const cols = [
+    { id: "c1", title: "Backlog" },
+    { id: "c2", title: "Em andamento" },
+    { id: "c3", title: "Revisão" },
+    { id: "c4", title: "Pronto" },
+  ];
+  return (
+    <Kanban
+      columns={cols}
+      cards={cards}
+      onCardMove={(id, toCol, _lane, idx) => {
+        setCards((prev) => {
+          const moving = prev.find((c) => c.id === id);
+          if (!moving) return prev;
+          const rest = prev.filter((c) => c.id !== id);
+          const out = [];
+          let placed = false;
+          let bucketIdx = 0;
+          for (const c of rest) {
+            if (c.columnId === toCol && bucketIdx === idx && !placed) {
+              out.push({ ...moving, columnId: toCol });
+              placed = true;
+            }
+            out.push(c);
+            if (c.columnId === toCol) bucketIdx++;
+          }
+          if (!placed) out.push({ ...moving, columnId: toCol });
+          return out;
+        });
+      }}
+    />
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Custom renderCard                                                  */
+/* ---------------------------------------------------------------- */
+function KanbanCustom() {
+  const [cards, setCards] = React.useState([
+    { id: "x1", columnId: "triage",  title: "Padaria da Esquina", raw: { cnpj: "12.345.678/0001-90", lanc: 41 } },
+    { id: "x2", columnId: "triage",  title: "Mercearia Flor",     raw: { cnpj: "98.765.432/0001-01", lanc: 28 } },
+    { id: "x3", columnId: "ready",   title: "Café Central",       raw: { cnpj: "11.222.333/0001-55", lanc: 12 } },
+    { id: "x4", columnId: "done",    title: "Verona Logística",   raw: { cnpj: "45.892.100/0001-33", lanc: 187 } },
+  ]);
+  const cols = [
+    { id: "triage", title: "Triagem",   color: "var(--gray-400)" },
+    { id: "ready",  title: "Pronto",    color: "var(--violet-500)" },
+    { id: "done",   title: "Enviado",   color: "var(--signal-green)" },
+  ];
+  return (
+    <Kanban
+      title="Fechamento mensal por cliente"
+      columns={cols}
+      cards={cards}
+      onCardMove={(id, toCol, _l, idx) => {
+        setCards((prev) => {
+          const moving = prev.find((c) => c.id === id);
+          if (!moving) return prev;
+          const rest = prev.filter((c) => c.id !== id);
+          const out = [];
+          let placed = false;
+          let bucketIdx = 0;
+          for (const c of rest) {
+            if (c.columnId === toCol && bucketIdx === idx && !placed) {
+              out.push({ ...moving, columnId: toCol });
+              placed = true;
+            }
+            out.push(c);
+            if (c.columnId === toCol) bucketIdx++;
+          }
+          if (!placed) out.push({ ...moving, columnId: toCol });
+          return out;
+        });
+      }}
+      renderCard={(card) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <Avatar name={card.title} size="sm" />
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>{card.title}</span>
+            <span style={{ fontSize: 11, color: "var(--fg-muted)" }}>CNPJ {card.raw.cnpj}</span>
+          </div>
+          <Badge tone="violet" variant="soft" size="xs" style={{ marginLeft: "auto" }}>{card.raw.lanc} lanç.</Badge>
+        </div>
+      )}
+    />
+  );
+}
+
+function App() {
+  return (<>
+    <Sec title="Tarefas da equipe contábil — D&D completo, swimlanes, busca, totais, confiança">
+      <Frame>
+        <KanbanExample />
+      </Frame>
+    </Sec>
+
+    <Sec title="Minimal — só título, sem metadata">
+      <Frame>
+        <KanbanMinimal />
+      </Frame>
+    </Sec>
+
+    <Sec title="Card customizado (renderCard) — fechamento por cliente">
+      <Frame>
+        <KanbanCustom />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Kanban"]) || "render(<div>Sem exemplo para Kanban</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>title</code></td><td>string</td><td>—</td><td class="desc">Título no header + contador total</td></tr>
+  <tr><td><code>columns</code></td><td>KanbanColumn[]</td><td>—</td><td class="desc">Colunas do board</td></tr>
+  <tr><td><code>cards</code></td><td>KanbanCard[]</td><td>—</td><td class="desc">Lista plana; cada card tem columnId (e opcional laneId)</td></tr>
+  <tr><td><code>swimlanes</code></td><td>Swimlane[]</td><td>—</td><td class="desc">Agrupamentos horizontais; se omitido, tudo fica numa lane única</td></tr>
+  <tr><td><code>searchable</code></td><td>bool</td><td>false</td><td class="desc">Filtro por título, tag, responsável, displayId</td></tr>
+  <tr><td><code>onCardMove</code></td><td>(id, col, lane, idx) ⇒ void</td><td>—</td><td class="desc">Disparado ao soltar um card. Você atualiza o estado</td></tr>
+  <tr><td><code>onCardClick</code></td><td>(card) ⇒ void</td><td>—</td><td class="desc">Clique em um card</td></tr>
+  <tr><td><code>renderCard</code></td><td>(card, ctx) ⇒ node</td><td>—</td><td class="desc">Substitui o card padrão por completo</td></tr>
+  <tr><td><code>defaultCollapsedColumns</code></td><td>string[]</td><td>—</td><td class="desc">Colunas colapsadas ao montar</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">KanbanColumn</th></tr>
+  <tr><td><code>id</code> · <code>title</code></td><td>string</td><td>—</td><td class="desc">Obrigatórios</td></tr>
+  <tr><td><code>color</code></td><td>string</td><td>—</td><td class="desc">Dot no header; qualquer CSS color ou var(--...)</td></tr>
+  <tr><td><code>onAdd</code></td><td>fn</td><td>—</td><td class="desc">Se informado, mostra botão "+ Adicionar card" no rodapé</td></tr>
+  <tr><td><code>emptyState</code></td><td>node</td><td>—</td><td class="desc">Conteúdo quando a coluna está vazia</td></tr>
+  <tr><td><code>showTotals</code> + <code>sumValue</code> + <code>sumFormat</code></td><td>bool + fns</td><td>—</td><td class="desc">Soma e formata um valor numérico a partir dos cards</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">KanbanCard (default renderer)</th></tr>
+  <tr><td><code>id</code> · <code>columnId</code> · <code>laneId?</code></td><td>string</td><td>—</td><td class="desc">Identidade e posição</td></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>node</td><td>—</td><td class="desc">Texto principal</td></tr>
+  <tr><td><code>displayId</code></td><td>string</td><td>—</td><td class="desc">Ex: "TSK-248"</td></tr>
+  <tr><td><code>priority</code></td><td>string</td><td>—</td><td class="desc">low · med · high (dot colorido)</td></tr>
+  <tr><td><code>tags</code></td><td>{label,tone}[]</td><td>—</td><td class="desc">Badges</td></tr>
+  <tr><td><code>assignee</code></td><td>{name,avatar?}</td><td>—</td><td class="desc">Avatar no rodapé</td></tr>
+  <tr><td><code>dueDate</code> + <code>dueStatus</code></td><td>string + ok/warn/danger</td><td>—</td><td class="desc">Data de vencimento com cor</td></tr>
+  <tr><td><code>value</code></td><td>node</td><td>—</td><td class="desc">Valor à direita (ex: "R$ 12.430,00")</td></tr>
+  <tr><td><code>confidence</code></td><td>number 0..1</td><td>—</td><td class="desc">Indicador do agente (≥95% verde, ≥75% amarelo, &lt; 75% vermelho)</td></tr>
+  <tr><td><code>progress</code></td><td>number 0..1</td><td>—</td><td class="desc">Barra fina no rodapé</td></tr>
+  <tr><td><code>commentsCount</code> · <code>attachmentsCount</code></td><td>number</td><td>—</td><td class="desc">Ícones no rodapé</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Fluxos com estados bem definidos (≥3 colunas) e movimento frequente de itens entre eles.</li>
+      <li>Tarefas da equipe contábil, pendências por cliente, pipeline de revisão.</li>
+      <li>Swimlanes quando um segundo eixo (urgência, cliente, responsável) precisa de destaque visual.</li>
+      <li>Totais por coluna em contextos financeiros (soma do valor em Revisão e Concluído).</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Dados lineares sem fluxo — use <code>DataTable</code> ou lista simples.</li>
+      <li>Mais que 6 colunas — vira scroll horizontal inoperante.</li>
+      <li>Cards com 15+ campos — mova detalhes para <code>Drawer</code> ao clicar.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

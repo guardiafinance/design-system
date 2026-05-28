@@ -1,0 +1,24 @@
+
+.grd-pop {
+  position: fixed; z-index: 800;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 10px;
+  font-family: var(--font-sans); font-size: 13.5px; color: var(--fg);
+  max-width: 320px;
+  animation: grd-pop-in 140ms var(--ease-out);
+}
+@keyframes grd-pop-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.grd-pop-top    { transform: translateY(-100%); }
+.grd-pop-left   { transform: translateX(-100%); }
+.grd-pop-al-center.grd-pop-bottom,
+.grd-pop-al-center.grd-pop-top   { transform: translateX(-50%); }
+.grd-pop-al-center.grd-pop-left,
+.grd-pop-al-center.grd-pop-right { transform: translateY(-50%); }
+.grd-pop-al-end.grd-pop-bottom,
+.grd-pop-al-end.grd-pop-top      { transform: translateX(-100%); }
+.grd-pop-al-end.grd-pop-left     { transform: translate(-100%, -100%); }
+.grd-pop-al-end.grd-pop-right    { transform: translateY(-100%); }
+.grd-pop-al-center.grd-pop-top   { transform: translate(-50%, -100%); }
+.grd-pop-al-center.grd-pop-left  { transform: translate(-100%, -50%); }

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Stepper · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=3">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">NAVEGAÇÃO · PROGRESSO</div>
+  <h1 class="pg-title">Stepper</h1>
+  <span class="pg-codename">import Stepper from "ui_kits/components/Stepper"</span>
+  <p class="pg-desc">Indicador de progresso em fluxos de múltiplas etapas. Horizontal ou vertical, numerado, com ícones ou compacto. Suporta estados (pendente · atual · completo · erro) e navegação por clique em passos anteriores.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=3"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,gap:40,alignItems:"flex-start",flexWrap:"wrap"}}>{children}</div></div>);
+}
+function Frame({ children, w=720, label }: { children: React.ReactNode; w?: number; label?: string }) {
+  return (
+    <div style={{ width: w }}>
+      {label && <div style={{ fontSize: 11.5, color: "var(--fg-muted)", marginBottom: 10, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>{label}</div>}
+      <div style={{ background: "var(--papel)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", padding: "22px 26px" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 1. Onboarding horizontal ---------- */
+const ONBOARDING = [
+  { id: "1", title: "Criar conta",      description: "CNPJ validado" },
+  { id: "2", title: "Conectar banco",   description: "Open Finance" },
+  { id: "3", title: "Importar extrato", description: "OFX ou automático" },
+  { id: "4", title: "Configurar regras" },
+  { id: "5", title: "Revisar" },
+];
+
+/* ---------- 2. Com ícones ---------- */
+const ICONED = [
+  { id: "1", title: "Upload",        icon: "upload-cloud" },
+  { id: "2", title: "Parse",         icon: "file-text" },
+  { id: "3", title: "Match",         icon: "git-merge" },
+  { id: "4", title: "Reconciliação", icon: "check-circle" },
+];
+
+/* ---------- 3. Com erro ---------- */
+const WITH_ERROR = [
+  { id: "1", title: "Importar extrato", state: "complete" as const },
+  { id: "2", title: "Validar CNPJ",     state: "complete" as const },
+  { id: "3", title: "Enviar ao Domínio",state: "error" as const,   description: "Credencial expirada" },
+  { id: "4", title: "Confirmar" },
+];
+
+/* ---------- 3b. Com loading (estado assíncrono) ---------- */
+const WITH_LOADING = [
+  { id: "1", title: "Upload",   state: "complete" as const },
+  { id: "2", title: "Parse OFX", state: "complete" as const, description: "237 lançamentos" },
+  { id: "3", title: "Conciliando…", state: "loading" as const, description: "cruzando com ERP" },
+  { id: "4", title: "Revisar" },
+  { id: "5", title: "Fechar" },
+];
+
+/* ---------- 3c. Loading no fluxo do Copilot (compact) ---------- */
+const COPILOT_RUN = [
+  { id: "1", title: "Planejar",  state: "complete" as const },
+  { id: "2", title: "Buscar",    state: "complete" as const },
+  { id: "3", title: "Calcular",  state: "loading"  as const },
+  { id: "4", title: "Confirmar" },
+];
+
+/* ---------- 4. Vertical com meta (form step-by-step) ---------- */
+const FORM_STEPS = [
+  {
+    id: "1",
+    title: "Dados da empresa",
+    description: "Razão social, CNPJ e regime tributário",
+    meta: (
+      <div style={{ display: "grid", gap: 10, maxWidth: 320 }}>
+        <Input size="sm" placeholder="Razão social" defaultValue="Padaria da Esquina LTDA" />
+        <Input size="sm" placeholder="CNPJ" defaultValue="12.345.678/0001-90" />
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button size="sm" variant="primary">Continuar</Button>
+          <Button size="sm" variant="ghost">Voltar</Button>
+        </div>
+      </div>
+    ),
+  },
+  { id: "2", title: "Conta bancária",  description: "Qual banco vamos conectar primeiro?" },
+  { id: "3", title: "Regras fiscais",  description: "Configure o plano de contas" },
+  { id: "4", title: "Primeiro fechamento", description: "A Guardia começa a trabalhar" },
+];
+
+/* ---------- 5. Processamento em background (compact) ---------- */
+const PROCESS = [
+  { id: "1", title: "Upload" },
+  { id: "2", title: "Parse" },
+  { id: "3", title: "Match" },
+  { id: "4", title: "Review" },
+  { id: "5", title: "Close" },
+];
+
+function App() {
+  const [step, setStep] = React.useState(2);
+  const [verticalStep, setVerticalStep] = React.useState(0);
+
+  return (<>
+    <Sec title="Horizontal numbered — onboarding (clickable)">
+      <Frame w={760} label={`Etapa ${step + 1} de ${ONBOARDING.length}`}>
+        <Stepper
+          steps={ONBOARDING}
+          activeIndex={step}
+          onStepClick={(i) => setStep(i)}
+        />
+        <div style={{ display: "flex", gap: 8, marginTop: 22, borderTop: "1px solid var(--gray-100)", paddingTop: 18, justifyContent: "flex-end" }}>
+          <Button variant="ghost" size="sm" disabled={step === 0} onClick={() => setStep(Math.max(0, step - 1))}>Voltar</Button>
+          <Button variant="primary" size="sm" disabled={step >= ONBOARDING.length - 1} onClick={() => setStep(Math.min(ONBOARDING.length - 1, step + 1))}>Avançar</Button>
+        </div>
+      </Frame>
+    </Sec>
+
+    <Sec title="Horizontal iconed — pipeline de processamento">
+      <Frame w={640}>
+        <Stepper steps={ICONED} activeIndex={2} variant="iconed" />
+      </Frame>
+    </Sec>
+
+    <Sec title="Estado de erro — fluxo interrompido">
+      <Frame w={720}>
+        <Stepper steps={WITH_ERROR} variant="numbered" />
+      </Frame>
+    </Sec>
+
+    <Sec title="Estado de loading — passo em processamento assíncrono">
+      <Frame w={720}>
+        <Stepper steps={WITH_LOADING} variant="numbered" />
+      </Frame>
+      <Frame w={360} label="Dentro do Copilot (compact)">
+        <Stepper steps={COPILOT_RUN} variant="compact" />
+      </Frame>
+    </Sec>
+
+    <Sec title="Vertical com conteúdo inline — onboarding longo">
+      <Frame w={520}>
+        <Stepper
+          steps={FORM_STEPS}
+          activeIndex={verticalStep}
+          orientation="vertical"
+          onStepClick={(i) => setVerticalStep(i)}
+        />
+      </Frame>
+    </Sec>
+
+    <Sec title="Compact — indicador minimalista">
+      <Frame w={320}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <span style={{ fontSize: 12, color: "var(--fg-muted)", fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>Processando extrato Itaú</span>
+          <span style={{ fontSize: 12, color: "var(--violet-600)", fontWeight: 600 }}>3 de 5</span>
+        </div>
+        <Stepper steps={PROCESS} activeIndex={2} variant="compact" />
+      </Frame>
+      <Frame w={220} label="sm">
+        <Stepper steps={PROCESS} activeIndex={3} variant="compact" size="sm" />
+      </Frame>
+    </Sec>
+
+    <Sec title="Todos os estados (vertical sm)">
+      <Frame w={320} label="Referência visual">
+        <Stepper
+          size="sm"
+          orientation="vertical"
+          steps={[
+            { id: "1", title: "Complete", description: "Concluído com sucesso", state: "complete" },
+            { id: "2", title: "Current",  description: "Em andamento", state: "current" },
+            { id: "3", title: "Loading",  description: "Processando…", state: "loading" },
+            { id: "4", title: "Error",    description: "Falhou — revisar", state: "error" },
+            { id: "5", title: "Pending",  description: "Ainda não iniciado", state: "pending" },
+          ]}
+        />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Stepper"]) || "render(<div>Sem exemplo para Stepper</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>steps</code></td><td>Step[]</td><td>—</td><td class="desc">Lista de passos em ordem</td></tr>
+  <tr><td><code>activeIndex</code></td><td>number</td><td>0</td><td class="desc">Passo atual — passos anteriores viram <code>complete</code> automaticamente</td></tr>
+  <tr><td><code>orientation</code></td><td>string</td><td>"horizontal"</td><td class="desc">horizontal · vertical</td></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"numbered"</td><td class="desc">numbered · iconed · compact</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+  <tr><td><code>onStepClick</code></td><td>(i, step) ⇒ void</td><td>—</td><td class="desc">Se informado, passos já concluídos viram clicáveis</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">Step</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>—</td><td class="desc">Chave única</td></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>node</td><td>—</td><td class="desc">Conteúdo do passo</td></tr>
+  <tr><td><code>icon</code></td><td>string</td><td>—</td><td class="desc">Usado em variant="iconed"</td></tr>
+  <tr><td><code>state</code></td><td>string</td><td>—</td><td class="desc">Força o estado (pending · current · loading · complete · error). Se omitido, é calculado a partir de <code>activeIndex</code>.</td></tr>
+  <tr><td><code>meta</code></td><td>node</td><td>—</td><td class="desc">Conteúdo inline (form, ações) — só aparece no passo <code>current</code> em orientação vertical</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Fluxos com ≥ 3 etapas sequenciais e progresso relevante para o usuário.</li>
+      <li>Onboardings, wizards, pipelines de processamento e fluxos transacionais do Copilot.</li>
+      <li>Vertical quando cada etapa tem conteúdo próprio (form, escolhas); horizontal quando é só checkpoint.</li>
+      <li>Compact em headers e cards onde o foco é o status, não os rótulos.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Fluxos de 2 passos — use apenas um botão "Continuar".</li>
+      <li>Passos opcionais misturados com obrigatórios sem distinção visual clara.</li>
+      <li>Stepper como navegação lateral permanente — use <code>SidebarNav</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

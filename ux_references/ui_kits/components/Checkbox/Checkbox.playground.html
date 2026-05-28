@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Checkbox · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORMS · SELEÇÃO MÚLTIPLA</div>
+  <h1 class="pg-title">Checkbox</h1>
+  <span class="pg-codename">import Checkbox from "ui_kits/components/Checkbox"</span>
+  <p class="pg-desc">Seleção de múltiplos itens ou confirmação de opções independentes. Inclui estado <code>indeterminate</code> para agregadores (selecionar todos) e validação visual por <code>invalid</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, variant }: { title: string; children: React.ReactNode; variant?: string }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className={"pg-stage col "+(variant||"")}>{children}</div></div>);
+}
+const CLIENTES = ["Contábil Silva &amp; Cia", "Escritório Nova Era", "Prime Partners", "Martins Consultoria"];
+
+function App() {
+  const [sel, setSel] = React.useState<Record<string, boolean>>({});
+  const count = Object.values(sel).filter(Boolean).length;
+  const todos = count === CLIENTES.length;
+  const algum = count > 0 && !todos;
+  return (<>
+    <Sec title="Tamanhos">
+      <Checkbox size="sm" label="Small" defaultChecked />
+      <Checkbox size="md" label="Medium (default)" defaultChecked />
+    </Sec>
+    <Sec title="Estados">
+      <Checkbox label="Default · desmarcado" />
+      <Checkbox label="Marcado" defaultChecked />
+      <Checkbox label="Indeterminado (selecionar todos parcial)" indeterminate />
+      <Checkbox label="Inválido" invalid defaultChecked />
+      <Checkbox label="Desabilitado (off)" disabled />
+      <Checkbox label="Desabilitado (on)" disabled defaultChecked />
+    </Sec>
+    <Sec title="Com descrição">
+      <Checkbox label="Aceito os termos de uso" description="Você pode revisar em guardia.com/termos a qualquer momento" />
+      <Checkbox label="Receber novidades por e-mail" description="Máximo 1 vez por semana, sem pegadinhas" defaultChecked />
+    </Sec>
+    <Sec title="Grupo com indeterminado · seleção em massa">
+      <Checkbox label={`Selecionar todos (${count}/${CLIENTES.length})`} checked={todos} indeterminate={algum} onChange={(e) => { const v = e.target.checked; setSel(CLIENTES.reduce((acc, c) => ({...acc, [c]: v}), {})); }} />
+      <div style={{ paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8, borderLeft: "1px solid var(--border)" }}>
+        {CLIENTES.map((c) => (
+          <Checkbox key={c} label={c} checked={!!sel[c]} onChange={(e) => setSel({ ...sel, [c]: e.target.checked })} />
+        ))}
+      </div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+function ExampleApp() {
+  const code = `
+function SelecionarClientes() {
+  const [sel, setSel] = React.useState({ a: false, b: true, c: false });
+  const ids = ["a", "b", "c"];
+  const todos = ids.every((k) => sel[k]);
+  const algum = ids.some((k) => sel[k]) && !todos;
+
+  const marcarTodos = (v) => setSel({ a: v, b: v, c: v });
+
+  return (
+    <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Checkbox
+        label="Selecionar todos"
+        checked={todos}
+        indeterminate={algum}
+        onChange={(e) => marcarTodos(e.target.checked)}
+      />
+      <div style={{ paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <Checkbox label="Silva & Cia" checked={!!sel.a} onChange={(e) => setSel({ ...sel, a: e.target.checked })} />
+        <Checkbox label="Nova Era" checked={!!sel.b} onChange={(e) => setSel({ ...sel, b: e.target.checked })} />
+        <Checkbox label="Prime" checked={!!sel.c} onChange={(e) => setSel({ ...sel, c: e.target.checked })} />
+      </div>
+    </div>
+  );
+}
+
+render(<SelecionarClientes />);
+`;
+  return <LiveCode code={code} />;
+}
+ReactDOM.createRoot(document.getElementById('example-root')!).render(<ExampleApp />);
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>size</code></td><td>string</td><td><code>"md"</code></td><td class="desc">sm · md</td></tr>
+  <tr><td><code>checked</code></td><td>boolean</td><td>—</td><td class="desc">Uso controlado</td></tr>
+  <tr><td><code>indeterminate</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Estado misto (seleção parcial em grupo)</td></tr>
+  <tr><td><code>invalid</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Mostra borda vermelha (erro de validação)</td></tr>
+  <tr><td><code>label</code></td><td>ReactNode</td><td>—</td><td class="desc">Texto principal ao lado da caixa</td></tr>
+  <tr><td><code>description</code></td><td>ReactNode</td><td>—</td><td class="desc">Apoio abaixo do label</td></tr>
+  <tr><td><code>disabled</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Bloqueia interação</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Seleção múltipla independente (filtros de status, itens em lote).</li>
+      <li>Label clicável; estado <code>indeterminate</code> para seleção parcial.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Opções mutuamente exclusivas — use <code>Radio</code>.</li>
+      <li>Listas longas sem "selecionar tudo" quando ≥ 6 itens.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

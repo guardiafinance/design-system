@@ -1,0 +1,45 @@
+/* IconButton */
+.grd-iconbtn {
+  --grd-ib-bg: transparent;
+  --grd-ib-fg: var(--violet-500);
+  --grd-ib-bd: transparent;
+  --grd-ib-bg-hover: var(--violet-100);
+
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--grd-ib-bg); color: var(--grd-ib-fg);
+  border: 1px solid var(--grd-ib-bd);
+  cursor: pointer; padding: 0;
+  transition: background 160ms var(--ease-standard),
+              color 160ms var(--ease-standard),
+              border-color 160ms var(--ease-standard);
+}
+.grd-iconbtn:hover:not(:disabled) { background: var(--grd-ib-bg-hover); }
+.grd-iconbtn:focus-visible { outline: none; box-shadow: var(--focus-ring-accent); }
+.grd-iconbtn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Sizes */
+.grd-iconbtn-sm { width: 28px; height: 28px; border-radius: var(--radius-sm); }
+.grd-iconbtn-md { width: 36px; height: 36px; border-radius: var(--radius-md); }
+.grd-iconbtn-lg { width: 44px; height: 44px; border-radius: var(--radius-lg); }
+
+/* Shape */
+.grd-iconbtn-circle.grd-iconbtn-sm,
+.grd-iconbtn-circle.grd-iconbtn-md,
+.grd-iconbtn-circle.grd-iconbtn-lg { border-radius: var(--radius-pill); }
+
+/* Variants */
+.grd-iconbtn-primary {
+  --grd-ib-bg: var(--violet-500); --grd-ib-fg: #fff; --grd-ib-bg-hover: var(--violet-700);
+}
+.grd-iconbtn-accent {
+  --grd-ib-bg: var(--orange-500); --grd-ib-fg: #fff; --grd-ib-bg-hover: var(--orange-700);
+}
+.grd-iconbtn-outline {
+  --grd-ib-bg: #fff; --grd-ib-fg: var(--violet-500); --grd-ib-bd: var(--border-strong); --grd-ib-bg-hover: var(--violet-100);
+}
+.grd-iconbtn-ghost {
+  --grd-ib-bg: transparent; --grd-ib-fg: var(--violet-500); --grd-ib-bg-hover: var(--violet-100);
+}
+.grd-iconbtn-destructive {
+  --grd-ib-bg: transparent; --grd-ib-fg: var(--signal-red); --grd-ib-bg-hover: color-mix(in oklab, var(--signal-red) 10%, transparent);
+}

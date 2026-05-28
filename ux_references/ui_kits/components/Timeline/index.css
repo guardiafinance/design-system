@@ -1,0 +1,40 @@
+
+.grd-tl { list-style: none; padding: 0; margin: 0; font-family: var(--font-sans); }
+.grd-tl-item { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 12px; padding-bottom: 18px; }
+.grd-tl-sm .grd-tl-item { padding-bottom: 12px; gap: 10px; }
+
+.grd-tl-marker {
+  position: relative; z-index: 1;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface); border: 2px solid var(--violet-500);
+  color: var(--violet-600);
+}
+.grd-tl-sm .grd-tl-marker { width: 16px; height: 16px; border-width: 1.5px; }
+.grd-tl-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* connectors */
+.grd-tl-item:not(.grd-tl-last)::before {
+  content: ""; position: absolute;
+  top: 22px; bottom: 0; left: 10px;
+  width: 2px; background: var(--border);
+}
+.grd-tl-sm .grd-tl-item:not(.grd-tl-last)::before { top: 16px; left: 7px; width: 1.5px; }
+.grd-tl-c-dashed .grd-tl-item:not(.grd-tl-last)::before { background: transparent; border-left: 1.5px dashed var(--border); width: 0; }
+
+/* tones */
+.grd-tl-t-violet .grd-tl-marker  { border-color: var(--violet-500); color: var(--violet-600); }
+.grd-tl-t-green .grd-tl-marker   { border-color: var(--signal-green); color: var(--signal-green); background: var(--success-soft); }
+.grd-tl-t-amber .grd-tl-marker   { border-color: var(--signal-yellow); color: var(--yellow-900); background: var(--yellow-100); }
+.grd-tl-t-red .grd-tl-marker     { border-color: var(--signal-red); color: var(--signal-red); background: var(--danger-soft); }
+.grd-tl-t-neutral .grd-tl-marker { border-color: var(--gray-400); color: var(--fg-muted); }
+
+.grd-tl-body { min-width: 0; }
+.grd-tl-row { display: flex; align-items: baseline; gap: 12px; justify-content: space-between; }
+.grd-tl-title { font-size: 14px; font-weight: 600; color: var(--fg); }
+.grd-tl-sm .grd-tl-title { font-size: 13px; }
+.grd-tl-ts { font-size: 11.5px; color: var(--fg-muted); flex-shrink: 0; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.grd-tl-desc { font-size: 13px; color: var(--fg-muted); margin-top: 2px; line-height: 1.5; }
+.grd-tl-sm .grd-tl-desc { font-size: 12.5px; }
+.grd-tl-meta { margin-top: 8px; }

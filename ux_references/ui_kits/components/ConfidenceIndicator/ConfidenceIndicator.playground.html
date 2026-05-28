@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>ConfidenceIndicator · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">IA · SEMÁFORO DE CONFIANÇA</div>
+  <h1 class="pg-title">ConfidenceIndicator</h1>
+  <span class="pg-codename">import ConfidenceIndicator from "ui_kits/components/ConfidenceIndicator"</span>
+  <p class="pg-desc">Comunica a confiança da Guardia em um output de IA. Três níveis alinhados ao sistema Lighthouse — <b style={{color:"var(--verde-500)"}}>alta (≥95%)</b>, <b style={{color:"var(--orange-500)"}}>revisar (80–94%)</b>, <b style={{color:"var(--vermelho-500)"}}>atenção (&lt;80%)</b>. Variantes: <code>chip</code>, <code>bar</code>, <code>dot</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",gap:10}}>{children}</div></div>);
+}
+function Row({ children }: any) {
+  return <div style={{display:"flex",gap:10,flexWrap:"wrap",alignItems:"center"}}>{children}</div>;
+}
+function App() {
+  return (<>
+    <Sec title="Em contexto · sugestão do agente num lançamento">
+      <div style={{padding:"14px 16px",background:"#fff",border:"1px solid var(--border)",borderRadius: "var(--radius-md)",display:"flex",gap:14,alignItems:"center",maxWidth:560}}>
+        <div style={{width:48,height:48,background:"var(--orange-500)",borderRadius: "var(--radius-md)",color:"#fff",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>
+          <Icon name="bot" size={22} />
+        </div>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:4}}>
+            <strong style={{color:"var(--violet-500)",fontSize:14}}>Sugestão do agente</strong>
+            <ConfidenceIndicator level="high" value={97} size="sm" />
+          </div>
+          <p style={{margin:0,fontSize:13,color:"var(--gray-500)"}}>
+            Classificar em <b style={{color:"var(--violet-500)"}}>3.1.4.05 · Despesas com tecnologia</b>
+          </p>
+        </div>
+        <div style={{display:"flex",gap:6}}>
+          <button className="grd-btn grd-btn-ghost grd-btn-sm" aria-label="Rejeitar"><Icon name="x" size={14} /></button>
+          <button className="grd-btn grd-btn-primary grd-btn-sm" aria-label="Aceitar"><Icon name="check" size={14} /></button>
+        </div>
+      </div>
+    </Sec>
+
+    <Sec title="Chip · por nível">
+      <Row>
+        <ConfidenceIndicator level="high" value={97} />
+        <ConfidenceIndicator level="medium" value={86} />
+        <ConfidenceIndicator level="low" value={62} />
+      </Row>
+    </Sec>
+
+    <Sec title="Chip · sem valor numérico">
+      <Row>
+        <ConfidenceIndicator level="high" showValue={false} />
+        <ConfidenceIndicator level="medium" showValue={false} />
+        <ConfidenceIndicator level="low" showValue={false} />
+      </Row>
+    </Sec>
+
+    <Sec title="Dot · inline em listas">
+      <div style={{background:"#fff",border:"1px solid var(--border)",borderRadius:"var(--radius-md)",overflow:"hidden",maxWidth:520}}>
+        {[
+          ["NF 4891 · Fornecedor Alfa", 97, "Receita validada · 2110.01.001"],
+          ["NF 4892 · Telecom Beta",    86, "Categoria sugerida · revisar"],
+          ["NF 4893 · Uber Biz",        62, "Divergência de CNPJ na base"],
+        ].map(([t, v, d]: any, i) => (
+          <div key={i} style={{padding:"12px 14px",display:"flex",alignItems:"center",gap:12,borderBottom:i<2?"1px solid var(--border)":"none"}}>
+            <ConfidenceIndicator variant="dot" value={v} />
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:13,fontWeight:600,color:"var(--fg)"}}>{t}</div>
+              <div style={{fontSize:12,color:"var(--gray-500)"}}>{d}</div>
+            </div>
+            <span style={{fontSize:12,color:"var(--gray-500)",fontVariantNumeric:"tabular-nums"}}>{v}%</span>
+          </div>
+        ))}
+      </div>
+    </Sec>
+
+    <Sec title="Bar · detalhe">
+      <div style={{maxWidth:320,display:"flex",flexDirection:"column",gap:14}}>
+        <ConfidenceIndicator variant="bar" value={97} label="Classificação contábil" />
+        <ConfidenceIndicator variant="bar" value={86} label="Categoria fiscal" />
+        <ConfidenceIndicator variant="bar" value={62} label="Match fornecedor" />
+      </div>
+    </Sec>
+
+    <Sec title="Tamanhos (chip)">
+      <Row>
+        <ConfidenceIndicator size="sm" level="high" value={97} />
+        <ConfidenceIndicator size="md" level="high" value={97} />
+      </Row>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["ConfidenceIndicator"]) || "render(<div>Sem exemplo para ConfidenceIndicator</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>value</code></td><td>number</td><td>—</td><td class="desc">0–100; deriva o nível se <code>level</code> não for passado</td></tr>
+  <tr><td><code>level</code></td><td>string</td><td>—</td><td class="desc">high · medium · low (sobrepõe value)</td></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"chip"</td><td class="desc">chip · bar · dot</td></tr>
+  <tr><td><code>showValue</code></td><td>boolean</td><td>true</td><td class="desc">Exibe % (quando value é passado)</td></tr>
+  <tr><td><code>label</code></td><td>node</td><td>auto</td><td class="desc">Rótulo custom; default: "Alta confiança" / "Revisar" / "Atenção"</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Sempre com contexto textual (Alta / Revisar / Atenção), nunca só cor.</li>
+      <li>Verde ≥ 95% · laranja 80-94% · vermelho < 80% (thresholds configuráveis por cliente).</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Cor isolada sem número nem label.</li>
+      <li>Thresholds inconsistentes entre telas do mesmo produto.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

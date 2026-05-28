@@ -1,0 +1,26 @@
+
+.grd-tt {
+  position: fixed; z-index: 9999;
+  background: var(--violet-900); color: #fff;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+  animation: grd-tt-in 140ms var(--ease-out);
+  max-width: 220px;
+}
+.grd-tt-sm { padding: 4px 8px; font-size: 11.5px; line-height: 1.4; }
+.grd-tt-md { padding: 6px 10px; font-size: 12.5px; line-height: 1.45; }
+
+.grd-tt-top    { transform: translate(-50%, -100%); }
+.grd-tt-bottom { transform: translate(-50%, 0); }
+.grd-tt-left   { transform: translate(-100%, -50%); }
+.grd-tt-right  { transform: translate(0, -50%); }
+
+.grd-tt-arrow { position: absolute; width: 6px; height: 6px; background: inherit; transform: rotate(45deg); }
+.grd-tt-top .grd-tt-arrow    { bottom: -3px; left: 50%; margin-left: -3px; }
+.grd-tt-bottom .grd-tt-arrow { top: -3px;    left: 50%; margin-left: -3px; }
+.grd-tt-left .grd-tt-arrow   { right: -3px;  top: 50%;  margin-top: -3px; }
+.grd-tt-right .grd-tt-arrow  { left: -3px;   top: 50%;  margin-top: -3px; }
+
+@keyframes grd-tt-in { from { opacity: 0; } to { opacity: 1; } }

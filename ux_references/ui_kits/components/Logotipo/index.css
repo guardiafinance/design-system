@@ -1,0 +1,6 @@
+/* Logotipo — símbolo + palavra "Guardia" */
+.grd-logotipo {
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
+}

@@ -1,0 +1,51 @@
+
+.grd-tst-region {
+  position: fixed; z-index: 1100;
+  display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
+  max-width: 420px; width: 100%;
+  padding: 20px;
+}
+.grd-tst-bottom-right { bottom: 0; right: 0; align-items: flex-end; }
+.grd-tst-bottom-left  { bottom: 0; left: 0;  align-items: flex-start; }
+.grd-tst-top-right    { top: 0;    right: 0; align-items: flex-end; }
+.grd-tst-top-left     { top: 0;    left: 0;  align-items: flex-start; }
+
+.grd-tst {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px; min-width: 300px; max-width: 400px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+  pointer-events: auto;
+  animation: grd-tst-in 200ms var(--ease-out);
+}
+@keyframes grd-tst-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.grd-tst-type-info    .grd-tst-ic { color: var(--signal-blue); }
+.grd-tst-type-success .grd-tst-ic { color: var(--signal-green); }
+.grd-tst-type-warning .grd-tst-ic { color: var(--signal-yellow); }
+.grd-tst-type-danger  .grd-tst-ic { color: var(--signal-red); }
+
+.grd-tst-ic { flex-shrink: 0; padding-top: 1px; }
+.grd-tst-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.grd-tst-title { font-size: 14px; font-weight: 600; color: var(--fg); line-height: 1.4; }
+.grd-tst-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+
+.grd-tst-action {
+  border: 0; background: transparent;
+  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  color: var(--violet-600); cursor: pointer;
+  padding: 4px 8px; border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.grd-tst-action:hover { background: var(--violet-50); }
+.grd-tst-close {
+  border: 0; background: transparent; cursor: pointer;
+  color: var(--fg-muted); opacity: 0.6;
+  width: 22px; height: 22px; border-radius: var(--radius-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.grd-tst-close:hover { opacity: 1; background: var(--gray-100); }

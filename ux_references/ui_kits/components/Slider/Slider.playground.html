@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Slider · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · NUMÉRICO</div>
+  <h1 class="pg-title">Slider</h1>
+  <span class="pg-codename">import Slider from "ui_kits/components/Slider"</span>
+  <p class="pg-desc">Seletor numérico contínuo em um intervalo. Suporta <code>prefix</code>/<code>suffix</code>, formatador customizado e exibição do valor atual.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, w=440 }: { title: string; children: React.ReactNode; w?: number }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",maxWidth:w}}>{children}</div></div>);
+}
+const brl = (v:number) => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+
+function App() {
+  const [conf, setConf] = React.useState(85);
+  const [teto, setTeto] = React.useState(25000);
+  return (<>
+    <Sec title="Tamanhos">
+      <Slider size="sm" defaultValue={40} showValue suffix="%" />
+      <Slider size="md" defaultValue={60} showValue suffix="%" />
+    </Sec>
+
+    <Sec title="Limiar de confiança do agente">
+      <Slider
+        min={50} max={100} step={1}
+        value={conf}
+        onChange={e => setConf(+e.target.value)}
+        showValue suffix="%"
+      />
+      <div style={{fontSize:13,color:"var(--gray-600)"}}>
+        Agentes aplicam automaticamente acima de <b style={{color:"var(--orange-500)"}}>{conf}%</b>. Abaixo disso, a plataforma pede revisão humana.
+      </div>
+    </Sec>
+
+    <Sec title="Teto de valor para auto-aprovação (R$)">
+      <Slider
+        min={0} max={100000} step={500}
+        value={teto}
+        onChange={e => setTeto(+e.target.value)}
+        showValue
+        format={v => brl(v)}
+      />
+    </Sec>
+
+    <Sec title="Com passo maior (step=5)">
+      <Slider min={0} max={100} step={5} defaultValue={40} showValue suffix="%" />
+    </Sec>
+
+    <Sec title="Desabilitado">
+      <Slider defaultValue={30} showValue suffix="%" disabled />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Slider"]) || "render(<div>Sem exemplo para Slider</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>min</code> · <code>max</code></td><td>number</td><td>0 · 100</td><td class="desc">Faixa de valores</td></tr>
+  <tr><td><code>step</code></td><td>number</td><td>1</td><td class="desc">Incremento</td></tr>
+  <tr><td><code>value</code> · <code>defaultValue</code></td><td>number</td><td>50</td><td class="desc">Valor controlado/inicial</td></tr>
+  <tr><td><code>showValue</code></td><td>boolean</td><td>false</td><td class="desc">Exibe valor atual à direita</td></tr>
+  <tr><td><code>prefix</code> · <code>suffix</code></td><td>string</td><td>—</td><td class="desc">Ex.: "R$ ", " %"</td></tr>
+  <tr><td><code>format</code></td><td>(v) ⇒ string</td><td>—</td><td class="desc">Formatação customizada (sobrepõe prefix/suffix)</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Faixa contínua onde o valor exato importa menos que a posição (threshold de confidence, zoom).</li>
+      <li>Mostrar valor numérico ao lado.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Valores discretos não ordinais — use <code>Select</code>.</li>
+      <li>Slider sem marcadores quando a escala é não-linear.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Logo · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<style>
+  .lg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; }
+  .lg-tile { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: #fff; position: relative; }
+  .lg-stage { height: 140px; display: flex; align-items: center; justify-content: center; padding: 18px; }
+  .lg-bg-light  { background: #FDFDFD; }
+  .lg-bg-dark   { background: var(--violet-900); }
+  .lg-bg-violet { background: var(--violet-700); }
+  .lg-meta { padding: 10px 12px 12px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 10.5px; color: var(--violet-700); line-height: 1.55; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .lg-meta .lg-label { display: block; font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--violet-500); margin-bottom: 3px; }
+  .lg-dl { flex-shrink: 0; width: 26px; height: 26px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; color: var(--gray-500); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; text-decoration: none; }
+  .lg-dl:hover { background: var(--violet-100); border-color: var(--violet-300); color: var(--violet-500); }
+  .lg-sizes-row { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; padding: 24px !important; }
+  .lg-size-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .lg-size-item .lg-size-label { font-family: var(--font-mono); font-size: 10px; color: var(--gray-500); }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">BRAND · SÍMBOLO</div>
+  <h1 class="pg-title">Logo</h1>
+  <span class="pg-codename">import Logo from "ui_kits/components/Logo"</span>
+  <p class="pg-desc">Símbolo G isolado (sem a palavra "Guardia"). Usado em favicons, app icons, avatares, tiles compactos e assinaturas curtas. Oito variantes — quatro transparentes e quatro em container rounded. Clique no ícone de download em cada tile para baixar o SVG original.</p>
+</div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx">
+const FILE: Record<string,string> = {
+  "purple":                  "guardia-logo-purple-transparent.svg",
+  "orange":                  "guardia-logo-orange-transparent.svg",
+  "mono-black":              "guardia-logo-mono-black.svg",
+  "mono-white":              "guardia-logo-mono-white.svg",
+  "rounded-purple":          "guardia-logo-purple-rounded.svg",
+  "rounded-orange":          "guardia-logo-orange-rounded.svg",
+  "rounded-bicolor-purple":  "guardia-logo-orange-and-purple.svg",
+  "rounded-bicolor-orange":  "guardia-logo-purple-and-orange.svg",
+};
+
+function Tile({ variant, bg, label, size = 56 }:{ variant: string; bg: string; label: string; size?: number }) {
+  const file = FILE[variant];
+  const href = `../../../assets/logo/${file}`;
+  return (
+    <div className="lg-tile">
+      <div className={"lg-stage " + bg}><Logo variant={variant as any} size={size} /></div>
+      <div className="lg-meta">
+        <div>
+          <span className="lg-label">{label}</span>
+          variant="{variant}"
+        </div>
+        <a className="lg-dl" href={href} download={file} title={`Baixar ${file}`} aria-label={`Baixar ${file}`}>
+          <Icon name="download" size={14} />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function Sec({ title, children }:{ title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="lg-grid">{children}</div></div>);
+}
+
+function App() {
+  return (<>
+    <Sec title="Transparentes — herdam o fundo da tela">
+      <Tile variant="purple"     bg="lg-bg-light"  label="Purple (default)" />
+      <Tile variant="orange"     bg="lg-bg-violet" label="Orange" />
+      <Tile variant="mono-black" bg="lg-bg-light"  label="Mono black" />
+      <Tile variant="mono-white" bg="lg-bg-dark"   label="Mono white" />
+    </Sec>
+
+    <Sec title="Rounded — container sólido, para app icons">
+      <Tile variant="rounded-purple"         bg="lg-bg-light" label="Rounded purple"         size={72} />
+      <Tile variant="rounded-orange"         bg="lg-bg-light" label="Rounded orange"         size={72} />
+      <Tile variant="rounded-bicolor-purple" bg="lg-bg-light" label="Rounded bicolor purple" size={72} />
+      <Tile variant="rounded-bicolor-orange" bg="lg-bg-light" label="Rounded bicolor orange" size={72} />
+    </Sec>
+
+    <div className="pg-sec">
+      <p className="pg-sec-title">Escala (size)</p>
+      <div className="pg-stage lg-sizes-row">
+        {[16, 24, 32, 48, 64, 96].map(s => (
+          <div key={s} className="lg-size-item">
+            <Logo size={s} />
+            <span className="lg-size-label">size={s}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Logo"]) || "render(<Logo size={48} />);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"purple"</td><td class="desc">Transparentes: purple · orange · mono-black · mono-white ·· Rounded: rounded-purple · rounded-orange · rounded-bicolor-purple · rounded-bicolor-orange</td></tr>
+  <tr><td><code>size</code></td><td>number</td><td>32</td><td class="desc">Largura e altura em px (símbolo quadrado)</td></tr>
+  <tr><td><code>alt</code></td><td>string</td><td>"Guardia"</td><td class="desc">Texto alternativo. Use "" quando decorativo e houver Logotipo ao lado.</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Favicon, app icon, avatar, tile compacto onde a marca já é conhecida.</li>
+      <li>Rounded para app icons (container sólido); transparente para UI comum.</li>
+      <li>Mono-black em P&B; mono-white em fundos escuros saturados.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Abaixo de 16px — use favicon dedicado.</li>
+      <li>Orange transparente sobre fundos claros — baixo contraste.</li>
+      <li>Recriar o G em SVG inline — use sempre o arquivo oficial.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+
+.grd-cb {
+  display: inline-flex; align-items: flex-start; gap: 10px;
+  font-family: var(--font-sans); cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+}
+.grd-cb-disabled { opacity: 0.55; cursor: not-allowed; }
+
+.grd-cb-box {
+  position: relative; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.grd-cb input[type="checkbox"] {
+  position: absolute; inset: 0; opacity: 0; cursor: inherit; margin: 0;
+}
+.grd-cb-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: transparent;
+  transition: background 140ms, border-color 140ms, color 140ms, box-shadow 140ms;
+}
+.grd-cb-sm .grd-cb-mark { width: 16px; height: 16px; border-radius: var(--radius-sm); }
+.grd-cb-md .grd-cb-mark { width: 18px; height: 18px; }
+
+.grd-cb input:hover:not(:disabled) ~ .grd-cb-mark { border-color: var(--violet-500); }
+.grd-cb input:focus-visible ~ .grd-cb-mark { box-shadow: var(--focus-ring); }
+.grd-cb input:checked ~ .grd-cb-mark,
+.grd-cb input:indeterminate ~ .grd-cb-mark {
+  background: var(--violet-500); border-color: var(--violet-500); color: #fff;
+}
+
+.grd-cb-invalid .grd-cb-mark { border-color: var(--signal-red); }
+
+.grd-cb-text { display: inline-flex; flex-direction: column; gap: 2px; }
+.grd-cb-label { font-size: 14px; font-weight: 500; color: var(--fg); line-height: 1.4; }
+.grd-cb-desc { font-size: 12.5px; color: var(--fg-muted); line-height: 1.45; }
+.grd-cb-sm .grd-cb-label { font-size: 13px; }
+.grd-cb-sm .grd-cb-desc { font-size: 12px; }

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Calendar · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=4">
+<link rel="stylesheet" href="../Badge/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../Avatar/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · AGENDA</div>
+  <h1 class="pg-title">Calendar</h1>
+  <span class="pg-codename">import Calendar from "ui_kits/components/Calendar"</span>
+  <p class="pg-desc">Calendário grande para visualização de eventos em painéis — fechamento mensal, prazos fiscais, agenda da equipe. Três visões (<code>month</code>, <code>week</code>, <code>agenda</code>), eventos tipados por tom, suporte a multi-dia e all-day, legenda e truncamento automático de dias lotados com "+N mais".</p>
+  <p class="pg-desc" style="color: var(--gray-500); font-size: 12px;">Para seleção de datas em um campo de formulário, use <code>DatePicker</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Avatar/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=3"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="pg-sec">
+      <p className="pg-sec-title">{title}</p>
+      <div className="pg-stage" style={{padding:28,alignItems:"stretch",flexDirection:"column",gap:24}}>
+        {children}
+      </div>
+    </div>
+  );
+}
+function Frame({ children, label, maxWidth }: { children: React.ReactNode; label?: string; maxWidth?: number }) {
+  return (
+    <div>
+      {label && <div style={{ fontSize: 11.5, color: "var(--fg-muted)", marginBottom: 10, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>{label}</div>}
+      <div style={{ maxWidth }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/*  Dados — calendário fiscal da equipe contábil (Nov/2025)          */
+/* ---------------------------------------------------------------- */
+
+/* Usamos um mês "estável" para o snapshot, não new Date() */
+const REF = new Date(2025, 10, 1); /* Novembro 2025 */
+
+const FISCAL_EVENTS = [
+  { id: "e1",  date: "2025-11-07", time: "23:59", title: "DCTFWeb Outubro",   tone: "red",    icon: "alert" },
+  { id: "e2",  date: "2025-11-07", time: "23:59", title: "FGTS",              tone: "red",    icon: "alert" },
+  { id: "e3",  date: "2025-11-10", time: "09:00", title: "Revisão Porto Brasil",  tone: "violet", icon: "users" },
+  { id: "e4",  date: "2025-11-14", time: "23:59", title: "SPED Contribuições",tone: "orange", icon: "file-text" },
+  { id: "e5",  date: "2025-11-14", time: "14:00", title: "Call Tech Ltda",    tone: "blue",   icon: "users" },
+  { id: "e6",  date: "2025-11-17", time: "11:30", title: "Onboarding Volt Café", tone: "green",  icon: "check" },
+  { id: "e7",  date: "2025-11-20", time: "23:59", title: "DARF IRRF",         tone: "red",    icon: "alert" },
+  { id: "e8",  date: "2025-11-20", time: "23:59", title: "DARF CSRF",         tone: "red",    icon: "alert" },
+  { id: "e9",  date: "2025-11-20", time: "23:59", title: "DAS Simples",       tone: "orange", icon: "file-text" },
+  { id: "e10", date: "2025-11-25", time: "23:59", title: "PIS/COFINS",        tone: "orange", icon: "file-text" },
+  { id: "e11", date: "2025-11-25", time: "15:00", title: "Fechamento Pietra Moda", tone: "violet", icon: "users" },
+  { id: "e12", date: "2025-11-28", time: "23:59", title: "IRPJ/CSLL",         tone: "red",    icon: "alert" },
+  { id: "e13", date: "2025-11-11", allDay: true,  title: "Treinamento equipe",   tone: "blue" },
+  { id: "e14", date: "2025-11-21", allDay: true,  title: "Offsite — São Paulo", tone: "violet" },
+  /* Dia lotado (dia 14) — para demo de "+N mais" */
+  { id: "e15", date: "2025-11-14", time: "10:30", title: "Conferência folha",tone: "yellow" },
+  { id: "e16", date: "2025-11-14", time: "16:00", title: "Review Rafa Costa", tone: "neutral" },
+  /* Evento multi-dia */
+  { id: "e17", date: "2025-11-03", endDate: "2025-11-05", allDay: true, title: "Fechamento mensal", tone: "green" },
+];
+
+const FISCAL_LEGEND = [
+  { label: "Prazo crítico",   tone: "red" },
+  { label: "Obrigação fiscal", tone: "orange" },
+  { label: "Reunião cliente",  tone: "violet" },
+  { label: "Interno",          tone: "blue" },
+  { label: "Marco",            tone: "green" },
+];
+
+/* ---------------------------------------------------------------- */
+/*  Demos                                                            */
+/* ---------------------------------------------------------------- */
+
+function MonthDemo() {
+  const [date, setDate] = React.useState(REF);
+  const [sel, setSel]   = React.useState(null);
+  const [clicked, setClicked] = React.useState(null);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ height: 680, display: "flex" }}>
+        <Calendar
+          view="month"
+          date={date}
+          onDateChange={setDate}
+          events={FISCAL_EVENTS}
+          selectedDate={sel}
+          onDayClick={(d) => setSel(d)}
+          onEventClick={(ev) => setClicked(ev)}
+          legend={FISCAL_LEGEND}
+        />
+      </div>
+      <div style={{ display: "flex", gap: 16, fontSize: 12.5, color: "var(--fg-muted)", flexWrap: "wrap" }}>
+        <span><strong style={{ color: "var(--fg)" }}>Dia selecionado:</strong> {sel ? sel.toLocaleDateString("pt-BR") : "—"}</span>
+        <span><strong style={{ color: "var(--fg)" }}>Último evento clicado:</strong> {clicked ? String(clicked.title) : "—"}</span>
+      </div>
+    </div>
+  );
+}
+
+function WeekDemo() {
+  const [date, setDate] = React.useState(new Date(2025, 10, 12));
+  return (
+    <div style={{ height: 520, display: "flex" }}>
+      <Calendar
+        view="week"
+        date={date}
+        onDateChange={setDate}
+        events={FISCAL_EVENTS}
+        legend={FISCAL_LEGEND}
+      />
+    </div>
+  );
+}
+
+function AgendaDemo() {
+  const [date, setDate] = React.useState(REF);
+  return (
+    <div style={{ height: 580, display: "flex" }}>
+      <Calendar
+        view="agenda"
+        date={date}
+        onDateChange={setDate}
+        events={FISCAL_EVENTS}
+        title="Agenda de Novembro"
+      />
+    </div>
+  );
+}
+
+function WithWeekNumbersDemo() {
+  const [date, setDate] = React.useState(REF);
+  return (
+    <div style={{ height: 620, display: "flex" }}>
+      <Calendar
+        view="month"
+        date={date}
+        onDateChange={setDate}
+        events={FISCAL_EVENTS.slice(0, 6)}
+        weekStartsOn={1}
+        showWeekNumbers
+      />
+    </div>
+  );
+}
+
+function CompactDemo() {
+  /* Mês sem eventos — visão "limpa" de planejamento */
+  const [date, setDate] = React.useState(REF);
+  const [sel, setSel]   = React.useState(new Date(2025, 10, 17));
+  return (
+    <div style={{ height: 520, display: "flex" }}>
+      <Calendar
+        view="month"
+        date={date}
+        onDateChange={setDate}
+        events={[]}
+        selectedDate={sel}
+        onDayClick={setSel}
+        maxEventsPerDay={0}
+      />
+    </div>
+  );
+}
+
+function PersonalDemo() {
+  /* Agenda de uma pessoa — semana atual com muitas reuniões */
+  const mondayThis = React.useMemo(() => {
+    const d = new Date(2025, 10, 10); /* Seg 10/Nov */
+    return d;
+  }, []);
+  const events = [
+    { id: "p1", date: "2025-11-10", time: "09:00", title: "Daily", tone: "neutral" },
+    { id: "p2", date: "2025-11-10", time: "10:30", title: "1:1 Marina", tone: "violet" },
+    { id: "p3", date: "2025-11-10", time: "14:00", title: "Revisão Porto Brasil", tone: "blue" },
+    { id: "p4", date: "2025-11-11", allDay: true,  title: "Treinamento", tone: "green" },
+    { id: "p5", date: "2025-11-12", time: "09:00", title: "Daily", tone: "neutral" },
+    { id: "p6", date: "2025-11-12", time: "11:00", title: "Planning sprint 42", tone: "violet" },
+    { id: "p7", date: "2025-11-12", time: "15:00", title: "Call Volt Café", tone: "blue" },
+    { id: "p8", date: "2025-11-13", time: "09:00", title: "Daily", tone: "neutral" },
+    { id: "p9", date: "2025-11-13", time: "14:00", title: "DCTFWeb — revisão", tone: "orange" },
+    { id: "p10",date: "2025-11-14", time: "09:00", title: "Daily", tone: "neutral" },
+    { id: "p11",date: "2025-11-14", time: "16:00", title: "Retro sprint", tone: "violet" },
+  ];
+  return (
+    <div style={{ height: 560, display: "flex" }}>
+      <Calendar
+        view="week"
+        date={mondayThis}
+        events={events}
+        weekStartsOn={1}
+      />
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/*  App                                                              */
+/* ---------------------------------------------------------------- */
+
+function App() {
+  return (
+    <>
+      <Sec title="Calendário fiscal — visão mensal">
+        <Frame label="Novembro / 2025 · prazos, obrigações e reuniões">
+          <MonthDemo />
+        </Frame>
+      </Sec>
+
+      <Sec title="Visão de semana">
+        <Frame label="Dias 9–15 Nov 2025 · eventos em coluna">
+          <WeekDemo />
+        </Frame>
+      </Sec>
+
+      <Sec title="Visão de agenda">
+        <Frame label="Lista cronológica — ideal para relatório">
+          <AgendaDemo />
+        </Frame>
+      </Sec>
+
+      <Sec title="Semana começando na segunda, com números ISO">
+        <Frame label="weekStartsOn={1} · showWeekNumbers">
+          <WithWeekNumbersDemo />
+        </Frame>
+      </Sec>
+
+      <Sec title="Agenda pessoal — uma semana corrida">
+        <Frame label="Reuniões de um contador em uma semana de fechamento">
+          <PersonalDemo />
+        </Frame>
+      </Sec>
+
+      <Sec title="Sem eventos — apenas seleção de data em painel">
+        <Frame label="maxEventsPerDay={0} · uso como navegador puro" maxWidth={520}>
+          <CompactDemo />
+        </Frame>
+      </Sec>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Calendar"]) || "render(<div>Sem exemplo para Calendar</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<!-- API ------------------------------------------------------- -->
+<h2 class="pg-h2">API</h2>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Padrão</th><th></th></tr>
+  <tr><td><code>view</code></td><td>"month" · "week" · "agenda"</td><td>"month"</td><td class="desc">Qual visão renderizar</td></tr>
+  <tr><td><code>date</code> · <code>defaultDate</code></td><td>Date</td><td>hoje</td><td class="desc">Mês/semana em exibição</td></tr>
+  <tr><td><code>onDateChange</code></td><td>(d) => void</td><td>—</td><td class="desc">Disparado ao navegar (prev/next/today)</td></tr>
+  <tr><td><code>events</code></td><td>CalendarEvent[]</td><td>[]</td><td class="desc">Lista de eventos; multi-dia via <code>endDate</code></td></tr>
+  <tr><td><code>onEventClick</code></td><td>(ev) => void</td><td>—</td><td class="desc">Clique em uma pílula de evento</td></tr>
+  <tr><td><code>onDayClick</code></td><td>(date) => void</td><td>—</td><td class="desc">Clique em uma célula de dia</td></tr>
+  <tr><td><code>selectedDate</code></td><td>Date | null</td><td>—</td><td class="desc">Destaca a célula como selecionada</td></tr>
+  <tr><td><code>maxEventsPerDay</code></td><td>number</td><td>3</td><td class="desc">Acima disso, condensa com "+N mais"</td></tr>
+  <tr><td><code>weekStartsOn</code></td><td>0 (dom) · 1 (seg)</td><td>0</td><td class="desc">Domingo ou segunda como primeira coluna</td></tr>
+  <tr><td><code>showWeekNumbers</code></td><td>bool</td><td>false</td><td class="desc">Coluna extra com número ISO da semana</td></tr>
+  <tr><td><code>toolbar</code></td><td>bool</td><td>true</td><td class="desc">Header com "Hoje", navegação e título</td></tr>
+  <tr><td><code>title</code></td><td>string</td><td>—</td><td class="desc">Substitui "Mês Ano" no toolbar</td></tr>
+  <tr><td><code>legend</code></td><td>{`{ label, tone }[]`}</td><td>—</td><td class="desc">Legenda de tons abaixo do grid</td></tr>
+</table>
+
+<h3 class="pg-h3">CalendarEvent</h3>
+
+<table class="pg-api">
+  <tr><th>Campo</th><th>Tipo</th><th></th></tr>
+  <tr><td><code>id</code></td><td>string</td><td class="desc">Chave única</td></tr>
+  <tr><td><code>date</code></td><td>Date · "YYYY-MM-DD"</td><td class="desc">Data de início</td></tr>
+  <tr><td><code>endDate</code></td><td>Date · "YYYY-MM-DD"</td><td class="desc">Data final (eventos multi-dia)</td></tr>
+  <tr><td><code>title</code></td><td>ReactNode</td><td class="desc">Texto do evento</td></tr>
+  <tr><td><code>tone</code></td><td>violet · orange · blue · green · red · yellow · neutral</td><td class="desc">Cor semântica da pílula</td></tr>
+  <tr><td><code>time</code></td><td>string</td><td class="desc">Hora do evento, ex. "14:00"</td></tr>
+  <tr><td><code>allDay</code></td><td>bool</td><td class="desc">Pílula sem horário, fundo preenchido</td></tr>
+  <tr><td><code>icon</code></td><td>string</td><td class="desc">Nome do ícone no Icon set</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Painéis de acompanhamento com eventos datados — prazos fiscais, fechamentos, reuniões com clientes.</li>
+      <li>Relatórios mensais com densidade média (até ~40 eventos/mês).</li>
+      <li>Quando <code>week</code> ou <code>agenda</code> fornecerem contexto complementar ao mesmo conjunto de dados.</li>
+      <li>Legenda por tom quando há 3+ tipos de evento coexistindo.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Campo de formulário para escolher uma data — use <code>DatePicker</code>.</li>
+      <li>Calendários com &gt; 100 eventos por mês — considere uma lista filtrável ou DataTable.</li>
+      <li>Agendamento por blocos de tempo (horários cheios) — este calendário é para marcadores, não para escala de horário.</li>
+      <li>Cards de tarefas com muitos campos — mova para <code>Kanban</code> ou <code>Drawer</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

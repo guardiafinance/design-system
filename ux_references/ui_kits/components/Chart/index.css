@@ -1,0 +1,8 @@
+
+.grd-ch { font-family: var(--font-sans); }
+.grd-ch-title { font-size: 13px; font-weight: 600; color: var(--fg); margin-bottom: 8px; }
+.grd-ch-ylab,
+.grd-ch-xlab { font-size: 11px; fill: var(--fg-muted); font-family: var(--font-sans); font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.grd-ch-legend { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 10px; font-size: 12px; color: var(--fg-muted); }
+.grd-ch-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.grd-ch-legend-dot { width: 10px; height: 10px; border-radius: 50%; }

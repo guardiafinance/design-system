@@ -1,0 +1,37 @@
+
+.grd-select {
+  display: inline-flex; align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  position: relative; width: 100%;
+  transition: border-color 140ms, box-shadow 140ms;
+  font-family: var(--font-sans);
+}
+.grd-select select {
+  appearance: none; -webkit-appearance: none;
+  font-family: inherit; border: 0; background: transparent; outline: none;
+  color: var(--fg); width: 100%; padding: 0; margin: 0; cursor: pointer;
+  padding-right: 28px;
+}
+
+.grd-select-sm { padding: 6px 10px; font-size: 13px; height: 32px; }
+.grd-select-sm select { font-size: 13px; }
+.grd-select-md { padding: 8px 12px; font-size: 14px; height: 38px; }
+.grd-select-md select { font-size: 14px; }
+.grd-select-lg { padding: 10px 14px; font-size: 15px; height: 46px; }
+.grd-select-lg select { font-size: 15px; }
+
+.grd-select-default:focus-within { border-color: var(--violet-500); box-shadow: var(--focus-ring); }
+.grd-select-error   { border-color: var(--signal-red); }
+.grd-select-error:focus-within { box-shadow: var(--focus-ring-error); }
+.grd-select-success { border-color: var(--signal-green); }
+.grd-select-success:focus-within { box-shadow: var(--focus-ring-success); }
+.grd-select-disabled { background: var(--gray-100); opacity: 0.7; }
+.grd-select-disabled select { cursor: not-allowed; }
+
+.grd-select-ic { color: var(--gray-500); display: inline-flex; flex-shrink: 0; margin-right: 8px; }
+.grd-select-chev {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--gray-500); pointer-events: none;
+}

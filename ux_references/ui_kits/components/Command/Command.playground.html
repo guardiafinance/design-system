@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Command · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">NAVEGAÇÃO · ⌘K</div>
+  <h1 class="pg-title">Command</h1>
+  <span class="pg-codename">import Command from "ui_kits/components/Command"</span>
+  <p class="pg-desc">Paleta de comandos com busca fuzzy, grupos, ícones, atalhos e navegação por teclado (↑/↓/↵/Esc).</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,flexDirection:"column",alignItems:"flex-start",gap:10}}>{children}</div></div>);
+}
+
+function App() {
+  const [open, setOpen] = React.useState(false);
+  const [log, setLog] = React.useState<string[]>([]);
+  function fire(x: string) { setLog(l => [x, ...l].slice(0, 6)); }
+
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault(); setOpen(o => !o);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const items = [
+    {
+      group: "Navegar",
+      entries: [
+        { id: "n1", icon: "layout-dashboard", label: "Ir para início",    shortcut: "G I", keywords: "home dashboard", action: () => fire("Navegar: início") },
+        { id: "n2", icon: "inbox",            label: "Abrir inbox",       shortcut: "G B", keywords: "caixa entrada",   action: () => fire("Navegar: inbox") },
+        { id: "n3", icon: "users",            label: "Clientes",          shortcut: "G C", keywords: "empresas",        action: () => fire("Navegar: clientes") },
+        { id: "n4", icon: "arrow-left-right", label: "Conciliação",       shortcut: "G R", keywords: "recon",            action: () => fire("Navegar: conciliação") },
+      ],
+    },
+    {
+      group: "Ações",
+      entries: [
+        { id: "a1", icon: "plus-circle",  label: "Novo lançamento",    shortcut: "⌘N", action: () => fire("Ação: novo lançamento") },
+        { id: "a2", icon: "upload-cloud", label: "Importar extrato",   keywords: "ofx",  action: () => fire("Ação: importar extrato") },
+        { id: "a3", icon: "play",         label: "Rodar agente de fechamento", keywords: "contábil", action: () => fire("Ação: rodar agente") },
+        { id: "a4", icon: "download",     label: "Exportar em Excel",  shortcut: "⌘E",   action: () => fire("Ação: exportar") },
+      ],
+    },
+    {
+      group: "Configurações",
+      entries: [
+        { id: "c1", icon: "user",     label: "Meu perfil",              action: () => fire("Config: perfil") },
+        { id: "c2", icon: "shield",   label: "Segurança e permissões",  action: () => fire("Config: segurança") },
+        { id: "c3", icon: "plug-2",   label: "Integrações",             keywords: "api", action: () => fire("Config: integrações") },
+      ],
+    },
+  ];
+
+  return (<>
+    <Sec title="Abrir (Cmd+K ou Ctrl+K)">
+      <button className="grd-btn grd-btn-primary" onClick={() => setOpen(true)}>
+        Abrir paleta de comandos
+      </button>
+      <p style={{fontSize:13,color:"var(--gray-500)",margin:0}}>
+        Use ↑/↓ para navegar, ↵ para executar, Esc para fechar.
+      </p>
+      {log.length > 0 && (
+        <div style={{marginTop:8,display:"flex",flexDirection:"column",gap:4,fontSize:13,color:"var(--gray-700)",fontFamily:"var(--ff-mono)"}}>
+          {log.map((l, i) => <span key={i}>→ {l}</span>)}
+        </div>
+      )}
+      <Command open={open} onClose={() => setOpen(false)} items={items} placeholder="Buscar comando…" />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Command"]) || "render(<div>Sem exemplo para Command</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>open</code> · <code>onClose</code></td><td>boolean · fn</td><td>—</td><td class="desc">Controle</td></tr>
+  <tr><td><code>items</code></td><td>CmdGroup[]</td><td>—</td><td class="desc">Grupos com entradas</td></tr>
+  <tr><td><code>placeholder</code></td><td>string</td><td>"Buscar comando…"</td><td class="desc">Texto da busca</td></tr>
+  <tr><td><code>emptyText</code></td><td>string</td><td>"Nenhum resultado"</td><td class="desc">Estado vazio</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">CmdEntry</th></tr>
+  <tr><td><code>id</code> · <code>label</code></td><td>string · node</td><td>—</td><td class="desc">Identificador + rótulo</td></tr>
+  <tr><td><code>icon</code> · <code>shortcut</code></td><td>string</td><td>—</td><td class="desc">Ícone Lucide · atalho exibido</td></tr>
+  <tr><td><code>keywords</code></td><td>string</td><td>—</td><td class="desc">Termos extra para a busca</td></tr>
+  <tr><td><code>action</code></td><td>fn</td><td>—</td><td class="desc">Callback ao executar</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Palette de comando (⌘K) para power users: navegar rápido, disparar agente, abrir cliente.</li>
+      <li>Agrupar por seção ("Navegação", "Agentes", "Ações").</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Como substituto da navegação principal.</li>
+      <li>Comandos sem atalho de teclado visível.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

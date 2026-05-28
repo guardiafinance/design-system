@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tree · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=1">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">DATA · HIERARQUIA</div>
+  <h1 class="pg-title">Tree</h1>
+  <span class="pg-codename">import Tree from "ui_kits/components/Tree"</span>
+  <p class="pg-desc">Árvore hierárquica com expand/collapse, seleção única ou múltipla (com estado parcial em pais), ícones, meta à direita e busca. Usada principalmente para plano de contas, estrutura de empresas e categorias fiscais aninhadas.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=1"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{padding:28,gap:36,alignItems:"flex-start",flexWrap:"wrap"}}>{children}</div></div>);
+}
+function Frame({ children, w=380, label }: { children: React.ReactNode; w?: number; label?: string }) {
+  return (
+    <div style={{ width: w }}>
+      {label && <div style={{ fontSize: 11.5, color: "var(--fg-muted)", marginBottom: 10, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>{label}</div>}
+      <div style={{ background: "var(--surface)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", padding: "12px 10px" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Plano de contas ---------- */
+const PLANO_CONTAS = [
+  {
+    id: "1", label: "1 · Ativo", description: "Bens e direitos", icon: "wallet",
+    defaultExpanded: true,
+    children: [
+      {
+        id: "1.1", label: "1.1 · Ativo Circulante", icon: "folder",
+        defaultExpanded: true,
+        children: [
+          { id: "1.1.01", label: "1.1.01 · Caixa Geral",      icon: "file-text", meta: "R$ 12.430,00" },
+          { id: "1.1.02", label: "1.1.02 · Bancos Conta Movimento", icon: "file-text", meta: "R$ 184.721,55" },
+          { id: "1.1.03", label: "1.1.03 · Aplicações Financeiras", icon: "file-text", meta: "R$ 50.000,00" },
+          { id: "1.1.04", label: "1.1.04 · Clientes a Receber",     icon: "file-text", meta: "R$ 41.892,10" },
+        ],
+      },
+      {
+        id: "1.2", label: "1.2 · Ativo Não Circulante", icon: "folder",
+        children: [
+          { id: "1.2.01", label: "1.2.01 · Imobilizado",  icon: "file-text", meta: "R$ 320.000,00" },
+          { id: "1.2.02", label: "1.2.02 · Intangível",   icon: "file-text", meta: "R$ 18.500,00" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "2", label: "2 · Passivo", description: "Obrigações", icon: "scale",
+    children: [
+      {
+        id: "2.1", label: "2.1 · Passivo Circulante", icon: "folder",
+        children: [
+          { id: "2.1.01", label: "2.1.01 · Fornecedores",          icon: "file-text", meta: "R$ 22.134,00" },
+          { id: "2.1.02", label: "2.1.02 · Impostos a Recolher",   icon: "file-text", meta: "R$ 8.900,00" },
+          { id: "2.1.03", label: "2.1.03 · Salários a Pagar",      icon: "file-text", meta: "R$ 31.200,00", disabled: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: "3", label: "3 · Receita", icon: "trending-up",
+    children: [
+      { id: "3.1", label: "3.1 · Receita Operacional", icon: "file-text", meta: "R$ 890.500,00" },
+      { id: "3.2", label: "3.2 · Receita Financeira",  icon: "file-text", meta: "R$ 4.210,00" },
+    ],
+  },
+];
+
+/* ---------- Estrutura de empresas ---------- */
+const GRUPO = [
+  {
+    id: "holding", label: "Grupo Verona Participações", icon: "building-2",
+    description: "Holding · CNPJ 45.892.100/0001-33",
+    defaultExpanded: true,
+    meta: <Badge tone="violet" variant="soft">Holding</Badge>,
+    children: [
+      {
+        id: "verona-sp", label: "Verona Alimentos SP", icon: "building",
+        defaultExpanded: true,
+        meta: <Badge tone="green" variant="soft">Operacional</Badge>,
+        children: [
+          { id: "unidade-1", label: "Unidade Pinheiros",  icon: "map-pin" },
+          { id: "unidade-2", label: "Unidade Moema",      icon: "map-pin" },
+          { id: "unidade-3", label: "Unidade Tatuapé",    icon: "map-pin" },
+        ],
+      },
+      {
+        id: "verona-rj", label: "Verona Alimentos RJ", icon: "building",
+        meta: <Badge tone="green" variant="soft">Operacional</Badge>,
+        children: [
+          { id: "rj-1", label: "Unidade Ipanema",  icon: "map-pin" },
+          { id: "rj-2", label: "Unidade Botafogo", icon: "map-pin" },
+        ],
+      },
+      { id: "verona-log", label: "Verona Logística", icon: "building", meta: <Badge tone="amber" variant="soft">Em regularização</Badge> },
+    ],
+  },
+];
+
+/* ---------- Multi-seleção ---------- */
+function MultiSelectExample() {
+  const [selected, setSelected] = React.useState<string[]>(["1.1.02"]);
+  return (
+    <Frame w={440} label={`${selected.length} conta(s) selecionada(s)`}>
+      <Tree
+        nodes={PLANO_CONTAS}
+        mode="multi"
+        selected={selected}
+        onSelectedChange={setSelected}
+        defaultExpanded={["1","1.1","2","2.1"]}
+      />
+    </Frame>
+  );
+}
+
+/* ---------- Com busca ---------- */
+function SearchExample() {
+  const [q, setQ] = React.useState("");
+  const [selected, setSelected] = React.useState<string[]>([]);
+
+  /* filtra preservando caminhos; se o nó casa, mantém ele + ancestrais */
+  const filter = React.useCallback((nodes: any[], query: string): any[] => {
+    if (!query) return nodes;
+    const lc = query.toLowerCase();
+    const visit = (arr: any[]): any[] => {
+      return arr.flatMap((n) => {
+        const matches = String(n.label).toLowerCase().includes(lc);
+        const kids = n.children ? visit(n.children) : [];
+        if (matches || kids.length) return [{ ...n, children: kids.length ? kids : n.children }];
+        return [];
+      });
+    };
+    return visit(nodes);
+  }, []);
+
+  const filtered = React.useMemo(() => filter(PLANO_CONTAS, q), [q, filter]);
+  const autoExpanded = React.useMemo(() => q ? collectAllIds(filtered) : undefined, [q, filtered]);
+
+  return (
+    <Frame w={440}>
+      <div style={{ padding: "4px 4px 10px" }}>
+        <Input
+          size="sm"
+          placeholder="Buscar conta…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          leftIcon="search"
+        />
+      </div>
+      <Tree
+        nodes={filtered}
+        mode="single"
+        selected={selected}
+        onSelectedChange={setSelected}
+        expanded={autoExpanded}
+        emptyState={<div>Nenhuma conta encontrada</div>}
+      />
+    </Frame>
+  );
+}
+
+function collectAllIds(arr: any[]): string[] {
+  const out: string[] = [];
+  const walk = (xs: any[]) => xs.forEach((n) => { out.push(n.id); if (n.children) walk(n.children); });
+  walk(arr);
+  return out;
+}
+
+function App() {
+  return (<>
+    <Sec title="Plano de contas — seleção única">
+      <Frame w={440}>
+        <Tree nodes={PLANO_CONTAS} defaultExpanded={["1","1.1"]} defaultSelected={["1.1.02"]} />
+      </Frame>
+    </Sec>
+
+    <Sec title="Seleção múltipla com estado parcial (pais)">
+      <MultiSelectExample />
+    </Sec>
+
+    <Sec title="Com busca e expansão automática">
+      <SearchExample />
+    </Sec>
+
+    <Sec title="Estrutura de empresas — ícones + meta + badges">
+      <Frame w={460}>
+        <Tree nodes={GRUPO} mode="single" />
+      </Frame>
+    </Sec>
+
+    <Sec title="Size sm · sem linhas guia">
+      <Frame w={340}>
+        <Tree nodes={PLANO_CONTAS} size="sm" showLines={false} defaultExpanded={["1","1.1"]} />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Tree"]) || "render(<div>Sem exemplo para Tree</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>nodes</code></td><td>TreeNode[]</td><td>—</td><td class="desc">Nós raiz</td></tr>
+  <tr><td><code>mode</code></td><td>string</td><td>"single"</td><td class="desc">none · single · multi (multi calcula estado parcial de pais automaticamente)</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+  <tr><td><code>expanded</code> · <code>onExpandedChange</code></td><td>string[] · fn</td><td>—</td><td class="desc">Controlled — ids dos nós expandidos</td></tr>
+  <tr><td><code>selected</code> · <code>onSelectedChange</code></td><td>string[] · fn</td><td>—</td><td class="desc">Controlled — ids selecionados</td></tr>
+  <tr><td><code>defaultExpanded</code> · <code>defaultSelected</code></td><td>string[]</td><td>—</td><td class="desc">Uncontrolled initial state</td></tr>
+  <tr><td><code>showLines</code></td><td>bool</td><td>true</td><td class="desc">Guias verticais entre pai e filhos</td></tr>
+  <tr><td><code>emptyState</code></td><td>node</td><td>—</td><td class="desc">Conteúdo quando <code>nodes=[]</code> (útil com busca vazia)</td></tr>
+  <tr><td><code>onNodeClick</code></td><td>fn</td><td>—</td><td class="desc">Callback por linha clicada</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">TreeNode</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>—</td><td class="desc">Chave única</td></tr>
+  <tr><td><code>label</code> · <code>description</code></td><td>node</td><td>—</td><td class="desc">Conteúdo</td></tr>
+  <tr><td><code>icon</code></td><td>string</td><td>—</td><td class="desc">Ícone à esquerda</td></tr>
+  <tr><td><code>meta</code></td><td>node</td><td>—</td><td class="desc">Conteúdo à direita (valor, badge, etc.)</td></tr>
+  <tr><td><code>children</code></td><td>TreeNode[]</td><td>—</td><td class="desc">Subnós</td></tr>
+  <tr><td><code>disabled</code></td><td>bool</td><td>false</td><td class="desc">Bloqueia seleção/navegação do nó</td></tr>
+  <tr><td><code>defaultExpanded</code></td><td>bool</td><td>false</td><td class="desc">Expandir por padrão ao montar</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Plano de contas, estrutura de empresas, categorias fiscais aninhadas.</li>
+      <li>Seleção em lote com <code>multi</code> — pais mostram "partial" quando filhos estão parcialmente selecionados.</li>
+      <li>Busca + expansão automática quando a árvore tem mais de ~20 nós visíveis.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Árvores com 1 nível — prefira <code>SidebarNav</code> ou <code>Menu</code>.</li>
+      <li>Tree como navegação principal de app — use <code>SidebarNav</code>.</li>
+      <li>Árvores profundas (&gt; 5 níveis) sem busca.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>
