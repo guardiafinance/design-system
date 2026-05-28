@@ -1,0 +1,224 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithDescriptionRow,
+  StatesRow,
+  SizesRow,
+  GroupRow,
+  StandaloneRow,
+} from "../../previews/switch";
+import { LiveSwitchSnippet } from "../../previews/switch-live";
+import switchSource from "@ds/components/switch/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FORMS"
+  title="Switch"
+  group="Forms"
+  storybookId="components-switch--default"
+  sourcePath="ui_kit/components/switch"
+  lede='Alternador on/off para acoes com efeito imediato. Base no <b>Radix Switch</b> com track + thumb brand-aware, sizes <code class="inline">sm</code> / <code class="inline">md</code>, estado <code class="inline">invalid</code>, e composicao opcional com <code class="inline">label</code> + <code class="inline">description</code>. Prefira sobre <code class="inline">Checkbox</code> quando a mudanca afeta estado do sistema (notificacoes, integracoes, automacoes).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrao</h2>
+      <small>label clicavel · cursor-pointer</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando voce passa <code class="inline">label</code>, o Switch renderiza
+      dentro de um <code class="inline">&lt;label&gt;</code> nativo: clique no
+      texto tambem alterna o estado.
+    </p>
+  </section>
+
+  <!-- ============ DESCRIPTION ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com descricao</h2>
+      <small>aria-describedby automatico</small>
+    </div>
+    <div class="preview">
+      <WithDescriptionRow client:load />
+    </div>
+    <p class="preview-caption">
+      A descricao liga via <code class="inline">aria-describedby</code> —
+      leitores de tela leem ambos os textos quando o switch recebe foco.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>on · off · invalid · disabled</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm (30x18) · md (38x22, default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ GROUP ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupo (controlado)</h2>
+      <small>fieldset + legend para agrupamento semantico</small>
+    </div>
+    <div class="preview">
+      <GroupRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sempre envolva grupos relacionados em <code class="inline">&lt;fieldset&gt;</code>
+      com <code class="inline">&lt;legend&gt;</code> — leitores anunciam o grupo
+      antes de cada item.
+    </p>
+  </section>
+
+  <!-- ============ STANDALONE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Standalone (sem label interna)</h2>
+      <small>label externa via htmlFor</small>
+    </div>
+    <div class="preview">
+      <StandaloneRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sem <code class="inline">label</code>/<code class="inline">description</code>
+      props, o componente renderiza so o switch. Util dentro de Forms com layout
+      customizado (FormLayout, tabela, etc.).
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveSwitchSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API publica</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descricao</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Tamanho do track (30x18 / 38x22) e da tipografia da label.</td>
+          </tr>
+          <tr>
+            <td class="name">checked</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Estado controlado. Use junto com <code class="inline">onCheckedChange</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">defaultChecked</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Estado inicial em uso nao-controlado.</td>
+          </tr>
+          <tr>
+            <td class="name">invalid</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Anel vermelho ao redor do track + <code class="inline">aria-invalid="true"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Texto do rotulo. Quando presente, envolve em <code class="inline">&lt;label&gt;</code> clicavel.</td>
+          </tr>
+          <tr>
+            <td class="name">description</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Descricao auxiliar; liga via <code class="inline">aria-describedby</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">onCheckedChange</td>
+            <td class="type">(checked: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback Radix nativo.</td>
+          </tr>
+          <tr>
+            <td class="name">disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desabilita o controle e o wrapper label.</td>
+          </tr>
+          <tr>
+            <td class="name">wrapperClassName</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Classe extra no <code class="inline">&lt;label&gt;</code> wrapper (quando label/description e passada).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita todos os props de <code class="inline">@radix-ui/react-switch</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Codigo-fonte</h2>
+      <small>ui_kit/components/switch/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={switchSource}
+      language="tsx"
+      filename="ui_kit/components/switch/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Radix Switch</b> garante <code class="inline">role="switch"</code>, <code class="inline">aria-checked</code> ("true"/"false"), e foco gerenciado.</span></li>
+        <li><span><b>Espaco</b> e <b>Enter</b> alternam o estado quando o controle tem foco.</span></li>
+        <li><span><b>Invalid</b> aplica <code class="inline">aria-invalid="true"</code> + anel vermelho. Sempre acompanhe de mensagem inline (<code class="inline">description</code>) explicando o erro.</span></li>
+        <li><span><b>Description</b> liga via <code class="inline">aria-describedby</code> — leitores leem apos o label.</span></li>
+        <li><span><b>Grupos</b> devem usar <code class="inline">&lt;fieldset&gt;</code> + <code class="inline">&lt;legend&gt;</code> para anunciar contexto.</span></li>
+        <li><span><b>Contraste</b>: <code class="inline">bg-action</code> em violet-500 (light) e orange-500 (dark) sobre <code class="inline">bg-background</code> atende >=3:1 (UI) em ambos os temas.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
