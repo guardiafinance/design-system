@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Textarea · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORM · ENTRADA MULTI-LINHA</div>
+  <h1 class="pg-title">Textarea</h1>
+  <span class="pg-codename">import Textarea from "ui_kits/components/Textarea"</span>
+  <p class="pg-desc">Campo multi-linha. Suporta <code>size</code> (sm/md/lg), estados (default/error/success), controle de resize e contador de caracteres via <code>showCount</code> + <code>maxLength</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, w=420 }: { title: string; children: React.ReactNode; w?: number }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",maxWidth:w}}>{children}</div></div>);
+}
+function App() {
+  const [bio, setBio] = React.useState("Contador técnico com foco em conciliação bancária automatizada.");
+  const [obs, setObs] = React.useState("");
+  return (<>
+    <Sec title="Tamanhos">
+      <Textarea size="sm" defaultValue="Textarea pequena (sm)" rows={3} />
+      <Textarea size="md" defaultValue="Textarea média (md) — padrão" rows={3} />
+      <Textarea size="lg" defaultValue="Textarea grande (lg)" rows={3} />
+    </Sec>
+
+    <Sec title="Estados">
+      <Textarea placeholder="Digite uma observação…" rows={3} />
+      <Textarea state="error" defaultValue="CNPJ inválido informado no contexto" rows={3} />
+      <Textarea state="success" defaultValue="Revisado e aprovado pelo contador" rows={3} />
+      <Textarea disabled defaultValue="Campo travado durante exportação" rows={3} />
+    </Sec>
+
+    <Sec title="Controlada · com contador">
+      <Textarea
+        value={bio}
+        onChange={e => setBio(e.target.value)}
+        placeholder="Bio do profissional…"
+        showCount
+        maxLength={240}
+        rows={4}
+      />
+    </Sec>
+
+    <Sec title="Observação interna · sem resize" w={520}>
+      <Textarea
+        value={obs}
+        onChange={e => setObs(e.target.value)}
+        placeholder="Anote contexto para o time de apoio (visível só internamente)…"
+        resize="none"
+        rows={5}
+        showCount
+        maxLength={500}
+      />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Textarea"]) || "render(<div>Sem exemplo para Textarea</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>state</code></td><td>string</td><td>"default"</td><td class="desc">default · error · success</td></tr>
+  <tr><td><code>invalid</code></td><td>boolean</td><td>false</td><td class="desc">Força estado error</td></tr>
+  <tr><td><code>resize</code></td><td>string</td><td>"vertical"</td><td class="desc">none · vertical · both</td></tr>
+  <tr><td><code>showCount</code></td><td>boolean</td><td>false</td><td class="desc">Exibe contador (use com <code>maxLength</code>)</td></tr>
+  <tr><td><code>maxLength</code></td><td>number</td><td>—</td><td class="desc">Limite nativo</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Texto multilinha: observações em lançamento, notas de conciliação.</li>
+      <li>Indicador de caracteres se houver limite.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Textarea para campos curtos — use <code>Input</code>.</li>
+      <li>Sem indicação de altura mínima.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

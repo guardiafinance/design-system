@@ -1,0 +1,82 @@
+
+.grd-dp { position: relative; display: inline-block; font-family: var(--font-sans); width: 100%; }
+.grd-dp-trigger {
+  display: inline-flex; align-items: center; gap: 8px;
+  width: 100%;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md); text-align: left; cursor: pointer;
+  font-family: inherit; color: var(--fg);
+  transition: border-color 140ms, box-shadow 140ms;
+}
+.grd-dp-sm .grd-dp-trigger { padding: 6px 10px; font-size: 13px; height: 32px; }
+.grd-dp-md .grd-dp-trigger { padding: 8px 12px; font-size: 14px; height: 38px; }
+.grd-dp-lg .grd-dp-trigger { padding: 10px 14px; font-size: 15px; height: 46px; }
+
+.grd-dp-trigger:hover:not(:disabled) { border-color: var(--violet-300); }
+.grd-dp-open .grd-dp-trigger,
+.grd-dp-trigger:focus-visible { border-color: var(--violet-500); box-shadow: var(--focus-ring); outline: none; }
+.grd-dp-invalid .grd-dp-trigger { border-color: var(--signal-red); }
+.grd-dp-invalid .grd-dp-trigger:focus-visible { box-shadow: var(--focus-ring-error); outline: none; }
+.grd-dp-disabled .grd-dp-trigger { background: var(--gray-100); cursor: not-allowed; opacity: 0.7; }
+
+.grd-dp-ic { color: var(--gray-500); display: inline-flex; }
+.grd-dp-val { flex: 1; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.grd-dp-val-ph { color: var(--gray-400); }
+.grd-dp-clear { width: 18px; height: 18px; border-radius: 50%; border: 0; background: transparent; color: var(--gray-500); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.grd-dp-clear:hover { background: var(--gray-100); color: var(--fg); }
+
+.grd-dp-pop {
+  position: absolute; top: calc(100% + 4px); left: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);
+  padding: 10px; z-index: 50; width: 280px;
+  animation: grd-dp-in 140ms var(--ease-out);
+}
+@keyframes grd-dp-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.grd-dp-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 4px;
+  margin-bottom: 6px;
+}
+.grd-dp-nav {
+  width: 28px; height: 28px; border-radius: var(--radius-md);
+  border: 0; background: transparent; color: var(--fg);
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+}
+.grd-dp-nav:hover { background: var(--violet-50); color: var(--violet-700); }
+.grd-dp-title { font-size: 13.5px; font-weight: 600; color: var(--fg); }
+
+.grd-dp-wdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  font-size: 11px; font-weight: 600; color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: 0.02em;
+  margin-bottom: 4px;
+}
+.grd-dp-wdays span { text-align: center; padding: 4px 0; }
+
+.grd-dp-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+}
+.grd-dp-cell {
+  aspect-ratio: 1;
+  border: 0; background: transparent;
+  font-family: inherit; font-size: 13px; color: var(--fg);
+  border-radius: var(--radius-md); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+  transition: background 120ms, color 120ms;
+}
+.grd-dp-cell:hover:not(:disabled) { background: var(--violet-50); color: var(--violet-700); }
+.grd-dp-cell-out { color: var(--gray-400); }
+.grd-dp-cell-today { font-weight: 700; color: var(--violet-600); }
+.grd-dp-cell-sel,
+.grd-dp-cell-sel:hover { background: var(--violet-500); color: var(--surface); font-weight: 600; }
+.grd-dp-cell-dis { opacity: 0.35; cursor: not-allowed; }
+
+.grd-dp-foot { display: flex; justify-content: flex-end; padding-top: 8px; margin-top: 8px; border-top: 1px solid var(--border); }
+.grd-dp-today {
+  border: 0; background: transparent;
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  color: var(--violet-600); cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm);
+}
+.grd-dp-today:hover { background: var(--violet-50); }

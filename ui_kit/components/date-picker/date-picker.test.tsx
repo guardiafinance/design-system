@@ -1,9 +1,21 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+} from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { axeInThemes } from "@/test-utils/a11y";
-import { DatePicker, formatDateBR } from "./index";
+import {
+  DatePicker,
+  formatDateBR,
+  formatRangeBR,
+  type DateRange,
+} from "./index";
 
 /**
  * Plan #41 — DatePicker v0.1.0 DoD closeout.
@@ -452,6 +464,424 @@ describe("DatePicker", () => {
       );
       await user.click(
         screen.getByRole("button", { name: "Próximos 10 dias" }),
+      );
+      await screen.findByRole("dialog");
+      await axeInThemes(container);
+    });
+  });
+});
+
+/* =========================================================================
+   Range mode — Plan #220 (ADR-004)
+   =========================================================================
+   Clock determinism: reuses the top-level FROZEN_NOW + global
+   beforeEach/afterEach declared at the top of this file (Plan #41 closeout).
+   The same clock fixture covers single-mode and range-mode suites — keeping
+   one source of truth per `lex-test-isolation` § 1 (known initial state). */
+
+describe("formatRangeBR", () => {
+  it("formata range completo como dd/mm/yyyy — dd/mm/yyyy", () => {
+    expect(
+      formatRangeBR({
+        from: new Date(2026, 2, 1),
+        to: new Date(2026, 2, 15),
+      }),
+    ).toBe("01/03/2026 — 15/03/2026");
+  });
+
+  it("retorna string vazia para null/undefined", () => {
+    expect(formatRangeBR(null)).toBe("");
+    expect(formatRangeBR(undefined)).toBe("");
+  });
+
+  it("retorna string vazia para range incompleto (defesa em profundidade)", () => {
+    /* The public DateRange type requires both endpoints; this asserts the
+       defensive guard handles partial shapes that may sneak in via `any`
+       at consumer boundaries. */
+    expect(
+      formatRangeBR({ from: new Date(2026, 2, 1) } as unknown as DateRange),
+    ).toBe("");
+  });
+});
+
+describe("DatePicker — range mode (Plan #220, ADR-004)", () => {
+  /* Clock determinism inherited from the top-level beforeEach/afterEach. */
+
+  /* ----------------------------- API surface ------------------------------ */
+
+  it("AC-1: mode default é single — DatePicker sem mode renderiza no formato single", () => {
+    render(<DatePicker defaultValue={new Date(2026, 4, 15)} />);
+    /* Single mode formats with no em-dash separator. */
+    expect(screen.getByText("15/05/2026")).toBeInTheDocument();
+    /* aria-label defaults to single-mode copy. */
+    expect(
+      screen.getByRole("button", { name: "Selecionar data" }),
+    ).toBeInTheDocument();
+  });
+
+  it("AC-2: range mode aria-label default é 'Selecionar intervalo de datas'", () => {
+    render(<DatePicker mode="range" />);
+    expect(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    ).toBeInTheDocument();
+  });
+
+  it("AC-2: range mode controlled respeita value (DateRange shape)", () => {
+    const range: DateRange = {
+      from: new Date(2026, 2, 1),
+      to: new Date(2026, 2, 15),
+    };
+    const { rerender } = render(<DatePicker mode="range" value={range} />);
+    expect(screen.getByText("01/03/2026 — 15/03/2026")).toBeInTheDocument();
+    rerender(
+      <DatePicker
+        mode="range"
+        value={{ from: new Date(2026, 5, 1), to: new Date(2026, 5, 30) }}
+      />,
+    );
+    expect(screen.getByText("01/06/2026 — 30/06/2026")).toBeInTheDocument();
+  });
+
+  it("AC-3: DateRange type é exportada e tipa estado do consumer", () => {
+    /* Type-level smoke test — if the type weren't exported, this file
+       wouldn't compile. The runtime assertion ensures the type lines up
+       with the runtime shape. */
+    const r: DateRange = {
+      from: new Date(2026, 2, 1),
+      to: new Date(2026, 2, 15),
+    };
+    expect(r.from).toBeInstanceOf(Date);
+    expect(r.to).toBeInstanceOf(Date);
+  });
+
+  /* --------------------------- Trigger display ---------------------------- */
+
+  it("AC-4: range vazio renderiza placeholder default 'dd/mm/aaaa — dd/mm/aaaa'", () => {
+    render(<DatePicker mode="range" />);
+    expect(
+      screen.getByText("dd/mm/aaaa — dd/mm/aaaa"),
+    ).toBeInTheDocument();
+  });
+
+  it("AC-4: placeholder customizado em range mode", () => {
+    render(
+      <DatePicker mode="range" placeholder="Selecione o período" />,
+    );
+    expect(screen.getByText("Selecione o período")).toBeInTheDocument();
+  });
+
+  it("AC-5: range completo formata 'dd/mm/aaaa — dd/mm/aaaa'", () => {
+    render(
+      <DatePicker
+        mode="range"
+        defaultValue={{
+          from: new Date(2026, 2, 1),
+          to: new Date(2026, 2, 15),
+        }}
+      />,
+    );
+    expect(screen.getByText("01/03/2026 — 15/03/2026")).toBeInTheDocument();
+  });
+
+  it("AC-6: estado parcial formata 'dd/mm/aaaa — ' (em dash + espaço)", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<DatePicker mode="range" defaultValue={null} />);
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    /* Pick day 10 of May/2026 (current view per FROZEN_NOW). */
+    const day10 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "10");
+    expect(day10).toBeDefined();
+    await user.click(day10!);
+    /* Trigger should now show partial state. Testing Library normalizes
+       whitespace by default — collapses trailing space — so we match
+       the rendered text in normalized form: "10/05/2026 —". */
+    expect(screen.getByText("10/05/2026 —")).toBeInTheDocument();
+  });
+
+  /* ------------------------------ Selection ------------------------------- */
+
+  it("AC-7: primeiro clique commit como pending; onChange NÃO dispara", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onChange = vi.fn();
+    render(
+      <DatePicker mode="range" defaultValue={null} onChange={onChange} />,
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    const day10 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "10");
+    await user.click(day10!);
+    expect(onChange).not.toHaveBeenCalled();
+    /* Popover stays open awaiting the second click. */
+    expect(screen.queryByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("AC-8: segundo clique commit range completo, popover permanece aberto pra verificação visual, onChange dispara uma vez", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onChange = vi.fn();
+    render(
+      <DatePicker mode="range" defaultValue={null} onChange={onChange} />,
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    const day10 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "10");
+    await user.click(day10!);
+    const day20 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "20");
+    await user.click(day20!);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    const arg = onChange.mock.calls[0]![0] as DateRange;
+    expect(arg.from.getDate()).toBe(10);
+    expect(arg.to.getDate()).toBe(20);
+    expect(arg.from.getMonth()).toBe(4); /* May = 4 */
+    expect(arg.to.getMonth()).toBe(4);
+    /* WHY: range mode does NOT auto-close after second pick — user needs
+     * to verify the highlighted range visually before dismissing via
+     * Esc/click-outside. Single mode keeps auto-close because there is
+     * nothing to verify after one pick. */
+    expect(screen.queryByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("AC-9: to < from auto-swap antes de disparar onChange", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onChange = vi.fn();
+    render(
+      <DatePicker mode="range" defaultValue={null} onChange={onChange} />,
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    /* User picks 20 then 10 — auto-swap should produce { from: 10, to: 20 }. */
+    const day20 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "20");
+    await user.click(day20!);
+    const day10 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "10");
+    await user.click(day10!);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    const arg = onChange.mock.calls[0]![0] as DateRange;
+    expect(arg.from.getDate()).toBe(10);
+    expect(arg.to.getDate()).toBe(20);
+  });
+
+  it("AC-10: Esc com pending descarta seleção parcial e fecha (onChange NÃO dispara)", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onChange = vi.fn();
+    render(
+      <DatePicker mode="range" defaultValue={null} onChange={onChange} />,
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    const day10 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "10");
+    await user.click(day10!);
+    await user.keyboard("{Escape}");
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+    expect(onChange).not.toHaveBeenCalled();
+    /* Trigger reverts to placeholder; partial display gone. */
+    expect(
+      screen.getByText("dd/mm/aaaa — dd/mm/aaaa"),
+    ).toBeInTheDocument();
+  });
+
+  it("AC-11: clear (X) reseta range para null e dispara onChange", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        mode="range"
+        defaultValue={{
+          from: new Date(2026, 2, 1),
+          to: new Date(2026, 2, 15),
+        }}
+        onChange={onChange}
+        clearable
+      />,
+    );
+    await user.click(screen.getByLabelText("Limpar intervalo"));
+    expect(onChange).toHaveBeenCalledWith(null);
+  });
+
+  /* ------------------------------ Validation ------------------------------ */
+
+  it("AC-12: minDate / maxDate desabilita dias fora do range em ambos os endpoints", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const minDate = new Date(2026, 4, 10); /* 10/May/2026 */
+    const maxDate = new Date(2026, 4, 20); /* 20/May/2026 */
+    render(<DatePicker mode="range" minDate={minDate} maxDate={maxDate} />);
+    await user.click(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    );
+    await screen.findByRole("dialog");
+    /* Day 5 of May falls outside the [10, 20] window — should be disabled. */
+    const day5 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "5");
+    expect(day5).toBeDefined();
+    expect(day5).toBeDisabled();
+    /* Day 25 outside as well. */
+    const day25 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "25");
+    expect(day25).toBeDefined();
+    expect(day25).toBeDisabled();
+    /* Day 15 inside the window — enabled. */
+    const day15 = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.trim() === "15");
+    expect(day15).toBeDefined();
+    expect(day15).not.toBeDisabled();
+  });
+
+  it("AC-13: invalid aplica data-invalid no trigger em range mode", () => {
+    render(<DatePicker mode="range" invalid />);
+    expect(
+      screen.getByRole("button", { name: "Selecionar intervalo de datas" }),
+    ).toHaveAttribute("data-invalid", "true");
+  });
+
+  /* -------------------------- Brand-aware tokens -------------------------- */
+
+  describe("brand-aware tokens (AC-19, AC-20)", () => {
+    it("AC-19: range edges (from/to) usam bg-action + text-button-fg", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(
+        <DatePicker
+          mode="range"
+          defaultValue={{
+            from: new Date(2026, 4, 10),
+            to: new Date(2026, 4, 20),
+          }}
+        />,
+      );
+      await user.click(
+        screen.getByRole("button", {
+          name: "Selecionar intervalo de datas",
+        }),
+      );
+      await screen.findByRole("dialog");
+      const day10 = screen
+        .getAllByRole("button")
+        .find((b) => b.textContent?.trim() === "10");
+      const day20 = screen
+        .getAllByRole("button")
+        .find((b) => b.textContent?.trim() === "20");
+      const startCell = day10?.closest("td");
+      const endCell = day20?.closest("td");
+      expect(startCell?.className ?? "").toMatch(/bg-action/);
+      expect(startCell?.className ?? "").toMatch(/text-button-fg/);
+      expect(endCell?.className ?? "").toMatch(/bg-action/);
+      expect(endCell?.className ?? "").toMatch(/text-button-fg/);
+    });
+
+    it("AC-19: range middle usa bg-bg-hover (soft surface tint)", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(
+        <DatePicker
+          mode="range"
+          defaultValue={{
+            from: new Date(2026, 4, 10),
+            to: new Date(2026, 4, 20),
+          }}
+        />,
+      );
+      await user.click(
+        screen.getByRole("button", {
+          name: "Selecionar intervalo de datas",
+        }),
+      );
+      await screen.findByRole("dialog");
+      const day15 = screen
+        .getAllByRole("button")
+        .find((b) => b.textContent?.trim() === "15");
+      const middleCell = day15?.closest("td");
+      expect(middleCell?.className ?? "").toMatch(/bg-bg-hover/);
+    });
+
+    it("AC-20: range edges não vazam literais legacy (guardia-purple-*, hardcoded text-white)", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(
+        <DatePicker
+          mode="range"
+          defaultValue={{
+            from: new Date(2026, 4, 10),
+            to: new Date(2026, 4, 20),
+          }}
+        />,
+      );
+      await user.click(
+        screen.getByRole("button", {
+          name: "Selecionar intervalo de datas",
+        }),
+      );
+      await screen.findByRole("dialog");
+      const day10 = screen
+        .getAllByRole("button")
+        .find((b) => b.textContent?.trim() === "10");
+      const startCell = day10?.closest("td");
+      expect(startCell?.className ?? "").not.toMatch(/guardia-purple-(100|500|700)/);
+      expect(startCell?.className ?? "").not.toMatch(/guardia-violet-(100|500|700)/);
+      expect(startCell?.className ?? "").not.toMatch(/\btext-white\b/);
+    });
+  });
+
+  /* ------------------------------ a11y matrix ----------------------------- */
+
+  describe("a11y (AC-16)", () => {
+    it("não tem violações WCAG 2.1 AA em light + dark (range vazio)", async () => {
+      const { container } = render(<DatePicker mode="range" />);
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (range completo)", async () => {
+      const { container } = render(
+        <DatePicker
+          mode="range"
+          defaultValue={{
+            from: new Date(2026, 2, 1),
+            to: new Date(2026, 2, 15),
+          }}
+          aria-label="Período de competência"
+        />,
+      );
+      await axeInThemes(container);
+    });
+
+    it("não tem violações WCAG 2.1 AA em light + dark (dialog aberto com range destacado)", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const { container } = render(
+        <DatePicker
+          mode="range"
+          defaultValue={{
+            from: new Date(2026, 4, 10),
+            to: new Date(2026, 4, 20),
+          }}
+        />,
+      );
+      await user.click(
+        screen.getByRole("button", {
+          name: "Selecionar intervalo de datas",
+        }),
       );
       await screen.findByRole("dialog");
       await axeInThemes(container);

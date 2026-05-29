@@ -1,0 +1,42 @@
+
+/* Input */
+.grd-input {
+  display: inline-flex; align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  transition: border-color 140ms var(--ease-standard),
+              box-shadow 140ms var(--ease-standard);
+  width: 100%;
+}
+.grd-input input {
+  font-family: inherit; border: 0; background: transparent; outline: none;
+  color: var(--fg); width: 100%; padding: 0; margin: 0;
+}
+.grd-input input::placeholder { color: var(--gray-400); }
+
+/* Sizes */
+.grd-input-sm { padding: 6px 10px; font-size: 13px; height: 32px; }
+.grd-input-sm input { font-size: 13px; }
+.grd-input-md { padding: 8px 12px; font-size: 14px; height: 38px; }
+.grd-input-md input { font-size: 14px; }
+.grd-input-lg { padding: 10px 14px; font-size: 15px; height: 46px; }
+.grd-input-lg input { font-size: 15px; }
+
+/* States */
+.grd-input-default:focus-within { border-color: var(--violet-500); box-shadow: var(--focus-ring); }
+.grd-input-error   { border-color: var(--signal-red); }
+.grd-input-error:focus-within { box-shadow: var(--focus-ring-error); }
+.grd-input-success { border-color: var(--signal-green); }
+.grd-input-success:focus-within { box-shadow: var(--focus-ring-success); }
+.grd-input-disabled { background: var(--gray-100); opacity: 0.7; cursor: not-allowed; }
+.grd-input-disabled input { cursor: not-allowed; }
+
+/* Adornments */
+.grd-input-ic { color: var(--gray-500); display: inline-flex; flex-shrink: 0; }
+.grd-input-ic-l { margin-right: 8px; }
+.grd-input-ic-r { margin-left: 8px; }
+.grd-input-afx { color: var(--gray-500); font-size: 0.95em; font-weight: 500; flex-shrink: 0; }
+.grd-input-afx-l { margin-right: 8px; padding-right: 8px; border-right: 1px solid var(--border); }
+.grd-input-afx-r { margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--border); }

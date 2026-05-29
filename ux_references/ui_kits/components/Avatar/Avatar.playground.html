@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Avatar · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+<div class="pg-hdr">
+  <div class="pg-eyebrow">PRIMITIVO · IDENTIDADE</div>
+  <h1 class="pg-title">Avatar</h1>
+  <span class="pg-codename">import Avatar from "ui_kits/components/Avatar"</span>
+  <p class="pg-desc">Representa uma pessoa ou entidade. Carrega imagem ou cai em iniciais coloridas. Cinco tamanhos, círculo/quadrado, opcional ponto de status.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, variant }: { title: string; children: React.ReactNode; variant?: string }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className={"pg-stage "+(variant||"")}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Tamanhos">
+      <Avatar size="xs" name="Ana Lima" />
+      <Avatar size="sm" name="Bruno Castro" color="laranja" />
+      <Avatar size="md" name="Carla Diniz" color="verde" />
+      <Avatar size="lg" name="Daniel Efe" color="azul" />
+      <Avatar size="xl" name="Elisa Faria" color="rosa" />
+    </Sec>
+    <Sec title="Com imagem">
+      <Avatar src="https://i.pravatar.cc/96?img=12" name="Usuário 12" size="lg" />
+      <Avatar src="https://i.pravatar.cc/96?img=25" name="Usuário 25" size="lg" />
+      <Avatar src="https://i.pravatar.cc/96?img=38" name="Usuário 38" size="lg" />
+    </Sec>
+    <Sec title="Cores · fallback">
+      <Avatar name="Ana Lima" color="violeta" />
+      <Avatar name="Bruno Castro" color="laranja" />
+      <Avatar name="Carla Diniz" color="verde" />
+      <Avatar name="Daniel Efe" color="azul" />
+      <Avatar name="Elisa Faria" color="rosa" />
+      <Avatar name="Felipe Gomes" color="amarelo" />
+    </Sec>
+    <Sec title="Status">
+      <Avatar name="Ana Lima" status="online" />
+      <Avatar name="Bruno Castro" status="busy" color="laranja" />
+      <Avatar name="Carla Diniz" status="away" color="verde" />
+      <Avatar name="Daniel Efe" status="offline" color="azul" />
+    </Sec>
+    <Sec title="Quadrado">
+      <Avatar shape="square" name="Kp" color="laranja" size="lg" />
+      <Avatar shape="square" name="Dório" color="violeta" size="lg" />
+      <Avatar shape="square" src="https://i.pravatar.cc/96?img=7" name="7" size="lg" />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+function ExampleApp() {
+  const code = `
+function UserMenu() {
+  const [online, setOnline] = React.useState(true);
+
+  return (
+    <button
+      onClick={() => setOnline(!online)}
+      style={{
+        display: 'flex', gap: 8, alignItems: 'center',
+        padding: '6px 14px 6px 6px',
+        background: '#fff',
+        border: '1px solid var(--border)',
+        borderRadius: "var(--radius-pill)", cursor: 'pointer', font: 'inherit'
+      }}
+    >
+      <Avatar name="Ana Lima" color="violeta" size="sm" status={online ? "online" : "offline"} />
+      <span style={{ fontSize: 13, fontWeight: 500 }}>Ana Lima</span>
+      <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>(clique)</span>
+    </button>
+  );
+}
+
+render(<UserMenu />);
+`;
+  return <LiveCode code={code} />;
+}
+ReactDOM.createRoot(document.getElementById('example-root')!).render(<ExampleApp />);
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>src</code></td><td>string</td><td>—</td><td class="desc">URL da imagem; se vazio, renderiza iniciais</td></tr>
+  <tr><td><code>name</code></td><td>string</td><td>—</td><td class="desc">Nome completo; gera iniciais (Ana Lima → AL)</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td><code>"md"</code></td><td class="desc">xs · sm · md · lg · xl</td></tr>
+  <tr><td><code>shape</code></td><td>string</td><td><code>"circle"</code></td><td class="desc">circle · square</td></tr>
+  <tr><td><code>color</code></td><td>string</td><td><code>"violeta"</code></td><td class="desc">violeta · laranja · verde · azul · rosa · amarelo</td></tr>
+  <tr><td><code>status</code></td><td>string</td><td>—</td><td class="desc">online · offline · busy · away</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Iniciais como fallback quando não há foto; cor do grupo violeta/laranja conforme papel.</li>
+      <li>Tamanhos consistentes: sm em listas, md em headers, lg/xl em perfil.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Avatares genéricos em agentes — AgentCard usa ícone <code>bot</code>.</li>
+      <li>Gradientes ou cores fora da paleta.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

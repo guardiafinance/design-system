@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Alert · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FEEDBACK · BANNER</div>
+  <h1 class="pg-title">Alert</h1>
+  <span class="pg-codename">import Alert from "ui_kits/components/Alert"</span>
+  <p class="pg-desc">Banner inline para comunicar status, aviso ou erro. Quatro tipos: <code>info</code>, <code>success</code>, <code>warning</code>, <code>danger</code>. Admite título, ação e botão fechar.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",gap:12}}>{children}</div></div>);
+}
+function App() {
+  const [shown, setShown] = React.useState(true);
+  return (<>
+    <Sec title="Tipos">
+      <Alert type="info" title="Novo agente disponível">
+        O agente de Conciliação Bancária foi atualizado com suporte a extratos em CSV.
+      </Alert>
+      <Alert type="success" title="Conciliação concluída">
+        248 lançamentos processados · 237 auto-aprovados · 11 pendentes de revisão.
+      </Alert>
+      <Alert type="warning" title="Revisão humana necessária">
+        3 lançamentos estão abaixo do limiar de confiança configurado (85%).
+      </Alert>
+      <Alert type="danger" title="Falha na integração com o banco">
+        Não foi possível autenticar com o Itaú. Reconecte a conta para retomar a coleta automática.
+      </Alert>
+    </Sec>
+
+    <Sec title="Somente mensagem (sem título)">
+      <Alert type="info">Seu plano atual permite até 5 empresas ativas.</Alert>
+      <Alert type="success">CNPJ validado na Receita Federal.</Alert>
+    </Sec>
+
+    <Sec title="Com ação à direita">
+      <Alert
+        type="warning"
+        title="Certificado A1 vence em 7 dias"
+        action={<button className="grd-btn grd-btn-secondary grd-btn-sm">Renovar agora</button>}
+      >
+        Para continuar emitindo notas fiscais, renove seu certificado digital antes do vencimento.
+      </Alert>
+      <Alert
+        type="info"
+        title="Nova funcionalidade"
+        action={<button className="grd-btn grd-btn-ghost grd-btn-sm">Ver tour</button>}
+      >
+        Agora você pode aprovar lançamentos em lote direto do painel.
+      </Alert>
+    </Sec>
+
+    <Sec title="Fechável">
+      {shown ? (
+        <Alert
+          type="success"
+          title="Backup automático ativado"
+          closable
+          onClose={() => setShown(false)}
+        >
+          Seus dados são salvos a cada 6 horas em ambiente criptografado.
+        </Alert>
+      ) : (
+        <div style={{fontSize:13,color:"var(--gray-500)",fontStyle:"italic"}}>Alerta fechado. <a href="#" onClick={e=>{e.preventDefault();setShown(true);}} style={{color:"var(--orange-500)"}}>Reexibir</a></div>
+      )}
+    </Sec>
+
+    <Sec title="Sem ícone">
+      <Alert type="info" icon={null} title="Modo compacto">
+        Use quando o alerta vem junto de outros elementos com ícone, para evitar ruído visual.
+      </Alert>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Alert"]) || "render(<div>Sem exemplo para Alert</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>type</code></td><td>string</td><td>"info"</td><td class="desc">info · success · warning · danger</td></tr>
+  <tr><td><code>title</code></td><td>node</td><td>—</td><td class="desc">Título em negrito</td></tr>
+  <tr><td><code>children</code></td><td>node</td><td>—</td><td class="desc">Mensagem</td></tr>
+  <tr><td><code>icon</code></td><td>string | null</td><td>auto</td><td class="desc">Nome Lucide, ou <code>null</code> para ocultar</td></tr>
+  <tr><td><code>action</code></td><td>node</td><td>—</td><td class="desc">Botão/link à direita</td></tr>
+  <tr><td><code>closable</code></td><td>boolean</td><td>false</td><td class="desc">Mostra X para dispensar</td></tr>
+  <tr><td><code>onClose</code></td><td>() ⇒ void</td><td>—</td><td class="desc">Callback do botão fechar</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Mensagem persistente em banner quando a ação do usuário é necessária — divergência fiscal, consentimento, erro bloqueante.</li>
+      <li>Sempre pares ícone + título + descrição curta; action opcional à direita.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Confirmações transitórias ("salvo com sucesso") — use Toast.</li>
+      <li>Vários alerts empilhados competindo pela atenção.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

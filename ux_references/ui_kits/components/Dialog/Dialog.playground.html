@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Dialog · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Label/index.css">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">OVERLAYS · MODAL</div>
+  <h1 class="pg-title">Dialog</h1>
+  <span class="pg-codename">import Dialog from "ui_kits/components/Dialog"</span>
+  <p class="pg-desc">Modal centralizado com backdrop. Três tamanhos, fechamento por ESC/backdrop/botão, portal para <code>document.body</code>. Para formulários longos prefira <code>Drawer</code>.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Label/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage">{children}</div></div>);
+}
+
+function App() {
+  const [open, setOpen] = React.useState<string | null>(null);
+  const close = () => setOpen(null);
+
+  return (<>
+    <Sec title="Tamanhos">
+      <Button onClick={() => setOpen("sm")}>Abrir · Small</Button>
+      <Button onClick={() => setOpen("md")}>Abrir · Medium</Button>
+      <Button onClick={() => setOpen("lg")}>Abrir · Large</Button>
+    </Sec>
+
+    <Sec title="Casos de uso">
+      <Button variant="destructive" leftIcon="trash" onClick={() => setOpen("confirm")}>Excluir cliente</Button>
+      <Button variant="accent" leftIcon="plus" onClick={() => setOpen("form")}>Novo agente</Button>
+      <Button variant="outline" leftIcon="info" onClick={() => setOpen("info")}>Sobre conciliação</Button>
+    </Sec>
+
+    {/* small */}
+    <Dialog open={open==="sm"} onClose={close} size="sm" title="Título pequeno" description="Descrição curta para contexto.">
+      <p style={{margin:0,fontSize:13,lineHeight:1.6,color:"var(--gray-700)"}}>Corpo do dialog pequeno. Ideal para avisos rápidos.</p>
+    </Dialog>
+    {/* medium */}
+    <Dialog open={open==="md"} onClose={close} size="md" title="Médio (default)" description="Tamanho padrão para a maioria dos casos."
+      footer={<><Button variant="ghost" onClick={close}>Cancelar</Button><Button variant="primary" onClick={close}>Confirmar</Button></>}>
+      <p style={{margin:0,fontSize:13,lineHeight:1.6,color:"var(--gray-700)"}}>Conteúdo principal vai aqui. Botões ficam no <code>footer</code>.</p>
+    </Dialog>
+    {/* large */}
+    <Dialog open={open==="lg"} onClose={close} size="lg" title="Grande" description="Para conteúdo denso ou visualizações.">
+      <p style={{margin:0,fontSize:13,lineHeight:1.6,color:"var(--gray-700)"}}>Tamanho grande acomoda tabelas, gráficos ou multi-coluna.</p>
+    </Dialog>
+
+    {/* confirmação destrutiva */}
+    <Dialog open={open==="confirm"} onClose={close} size="sm"
+      title="Excluir Contábil Silva & Cia?"
+      description="Esta ação é permanente. 248 conciliações históricas serão preservadas, mas o cliente não receberá novos fluxos."
+      footer={<><Button variant="ghost" onClick={close}>Cancelar</Button><Button variant="destructive" leftIcon="trash" onClick={close}>Sim, excluir</Button></>}>
+    </Dialog>
+
+    {/* formulário */}
+    <Dialog open={open==="form"} onClose={close} size="md" title="Novo agente" description="Configure um agente para conciliar uma fonte específica."
+      footer={<><Button variant="ghost" onClick={close}>Cancelar</Button><Button variant="accent" onClick={close}>Criar agente</Button></>}>
+      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div><Label required>Nome do agente</Label><Input placeholder="Ex: Bia · Conciliação Bancária" /></div>
+        <div><Label>Fonte primária</Label><Input leftIcon="database" placeholder="Banco Inter · CNPJ 12.345..." /></div>
+        <div><Label description="O agente só executa dentro dessa janela">Horário de operação</Label>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            <Input prefix="De" defaultValue="08:00" />
+            <Input prefix="Até" defaultValue="20:00" />
+          </div>
+        </div>
+      </div>
+    </Dialog>
+
+    {/* info */}
+    <Dialog open={open==="info"} onClose={close} size="md" title="Como funciona a conciliação automática"
+      footer={<Button onClick={close}>Entendi</Button>}>
+      <div style={{display:"flex",flexDirection:"column",gap:10,fontSize:13,lineHeight:1.6,color:"var(--gray-700)"}}>
+        <p style={{margin:0}}>A Bia compara cada lançamento bancário com lançamentos contábeis em até 3 dimensões: valor exato, janela de datas (±3d) e similaridade textual.</p>
+        <p style={{margin:0}}>Matches com confiança ≥ 95% são auto-aprovados (se você ativar o autopilot). Os demais vão para sua fila de revisão.</p>
+      </div>
+    </Dialog>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Dialog"]) || "render(<div>Sem exemplo para Dialog</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>open</code></td><td>boolean</td><td>—</td><td class="desc">Controla visibilidade</td></tr>
+  <tr><td><code>onClose</code></td><td>() =&gt; void</td><td>—</td><td class="desc">Obrigatório · chamado em ESC, backdrop e X</td></tr>
+  <tr><td><code>title</code>/<code>description</code></td><td>ReactNode</td><td>—</td><td class="desc">Cabeçalho</td></tr>
+  <tr><td><code>children</code></td><td>ReactNode</td><td>—</td><td class="desc">Corpo do modal</td></tr>
+  <tr><td><code>footer</code></td><td>ReactNode</td><td>—</td><td class="desc">Área de ações à direita</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>closeOnBackdrop</code></td><td>boolean</td><td>true</td><td class="desc">Click no backdrop fecha</td></tr>
+  <tr><td><code>showClose</code></td><td>boolean</td><td>true</td><td class="desc">Exibe X no cabeçalho</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Confirmação de ação irreversível (excluir cliente, enviar para SEFAZ).</li>
+      <li>Um foco de ação; botão primário à direita, cancelar como ghost.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Formulários longos — use <code>Drawer</code>.</li>
+      <li>Dialogs aninhados.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

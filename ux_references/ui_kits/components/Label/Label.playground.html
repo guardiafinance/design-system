@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Label · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">PRIMITIVO · FORMULÁRIO</div>
+  <h1 class="pg-title">Label</h1>
+  <span class="pg-codename">import Label from "ui_kits/components/Label"</span>
+  <p class="pg-desc">Rótulo semântico para campos de formulário. Suporta indicação de obrigatório (<code>*</code>) ou opcional. Sempre usar <code>htmlFor</code> apontando para o id do input.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch"}}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Variantes">
+      <Label htmlFor="f1">Razão social</Label>
+      <Label htmlFor="f2" required>CNPJ</Label>
+      <Label htmlFor="f3" optional>Inscrição Estadual</Label>
+    </Sec>
+    <Sec title="Com campo acoplado (uso real)">
+      <div>
+        <Label htmlFor="rs" required>Razão social</Label>
+        <Input id="rs" placeholder="Contábil Silva & Cia Ltda." />
+      </div>
+      <div>
+        <Label htmlFor="cnpj" required>CNPJ</Label>
+        <Input id="cnpj" placeholder="00.000.000/0000-00" />
+      </div>
+      <div>
+        <Label htmlFor="ie" optional>Inscrição Estadual</Label>
+        <Input id="ie" placeholder="Se houver" />
+      </div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Label"]) || "render(<div>Sem exemplo para Label</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>htmlFor</code></td><td>string</td><td>—</td><td class="desc">Id do input associado (acessibilidade)</td></tr>
+  <tr><td><code>required</code></td><td>boolean</td><td>false</td><td class="desc">Mostra asterisco vermelho</td></tr>
+  <tr><td><code>optional</code></td><td>boolean</td><td>false</td><td class="desc">Mostra sufixo "(opcional)"</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Antecede cada input/select/textarea; clicável; indicador <em>*</em> para obrigatório.</li>
+      <li>Texto conciso, sentence case.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Labels em caixa alta ou longas demais.</li>
+      <li>Esconder label em nome de minimalismo.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

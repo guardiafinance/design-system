@@ -1,0 +1,25 @@
+/* ButtonGroup */
+.grd-btngroup { display: inline-flex; }
+.grd-btngroup-horizontal { flex-direction: row; }
+.grd-btngroup-vertical { flex-direction: column; }
+.grd-btngroup-spaced { gap: 8px; }
+
+/* Attached: remove radius and collapse borders between children */
+.grd-btngroup-attached.grd-btngroup-horizontal > .grd-btn:not(:first-child),
+.grd-btngroup-attached.grd-btngroup-horizontal > .grd-iconbtn:not(:first-child) {
+  border-top-left-radius: 0; border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+.grd-btngroup-attached.grd-btngroup-horizontal > .grd-btn:not(:last-child),
+.grd-btngroup-attached.grd-btngroup-horizontal > .grd-iconbtn:not(:last-child) {
+  border-top-right-radius: 0; border-bottom-right-radius: 0;
+}
+.grd-btngroup-attached.grd-btngroup-vertical > .grd-btn:not(:first-child),
+.grd-btngroup-attached.grd-btngroup-vertical > .grd-iconbtn:not(:first-child) {
+  border-top-left-radius: 0; border-top-right-radius: 0;
+  margin-top: -1px;
+}
+.grd-btngroup-attached.grd-btngroup-vertical > .grd-btn:not(:last-child),
+.grd-btngroup-attached.grd-btngroup-vertical > .grd-iconbtn:not(:last-child) {
+  border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+}

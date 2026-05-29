@@ -3,27 +3,63 @@ import { LiveProvider, LivePreview, LiveError } from "react-live";
 import { CodeEditor } from "@ds/components/code-editor";
 import { DatePicker } from "@ds/components/date-picker";
 
-const DEFAULT_CODE = `<div style={{ width: 280 }}>
-  <DatePicker
-    placeholder="dd/mm/aaaa"
-    defaultValue={new Date(2025, 2, 15)}
-    clearable
-  />
-</div>`;
+/* Upgraded post Plan #220 to the noInline + useState interactive pattern
+   used by LiveCheckboxSnippet (PR #217). The controlled state lets users
+   experiment with the trigger behavior (clear, today, controlled vs
+   uncontrolled) in the playground, mirroring real consumer code. */
 
-const scope = { DatePicker };
+const DEFAULT_CODE = `function App() {
+  const [date, setDate] = useState(new Date(2025, 2, 15));
+
+  const label = date
+    ? "Selecionado: " + date.toLocaleDateString("pt-BR")
+    : "Nenhuma data selecionada";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 320 }}>
+      <DatePicker
+        value={date}
+        onChange={setDate}
+        placeholder="dd/mm/aaaa"
+        clearable
+      />
+      <p style={{ fontSize: 13 }}>{label}</p>
+      <button
+        type="button"
+        onClick={() => setDate(null)}
+        disabled={!date}
+        style={{
+          alignSelf: "flex-start",
+          padding: "6px 10px",
+          fontSize: 12,
+          borderRadius: 6,
+          border: "1px solid currentColor",
+          background: "transparent",
+          cursor: date ? "pointer" : "not-allowed",
+          opacity: date ? 1 : 0.5,
+        }}
+      >
+        Reset
+      </button>
+    </div>
+  );
+}
+
+render(<App />);`;
+
+const scope = { DatePicker, useState };
 
 export function LiveDatePickerSnippet() {
   const [code, setCode] = useState(DEFAULT_CODE);
   return (
-    <LiveProvider code={code} scope={scope}>
+    <LiveProvider code={code} scope={scope} noInline>
       <div className="grid gap-3 md:grid-cols-2">
         <CodeEditor
           value={code}
           onChange={setCode}
           language="tsx"
           filename="playground.tsx"
-          minHeight="220px"
+          minHeight="260px"
           maxHeight="480px"
         />
         <div className="flex min-h-[260px] flex-col overflow-hidden rounded-md border border-border bg-background">

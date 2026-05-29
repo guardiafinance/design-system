@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Drawer · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Label/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">OVERLAY · PAINEL LATERAL</div>
+  <h1 class="pg-title">Drawer</h1>
+  <span class="pg-codename">import Drawer from "ui_kits/components/Drawer"</span>
+  <p class="pg-desc">Painel lateral para detalhes, filtros ou formulários secundários sem tirar o usuário da tela principal. Fecha com ESC, backdrop ou X.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Label/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{gap:14,padding:32,flexWrap:"wrap"}}>{children}</div></div>);
+}
+function App() {
+  const [open, setOpen] = React.useState<null | "sm" | "md" | "lg" | "left">(null);
+  return (<>
+    <Sec title="Tamanhos (lado direito)">
+      <button className="grd-btn grd-btn-secondary" onClick={() => setOpen("sm")}>Abrir sm</button>
+      <button className="grd-btn grd-btn-secondary" onClick={() => setOpen("md")}>Abrir md</button>
+      <button className="grd-btn grd-btn-secondary" onClick={() => setOpen("lg")}>Abrir lg</button>
+    </Sec>
+    <Sec title="Lado esquerdo">
+      <button className="grd-btn grd-btn-secondary" onClick={() => setOpen("left")}>Abrir à esquerda</button>
+    </Sec>
+
+    <Drawer
+      open={open === "sm" || open === "md" || open === "lg"}
+      onClose={() => setOpen(null)}
+      size={open === "sm" ? "sm" : open === "lg" ? "lg" : "md"}
+      title="Detalhes da empresa"
+      description="Alfa Comércio LTDA · CNPJ 42.110.877/0001-55"
+      footer={<>
+        <button className="grd-btn grd-btn-ghost" onClick={() => setOpen(null)}>Cancelar</button>
+        <button className="grd-btn grd-btn-primary">Salvar alterações</button>
+      </>}
+    >
+      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div>
+          <Label>Razão social</Label>
+          <Input defaultValue="Alfa Comércio LTDA" />
+        </div>
+        <div>
+          <Label>Nome fantasia</Label>
+          <Input defaultValue="Alfa" />
+        </div>
+        <div>
+          <Label>Regime tributário</Label>
+          <Input defaultValue="Simples Nacional" />
+        </div>
+        <div>
+          <Label>E-mail do responsável</Label>
+          <Input type="email" defaultValue="contato@alfa.com.br" />
+        </div>
+        <div style={{fontSize:13,color:"var(--gray-600)",lineHeight:1.6,padding:"10px 12px",background:"var(--orange-50)",border:"1px solid var(--orange-100)",borderRadius:"var(--radius-md)"}}>
+          Alterações feitas aqui são propagadas para todas as integrações ativas em até 2 minutos.
+        </div>
+      </div>
+    </Drawer>
+
+    <Drawer
+      open={open === "left"}
+      onClose={() => setOpen(null)}
+      side="left"
+      title="Filtros avançados"
+      footer={<>
+        <button className="grd-btn grd-btn-ghost" onClick={() => setOpen(null)}>Limpar tudo</button>
+        <button className="grd-btn grd-btn-primary">Aplicar filtros</button>
+      </>}
+    >
+      <div style={{fontSize:14,color:"var(--gray-700)",lineHeight:1.6}}>
+        Drawers de filtro normalmente ficam à esquerda, junto da navegação principal, e mantêm a lista de resultados visível à direita.
+      </div>
+    </Drawer>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Drawer"]) || "render(<div>Sem exemplo para Drawer</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>open</code> · <code>onClose</code></td><td>boolean · fn</td><td>—</td><td class="desc">Controle</td></tr>
+  <tr><td><code>side</code></td><td>string</td><td>"right"</td><td class="desc">right · left</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md · lg</td></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>node</td><td>—</td><td class="desc">Cabeçalho</td></tr>
+  <tr><td><code>footer</code></td><td>node</td><td>—</td><td class="desc">Barra fixa no rodapé</td></tr>
+  <tr><td><code>showClose</code></td><td>boolean</td><td>true</td><td class="desc">Botão X no cabeçalho</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Detalhamento e edição sem perder contexto da lista (abrir lançamento, editar cliente).</li>
+      <li>Largura 480-640px; header sticky com título e ações.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Fluxos com múltiplas etapas — use página dedicada.</li>
+      <li>Drawer sobre drawer.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+
+.grd-bc { font-family: var(--font-sans); font-size: 13px; }
+.grd-bc ol { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+.grd-bc-item { display: inline-flex; align-items: center; gap: 6px; }
+.grd-bc-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--fg-muted);
+  text-decoration: none;
+  padding: 2px 4px; border-radius: var(--radius-sm);
+  transition: color 120ms, background 120ms;
+}
+.grd-bc-link:hover { color: var(--violet-700); background: var(--violet-50); }
+.grd-bc-static { display: inline-flex; align-items: center; gap: 4px; color: var(--fg-muted); padding: 2px 4px; }
+.grd-bc-current {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--fg); font-weight: 600; padding: 2px 4px;
+}
+.grd-bc-sep { color: var(--gray-400); display: inline-flex; align-items: center; }

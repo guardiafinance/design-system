@@ -1,0 +1,60 @@
+
+.grd-tabs {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-sans);
+}
+.grd-tabs-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-weight: 500; color: var(--fg-muted);
+  transition: color 140ms, background 140ms, border-color 140ms;
+  white-space: nowrap;
+}
+.grd-tabs-tab-dis { opacity: 0.5; cursor: not-allowed; }
+.grd-tabs-tab:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
+.grd-tabs-badge {
+  background: var(--gray-200); color: var(--fg-muted);
+  font-size: 10.5px; font-weight: 700;
+  padding: 1px 6px; border-radius: var(--radius-pill);
+  min-width: 18px; text-align: center;
+}
+.grd-tabs-tab-active .grd-tabs-badge { background: var(--violet-100); color: var(--violet-700); }
+
+/* Underline */
+.grd-tabs-underline { gap: 4px; border-bottom: 1px solid var(--border); }
+.grd-tabs-underline .grd-tabs-tab {
+  padding: 10px 14px;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font-size: 14px;
+}
+.grd-tabs-underline.grd-tabs-sm .grd-tabs-tab { padding: 8px 12px; font-size: 13px; }
+.grd-tabs-underline .grd-tabs-tab:hover:not(.grd-tabs-tab-dis) { color: var(--fg); }
+.grd-tabs-underline .grd-tabs-tab-active {
+  color: var(--violet-700); border-bottom-color: var(--violet-500);
+}
+
+/* Pills */
+.grd-tabs-pills {
+  gap: 4px; background: var(--gray-100); padding: 4px; border-radius: var(--radius-pill);
+}
+.grd-tabs-pills .grd-tabs-tab {
+  padding: 6px 14px; border-radius: var(--radius-pill); font-size: 13.5px;
+}
+.grd-tabs-pills.grd-tabs-sm .grd-tabs-tab { padding: 5px 12px; font-size: 12.5px; }
+.grd-tabs-pills .grd-tabs-tab:hover:not(.grd-tabs-tab-dis) { color: var(--fg); }
+.grd-tabs-pills .grd-tabs-tab-active {
+  background: var(--surface); color: var(--violet-700);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Boxed */
+.grd-tabs-boxed { gap: 2px; }
+.grd-tabs-boxed .grd-tabs-tab {
+  padding: 8px 14px; font-size: 13.5px;
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: var(--radius-md);
+}
+.grd-tabs-boxed.grd-tabs-sm .grd-tabs-tab { padding: 6px 12px; font-size: 12.5px; }
+.grd-tabs-boxed .grd-tabs-tab:hover:not(.grd-tabs-tab-dis) { background: var(--violet-50); border-color: var(--violet-300); }
+.grd-tabs-boxed .grd-tabs-tab-active { background: var(--violet-500); color: #fff; border-color: var(--violet-500); }
+.grd-tabs-boxed .grd-tabs-tab-active .grd-tabs-badge { background: rgba(255,255,255,0.24); color: #fff; }

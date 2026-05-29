@@ -1,0 +1,256 @@
+
+/* ===================================================================
+ * Stepper — tokens apenas; usa --violet-*, --signal-*, --gray-* etc.
+ * ================================================================= */
+
+.grd-st {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--fg);
+}
+
+.grd-st-item { position: relative; }
+
+.grd-st-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+  width: 100%;
+}
+
+.grd-st-clickable .grd-st-item:not(.grd-st-s-pending) > .grd-st-btn {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 120ms, color 120ms;
+}
+.grd-st-clickable .grd-st-item:not(.grd-st-s-pending) > button.grd-st-btn:hover {
+  background: var(--violet-50);
+}
+.grd-st-clickable .grd-st-item:not(.grd-st-s-pending) > button.grd-st-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------- Marker ---------- */
+.grd-st-marker {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum";
+  transition: background 140ms, border-color 140ms, color 140ms;
+}
+.grd-st-sm .grd-st-marker { width: 20px; height: 20px; font-size: 11px; }
+
+.grd-st-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor;
+}
+.grd-st-sm .grd-st-dot { width: 6px; height: 6px; }
+
+.grd-st-num { line-height: 1; }
+.grd-st-tick { font-size: 13px; line-height: 1; }
+
+/* ---------- States ---------- */
+.grd-st-s-pending .grd-st-marker {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--fg-muted);
+}
+.grd-st-s-current .grd-st-marker {
+  background: var(--violet-600);
+  border-color: var(--violet-600);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--violet-100);
+}
+.grd-st-s-loading .grd-st-marker {
+  background: var(--violet-50);
+  border-color: var(--violet-600);
+  color: var(--violet-600);
+  box-shadow: 0 0 0 4px var(--violet-100);
+}
+.grd-st-s-complete .grd-st-marker {
+  background: var(--violet-600);
+  border-color: var(--violet-600);
+  color: #fff;
+}
+.grd-st-s-error .grd-st-marker {
+  background: var(--danger-soft);
+  border-color: var(--signal-red);
+  color: var(--signal-red);
+}
+
+/* ---------- Spinner inline ---------- */
+.grd-st-spin {
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--violet-200);
+  border-top-color: var(--violet-600);
+  border-radius: 50%;
+  animation: grd-st-spin 700ms linear infinite;
+}
+.grd-st-sm .grd-st-spin { width: 10px; height: 10px; border-width: 1.5px; }
+.grd-st-compact .grd-st-spin { width: 8px; height: 8px; border-width: 1.5px; }
+
+@keyframes grd-st-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Body ---------- */
+.grd-st-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.grd-st-sm .grd-st-body { padding-top: 1px; }
+
+.grd-st-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.3;
+}
+.grd-st-sm .grd-st-title { font-size: 12.5px; }
+
+.grd-st-s-pending .grd-st-title { color: var(--fg-muted); font-weight: 500; }
+.grd-st-s-current .grd-st-title { color: var(--violet-700); }
+.grd-st-s-loading .grd-st-title { color: var(--violet-700); }
+.grd-st-s-loading .grd-st-desc  { color: var(--violet-600); }
+.grd-st-s-error .grd-st-title   { color: var(--signal-red); }
+
+.grd-st-desc {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  line-height: 1.4;
+}
+.grd-st-sm .grd-st-desc { font-size: 11.5px; }
+
+.grd-st-meta {
+  /* Vertical: alinhar com o body (depois do marker 24 + gap 10) */
+  margin-top: 10px;
+  padding-left: 34px;
+}
+.grd-st-sm .grd-st-meta { padding-left: 30px; }
+
+/* =========================================================
+ * Horizontal
+ * ========================================================= */
+.grd-st-horizontal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+.grd-st-horizontal .grd-st-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+}
+.grd-st-horizontal .grd-st-btn {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 4px 8px;
+}
+.grd-st-horizontal .grd-st-body {
+  align-items: center;
+  padding-top: 0;
+}
+.grd-st-horizontal .grd-st-title,
+.grd-st-horizontal .grd-st-desc {
+  text-align: center;
+}
+
+/* Connector horizontal */
+.grd-st-horizontal .grd-st-item:not(.grd-st-last)::after {
+  content: "";
+  position: absolute;
+  top: 12px;                     /* metade do marker md */
+  left: calc(50% + 16px);
+  right: calc(-50% + 16px);
+  height: 1.5px;
+  background: var(--border);
+  z-index: 0;
+}
+.grd-st-sm.grd-st-horizontal .grd-st-item:not(.grd-st-last)::after {
+  top: 10px;
+  left: calc(50% + 14px);
+  right: calc(-50% + 14px);
+}
+.grd-st-horizontal .grd-st-item.grd-st-s-complete:not(.grd-st-last)::after,
+.grd-st-horizontal .grd-st-item.grd-st-s-current:not(.grd-st-last)::after,
+.grd-st-horizontal .grd-st-item.grd-st-s-loading:not(.grd-st-last)::after {
+  background: var(--violet-500);
+}
+.grd-st-horizontal .grd-st-marker {
+  position: relative;
+  z-index: 1;
+}
+
+/* Compact horizontal: linha fina entre bolinhas, sem body */
+.grd-st-horizontal.grd-st-compact .grd-st-item:not(.grd-st-last)::after {
+  top: 50%;
+  left: calc(50% + 10px);
+  right: calc(-50% + 10px);
+  transform: translateY(-50%);
+}
+.grd-st-compact .grd-st-marker {
+  width: 14px; height: 14px; border-width: 1.5px;
+}
+.grd-st-compact.grd-st-sm .grd-st-marker { width: 10px; height: 10px; }
+.grd-st-compact .grd-st-s-current .grd-st-marker { box-shadow: 0 0 0 3px var(--violet-100); }
+.grd-st-compact .grd-st-s-loading .grd-st-marker { box-shadow: 0 0 0 3px var(--violet-100); }
+
+/* =========================================================
+ * Vertical
+ * ========================================================= */
+.grd-st-vertical { display: flex; flex-direction: column; }
+.grd-st-vertical .grd-st-item { padding-bottom: 18px; }
+.grd-st-vertical .grd-st-item.grd-st-last { padding-bottom: 0; }
+.grd-st-vertical.grd-st-sm .grd-st-item { padding-bottom: 12px; }
+
+.grd-st-vertical .grd-st-btn {
+  align-items: flex-start;
+}
+
+/* Connector vertical */
+.grd-st-vertical .grd-st-item:not(.grd-st-last)::after {
+  content: "";
+  position: absolute;
+  top: 28px;                    /* abaixo do marker md (24 + gap) */
+  bottom: -2px;
+  left: 11px;                   /* metade do marker md - metade linha */
+  width: 1.5px;
+  background: var(--border);
+  z-index: 0;
+}
+.grd-st-sm.grd-st-vertical .grd-st-item:not(.grd-st-last)::after {
+  top: 24px;
+  left: 9px;
+}
+.grd-st-vertical .grd-st-item.grd-st-s-complete:not(.grd-st-last)::after,
+.grd-st-vertical .grd-st-item.grd-st-s-current:not(.grd-st-last)::after,
+.grd-st-vertical .grd-st-item.grd-st-s-loading:not(.grd-st-last)::after {
+  background: var(--violet-500);
+}
+.grd-st-vertical .grd-st-marker { position: relative; z-index: 1; }

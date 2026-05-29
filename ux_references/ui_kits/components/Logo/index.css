@@ -1,0 +1,6 @@
+/* Logo — símbolo G isolado */
+.grd-logo {
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
+}

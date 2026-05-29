@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Accordion · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">ESTRUTURA · COLAPSÁVEIS</div>
+  <h1 class="pg-title">Accordion</h1>
+  <span class="pg-codename">import Accordion from "ui_kits/components/Accordion"</span>
+  <p class="pg-desc">Grupos expansíveis para conteúdo denso: plano de contas, filtros avançados, detalhes de lançamento, configurações. <code>type="single"</code> permite só um aberto por vez; <code>multiple</code> permite vários.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children, w=620 }: any) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch",maxWidth:w}}>{children}</div></div>);
+}
+
+// ─── Plano de Contas (hierárquico, padrão Brasil) ──────────────────
+const row = (code:string, nome:string, saldo:string, tipo?:string) => (
+  <div style={{display:"grid",gridTemplateColumns:"110px 1fr auto",gap:12,padding:"6px 0",fontSize:13,color:"var(--gray-700)",borderBottom:"1px dashed var(--border)"}}>
+    <span style={{fontFamily:"var(--font-mono)",color:"var(--violet-600)"}}>{code}</span>
+    <span>{nome}{tipo && <span style={{marginLeft:6,fontSize:11,color:"var(--gray-500)",textTransform:"uppercase",letterSpacing:"0.06em"}}>· {tipo}</span>}</span>
+    <strong style={{fontFamily:"var(--font-mono)",color:"var(--fg)",fontVariantNumeric:"tabular-nums"}}>{saldo}</strong>
+  </div>
+);
+
+const PLANO_CONTAS = [
+  { id:"1", title:"1. Ativo", icon:"wallet", defaultOpen:true, content: (
+    <div>
+      {row("1.1","Ativo Circulante","R$ 4.280.410,52","sintética")}
+      {row("1.1.01","Caixa e Equivalentes","R$ 128.900,00")}
+      {row("1.1.02","Bancos Conta Movimento","R$ 1.842.110,25")}
+      {row("1.1.03","Aplicações Financeiras","R$ 2.309.400,27")}
+      {row("1.2","Ativo Não Circulante","R$ 1.120.800,00","sintética")}
+    </div>
+  )},
+  { id:"2", title:"2. Passivo", icon:"layers", content: (
+    <div>
+      {row("2.1","Passivo Circulante","R$ 980.220,40","sintética")}
+      {row("2.1.01","Fornecedores","R$ 412.300,00")}
+      {row("2.1.02","Salários e Encargos","R$ 318.920,40")}
+      {row("2.1.03","Obrigações Tributárias","R$ 249.000,00")}
+    </div>
+  )},
+  { id:"3","title":"3. Despesas","icon":"trending-down", content: (
+    <div>
+      {row("3.1.4.05","Despesas com tecnologia","R$ 48.120,00")}
+      {row("3.1.4.06","Infraestrutura cloud","R$ 22.800,00")}
+      {row("3.1.5.01","Viagens e deslocamento","R$ 12.410,50")}
+    </div>
+  )},
+  { id:"4","title":"4. Receitas","icon":"trending-up", content: (
+    <div>
+      {row("4.1.01","Receita de serviços","R$ 2.840.120,00")}
+      {row("4.1.02","Receita de produtos","R$ 1.210.800,00")}
+    </div>
+  )},
+];
+
+// ─── Detalhe de lançamento (drawer-like) ──────────────────
+const LANC_DETALHE = [
+  { id:"gerais", title:"Dados do lançamento", icon:"file-text", defaultOpen:true, content: (
+    <div style={{display:"grid",gridTemplateColumns:"130px 1fr",gap:"8px 14px",fontSize:13,color:"var(--gray-700)"}}>
+      <span style={{color:"var(--gray-500)"}}>Documento</span><span>NF-e 8.421 · série 1</span>
+      <span style={{color:"var(--gray-500)"}}>Fornecedor</span><span>Papelaria Beta Ltda · 12.345.678/0001-90</span>
+      <span style={{color:"var(--gray-500)"}}>Valor total</span><strong style={{fontFamily:"var(--font-mono)"}}>R$ 12.480,00</strong>
+      <span style={{color:"var(--gray-500)"}}>Emissão</span><span>05/11/2025</span>
+    </div>
+  )},
+  { id:"fiscal", title:"Dados fiscais", icon:"receipt-text", content: (
+    <div style={{display:"grid",gridTemplateColumns:"130px 1fr",gap:"8px 14px",fontSize:13,color:"var(--gray-700)"}}>
+      <span style={{color:"var(--gray-500)"}}>CFOP</span><span>1.102 — Compra para comercialização</span>
+      <span style={{color:"var(--gray-500)"}}>CST</span><span>000 — Tributada integralmente</span>
+      <span style={{color:"var(--gray-500)"}}>ICMS</span><strong style={{fontFamily:"var(--font-mono)"}}>R$ 2.246,40</strong>
+      <span style={{color:"var(--gray-500)"}}>PIS/COFINS</span><strong style={{fontFamily:"var(--font-mono)"}}>R$ 1.154,40</strong>
+    </div>
+  )},
+  { id:"contab", title:"Classificação contábil", icon:"book-open", content: (
+    <div style={{display:"grid",gridTemplateColumns:"130px 1fr",gap:"8px 14px",fontSize:13,color:"var(--gray-700)"}}>
+      <span style={{color:"var(--gray-500)"}}>Débito</span><span><code style={{background:"var(--violet-100)",padding:"1px 6px",borderRadius: "var(--radius-sm)",color:"var(--violet-700)"}}>3.1.4.05</code> · Despesas com tecnologia</span>
+      <span style={{color:"var(--gray-500)"}}>Crédito</span><span><code style={{background:"var(--violet-100)",padding:"1px 6px",borderRadius: "var(--radius-sm)",color:"var(--violet-700)"}}>2.1.01</code> · Fornecedores</span>
+      <span style={{color:"var(--gray-500)"}}>Sugerido por</span><span>Agente Contábil · confidence 97%</span>
+    </div>
+  )},
+  { id:"historico", title:"Trilha de auditoria (4 eventos)", icon:"history", content: (
+    <ul style={{margin:0,paddingLeft:18,fontSize:13,color:"var(--gray-700)",lineHeight:1.7}}>
+      <li><b>05/11 14:32</b> · Agente Contábil classificou em <code>3.1.4.05</code></li>
+      <li><b>05/11 14:33</b> · Maria Santos aprovou a sugestão</li>
+      <li><b>05/11 14:33</b> · Lançamento conciliado com extrato Itaú</li>
+      <li><b>05/11 14:35</b> · Exportado para Domínio Sistemas</li>
+    </ul>
+  )},
+];
+
+// ─── Filtros avançados da conciliação ──────────────────
+const FILTROS_RECON = [
+  { id:"period", title:"Período e fonte", icon:"calendar", defaultOpen:true, content: (
+    <div style={{display:"flex",flexWrap:"wrap",gap:8,fontSize:13}}>
+      {["Últimos 7 dias","Mês atual","Trimestre","Personalizado"].map(x => (
+        <span key={x} style={{padding:"4px 10px",background:x==="Mês atual"?"var(--violet-500)":"var(--violet-100)",color:x==="Mês atual"?"#fff":"var(--violet-700)",borderRadius: "var(--radius-pill)",fontWeight:500}}>{x}</span>
+      ))}
+    </div>
+  )},
+  { id:"bank", title:"Contas bancárias (3 de 8)", icon:"landmark", content: (
+    <ul style={{margin:0,paddingLeft:18,fontSize:13,color:"var(--gray-700)",lineHeight:1.7}}>
+      <li>Itaú · Ag. 0478 · CC 91234-0 ✓</li>
+      <li>Bradesco · Ag. 2201 · CC 58821-2 ✓</li>
+      <li>Santander · Ag. 3102 · CC 10230-9 ✓</li>
+    </ul>
+  )},
+  { id:"status", title:"Status do par", icon:"circle-check", content: (
+    <div style={{display:"flex",gap:8,fontSize:12,flexWrap:"wrap"}}>
+      <span style={{padding:"3px 9px",borderRadius: "var(--radius-pill)",background:"var(--success-soft)",color:"color-mix(in oklab, var(--signal-green) 52%, black)",fontWeight:600}}>Conciliados 1.847</span>
+      <span style={{padding:"3px 9px",borderRadius: "var(--radius-pill)",background:"var(--warning-soft)",color:"var(--yellow-900)",fontWeight:600}}>Divergentes 23</span>
+      <span style={{padding:"3px 9px",borderRadius: "var(--radius-pill)",background:"var(--danger-soft)",color:"color-mix(in oklab, var(--signal-red) 45%, black)",fontWeight:600}}>Sem par 7</span>
+    </div>
+  )},
+];
+
+function App() {
+  return (<>
+    <Sec title="Em contexto · Plano de contas hierárquico" w={640}>
+      <Accordion items={PLANO_CONTAS} type="multiple" />
+    </Sec>
+
+    <Sec title="Em contexto · Detalhe de lançamento em drawer" w={640}>
+      <Accordion items={LANC_DETALHE} type="single" />
+    </Sec>
+
+    <Sec title="Em contexto · Filtros avançados da conciliação" w={480}>
+      <Accordion variant="plain" items={FILTROS_RECON} type="multiple" />
+    </Sec>
+
+    <Sec title="Variantes · bordered vs plain" w={540}>
+      <Accordion items={FILTROS_RECON.slice(0,2)} type="single" />
+    </Sec>
+
+    <Sec title="Com item desabilitado (módulo em breve)" w={540}>
+      <Accordion items={[
+        ...FILTROS_RECON.slice(0,2),
+        { id:"wip", title:"Folha de pagamento (em breve)", icon:"clock", content:null, disabled:true },
+      ]} type="single" />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Accordion"]) || "render(<div>Sem exemplo para Accordion</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>items</code></td><td>array</td><td>—</td><td class="desc">{`{ id, title, content, icon?, defaultOpen?, disabled? }[]`}</td></tr>
+  <tr><td><code>type</code></td><td>string</td><td>"multiple"</td><td class="desc">single · multiple</td></tr>
+  <tr><td><code>variant</code></td><td>string</td><td>"bordered"</td><td class="desc">bordered · plain</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Agrupe conteúdo longo e secundário que o usuário consulta sob demanda — FAQs, filtros avançados, detalhes de conciliação.</li>
+      <li>Mantenha o primeiro item aberto quando for o caminho mais comum.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Esconder conteúdo crítico (erros, alertas, ações primárias).</li>
+      <li>Usar em fluxos lineares onde o usuário precisa ver tudo na ordem.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

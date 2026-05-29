@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Menu · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../IconButton/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">OVERLAY · MENU DE AÇÕES</div>
+  <h1 class="pg-title">Menu</h1>
+  <span class="pg-codename">import Menu from "ui_kits/components/Menu"</span>
+  <p class="pg-desc">Dropdown de ações. Suporta ícones, atalhos, itens destrutivos, separadores e cabeçalhos de grupo.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../IconButton/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{gap:18,padding:40,flexWrap:"wrap"}}>{children}</div></div>);
+}
+
+function App() {
+  return (<>
+    <Sec title="Menu simples">
+      <Menu
+        trigger={<button className="grd-btn grd-btn-secondary">Ações <Icon name="chevron-down" size={13} /></button>}
+        items={[
+          { label: "Aprovar", icon: "check", shortcut: "⌘↵", onClick: () => {} },
+          { label: "Rejeitar", icon: "x", onClick: () => {} },
+          { label: "Marcar para revisão", icon: "flag", onClick: () => {} },
+          { type: "separator" },
+          { label: "Excluir permanentemente", icon: "trash-2", destructive: true, onClick: () => {} },
+        ]}
+      />
+    </Sec>
+
+    <Sec title="Com grupos (label headers)">
+      <Menu
+        trigger={<button className="grd-btn grd-btn-secondary">Exportar <Icon name="chevron-down" size={13} /></button>}
+        minWidth={220}
+        items={[
+          { type: "label", label: "Formato de arquivo" },
+          { label: "PDF", icon: "file-text", onClick: () => {} },
+          { label: "Excel (.xlsx)", icon: "file-spreadsheet", onClick: () => {} },
+          { label: "CSV", icon: "file", onClick: () => {} },
+          { type: "separator" },
+          { type: "label", label: "Integração" },
+          { label: "Enviar para Domínio", icon: "plug-2", onClick: () => {} },
+          { label: "Enviar para Alterdata", icon: "plug-2", disabled: true },
+        ]}
+      />
+    </Sec>
+
+    <Sec title="Em icon-button (row action)">
+      <Menu
+        align="end"
+        trigger={<IconButton icon="more-horizontal" variant="ghost" />}
+        items={[
+          { label: "Ver detalhes", icon: "external-link", onClick: () => {} },
+          { label: "Duplicar", icon: "copy", shortcut: "⌘D", onClick: () => {} },
+          { label: "Renomear", icon: "edit-3", onClick: () => {} },
+          { type: "separator" },
+          { label: "Arquivar", icon: "archive", destructive: true, onClick: () => {} },
+        ]}
+      />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Menu"]) || "render(<div>Sem exemplo para Menu</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>trigger</code></td><td>element</td><td>—</td><td class="desc">Botão que abre o menu</td></tr>
+  <tr><td><code>items</code></td><td>array</td><td>—</td><td class="desc">Item, separator ou label (cabeçalho de grupo)</td></tr>
+  <tr><td><code>side</code></td><td>string</td><td>"bottom"</td><td class="desc">bottom · top</td></tr>
+  <tr><td><code>align</code></td><td>string</td><td>"start"</td><td class="desc">start · end</td></tr>
+  <tr><td><code>minWidth</code></td><td>number</td><td>180</td><td class="desc">Largura mínima do menu</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Ações secundárias agrupadas no <code>IconButton</code> "mais opções".</li>
+      <li>Separadores por grupo; ações destrutivas destacadas em vermelho no final.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Menus de navegação — use <code>SidebarNav</code>.</li>
+      <li>Mais de 8 itens sem agrupamento.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

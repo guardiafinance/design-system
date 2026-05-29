@@ -27,7 +27,7 @@
     "init:env": "git config core.hooksPath .githooks && chmod -R +x ./.githooks",
     "build": "rslib build",
     "dev": "rslib build --watch",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "docs:dev": "npm run dev --prefix docs",
     "docs:build": "npm run build --prefix docs",

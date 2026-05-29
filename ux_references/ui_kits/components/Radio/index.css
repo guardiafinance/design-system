@@ -1,0 +1,41 @@
+
+.grd-rd {
+  display: inline-flex; align-items: flex-start; gap: 10px;
+  font-family: var(--font-sans); cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+}
+.grd-rd-disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Radio — desenhado em um único box para evitar desalinhamento sub-pixel.
+   O ponto interno é um box-shadow inset que cresce do centro. */
+.grd-rd-box { position: relative; flex-shrink: 0; display: inline-block; line-height: 0; }
+.grd-rd input[type="radio"] { position: absolute; inset: 0; opacity: 0; cursor: inherit; margin: 0; }
+.grd-rd-mark {
+  display: block;
+  background: radial-gradient(circle, var(--violet-500) 0%, var(--violet-500) 0%, var(--surface) 0%, var(--surface) 100%);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+  transition: border-color 140ms, background 160ms var(--ease-out);
+}
+.grd-rd-sm .grd-rd-mark { width: 16px; height: 16px; }
+.grd-rd-md .grd-rd-mark { width: 18px; height: 18px; }
+/* .grd-rd-dot kept for JSX compatibility but invisible */
+.grd-rd-dot { display: none; }
+
+.grd-rd input:hover:not(:disabled) ~ .grd-rd-mark { border-color: var(--violet-500); }
+.grd-rd input:focus-visible ~ .grd-rd-mark { box-shadow: var(--focus-ring); outline: none; outline-offset: 1px; }
+.grd-rd input:checked ~ .grd-rd-mark { border-color: var(--violet-500); }
+.grd-rd-sm input:checked ~ .grd-rd-mark {
+  background: radial-gradient(circle, var(--violet-500) 0%, var(--violet-500) 28%, var(--surface) 30%, var(--surface) 100%);
+}
+.grd-rd-md input:checked ~ .grd-rd-mark {
+  background: radial-gradient(circle, var(--violet-500) 0%, var(--violet-500) 32%, var(--surface) 34%, var(--surface) 100%);
+}
+
+.grd-rd-invalid .grd-rd-mark { border-color: var(--signal-red); }
+
+.grd-rd-text { display: inline-flex; flex-direction: column; gap: 2px; }
+.grd-rd-label { font-size: 14px; font-weight: 500; color: var(--fg); line-height: 1.4; }
+.grd-rd-desc { font-size: 12.5px; color: var(--fg-muted); line-height: 1.45; }
+.grd-rd-sm .grd-rd-label { font-size: 13px; }
+.grd-rd-sm .grd-rd-desc { font-size: 12px; }

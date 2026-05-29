@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pagination · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">NAVEGAÇÃO · PAGINAÇÃO</div>
+  <h1 class="pg-title">Pagination</h1>
+  <span class="pg-codename">import Pagination from "ui_kits/components/Pagination"</span>
+  <p class="pg-desc">Paginação numérica controlada. Gera automaticamente as reticências em torno da página atual. Ative <code>showEdges</code> para saltos ao início/fim.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"flex-start",gap:12}}>{children}</div></div>);
+}
+function App() {
+  const [p1, setP1] = React.useState(3);
+  const [p2, setP2] = React.useState(12);
+  const [p3, setP3] = React.useState(1);
+  return (<>
+    <Sec title="Poucas páginas">
+      <Pagination page={p1} pageCount={7} onChange={setP1} />
+    </Sec>
+
+    <Sec title="Muitas páginas (com elipse)">
+      <Pagination page={p2} pageCount={42} onChange={setP2} />
+      <div style={{fontSize:13,color:"var(--gray-600)"}}>Página <b style={{color:"var(--orange-500)"}}>{p2}</b> de 42</div>
+    </Sec>
+
+    <Sec title="Com saltos ao início/fim (showEdges)">
+      <Pagination page={p2} pageCount={42} onChange={setP2} showEdges />
+    </Sec>
+
+    <Sec title="Tamanho sm">
+      <Pagination size="sm" page={p1} pageCount={7} onChange={setP1} />
+    </Sec>
+
+    <Sec title="siblingCount=2 (mais números visíveis)">
+      <Pagination page={p2} pageCount={42} onChange={setP2} siblingCount={2} />
+    </Sec>
+
+    <Sec title="Disabled boundaries (página 1 de 5)">
+      <Pagination page={p3} pageCount={5} onChange={setP3} />
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Pagination"]) || "render(<div>Sem exemplo para Pagination</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>page</code></td><td>number</td><td>—</td><td class="desc">Página atual (1-based)</td></tr>
+  <tr><td><code>pageCount</code></td><td>number</td><td>—</td><td class="desc">Total de páginas</td></tr>
+  <tr><td><code>onChange</code></td><td>(p) ⇒ void</td><td>—</td><td class="desc">Callback</td></tr>
+  <tr><td><code>siblingCount</code></td><td>number</td><td>1</td><td class="desc">Páginas vizinhas visíveis</td></tr>
+  <tr><td><code>showEdges</code></td><td>boolean</td><td>false</td><td class="desc">Exibe botões "primeira" e "última"</td></tr>
+  <tr><td><code>size</code></td><td>string</td><td>"md"</td><td class="desc">sm · md</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Listas com > 50 itens; mostra página atual + total de itens.</li>
+      <li>Seletor de "itens por página" ao lado.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Paginação em feeds infinitos — use scroll virtual.</li>
+      <li>Esconder o total de resultados.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

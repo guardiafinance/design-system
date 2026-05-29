@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Toast · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<link rel="stylesheet" href="../Button/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FEEDBACK · NOTIFICAÇÃO</div>
+  <h1 class="pg-title">Toast</h1>
+  <span class="pg-codename">import { ToastProvider, useToast } from "ui_kits/components/Toast"</span>
+  <p class="pg-desc">Notificações transitórias, empilhadas no canto. Uso: envolva o app em <code>&lt;ToastProvider&gt;</code> e chame <code>toast.show()</code> via hook.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage" style={{gap:10,padding:28,flexWrap:"wrap"}}>{children}</div></div>);
+}
+function Demo() {
+  const toast = (useToast as any)();
+  const n = React.useRef(0);
+  return (<>
+    <Sec title="Tipos">
+      <button className="grd-btn grd-btn-secondary" onClick={() => toast.show({ type:"info",    title:"Processando 248 lançamentos…" })}>Info</button>
+      <button className="grd-btn grd-btn-secondary" onClick={() => toast.show({ type:"success", title:"Conciliação concluída", description:"237 aprovados · 11 pendentes" })}>Success</button>
+      <button className="grd-btn grd-btn-secondary" onClick={() => toast.show({ type:"warning", title:"Revisão humana necessária", description:"3 itens abaixo do limiar de confiança" })}>Warning</button>
+      <button className="grd-btn grd-btn-secondary" onClick={() => toast.show({ type:"danger",  title:"Falha ao sincronizar com o Itaú", description:"Reconecte sua conta para continuar" })}>Danger</button>
+    </Sec>
+    <Sec title="Com ação">
+      <button className="grd-btn grd-btn-secondary" onClick={() =>
+        toast.show({
+          type:"success", title:"Lançamento aprovado",
+          description:"NF 4891 movida para a contabilidade",
+          action: { label: "Desfazer", onClick: () => toast.show({ type:"info", title:"Ação desfeita" }) }
+        })
+      }>Success + undo</button>
+    </Sec>
+    <Sec title="Persistente (duration=0)">
+      <button className="grd-btn grd-btn-secondary" onClick={() =>
+        toast.show({ type:"warning", title:"Certificado vence em 7 dias", description:"Clique para renovar", duration: 0 })
+      }>Não dispensa automaticamente</button>
+    </Sec>
+    <Sec title="Disparar vários">
+      <button className="grd-btn grd-btn-primary" onClick={() => {
+        ["info","success","warning","danger"].forEach((t,i)=>
+          setTimeout(()=>toast.show({ type: t as any, title: `Toast #${++n.current}`, description: `Tipo ${t}` }), i*150)
+        );
+      }}>Disparar 4 em sequência</button>
+    </Sec>
+  </>);
+}
+function App() {
+  return <ToastProvider position="bottom-right"><Demo /></ToastProvider>;
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Toast"]) || "render(<div>Sem exemplo para Toast</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">toast.show(options)</th></tr>
+  <tr><th>Opção</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>type</code></td><td>string</td><td>"info"</td><td class="desc">info · success · warning · danger</td></tr>
+  <tr><td><code>title</code></td><td>node</td><td>—</td><td class="desc">Linha principal</td></tr>
+  <tr><td><code>description</code></td><td>node</td><td>—</td><td class="desc">Apoio</td></tr>
+  <tr><td><code>duration</code></td><td>number</td><td>4200</td><td class="desc">ms; <code>0</code> = persistente</td></tr>
+  <tr><td><code>action</code></td><td>{`{ label, onClick }`}</td><td>—</td><td class="desc">Botão à direita; fecha ao clicar</td></tr>
+  <tr><th colspan="4" style="background:var(--orange-50);color:var(--orange-700);font-weight:600;">ToastProvider</th></tr>
+  <tr><td><code>position</code></td><td>string</td><td>"bottom-right"</td><td class="desc">top-right · bottom-right · top-left · bottom-left</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Confirmação transitória não-bloqueante ("lançamento salvo", "XML importado").</li>
+      <li>Auto-dismiss em 4-6s; ação "Desfazer" quando aplicável.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Erros que exigem atenção — use <code>Alert</code>.</li>
+      <li>Empilhar > 3 toasts simultâneos.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>FormLayout · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=1">
+<link rel="stylesheet" href="../Input/index.css">
+<link rel="stylesheet" href="../Textarea/index.css">
+<link rel="stylesheet" href="../Select/index.css">
+<link rel="stylesheet" href="../Combobox/index.css">
+<link rel="stylesheet" href="../Checkbox/index.css">
+<link rel="stylesheet" href="../Radio/index.css">
+<link rel="stylesheet" href="../Switch/index.css">
+<link rel="stylesheet" href="../Button/index.css">
+<link rel="stylesheet" href="../Badge/index.css">
+<link rel="stylesheet" href="../Alert/index.css">
+<link rel="stylesheet" href="../DatePicker/index.css">
+<link rel="stylesheet" href="../Separator/index.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">FORMS · ESQUELETO DE FORMULÁRIO</div>
+  <h1 class="pg-title">FormLayout</h1>
+  <span class="pg-codename">import FormLayout from "ui_kits/components/FormLayout"</span>
+  <p class="pg-desc">Estrutura para compor cadastros, filtros, settings e wizards com hierarquia consistente. Orquestra seções, grid de 12 colunas, labels com obrigatório/opcional, hints, erros inline e footer de ações sticky. Três variantes (<code>stacked</code>, <code>split</code>, <code>inline</code>) × duas densidades (<code>comfy</code>, <code>compact</code>).</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="../Input/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Textarea/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Select/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Combobox/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Checkbox/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Radio/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Switch/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Button/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Badge/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../Alert/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../DatePicker/index.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=1"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="pg-sec">
+      <p className="pg-sec-title">{title}</p>
+      <div className="pg-stage" style={{padding:28, alignItems:"stretch", flexDirection:"column", gap:24}}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Frame({ children, label, maxWidth = 880 }: { children: React.ReactNode; label?: string; maxWidth?: number }) {
+  return (
+    <div>
+      {label && (
+        <div style={{ fontSize: 11.5, color: "var(--fg-muted)", marginBottom: 10, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase" }}>
+          {label}
+        </div>
+      )}
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--gray-200)",
+        borderRadius: "var(--radius-lg)",
+        padding: "28px 28px 24px",
+        maxWidth,
+      }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================ */
+/* 1. Cadastro de cliente — split + comfy                       */
+/* ============================================================ */
+
+function CadastroCliente() {
+  const [cnpj, setCnpj] = React.useState("");
+  const [razao, setRazao] = React.useState("Verona Logística Ltda");
+  const [regime, setRegime] = React.useState("presumido");
+  const [responsavel, setResponsavel] = React.useState("");
+  const [notas, setNotas] = React.useState("");
+
+  return (
+    <FormLayout variant="split" density="comfy">
+      <FormLayout.Header
+        title="Novo cliente"
+        description="Dados básicos para abrir a operação contábil. Você completa enquadramento, plano de contas e integrações depois."
+        actions={
+          <>
+            <Button variant="ghost" size="sm" leftIcon="help-circle">Ajuda</Button>
+            <Badge tone="violet" variant="soft">Rascunho</Badge>
+          </>
+        }
+      />
+
+      <FormLayout.Section
+        title="Identificação"
+        description="Empresa cadastrada na Receita Federal. CNPJ valida contra o ERP."
+      >
+        <FormLayout.Row>
+          <FormLayout.Field
+            label="CNPJ"
+            required
+            span={5}
+            hint="Validaremos na Receita Federal ao salvar."
+          >
+            <Input
+              placeholder="00.000.000/0000-00"
+              value={cnpj}
+              onChange={(e) => setCnpj(e.target.value)}
+              leftIcon="building"
+            />
+          </FormLayout.Field>
+          <FormLayout.Field label="Razão social" required span={7}>
+            <Input value={razao} onChange={(e) => setRazao(e.target.value)} />
+          </FormLayout.Field>
+        </FormLayout.Row>
+
+        <FormLayout.Row>
+          <FormLayout.Field label="Nome fantasia" optional span={7}>
+            <Input placeholder="Nome público da empresa" />
+          </FormLayout.Field>
+          <FormLayout.Field label="Abertura" span={5}>
+            <DatePicker placeholder="dd/mm/aaaa" />
+          </FormLayout.Field>
+        </FormLayout.Row>
+      </FormLayout.Section>
+
+      <FormLayout.Section
+        title="Enquadramento"
+        description="Regime tributário e responsável interno. Pode ser alterado antes do primeiro fechamento."
+        aside={<a href="#" style={{ color: "var(--violet-500)", fontSize: 12, fontWeight: 500, textDecoration: "none" }}>Comparar regimes ↗</a>}
+      >
+        <FormLayout.Field label="Regime tributário" required>
+          <Select
+            value={regime}
+            onChange={(e) => setRegime(e.target.value)}
+            options={[
+              { value: "simples",    label: "Simples Nacional" },
+              { value: "presumido",  label: "Lucro Presumido" },
+              { value: "real",       label: "Lucro Real" },
+              { value: "mei",        label: "MEI" },
+            ]}
+          />
+        </FormLayout.Field>
+
+        <FormLayout.Row>
+          <FormLayout.Field label="Responsável interno" required span={6}>
+            <Combobox
+              value={responsavel}
+              onChange={setResponsavel}
+              placeholder="Quem assina pareceres"
+              leftIcon="user"
+              options={[
+                { value: "luana",     label: "Luana Ribeiro",   meta: "Sócia contábil" },
+                { value: "thiago",    label: "Thiago Matos",    meta: "Gerente tributário" },
+                { value: "carolina",  label: "Carolina Duarte", meta: "Supervisora fiscal" },
+              ]}
+            />
+          </FormLayout.Field>
+          <FormLayout.Field label="Plano contratado" span={6}>
+            <Select
+              defaultValue="pro"
+              options={[
+                { value: "basico",    label: "Básico — até 500 lanç./mês" },
+                { value: "essencial", label: "Essencial — até 5k lanç./mês" },
+                { value: "pro",       label: "Pro — ilimitado" },
+              ]}
+            />
+          </FormLayout.Field>
+        </FormLayout.Row>
+
+        <FormLayout.Field
+          label="Notas internas"
+          optional
+          hint="Visível apenas para a equipe da Guardia. Não aparece em relatórios ao cliente."
+          labelAside={`${notas.length} / 280`}
+        >
+          <Textarea
+            value={notas}
+            onChange={(e) => setNotas(e.target.value)}
+            maxLength={280}
+            rows={3}
+            placeholder="Contexto do relacionamento, sazonalidade, pontos de atenção…"
+          />
+        </FormLayout.Field>
+      </FormLayout.Section>
+
+      <FormLayout.Section
+        title="Automação"
+        description="Como os agentes operam este cliente por padrão. Ajustável por área depois."
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <Switch
+            defaultChecked
+            label="Conciliação bancária automática"
+            description="Agentes cruzam extratos com lançamentos do ERP em tempo real."
+          />
+          <Switch
+            defaultChecked
+            label="Sugestão de classificação contábil"
+            description="Agente sugere conta e centro de custo; humano aprova acima de 95% de confiança."
+          />
+          <Switch
+            label="Envio automático de obrigações acessórias"
+            description="DCTF, SPED e GIAs transmitidos sem revisão humana. Requer certificado A1."
+          />
+        </div>
+      </FormLayout.Section>
+
+      <FormLayout.Actions align="between" sticky>
+        <Button variant="ghost" leftIcon="trash-2">Descartar</Button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button variant="secondary">Salvar rascunho</Button>
+          <Button variant="primary" rightIcon="arrow-right">Criar cliente</Button>
+        </div>
+      </FormLayout.Actions>
+    </FormLayout>
+  );
+}
+
+/* ============================================================ */
+/* 2. Filtros — stacked + compact, dentro de barra              */
+/* ============================================================ */
+
+function FiltrosLancamentos() {
+  const [status, setStatus] = React.useState("todos");
+  const [cliente, setCliente] = React.useState("");
+
+  return (
+    <FormLayout as="div" variant="stacked" density="compact">
+      <FormLayout.Header
+        title="Filtros de lançamentos"
+        description="Resultados atualizados ao aplicar."
+      />
+      <FormLayout.Row cols={12}>
+        <FormLayout.Field label="Período" span={4}>
+          <DatePicker placeholder="01/04/2026 — 30/04/2026" />
+        </FormLayout.Field>
+        <FormLayout.Field label="Status" span={3}>
+          <Select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            options={[
+              { value: "todos",     label: "Todos" },
+              { value: "aprovado",  label: "Aprovado" },
+              { value: "revisao",   label: "Em revisão" },
+              { value: "rejeitado", label: "Rejeitado" },
+            ]}
+          />
+        </FormLayout.Field>
+        <FormLayout.Field label="Cliente" span={5}>
+          <Combobox
+            value={cliente}
+            onChange={setCliente}
+            placeholder="Todos os clientes"
+            leftIcon="building"
+            options={[
+              { value: "verona",    label: "Verona Logística" },
+              { value: "padaria",   label: "Padaria da Esquina" },
+              { value: "flor",      label: "Mercearia Flor" },
+              { value: "cafe",      label: "Café Central" },
+            ]}
+          />
+        </FormLayout.Field>
+      </FormLayout.Row>
+      <FormLayout.Row cols={12}>
+        <FormLayout.Field label="Valor mínimo" span={3}>
+          <Input prefix="R$" placeholder="0,00" />
+        </FormLayout.Field>
+        <FormLayout.Field label="Valor máximo" span={3}>
+          <Input prefix="R$" placeholder="Sem limite" />
+        </FormLayout.Field>
+        <FormLayout.Field label="Confiança do agente" span={3}>
+          <Select
+            defaultValue="todos"
+            options={[
+              { value: "todos", label: "Qualquer nível" },
+              { value: "alta",  label: "Alta (≥ 95%)" },
+              { value: "media", label: "Média (75–95%)" },
+              { value: "baixa", label: "Baixa (< 75%)" },
+            ]}
+          />
+        </FormLayout.Field>
+        <FormLayout.Field label="Responsável" span={3}>
+          <Select
+            defaultValue="qualquer"
+            options={[
+              { value: "qualquer", label: "Qualquer" },
+              { value: "luana",    label: "Luana Ribeiro" },
+              { value: "thiago",   label: "Thiago Matos" },
+            ]}
+          />
+        </FormLayout.Field>
+      </FormLayout.Row>
+
+      <FormLayout.Actions align="between">
+        <Button variant="ghost" size="sm" leftIcon="x">Limpar filtros</Button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button variant="secondary" size="sm" leftIcon="bookmark">Salvar visão</Button>
+          <Button variant="primary" size="sm" leftIcon="filter">Aplicar</Button>
+        </div>
+      </FormLayout.Actions>
+    </FormLayout>
+  );
+}
+
+/* ============================================================ */
+/* 3. Settings — inline + compact                               */
+/* ============================================================ */
+
+function Settings() {
+  const [limiar, setLimiar] = React.useState("85");
+  const [idioma, setIdioma] = React.useState("pt-BR");
+
+  return (
+    <FormLayout variant="stacked" density="compact">
+      <FormLayout.Header
+        title="Preferências do workspace"
+        description="Aplicadas a todos os usuários desta organização."
+      />
+
+      <FormLayout.Section title="Identidade">
+        <FormLayout.Field label="Nome da organização" htmlFor="org">
+          <Input id="org" defaultValue="Guardia Demo · Contábil & Fiscal" />
+        </FormLayout.Field>
+        <FormLayout.Field label="Fuso horário">
+          <Select
+            defaultValue="sp"
+            options={[
+              { value: "sp",  label: "America/São_Paulo (GMT-03)" },
+              { value: "ma",  label: "America/Manaus (GMT-04)" },
+              { value: "rn",  label: "America/Rio_Branco (GMT-05)" },
+            ]}
+          />
+        </FormLayout.Field>
+        <FormLayout.Field label="Idioma da interface" hint="Mensagens de erro, labels e e-mails automáticos.">
+          <Select
+            value={idioma}
+            onChange={(e) => setIdioma(e.target.value)}
+            options={[
+              { value: "pt-BR", label: "Português (Brasil)" },
+              { value: "en-US", label: "English (US)" },
+              { value: "es",    label: "Español" },
+            ]}
+          />
+        </FormLayout.Field>
+      </FormLayout.Section>
+
+      <FormLayout.Divider />
+
+      <FormLayout.Section
+        title="Comportamento dos agentes"
+        description="Define o limiar de auto-aprovação e o que aciona revisão humana."
+      >
+        <FormLayout.Field
+          label="Limiar de auto-aprovação"
+          hint="Matches acima deste valor de confiança vão direto para aprovado. Abaixo, para Revisão."
+        >
+          <Input
+            type="number"
+            min={50}
+            max={99}
+            value={limiar}
+            onChange={(e) => setLimiar(e.target.value)}
+            suffix="%"
+          />
+        </FormLayout.Field>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <Switch defaultChecked label="Notificar por e-mail ao exceder exceções/dia"
+                  description="Envia resumo para o responsável quando passar de 15 exceções no dia." />
+          <Switch label="Exigir segundo aprovador em valores ≥ R$ 50.000"
+                  description="Bloqueia aprovação única acima do limite. Sugerido para operações financeiras." />
+          <Switch defaultChecked label="Pausar agentes no fechamento mensal"
+                  description="Entre os dias 25 e 05 de cada ciclo, agentes ficam em modo somente-sugestão." />
+        </div>
+      </FormLayout.Section>
+
+      <FormLayout.Actions align="end">
+        <Button variant="ghost">Cancelar</Button>
+        <Button variant="primary">Salvar alterações</Button>
+      </FormLayout.Actions>
+    </FormLayout>
+  );
+}
+
+/* ============================================================ */
+/* 4. Estados de erro — validação inline                        */
+/* ============================================================ */
+
+function FormComErros() {
+  const [cnpj, setCnpj] = React.useState("12.345.678");
+  const [email, setEmail] = React.useState("operacoes@");
+  const [senha, setSenha] = React.useState("123");
+  const [submitted, setSubmitted] = React.useState(true);
+
+  const cnpjErr = submitted && cnpj.replace(/\D/g,"").length !== 14 ? "CNPJ deve ter 14 dígitos." : null;
+  const emailErr = submitted && !email.includes(".") ? "Inclua um domínio válido." : null;
+  const senhaErr = submitted && senha.length < 8 ? "Mínimo de 8 caracteres." : null;
+
+  return (
+    <FormLayout variant="stacked" density="comfy">
+      <FormLayout.Header
+        title="Validação inline"
+        description="Mensagem de erro substitui o hint. Campo ganha borda vermelha e aria-invalid automaticamente."
+      />
+
+      {submitted && (
+        <Alert type="danger" title="3 campos precisam de atenção">
+          Revise os itens destacados e reenvie.
+        </Alert>
+      )}
+
+      <FormLayout.Row>
+        <FormLayout.Field
+          label="CNPJ"
+          required
+          span={6}
+          error={cnpjErr}
+          hint="Formato 00.000.000/0000-00."
+        >
+          <Input value={cnpj} onChange={(e) => setCnpj(e.target.value)} leftIcon="building" />
+        </FormLayout.Field>
+        <FormLayout.Field
+          label="E-mail de operações"
+          required
+          span={6}
+          error={emailErr}
+          hint="Recebe notificações de exceções e fechamento."
+        >
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} leftIcon="mail" type="email" />
+        </FormLayout.Field>
+      </FormLayout.Row>
+
+      <FormLayout.Field
+        label="Senha temporária"
+        required
+        error={senhaErr}
+        hint="O responsável trocará no primeiro acesso."
+      >
+        <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+      </FormLayout.Field>
+
+      <FormLayout.Actions align="between">
+        <Button variant="ghost" onClick={() => { setSubmitted(false); setCnpj("12.345.678/0001-90"); setEmail("operacoes@verona.com.br"); setSenha("GuardiaDemo1!"); }}>
+          Preencher como válido
+        </Button>
+        <Button variant="primary" onClick={() => setSubmitted(true)}>Validar</Button>
+      </FormLayout.Actions>
+    </FormLayout>
+  );
+}
+
+/* ============================================================ */
+/* 5. Inline — lista de toggles densa                           */
+/* ============================================================ */
+
+function Notificacoes() {
+  return (
+    <FormLayout variant="stacked" density="compact">
+      <FormLayout.Header
+        title="Notificações"
+        description="Canal por tipo de evento. Silêncio afeta apenas e-mail — webhooks seguem ativos."
+      />
+
+      <FormLayout.Section title="E-mail">
+        <FormLayout.Field label="Exceções em conciliação" hint="Quando um match fica abaixo do limiar." className="grd-form-field-inline">
+          <Select defaultValue="resumo" options={[
+            { value: "off",    label: "Desativado" },
+            { value: "resumo", label: "Resumo diário" },
+            { value: "instant",label: "A cada ocorrência" },
+          ]}/>
+        </FormLayout.Field>
+        <FormLayout.Field label="Fechamento mensal" className="grd-form-field-inline">
+          <Select defaultValue="instant" options={[
+            { value: "off",     label: "Desativado" },
+            { value: "resumo",  label: "Resumo diário" },
+            { value: "instant", label: "A cada ocorrência" },
+          ]}/>
+        </FormLayout.Field>
+        <FormLayout.Field label="Resposta à fiscalização" className="grd-form-field-inline">
+          <Select defaultValue="instant" options={[
+            { value: "resumo",  label: "Resumo diário" },
+            { value: "instant", label: "A cada ocorrência" },
+          ]}/>
+        </FormLayout.Field>
+      </FormLayout.Section>
+
+      <FormLayout.Divider />
+
+      <FormLayout.Section title="Dispositivo">
+        <FormLayout.Field label="Push no navegador" className="grd-form-field-inline">
+          <Switch defaultChecked />
+        </FormLayout.Field>
+        <FormLayout.Field label="App mobile" hint="Disponível em iOS e Android a partir de maio." className="grd-form-field-inline">
+          <Switch disabled />
+        </FormLayout.Field>
+        <FormLayout.Field label="Som em novas exceções" className="grd-form-field-inline">
+          <Switch defaultChecked />
+        </FormLayout.Field>
+      </FormLayout.Section>
+
+      <FormLayout.Actions align="end">
+        <Button variant="primary">Salvar</Button>
+      </FormLayout.Actions>
+    </FormLayout>
+  );
+}
+
+/* ============================================================ */
+
+function App() {
+  return (<>
+    <Sec title="Cadastro de cliente — split + comfy, seção com aside, actions sticky">
+      <Frame maxWidth={980}>
+        <CadastroCliente />
+      </Frame>
+    </Sec>
+
+    <Sec title="Filtros — stacked + compact, 12-col, ações com limpar">
+      <Frame maxWidth={980}>
+        <FiltrosLancamentos />
+      </Frame>
+    </Sec>
+
+    <Sec title="Settings — stacked + compact, dividers entre seções">
+      <Frame maxWidth={720}>
+        <Settings />
+      </Frame>
+    </Sec>
+
+    <Sec title="Validação inline — error substitui hint, aria-invalid propaga">
+      <Frame maxWidth={820}>
+        <FormComErros />
+      </Frame>
+    </Sec>
+
+    <Sec title="Inline — label à esquerda, denso (classe .grd-form-field-inline por campo)">
+      <Frame maxWidth={720}>
+        <Notificacoes />
+      </Frame>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["FormLayout"]) || "render(<div>Sem exemplo para FormLayout</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout (root)</th></tr>
+  <tr><td><code>variant</code></td><td><code>"stacked" | "split" | "inline"</code></td><td><code>"stacked"</code></td><td class="desc">Disposição das seções</td></tr>
+  <tr><td><code>density</code></td><td><code>"comfy" | "compact"</code></td><td><code>"comfy"</code></td><td class="desc">Ajusta gaps entre seções, rows e campos</td></tr>
+  <tr><td><code>as</code></td><td><code>"form" | "div"</code></td><td><code>"form"</code></td><td class="desc">Tag raiz. Use <code>"div"</code> para filtros controlados externamente</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Header</th></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>ReactNode</td><td>—</td><td class="desc">Cabeçalho do formulário</td></tr>
+  <tr><td><code>actions</code></td><td>ReactNode</td><td>—</td><td class="desc">Ações no canto superior direito</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Section</th></tr>
+  <tr><td><code>title</code> · <code>description</code></td><td>ReactNode</td><td>—</td><td class="desc">Cabeçalho da seção (em <code>split</code> vira coluna esquerda sticky)</td></tr>
+  <tr><td><code>aside</code></td><td>ReactNode</td><td>—</td><td class="desc">Conteúdo à direita do título (link, badge)</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Row</th></tr>
+  <tr><td><code>cols</code></td><td><code>2 | 3 | 4 | 6 | 12</code></td><td><code>12</code></td><td class="desc">Nº de colunas do grid. Use 12 quando precisar de <code>span</code> fino</td></tr>
+  <tr><td><code>gap</code></td><td>number</td><td>—</td><td class="desc">Override em px; default segue a densidade</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Field</th></tr>
+  <tr><td><code>label</code></td><td>ReactNode</td><td>—</td><td class="desc">Rótulo do campo</td></tr>
+  <tr><td><code>required</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Mostra asterisco vermelho</td></tr>
+  <tr><td><code>optional</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Sufixo "(opcional)". Não combina com <code>required</code></td></tr>
+  <tr><td><code>hint</code></td><td>ReactNode</td><td>—</td><td class="desc">Texto auxiliar abaixo do campo</td></tr>
+  <tr><td><code>error</code></td><td>ReactNode</td><td>—</td><td class="desc">Mensagem de erro — substitui o hint e propaga <code>invalid</code> + <code>aria-invalid</code> ao controle filho</td></tr>
+  <tr><td><code>labelAside</code></td><td>ReactNode</td><td>—</td><td class="desc">Texto à direita do label (ex: contador de caracteres)</td></tr>
+  <tr><td><code>span</code></td><td>number</td><td>—</td><td class="desc">Colspan dentro de <code>Row</code></td></tr>
+  <tr><td><code>htmlFor</code></td><td>string</td><td>—</td><td class="desc">Wire com o <code>id</code> do input filho</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Actions</th></tr>
+  <tr><td><code>align</code></td><td><code>"start" | "center" | "end" | "between"</code></td><td><code>"end"</code></td><td class="desc">Alinhamento horizontal</td></tr>
+  <tr><td><code>sticky</code></td><td>boolean</td><td><code>false</code></td><td class="desc">Fixa no rodapé com blur. Recomendado em formulários longos</td></tr>
+
+  <tr><th colspan="4" style="background:var(--violet-100);color:var(--violet-700);font-weight:600;">FormLayout.Divider</th></tr>
+  <tr><td>—</td><td>—</td><td>—</td><td class="desc">Linha fina entre seções</td></tr>
+</table>
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Cadastros longos (clientes, empresas, usuários) com seções claras — <code>variant="split"</code> para descrição visível lado a lado com os campos.</li>
+      <li>Filtros de tabelas e listas — <code>density="compact"</code> com <code>Row cols=12</code> e <code>span</code> por campo.</li>
+      <li>Páginas de settings — divisores entre seções; ações do rodapé em <code>align="end"</code>.</li>
+      <li>Wizards — uma seção por etapa, ações sempre sticky.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Campos sem label (placeholder não substitui label — veja <code>Input</code>).</li>
+      <li>Mais de 3 colunas na mesma Row em densidade comfy — fica apertado em 1280px.</li>
+      <li>Actions não sticky em formulário &gt; 1 tela de altura — o usuário perde de vista o botão Salvar.</li>
+      <li><code>variant="split"</code> em larguras menores que 760px — colapsa automaticamente, mas prefira <code>stacked</code> se souber antes.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

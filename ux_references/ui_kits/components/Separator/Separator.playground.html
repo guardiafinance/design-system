@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Separator · Playground</title>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<link rel="stylesheet" href="../_shared/shared.css?v=11">
+<link rel="stylesheet" href="./index.css?v=10">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_shared/babel-tsx-preset.js"></script>
+</head>
+<body>
+
+<div class="pg-hdr">
+  <div class="pg-eyebrow">PRIMITIVO · ESTRUTURA</div>
+  <h1 class="pg-title">Separator</h1>
+  <span class="pg-codename">import Separator from "ui_kits/components/Separator"</span>
+  <p class="pg-desc">Divisor horizontal ou vertical para agrupar visualmente blocos de conteúdo. Três aparências e label opcional centralizado.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="tsx" src="../_shared/Icon.tsx?v=2"></script>
+<script type="text/babel" data-presets="tsx" src="./index.tsx?v=10"></script>
+
+<script type="text/babel" data-presets="tsx">
+function Sec({ title, children }: { title: string; children: React.ReactNode }) {
+  return (<div className="pg-sec"><p className="pg-sec-title">{title}</p><div className="pg-stage col" style={{alignItems:"stretch"}}>{children}</div></div>);
+}
+function App() {
+  return (<>
+    <Sec title="Horizontal">
+      <Separator />
+      <Separator appearance="dashed" />
+      <Separator appearance="dotted" />
+    </Sec>
+    <Sec title="Com label">
+      <Separator label="ou" />
+      <Separator label="março de 2025" />
+      <Separator appearance="dashed" label="seção de arquivados" />
+    </Sec>
+    <Sec title="Vertical (inline)">
+      <div style={{display:"flex",alignItems:"center",gap:14,height:40,background:"#fff",padding:"0 16px",border:"1px solid var(--border)",borderRadius:"var(--radius-md)"}}>
+        <span style={{fontSize:13}}>Conciliado</span>
+        <Separator orientation="vertical" />
+        <span style={{fontSize:13}}>248 lançamentos</span>
+        <Separator orientation="vertical" />
+        <span style={{fontSize:13,color:"var(--gray-500)"}}>há 2 min</span>
+      </div>
+    </Sec>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+</script>
+
+<div id="example-root"></div>
+
+<script src="../_shared/live-examples.js"></script>
+<script src="../_shared/highlight.js"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/LiveCode.tsx"></script>
+<script type="text/babel" data-presets="tsx" src="../_shared/SourceViewer.tsx"></script>
+<script type="text/babel" data-presets="tsx">
+(function mountExample(){
+  const code = (window.__LIVE_EXAMPLES && window.__LIVE_EXAMPLES["Separator"]) || "render(<div>Sem exemplo para Separator</div>);";
+  function ExampleApp(){ return <LiveCode code={code} />; }
+  ReactDOM.createRoot(document.getElementById('example-root')).render(<ExampleApp />);
+})();
+</script>
+
+<table class="pg-api">
+  <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+  <tr><td><code>orientation</code></td><td>string</td><td>"horizontal"</td><td class="desc">horizontal · vertical</td></tr>
+  <tr><td><code>appearance</code></td><td>string</td><td>"solid"</td><td class="desc">solid · dashed · dotted</td></tr>
+  <tr><td><code>label</code></td><td>string</td><td>—</td><td class="desc">Texto centralizado entre dois traços</td></tr>
+</table>
+
+
+<div class="pg-usage-grid">
+  <div class="pg-usage">
+    <strong>Usar</strong>
+    <ul>
+      <li>Dividir grupos de conteúdo relacionados dentro de cards/drawers.</li>
+      <li>Horizontal 1px cinza-100; vertical no <code>ButtonGroup</code>.</li>
+    </ul>
+  </div>
+  <div class="pg-antiuse">
+    <strong>Evitar</strong>
+    <ul>
+      <li>Separadores como ornamentação.</li>
+      <li>Entre cada item de uma lista — use padding.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="sv-root"></div>
+<script type="text/babel" data-presets="tsx">
+ReactDOM.createRoot(document.getElementById('sv-root')!).render(<SourceViewer files={["index.tsx","index.css"]} />);
+</script>
+</body>
+</html>

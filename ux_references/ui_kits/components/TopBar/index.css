@@ -1,0 +1,12 @@
+
+.grd-tb {
+  display: flex; align-items: center; gap: 16px;
+  height: 56px;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-sans);
+}
+.grd-tb-sticky { position: sticky; top: 0; z-index: 50; }
+.grd-tb-left, .grd-tb-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.grd-tb-center { flex: 1; display: flex; justify-content: center; max-width: 560px; margin: 0 auto; }
