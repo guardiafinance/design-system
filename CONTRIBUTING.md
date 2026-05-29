@@ -121,6 +121,23 @@ Cada story é capturada em dois temas (light + dark) via `data-theme` alternado 
 
 Animações CSS são congeladas durante a captura (`animation-play-state: paused`) para garantir determinismo entre runs.
 
+### Warn-not-fail para stories novas (Tech Task #238)
+
+Stories sem baseline canônica em `__image_snapshots__/{title}/{theme}/{variant}.png` **não derrubam mais o CI** quando o PR roda em modo validate (default). O runner captura o PNG candidato em `__image_snapshots__/__pending__/{title}/{theme}/{variant}.png` (diretório gitignored) e registra um entry em `__pending__/manifest.json`. O workflow:
+
+- Publica `__pending__/` como artifact `visual-regression-pending-{run_id}` (retenção 7 dias).
+- Posta (ou edita, via marker estável) um único comentário na PR listando as stories pendentes.
+
+Para promover candidatos a baselines canônicas:
+
+1. Aplique a label `regenerate-baselines` na PR.
+2. O fluxo de regen reroda todas as stories, escreve `__image_snapshots__/{title}/{theme}/{variant}.png` definitivas e assina commit de volta no branch.
+3. Remova a label e use "Re-run failed jobs" para validar contra as novas baselines.
+
+**Não commite nada em `__image_snapshots__/__pending__/`.** O diretório é gitignored e existe apenas para pré-visualização. A promoção só acontece via label.
+
+Diffs em baselines existentes **continuam falhando strict** — o warn-not-fail só cobre o caso "primeira execução de uma story nova". Regressão real não é mascarada.
+
 ### A11y em hard mode
 
 O axe roda em hard mode: violações WCAG 2.1 A + AA bloqueiam o build como qualquer diff visual. Stories que precisam derrogar uma regra específica (por exemplo, showcases de tokens de marca que caem no range 3:1–4.5:1 do `lex-brand-colors` e só são aplicáveis a títulos/buttons/badges em superfícies de produto) declaram override por story:

@@ -1,3 +1,11 @@
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
+
 import type { TestRunnerConfig } from "@storybook/test-runner";
 import { getStoryContext } from "@storybook/test-runner";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
@@ -88,6 +96,90 @@ const THEMES = ["light", "dark"] as const;
  */
 const FROZEN_ANIM_STYLE_ID = "storybook-test-runner-frozen-animations";
 
+/**
+ * Tech Task #238 — warn-not-fail for first-time stories.
+ *
+ * Two modes, selected by `process.env.VISUAL_REGRESSION_MODE`:
+ *
+ *   regenerate  — set by the regenerate-baselines branch of the CI
+ *                 workflow. Delegates entirely to `toMatchImageSnapshot`,
+ *                 which writes a fresh baseline whenever one is missing
+ *                 (the regenerate step has already wiped __image_snapshots__).
+ *
+ *   validate    — default. For each (story, theme) pair, check whether the
+ *                 canonical baseline at
+ *                 <SNAPSHOTS_DIR>/<titleSegments>/<theme>/<variant>.png
+ *                 exists. If it does NOT, capture the candidate PNG to
+ *                 a sibling __pending__/ quarantine (gitignored), append
+ *                 an entry to __pending__/manifest.json, and SKIP
+ *                 `toMatchImageSnapshot` for that pair. Existing
+ *                 baselines still go through the strict diff path —
+ *                 real regressions still fail the job.
+ *
+ * The CI workflow (`.github/workflows/pull-request.yml`) consumes
+ * `__pending__/manifest.json` to upload the pending artifact and post a
+ * single PR comment with the apply-`regenerate-baselines`-label
+ * instruction. The `__pending__/` directory itself is gitignored.
+ */
+const PENDING_DIR = `${SNAPSHOTS_DIR}/__pending__`;
+const PENDING_MANIFEST = `${PENDING_DIR}/manifest.json`;
+
+type Mode = "regenerate" | "validate";
+
+function resolveMode(): Mode {
+  return process.env.VISUAL_REGRESSION_MODE === "regenerate"
+    ? "regenerate"
+    : "validate";
+}
+
+interface PendingEntry {
+  readonly storyId: string;
+  readonly title: string;
+  readonly variant: string;
+  readonly theme: string;
+  readonly snapshotPath: string;
+  readonly capturedAt: string;
+}
+
+interface PendingManifest {
+  schema: 1;
+  capturedAt: string;
+  stories: PendingEntry[];
+}
+
+function appendPending(entry: PendingEntry): void {
+  mkdirSync(PENDING_DIR, { recursive: true });
+  let manifest: PendingManifest;
+  try {
+    const parsed = JSON.parse(
+      readFileSync(PENDING_MANIFEST, "utf-8"),
+    ) as PendingManifest;
+    if (parsed.schema !== 1 || !Array.isArray(parsed.stories)) {
+      throw new Error("manifest schema mismatch");
+    }
+    manifest = parsed;
+  } catch {
+    manifest = {
+      schema: 1,
+      capturedAt: new Date().toISOString(),
+      stories: [],
+    };
+  }
+  // Idempotency: if the same (storyId, theme) is already recorded in this
+  // run, skip. Each story + theme pair captures at most once per CI run.
+  if (
+    manifest.stories.some(
+      (s) => s.storyId === entry.storyId && s.theme === entry.theme,
+    )
+  ) {
+    return;
+  }
+  manifest.stories.push(entry);
+  const tmp = `${PENDING_MANIFEST}.tmp.${process.pid}.${Date.now()}`;
+  writeFileSync(tmp, JSON.stringify(manifest, null, 2));
+  renameSync(tmp, PENDING_MANIFEST);
+}
+
 const config: TestRunnerConfig = {
   setup() {
     expect.extend({ toMatchImageSnapshot });
@@ -157,6 +249,7 @@ const config: TestRunnerConfig = {
     }
 
     const variantSlug = toKebab(storyContext.name);
+    const mode = resolveMode();
 
     for (const theme of THEMES) {
       await page.evaluate((t) => {
@@ -168,16 +261,66 @@ const config: TestRunnerConfig = {
       await page.waitForTimeout(150);
 
       const image = await page.locator("#storybook-root").screenshot();
+
+      // Tech Task #238 — warn-not-fail for first-time stories.
+      // In validate mode, if the canonical baseline at
+      // <SNAPSHOTS_DIR>/<titleSegments>/<theme>/<variantSlug>.png does
+      // not exist, capture the candidate to the __pending__/ quarantine
+      // (gitignored) and skip the strict diff. The validate-mode job in
+      // CI uploads __pending__/ as an artifact and posts a single PR
+      // comment with the apply-`regenerate-baselines` instruction.
+      // The has-baseline path is unchanged: strict diff via
+      // toMatchImageSnapshot continues to fail on real regressions.
+      const baselineDir = snapshotDirForStory(
+        SNAPSHOTS_DIR,
+        storyContext.title,
+        theme,
+      );
+      const baselinePath = `${baselineDir}/${variantSlug}.png`;
+      if (mode === "validate" && !existsSync(baselinePath)) {
+        const pendingThemeDir = snapshotDirForStory(
+          PENDING_DIR,
+          storyContext.title,
+          theme,
+        );
+        const pendingPath = `${pendingThemeDir}/${variantSlug}.png`;
+        mkdirSync(pendingThemeDir, { recursive: true });
+        writeFileSync(pendingPath, image);
+        const repoRelative = pendingPath.startsWith(`${process.cwd()}/`)
+          ? pendingPath.slice(process.cwd().length + 1)
+          : pendingPath;
+        appendPending({
+          storyId: storyContext.id,
+          title: storyContext.title,
+          variant: storyContext.name,
+          theme,
+          snapshotPath: repoRelative,
+          capturedAt: new Date().toISOString(),
+        });
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[visual-regression] pending baseline captured for "${storyContext.id}" (${theme}) -> ${repoRelative} (apply the regenerate-baselines label to promote)`,
+        );
+        // Still run a11y on the rendered surface even without a baseline.
+        if (!a11yDisabled) {
+          await checkA11y(page, "#storybook-root", {
+            detailedReport: true,
+            detailedReportOptions: { html: false },
+            axeOptions: {
+              runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
+              rules: axeRulesMap,
+            },
+          });
+        }
+        continue;
+      }
+
       (
         expect(image) as unknown as {
           toMatchImageSnapshot: (opts: object) => void;
         }
       ).toMatchImageSnapshot({
-        customSnapshotsDir: snapshotDirForStory(
-          SNAPSHOTS_DIR,
-          storyContext.title,
-          theme,
-        ),
+        customSnapshotsDir: baselineDir,
         customDiffDir: snapshotDirForStory(
           DIFF_OUTPUT_DIR,
           storyContext.title,

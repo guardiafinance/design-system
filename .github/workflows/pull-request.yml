@@ -62,12 +62,13 @@ jobs:
   visual-and-a11y:
     name: Visual regression + a11y
     runs-on: ubuntu-latest
-    # Permite push de commit assinado via Git Database API quando rodando
-    # em modo regeneracao (label `regenerate-baselines`). Sem efeito no
-    # modo validacao — script de push so e chamado quando a label esta
-    # presente, e a expressao de seguranca abaixo bloqueia PRs de forks.
+    # contents: write — required by the regenerate-baselines branch
+    # (push of regenerated PNGs via Git Database API).
+    # pull-requests: write — required by the warn-not-fail validate branch
+    # (single PR comment listing pending baselines per Tech Task #238).
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -106,8 +107,16 @@ jobs:
 
       # Validacao padrao: --ci faz jest-image-snapshot falhar em baseline
       # ausente, em vez de gerar silenciosamente.
+      #
+      # Tech Task #238 — VISUAL_REGRESSION_MODE=validate ativa o branch
+      # warn-not-fail no test-runner: stories sem baseline canonica viram
+      # candidatos em __image_snapshots__/__pending__/ + manifest.json,
+      # sem derrubar o job. Diffs em baselines existentes continuam
+      # falhando.
       - name: Run visual + a11y tests (validate)
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') }}
+        env:
+          VISUAL_REGRESSION_MODE: validate
         run: npm run test-storybook:ci
 
       # Modo regeneracao: dispara quando a PR tem a label
@@ -119,8 +128,14 @@ jobs:
       # contents (politica padrao do GH Actions), entao o push falha
       # de forma segura. Apenas PRs do mesmo repositorio conseguem
       # regenerar baselines.
+      #
+      # Tech Task #238 — VISUAL_REGRESSION_MODE=regenerate desliga o
+      # branch warn-not-fail e delega tudo a `toMatchImageSnapshot` com -u,
+      # como antes.
       - name: Regenerate baselines (label-triggered)
         if: ${{ contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          VISUAL_REGRESSION_MODE: regenerate
         run: |
           npx concurrently -k -s first -n SB,TEST -c magenta,blue \
             "npx http-server storybook-static -p 6006 -s" \
@@ -137,6 +152,131 @@ jobs:
         if: ${{ contains(github.event.pull_request.labels.*.name, 'regenerate-baselines') }}
         run: |
           echo "::notice::Baselines regeneradas e pushadas. Remova a label `regenerate-baselines` e clique 'Re-run failed jobs' no run anterior pra validar contra as novas baselines."
+
+      # Tech Task #238 — surface pending baselines (warn, not fail).
+      # Quando o test-runner em modo validate identifica uma story sem
+      # baseline canonica, ele captura o PNG candidato em
+      # __image_snapshots__/__pending__/ e registra o entry em
+      # __pending__/manifest.json. Estes steps rodam em qualquer outcome
+      # do job (success ou failure por diff em baselines existentes) — o
+      # autor que cair ao mesmo tempo em "AC-1 sem baseline" e "AC-4 diff
+      # quebrado" ainda recebe o comentario com a lista de pending.
+      - name: Detect pending baselines (warn-not-fail)
+        id: pending
+        if: always() && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
+        run: |
+          MANIFEST=__image_snapshots__/__pending__/manifest.json
+          if [ -f "$MANIFEST" ]; then
+            COUNT=$(jq '.stories | length' "$MANIFEST")
+          else
+            COUNT=0
+          fi
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -gt 0 ]; then
+            echo "has_pending=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Detected $COUNT pending baseline(s) — uploading artifact + PR comment."
+          else
+            echo "has_pending=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload pending baselines artifact
+        if: always() && steps.pending.outputs.has_pending == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-pending-${{ github.run_id }}
+          path: __image_snapshots__/__pending__
+          retention-days: 7
+
+      - name: Post or update pending baselines PR comment
+        if: always() && steps.pending.outputs.has_pending == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const manifest = JSON.parse(
+              fs.readFileSync('__image_snapshots__/__pending__/manifest.json', 'utf-8'),
+            );
+            const marker = '<!-- visual-regression-pending -->';
+            const count = manifest.stories.length;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const table = [
+              '| Story | Variant | Theme | Candidate |',
+              '|-------|---------|-------|-----------|',
+              ...manifest.stories.map(
+                (s) =>
+                  `| \`${s.title}\` | \`${s.variant}\` | \`${s.theme}\` | \`${s.snapshotPath}\` |`,
+              ),
+            ].join('\n');
+            const body = [
+              marker,
+              '## Visual regression — pending baselines detected',
+              '',
+              `${count} stor${count === 1 ? 'y has' : 'ies have'} no canonical baseline yet on this branch. The job did **not** fail on these — candidates were captured to \`__image_snapshots__/__pending__/\` and uploaded as artifact \`visual-regression-pending-${context.runId}\` (retention 7 days).`,
+              '',
+              '### Pending stories',
+              '',
+              table,
+              '',
+              '### How to promote',
+              '',
+              'Apply the **`regenerate-baselines`** label to this PR. The existing regenerate flow will rebuild the canonical baselines under `__image_snapshots__/` and push a signed commit back to this branch. Once the regen run finishes, remove the label and re-run the failed job to validate against the new baselines.',
+              '',
+              '> The `__pending__/` directory is gitignored — never commit its contents. It exists only to preview the candidate before promotion.',
+              '',
+              `_Workflow run: [${context.runId}](${runUrl})_`,
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(
+              (c) => c.body && c.body.startsWith(marker),
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Refresh pending comment (none on latest run)
+        if: always() && steps.pending.outputs.has_pending == 'false' && github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'regenerate-baselines')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- visual-regression-pending -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(
+              (c) => c.body && c.body.startsWith(marker),
+            );
+            if (existing) {
+              const body = [
+                marker,
+                '## Visual regression — pending baselines detected',
+                '',
+                '_No pending baselines on the latest run. All stories on this branch have canonical baselines._',
+              ].join('\n');
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            }
 
       # Gera index.html navegavel com base | received | diff lado a lado
       # por story+tema. Lido pelo reviewer abrindo o HTML do artifact, em

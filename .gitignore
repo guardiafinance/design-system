@@ -28,3 +28,10 @@ docs/.astro/
 
 # Reference bundle (read-only working area, not for commit)
 wip/
+
+# Visual regression pending baselines (Tech Task #238)
+# Candidate snapshots captured by the validate-mode runner when a story
+# has no baseline yet. Surfaced as a workflow artifact + PR comment;
+# never committed to the repo. Promotion to canonical baselines is via
+# the regenerate-baselines label flow.
+__image_snapshots__/__pending__/
