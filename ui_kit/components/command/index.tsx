@@ -365,3 +365,6 @@ export {
   CommandEmpty,
   CommandShortcut,
 };
+
+export { formatShortcut } from "./format-shortcut";
+export type { FormatShortcutOptions } from "./format-shortcut";

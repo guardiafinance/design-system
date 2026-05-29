@@ -6,6 +6,7 @@ import {
   WithIconsRow,
   EmptyStateRow,
   UseCasesRow,
+  PlatformAwareRow,
 } from "../../previews/command";
 import commandSource from "@ds/components/command/index.tsx?raw";
 ---
@@ -96,6 +97,35 @@ import commandSource from "@ds/components/command/index.tsx?raw";
       <code class="inline">text-destructive</code> aplicado ao conteúdo
       (decisão alinhada com o feedback de PR #258 sobre stories sem helpers
       externos de cor).
+    </p>
+  </section>
+
+  <!-- ============ PLATFORM AWARE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Atalhos cross-platform</h2>
+      <small>formatShortcut() · ⌘ no Mac, Ctrl+ em Win/Linux</small>
+    </div>
+    <div class="preview">
+      <PlatformAwareRow client:load />
+    </div>
+    <p class="preview-caption">
+      A prop <code class="inline">shortcut: string</code> é estritamente
+      apresentacional — o componente renderiza exatamente o que receber. Para
+      respeitar o SO do usuário sem hardcode, use o helper
+      <code class="inline">formatShortcut(keys, options?)</code> exportado pelo
+      barrel. Tokens semânticos: <code class="inline">mod</code> (⌘ Mac / Ctrl+
+      non-Mac), <code class="inline">shift</code>, <code class="inline">alt</code>,
+      <code class="inline">ctrl</code>, mais teclas especiais
+      (<code class="inline">Backspace</code>, <code class="inline">Enter</code>,
+      <code class="inline">Escape</code>, <code class="inline">Tab</code>, arrows).
+      Modificadores no Mac são re-ordenados para a convenção canônica
+      <code class="inline">⌃⌥⇧⌘</code> automaticamente
+      (<code class="inline">formatShortcut(['mod', 'shift', 'Backspace'])</code>
+      rende <code class="inline">⇧⌘⌫</code>); non-Mac preserva a ordem do
+      array. Detecção SSR-safe via <code class="inline">navigator.platform</code>
+      com fallback para <code class="inline">userAgent</code>; em SSR/tests
+      default <strong>Mac</strong>. Decisão de API em ADR-017 (Addendum).
     </p>
   </section>
 

@@ -54,11 +54,21 @@
 - **AC-24.** `docs/src/previews/command.tsx` expõe os componentes preview (`BasicRow`, `WithIconsRow`, `EmptyStateRow`, `UseCasesRow`).
 - **AC-25.** `docs/src/pages/index.astro` adiciona `"Command"` ao Set `MIGRATED` em ordem alfabética (entre `ConfidenceIndicator` e `DatePicker`).
 
+### Cross-platform shortcuts (scope expansion 2026-05-29 14:00 UTC)
+
+Findado durante review do PR #266: `shortcut: string` é estritamente apresentacional e não detecta SO. Per `lex-no-silent-tech-debt`, decisão registrada em Plan #79 (seção "Scope expansion") e ADR-017 (addendum) antes de executar.
+
+- **AC-29.** O barrel `@guardia/design-system` exporta `formatShortcut(keys: readonly string[], options?: { platform?: "mac" | "non-mac" }): string` implementado em `ui_kit/components/command/format-shortcut.ts`. A API `shortcut: string` em `CommandPaletteEntry` permanece intacta — zero breaking.
+- **AC-30.** Detecção SSR-safe: tenta `navigator.platform` primeiro, cai em `navigator.userAgent`; quando `navigator` indisponível (SSR, jsdom sem stub), assume Mac. Inclui iOS/iPadOS na detecção Mac.
+- **AC-31.** Tokens semânticos mapeados — `mod` (⌘/Ctrl+), `shift` (⇧/Shift+), `alt`/`option` (⌥/Alt+), `ctrl`/`control` (⌃/Ctrl+ explícito), `cmd` (⌘/Ctrl+, alias), `meta` (⌘/Win+). Glyphs de teclas especiais: `backspace`/`⌫`, `enter`/`return`/`↵`, `tab`/`⇥`, `escape`/`esc`/`⎋`, `space`/`␣`, `arrowup/down/left/right`/↑↓←→. Modificadores no Mac são re-ordenados para a convenção canônica `⌃⌥⇧⌘key` independente da ordem de input; non-Mac preserva a ordem do array com separador `+`. Letras e símbolos preservados literalmente. Lookup case-insensitive.
+- **AC-32.** `format-shortcut.test.ts` cobre Mac (forced), non-Mac (forced) e auto-detection, com ≥ 12 asserts incluindo: glyph único, modificador composto, re-ordenação canônica no Mac, preservação de ordem em non-Mac, tokens case-insensitive, teclas especiais, letras/símbolos literais.
+- **AC-33.** ≥ 1 story (`PlatformAwareShortcuts`) e ≥ 1 preview row (`PlatformAwareRow`) consomem `formatShortcut` para demonstrar a renderização cross-platform e quebrar o vício do exemplo Mac-only nos demais previews.
+
 ### Quality gates
 
 - **AC-26.** `npm run typecheck && npm run lint && npm run test && npm run build && npm run docs:build` passa verde localmente.
-- **AC-27.** Commit atômico único `feat(command): migrate to v0.1.0 DoD` conforme `lex-small-commits` + `lex-conventional-commits`.
-- **AC-28.** ADR-017 é registrada em `docs/adr/ADR-017-command-v0.1.0-dod-migration.md` com `status: accepted` desde o primeiro commit (precedente: padrão Toast PR #259, Drawer PR #258).
+- **AC-27.** Commit atômico único `feat(command): migrate to v0.1.0 DoD` conforme `lex-small-commits` + `lex-conventional-commits`. A expansão cross-platform soma um segundo commit atômico `feat(command): add formatShortcut helper for cross-platform shortcuts` — não amenda o primeiro (preserva atomicidade per `lex-small-commits`).
+- **AC-28.** ADR-017 é registrada em `docs/adr/ADR-017-command-v0.1.0-dod-migration.md` com `status: accepted` desde o primeiro commit. Addendum "Cross-platform shortcuts (2026-05-29)" cravado no segundo commit para registrar a decisão de API do helper.
 
 ## Definition of Done (resumo executivo)
 

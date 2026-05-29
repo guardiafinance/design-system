@@ -112,3 +112,52 @@ Migrar Command ao v0.1.0 DoD seguindo o recipe **Dialog + cmdk**:
 | 8. axeInThemes coverage ≥ 8 invocations | AC-18 |
 | 9. Stories sem helper externo de cor | AC-22 |
 | 10. Accepted at first commit | AC-28 |
+| 11. Cross-platform shortcuts (addendum) | AC-29 a AC-33 |
+
+## Addendum — Cross-platform shortcuts (2026-05-29)
+
+### Context
+
+Review do PR #266 por @fernandoseguim identificou que `shortcut: string` em `CommandPaletteEntry` é estritamente apresentacional — todos os exemplos em stories e previews hardcodam glyphs de Mac (`⌘K`, `⌘N`, `⌘,`, `⌘⌫`), sem detecção de SO. Usuários Windows/Linux veem o glyph errado. Não é defeito do componente entregue (cumpre o escopo declarado), mas é gap de UX cross-platform e armadilha de onboarding (todo consumidor que copia o exemplo herda o vício Mac-only).
+
+### Decision
+
+Adicionar helper utility `formatShortcut(keys, options?)` exportado pelo barrel do design-system. Mantém `shortcut: string` na API atual — consumidor escolhe entre passar literal (`'⌘K'`) ou usar o helper (`formatShortcut(['mod', 'K'])`). Zero breaking.
+
+```ts
+formatShortcut(['mod', 'K'])               // → "⌘K"  | "Ctrl+K"
+formatShortcut(['mod', 'shift', 'P'])      // → "⇧⌘P" | "Ctrl+Shift+P"
+formatShortcut(['mod', 'Backspace'])       // → "⌘⌫"  | "Ctrl+Backspace"
+formatShortcut(['mod', 'K'], { platform: 'non-mac' })  // forçado — útil em stories
+```
+
+Decisões cravadas:
+
+1. **API por array de tokens** (não objeto `{mac, win}`). Razão: alinha com cmdk, VS Code, Linear; o consumidor declara a *intenção semântica* (`['mod', 'K']`) e o helper resolve glyph/label por SO. Objeto exigiria que cada consumidor reaprenda a convenção Mac.
+
+2. **Detecção SSR-safe** via `navigator.platform` primeiro, fallback `navigator.userAgent`; quando `navigator` indisponível (SSR, jsdom sem stub) default Mac. Default Mac escolhido porque a base atual do design-system é majoritariamente macOS — a regra de menor surpresa em hidratação SSR/CSR.
+
+3. **Re-ordenação canônica no Mac** (`⌃⌥⇧⌘key`) independente da ordem de input. `['mod', 'shift', 'P']` e `['shift', 'mod', 'P']` ambos rendem `⇧⌘P`. Razão: a convenção Mac é estrita e universal; expor reordering ao consumidor seria forçá-lo a memorizar uma ordem arbitrária. Non-Mac preserva ordem do array (Windows/Linux são mais flexíveis: `Ctrl+Shift+P` e `Shift+Ctrl+P` ambos legíveis).
+
+4. **Tokens semânticos + aliases**:
+   - Modificadores: `mod` (⌘ Mac / Ctrl+ non-Mac), `shift` (⇧/Shift+), `alt`/`option` (⌥/Alt+), `ctrl`/`control` (⌃/Ctrl+ — para casos onde `mod` ≠ `ctrl` em Mac), `cmd` (⌘/Ctrl+, alias para clareza intencional), `meta` (⌘/Win+).
+   - Teclas especiais: `backspace`/⌫, `enter`/`return`/↵, `tab`/⇥, `escape`/`esc`/⎋, `space`/␣, `arrowup/down/left/right`/↑↓←→.
+   - Letras (`K`, `N`) e símbolos (`,`, `/`) preservados literalmente.
+   - Lookup **case-insensitive** no input; output respeita o case Mac convention (glyphs únicos) ou Win/Linux convention (palavras capitalizadas).
+
+5. **Sem provider, sem hook**. Helper puro (`() => string`) — chama no render. Trocar de OS em runtime é cenário raríssimo (basicamente impossível); não justifica reatividade. Stories que precisam alternar usam `{ platform }` explícito.
+
+### Consequences
+
+**Positive:**
+- Consumidores que querem cross-platform certo ganham helper one-liner.
+- API atual `shortcut: string` segue intacta — quem prefere literal continua passando literal.
+- Stories e previews ganham 1 exemplo canônico que ensina o padrão correto.
+- Não acopla o componente Command ao helper — qualquer outro componente DS pode importar (Menu, Tooltip eventualmente, AlertDialog quando ganharem shortcuts).
+
+**Negative:**
+- +1 export no barrel. Surface cresce mas o helper é pequeno e auto-contido.
+- Re-ordenação automática no Mac pode surpreender consumidor que esperava ordem literal — mitigado por documentar explicitamente na JSDoc + README.
+
+**Neutral:**
+- +2 arquivos novos (`format-shortcut.ts`, `format-shortcut.test.ts`), +1 export em `index.tsx`, +1 story, +1 preview row. Segundo commit atômico no mesmo PR.

@@ -13,7 +13,7 @@ import {
   User,
 } from "lucide-react";
 
-import { CommandPalette, type CommandPaletteGroup } from "./index";
+import { CommandPalette, formatShortcut, type CommandPaletteGroup } from "./index";
 import { Button } from "../button";
 
 const meta: Meta<typeof CommandPalette> = {
@@ -257,6 +257,83 @@ export const EmptyState: Story = {
       description: {
         story:
           "Quando o filter não retorna entries, `<CommandEmpty>` renderiza o texto de `emptyText`. Default é `Nenhum resultado` — sobrescreva para mensagens de orientação contextual.",
+      },
+    },
+  },
+};
+
+// ──────────────────────────────────────────────────────────────────
+// PlatformAwareShortcuts — usa formatShortcut() para renderizar
+// glyphs Mac (⌘) ou rótulos Win/Linux (Ctrl+) sem hardcode.
+// ──────────────────────────────────────────────────────────────────
+
+export const PlatformAwareShortcuts: Story = {
+  render: () => {
+    const items: CommandPaletteGroup[] = [
+      {
+        id: "nav",
+        heading: "Navegação",
+        entries: [
+          {
+            id: "home",
+            label: "Início",
+            icon: <Home />,
+            shortcut: formatShortcut(["mod", "H"]),
+          },
+          {
+            id: "dashboard",
+            label: "Dashboard",
+            icon: <LayoutDashboard />,
+            shortcut: formatShortcut(["mod", "D"]),
+          },
+          {
+            id: "profile",
+            label: "Perfil",
+            icon: <User />,
+            shortcut: formatShortcut(["mod", "P"]),
+          },
+        ],
+      },
+      {
+        id: "actions",
+        heading: "Ações",
+        entries: [
+          {
+            id: "create",
+            label: "Criar lançamento",
+            icon: <Plus />,
+            shortcut: formatShortcut(["mod", "N"]),
+          },
+          {
+            id: "search",
+            label: "Buscar comando…",
+            icon: <Search />,
+            shortcut: formatShortcut(["mod", "K"]),
+          },
+          {
+            id: "settings",
+            label: "Configurações",
+            icon: <Settings />,
+            shortcut: formatShortcut(["mod", ","]),
+          },
+          {
+            id: "delete",
+            label: "Excluir item",
+            icon: <Trash2 />,
+            shortcut: formatShortcut(["mod", "shift", "Backspace"]),
+          },
+        ],
+      },
+    ];
+    return (
+      <Trigger items={items} label="Abrir paleta cross-platform" />
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Mesma paleta renderizada com `formatShortcut(['mod', 'K'])` em vez de literal `'⌘K'`. No Mac aparece `⌘K`; em Windows/Linux, `Ctrl+K`. Tokens semânticos suportados: `mod`, `shift`, `alt`, `ctrl`, `cmd`, `meta`, mais teclas especiais (`Backspace`, `Enter`, `Escape`, `Tab`, arrows). Modificadores no Mac são re-ordenados para a convenção canônica `⌃⌥⇧⌘` automaticamente — `['mod', 'shift', 'Backspace']` rende `⇧⌘⌫`. Detecção SSR-safe via `navigator.platform`. Decisão de API em ADR-017 (Addendum).",
       },
     },
   },

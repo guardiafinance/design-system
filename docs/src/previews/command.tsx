@@ -14,6 +14,7 @@ import {
 
 import {
   CommandPalette,
+  formatShortcut,
   type CommandPaletteGroup,
 } from "@ds/components/command";
 import { Button } from "@ds/components/button";
@@ -212,6 +213,75 @@ export function UseCasesRow(): React.ReactElement {
   return (
     <div className="flex items-center justify-center py-6">
       <PaletteTrigger items={items} label="Casos de uso · paleta global" />
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────
+// PlatformAware — usa formatShortcut() para detectar Mac vs Win/Linux
+// e renderizar o glyph/label correto sem hardcode.
+// ──────────────────────────────────────────────────────────────────
+
+export function PlatformAwareRow(): React.ReactElement {
+  const items: CommandPaletteGroup[] = [
+    {
+      id: "nav",
+      heading: "Navegação",
+      entries: [
+        {
+          id: "home",
+          label: "Início",
+          icon: <Home />,
+          shortcut: formatShortcut(["mod", "H"]),
+        },
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          icon: <LayoutDashboard />,
+          shortcut: formatShortcut(["mod", "D"]),
+        },
+        {
+          id: "profile",
+          label: "Perfil",
+          icon: <User />,
+          shortcut: formatShortcut(["mod", "P"]),
+        },
+      ],
+    },
+    {
+      id: "actions",
+      heading: "Ações",
+      entries: [
+        {
+          id: "create",
+          label: "Criar lançamento",
+          icon: <Plus />,
+          shortcut: formatShortcut(["mod", "N"]),
+        },
+        {
+          id: "search",
+          label: "Buscar comando…",
+          icon: <Search />,
+          shortcut: formatShortcut(["mod", "K"]),
+        },
+        {
+          id: "settings",
+          label: "Configurações",
+          icon: <Settings />,
+          shortcut: formatShortcut(["mod", ","]),
+        },
+        {
+          id: "delete",
+          label: "Excluir item",
+          icon: <Trash2 />,
+          shortcut: formatShortcut(["mod", "shift", "Backspace"]),
+        },
+      ],
+    },
+  ];
+  return (
+    <div className="flex items-center justify-center py-6">
+      <PaletteTrigger items={items} label="Paleta cross-platform" />
     </div>
   );
 }
