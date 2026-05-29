@@ -1,0 +1,184 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  Anatomy,
+  SizesRow,
+  WithIcon,
+  WithIllustration,
+  WithActions,
+  LongDescription,
+} from "../../previews/empty-state";
+import { LiveEmptyStateSnippet } from "../../previews/empty-state-live";
+import emptyStateSource from "@ds/components/empty-state/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="EmptyState"
+  group="Overlays"
+  storybookId="components-emptystate--default"
+  sourcePath="ui_kit/components/empty-state"
+  lede='Estado vazio canônico para "no results", "first-use" e "no data yet". Composição-only (sem Radix), <code class="inline">role="status"</code> + <code class="inline">aria-live="polite"</code> por default, CVA <code class="inline">size</code> ladder <code class="inline">sm | md | lg</code>, slots <code class="inline">Icon</code> ou <code class="inline">Illustration</code>, <code class="inline">Title</code>, <code class="inline">Description</code>, <code class="inline">Actions</code>. Apenas tokens semânticos.'
+>
+  <!-- ============ ANATOMIA ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Anatomia</h2>
+      <small>Icon · Title · Description · Actions</small>
+    </div>
+    <div class="preview">
+      <Anatomy client:load />
+    </div>
+    <p class="preview-caption">
+      Cinco slots, todos opcionais exceto o <code class="inline">Title</code>.
+      Cada subcomponente carrega <code class="inline">data-slot</code> para
+      estilização e testes. O root usa <code class="inline">role="status"</code>
+      + <code class="inline">aria-live="polite"</code> para anunciar quando o
+      estado vazio substitui conteúdo prévio (típico em filtros).
+    </p>
+  </section>
+
+  <!-- ============ TAMANHOS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm · md (default) · lg</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O ladder ecoa a referência legada: ícone de
+      <code class="inline">42 / 56 / 72</code> px, padding vertical
+      <code class="inline">24 / 40 / 64</code> px. Em
+      <code class="inline">size="sm"</code> os botões de
+      <code class="inline">Actions</code> empilham verticalmente; em
+      <code class="inline">md</code> e <code class="inline">lg</code> ficam
+      lado-a-lado.
+    </p>
+  </section>
+
+  <!-- ============ SLOT: ICON ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Slot Icon</h2>
+      <small>container quadrado com bg-muted</small>
+    </div>
+    <div class="preview">
+      <WithIcon client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">EmptyState.Icon</code> adiciona um container quadrado
+      com <code class="inline">bg-muted</code> e foreground
+      <code class="inline">text-foreground</code> — o ícone interno herda a cor
+      via <code class="inline">currentColor</code>. Use SVG inline com
+      <code class="inline">stroke="currentColor"</code> ou
+      <code class="inline">fill="currentColor"</code> para acompanhar tema.
+    </p>
+  </section>
+
+  <!-- ============ SLOT: ILLUSTRATION ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Slot Illustration</h2>
+      <small>slot livre — sem background</small>
+    </div>
+    <div class="preview">
+      <WithIllustration client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">EmptyState.Illustration</code> é um slot livre, sem
+      background nem cor imposta. Para SVG/PNG/Logo que já carregam paleta
+      própria. Use <b>Icon</b> ou <b>Illustration</b>, nunca os dois — a
+      convenção é documentada via JSDoc e exercida pelas stories.
+    </p>
+  </section>
+
+  <!-- ============ SLOT: ACTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Slot Actions</h2>
+      <small>1 ou mais CTAs</small>
+    </div>
+    <div class="preview">
+      <WithActions client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">EmptyState.Actions</code> aceita qualquer
+      <code class="inline">ReactNode</code> (tipicamente
+      <code class="inline">&lt;Button&gt;</code>). O slot impõe espaçamento e
+      direção; nenhuma estilização de botão. Em <code class="inline">size="sm"</code>,
+      os filhos empilham verticalmente.
+    </p>
+  </section>
+
+  <!-- ============ DESCRIÇÃO LONGA ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Descrição longa</h2>
+      <small>max-w-prose preserva medida legível</small>
+    </div>
+    <div class="preview">
+      <LongDescription client:load />
+    </div>
+    <p class="preview-caption">
+      A descrição respeita <code class="inline">max-w-prose</code> para manter
+      uma medida confortável mesmo em containers largos.
+    </p>
+  </section>
+
+  <!-- ============ LIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite e veja o resultado em tempo real</small>
+    </div>
+    <div class="preview">
+      <LiveEmptyStateSnippet client:load />
+    </div>
+    <p class="preview-caption">
+      Edite o snippet para experimentar variantes, slots e composições. O escopo
+      do <code class="inline">react-live</code> inclui
+      <code class="inline">EmptyState</code>, <code class="inline">Button</code>,
+      <code class="inline">InboxIcon</code> e <code class="inline">useState</code>.
+    </p>
+  </section>
+
+  <!-- ============ TOKENS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Token vocabulary</h2>
+      <small>apenas tokens semânticos</small>
+    </div>
+    <div class="preview-caption max-w-prose">
+      <p>
+        <b>Icon container</b>: <code class="inline">bg-muted</code> +
+        <code class="inline">text-foreground</code> — remap canônico da
+        referência legada (<code class="inline">--violet-50</code> →
+        <code class="inline">bg-muted</code>; <code class="inline">--violet-500</code>
+        → <code class="inline">text-foreground</code>).
+      </p>
+      <p>
+        <b>Title</b>: <code class="inline">text-foreground</code>;
+        <b>Description</b>: <code class="inline">text-muted-foreground</code> com
+        <code class="inline">max-w-prose</code>.
+      </p>
+      <p>
+        Zero cor hardcoded. Zero <code class="inline">oklch(</code>. Zero
+        <code class="inline">var(--violet-*)</code>. Light + dark validados via
+        <code class="inline">jest-axe</code> (<code class="inline">axeInThemes</code>)
+        no <code class="inline">EmptyState.test.tsx</code>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/empty-state/index.tsx</small>
+    </div>
+    <HighlightedCode code={emptyStateSource} lang="tsx" />
+  </section>
+</ComponentPreview>
