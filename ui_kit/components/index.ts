@@ -35,7 +35,8 @@ export * from "./scroll-area";
 export * from "./select";
 export * from "./badge-select";
 export * from "./separator";
-export * from "./sheet";
+// Sheet retired by ADR-012 (Drawer + Sheet consolidation under canonical
+// Drawer with `side` variant). See docs/adr/ADR-012-drawer-v0.1.0-dod-migration.md.
 export * from "./sidebar";
 export * from "./skeleton";
 export * from "./slider";

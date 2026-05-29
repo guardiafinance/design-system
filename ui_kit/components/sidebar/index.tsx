@@ -7,13 +7,16 @@ import { cn } from "../../lib/utils"
 import { Button } from "../button"
 import { Input } from "../input"
 import { Separator } from "../separator"
+// Sheet was retired by ADR-012 (Drawer + Sheet consolidation). Sidebar now
+// composes the canonical Drawer for its mobile surface — same `side` API,
+// same role="dialog" aria-modal contract; only the import path changed.
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "../sheet"
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "../drawer"
 import { Skeleton } from "../skeleton"
 import {
   Tooltip,
@@ -210,8 +213,8 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-          <SheetContent
+        <Drawer open={openMobile} onOpenChange={setOpenMobile} {...props}>
+          <DrawerContent
             data-sidebar="sidebar"
             data-mobile="true"
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
@@ -222,13 +225,13 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
-            <SheetHeader className="sr-only">
-              <SheetTitle>Sidebar</SheetTitle>
-              <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-            </SheetHeader>
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>Sidebar</DrawerTitle>
+              <DrawerDescription>Displays the mobile sidebar.</DrawerDescription>
+            </DrawerHeader>
             <div className="flex h-full w-full flex-col">{children}</div>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       )
     }
 
