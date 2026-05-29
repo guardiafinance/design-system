@@ -1,0 +1,183 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import { Anatomy, Roles, Streaming, ErrorState } from "../../previews/chat-message";
+import { LiveChatMessageSnippet } from "../../previews/chat-message-live";
+import chatMessageSource from "@ds/components/chat-message/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · DADOS & CONTEÚDO"
+  title="ChatMessage"
+  group="Dados & conteúdo"
+  storybookId="components-chatmessage--default"
+  sourcePath="ui_kit/components/chat-message"
+  lede='Átomo da conversa do Isac — a superfície AI-First do produto. Renderiza um turno do diálogo com três papéis (<b>user</b> · <b>assistant</b> · <b>system</b>) e três estados (<b>sent</b> · <b>streaming</b> · <b>error</b>), via composição <code class="inline">ChatMessage.Avatar</code>, <code class="inline">ChatMessage.Bubble</code>, <code class="inline">ChatMessage.Header</code>, <code class="inline">ChatMessage.Author</code>, <code class="inline">ChatMessage.Time</code>, <code class="inline">ChatMessage.Content</code>, <code class="inline">ChatMessage.Actions</code>. Apenas tokens semânticos.'
+>
+  <!-- ============ ANATOMIA ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Anatomia</h2>
+      <small>Avatar · Bubble · Header (Author + Time) · Content · Actions</small>
+    </div>
+    <div class="preview">
+      <Anatomy client:load />
+    </div>
+    <p class="preview-caption">
+      O <code class="inline">variant</code> da raiz propaga por contexto: a
+      <code class="inline">ChatMessage.Bubble</code> escolhe sua paleta e o
+      avatar/header se alinham sem repetir o papel em cada filho. Cada slot expõe
+      um <code class="inline">data-slot</code> próprio para estilização e testes.
+    </p>
+  </section>
+
+  <!-- ============ PAPÉIS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Papéis</h2>
+      <small>user · assistant · system</small>
+    </div>
+    <div class="preview">
+      <Roles client:load />
+    </div>
+    <p class="preview-caption">
+      <b>user</b> ancora à direita com <code class="inline">bg-guardia-purple-500</code> + texto branco;
+      <b>assistant</b> à esquerda com <code class="inline">bg-card</code> + borda neutra;
+      <b>system</b> centralizado como nota neutra com
+      <code class="inline">bg-muted</code> + <code class="inline">text-muted-foreground</code> + borda <b>tracejada</b>.
+      Use <code class="inline">as="li"</code> quando os turnos estão dentro de uma
+      <code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;ol&gt;</code>
+      (semântica de lista). Para um transcript com live region, use
+      <code class="inline">&lt;div role="log" aria-live="polite"&gt;</code> com turnos
+      <code class="inline">as="div"</code> ou <code class="inline">article</code>.
+    </p>
+  </section>
+
+  <!-- ============ STREAMING ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Digitando (streaming)</h2>
+      <small>status="streaming"</small>
+    </div>
+    <div class="preview">
+      <Streaming client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">status="streaming"</code> renderiza o indicador de
+      digitação animado e marca o conteúdo com
+      <code class="inline">aria-busy="true"</code>. O indicador anuncia-se via
+      <code class="inline">role="status"</code> com o rótulo
+      <code class="inline">typingLabel</code> — transparência de raciocínio em
+      tempo real conforme a experiência AI-First.
+    </p>
+  </section>
+
+  <!-- ============ ERRO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Erro de entrega</h2>
+      <small>status="error"</small>
+    </div>
+    <div class="preview">
+      <ErrorState client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">status="error"</code> aplica um anel
+      <code class="inline">ring-destructive</code> tokenizado na bolha e expõe
+      <code class="inline">role="alert"</code> no conteúdo, para que leitores de
+      tela anunciem a falha. Combine com uma ação de retry em
+      <code class="inline">ChatMessage.Actions</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveChatMessageSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"user" | "assistant" | "system"</td>
+            <td class="default">"assistant"</td>
+            <td class="desc">Papel do autor do turno. Define alinhamento e paleta da bolha (propagado por contexto). Nomeado <code class="inline">variant</code> (e não <code class="inline">role</code>) para não colidir com o atributo ARIA <code class="inline">role</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">status</td>
+            <td class="type">"sent" | "streaming" | "error"</td>
+            <td class="default">"sent"</td>
+            <td class="desc"><b>streaming</b> mostra o indicador de digitação + <code class="inline">aria-busy</code>; <b>error</b> aplica anel destrutivo + <code class="inline">role="alert"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">typingLabel</td>
+            <td class="type">string</td>
+            <td class="default">"Digitando…"</td>
+            <td class="desc">Rótulo acessível do indicador de digitação (status="streaming").</td>
+          </tr>
+          <tr>
+            <td class="name">as</td>
+            <td class="type">"div" | "li" | "article"</td>
+            <td class="default">"div"</td>
+            <td class="desc">Elemento semântico raiz. Use <b>li</b> dentro de uma <code class="inline">&lt;ul&gt;</code>/<code class="inline">&lt;ol&gt;</code> (lista); <b>article</b> para um turno autocontido. Para transcript com live region use <code class="inline">&lt;div role="log"&gt;</code> com <b>div</b>/<b>article</b> (não combine <b>li</b> com <code class="inline">role="log"</code>).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="preview-caption">
+      Aceita qualquer atributo de <code class="inline">HTMLElement</code>.
+      <code class="inline">ref</code> é encaminhado para a raiz.
+      <code class="inline">ChatMessage.Time</code> renderiza um
+      <code class="inline">&lt;time dateTime&gt;</code> nativo;
+      <code class="inline">ChatMessage.Typing</code> é exportado para uso direto.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/chat-message/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={chatMessageSource}
+      language="tsx"
+      filename="ui_kit/components/chat-message/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>ChatMessage.Time</b> usa <code class="inline">&lt;time dateTime&gt;</code> — timestamp legível por máquina.</span></li>
+        <li><span><b>status="streaming"</b> anuncia digitação via <code class="inline">role="status"</code> + <code class="inline">aria-busy</code>.</span></li>
+        <li><span><b>status="error"</b> expõe <code class="inline">role="alert"</code> para anúncio imediato da falha.</span></li>
+        <li><span><b>ChatMessage.Actions</b> mantém affordances operáveis por teclado, sem trap de foco.</span></li>
+        <li><span>Para semântica de lista use <code class="inline">as="li"</code> dentro de <code class="inline">&lt;ul&gt;</code>; para um transcript com live region use <code class="inline">&lt;div role="log" aria-live="polite"&gt;</code> com turnos <code class="inline">div</code>/<code class="inline">article</code> (<code class="inline">role="log"</code> e lista são mutuamente exclusivos).</span></li>
+        <li><span>Contraste validado em <b>light + dark</b> via <code class="inline">jest-axe</code> em cinco estados (assistant · user · system · streaming · error).</span></li>
+        <li><span>Tokens <code class="inline">card</code>/<code class="inline">muted</code>/<code class="inline">destructive</code> + brand <code class="inline">guardia-purple-500</code> trocam por tema — zero cor hardcoded; contraste de corpo AA garantido nos dois temas.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
