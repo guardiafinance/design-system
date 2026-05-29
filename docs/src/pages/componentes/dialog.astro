@@ -1,0 +1,227 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SizesRow,
+  StatesRow,
+  UseCasesRow,
+} from "../../previews/dialog";
+import { LiveDialogSnippet } from "../../previews/dialog-live";
+import dialogSource from "@ds/components/dialog/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Dialog"
+  group="Overlays"
+  storybookId="components-dialog--default"
+  sourcePath="ui_kit/components/dialog"
+  lede='Modal centralizado, ancorado ao viewport, com foco capturado. Use para decisões com captura de foco — confirmações destrutivas, formulários curtos, dialogs informativos. Base no Radix Dialog com tokens semânticos canônicos e CVA <code class="inline">size</code> de largura (sm 384 / md 512 / lg 672 / xl 896 px), alinhado a width de modal — não padding ladder.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Dialog · Trigger · Content · Header · Footer · Close</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para overlays inline ancorados a um trigger (filtros, hints), prefira
+      <code class="inline">&lt;Popover&gt;</code>; para microcopy hover,
+      <code class="inline">&lt;Tooltip&gt;</code>; para painéis slide-from-edge,
+      <code class="inline">&lt;Sheet&gt;</code> ou
+      <code class="inline">&lt;Drawer&gt;</code>; para confirmações destrutivas
+      com role="alertdialog", <code class="inline">&lt;AlertDialog&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 384 · md 512 (default) · lg 672 · xl 896 px</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Width ladder espelha o reference legacy (sm/md/lg) e adiciona
+      <code class="inline">xl</code> 896 px para painéis de dados densos e
+      generative-UI playgrounds. Padding interno fixo em
+      <code class="inline">p-6</code> — modais não trabalham com padding ladder
+      (decisão registrada em ADR-010 Decision 2). Para override fino, use a
+      prop <code class="inline">width</code> em
+      <code class="inline">DialogContent</code>.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · defaultOpen · disabled trigger</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Modos controlled (<code class="inline">open</code> +
+      <code class="inline">onOpenChange</code>) e uncontrolled
+      (<code class="inline">defaultOpen</code>) coexistem. Trigger desabilitado
+      bloqueia abertura mas não remove o componente do DOM.
+    </p>
+  </section>
+
+  <!-- ============ USE CASES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Casos de uso</h2>
+      <small>destructive · form · info — paridade com reference legacy</small>
+    </div>
+    <div class="preview">
+      <UseCasesRow client:load />
+    </div>
+    <p class="preview-caption">
+      A ação destrutiva usa <code class="inline">Button variant="destructive"</code>
+      no footer — sem helpers externos de cor (sem wrapper
+      <code class="inline">text-destructive</code> externo). O destaque visual
+      vem do componente Button, não do conteúdo do Dialog.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveDialogSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente / Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Dialog · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">Dialog · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback ao abrir/fechar.</td>
+          </tr>
+          <tr>
+            <td class="name">Dialog · modal</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Por default Dialog é modal — captura foco e bloqueia interação com o background.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogTrigger · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Repassa props para o filho (sem wrapper extra).</td>
+          </tr>
+          <tr>
+            <td class="name">DialogTrigger · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogContent · size</td>
+            <td class="type">"sm" | "md" | "lg" | "xl"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Width ladder: max-w-sm / max-w-lg / max-w-2xl / max-w-4xl.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogContent · width</td>
+            <td class="type">number | string</td>
+            <td class="default">—</td>
+            <td class="desc">Override do ladder. Número vira px; string vai como style.maxWidth.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogContent · onOpenAutoFocus / onCloseAutoFocus / onEscapeKeyDown / onPointerDownOutside / onInteractOutside</td>
+            <td class="type">(e: Event) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callbacks Radix para customizar foco automático e dispositivos de fechamento.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogHeader / DialogFooter</td>
+            <td class="type">React.HTMLAttributes&lt;HTMLDivElement&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Layout primitives. Header: flex-col gap-1.5. Footer: flex-col-reverse gap-2 sm:flex-row sm:justify-end.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogTitle / DialogDescription</td>
+            <td class="type">Radix Title / Description</td>
+            <td class="default">—</td>
+            <td class="desc">Auto-wired via aria-labelledby e aria-describedby quando montados dentro de DialogContent.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogClose · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Permite usar qualquer elemento (e.g. Button) como close trigger sem wrapper extra.</td>
+          </tr>
+          <tr>
+            <td class="name">DialogPortal / DialogOverlay</td>
+            <td class="type">Radix Portal / Overlay</td>
+            <td class="default">—</td>
+            <td class="desc">Re-exports diretos. DialogContent já mounts portal+overlay; expostos para composição avançada.</td>
+          </tr>
+          <tr>
+            <td class="name">dialogContentVariants</td>
+            <td class="type">CVA accessor</td>
+            <td class="default">—</td>
+            <td class="desc">CVA function para consumer compor variantes (e.g. higher-order modal em código de produto).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · Radix Dialog</small>
+    </div>
+    <div class="preview-caption">
+      <ul class="list-disc pl-6">
+        <li><code class="inline">role="dialog"</code> + <code class="inline">aria-modal="true"</code> aplicados automaticamente em <code class="inline">DialogContent</code> (landmark — regra <code class="inline">region</code> do axe NÃO é desabilitada).</li>
+        <li><code class="inline">aria-labelledby</code> aponta para o ID do <code class="inline">DialogTitle</code> renderizado; <code class="inline">aria-describedby</code> para o <code class="inline">DialogDescription</code>.</li>
+        <li>Foco é trap dentro do content. Tab cicla entre descendentes focáveis sem escapar.</li>
+        <li>Escape fecha e devolve foco ao trigger.</li>
+        <li>Click no overlay fecha (default; customizável via <code class="inline">onPointerDownOutside</code>).</li>
+        <li>Scroll do <code class="inline">&lt;body&gt;</code> é travado enquanto aberto (Radix gerencia <code class="inline">pointer-events</code>).</li>
+        <li><code class="inline">DialogClose</code> tem <code class="inline">aria-label="Close"</code> e é keyboard-activatable via Enter ou Space.</li>
+        <li>Overlay usa tokens semânticos brand-palette (<code class="inline">bg-guardia-purple-900/60 dark:bg-guardia-gray-900/80</code>) — sem hex, sem <code class="inline">bg-black</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/dialog/index.tsx</small>
+    </div>
+    <HighlightedCode code={dialogSource} lang="tsx" />
+  </section>
+</ComponentPreview>
