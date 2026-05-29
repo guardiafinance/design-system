@@ -1,0 +1,287 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  VerticalRow,
+  IconedRow,
+  CompactRow,
+  StatesRow,
+  ClickableRow,
+  LoadingRow,
+  SizesRow,
+} from "../../previews/stepper";
+import stepperSource from "@ds/components/stepper/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVIGATION"
+  title="Stepper"
+  group="Navigation"
+  storybookId="components-stepper--default"
+  sourcePath="ui_kit/components/stepper"
+  lede='Indicador de progresso em fluxos multi-etapa. Use Stepper em onboardings, fluxos transacionais do Copilot Isac e processamentos longos quando o usuário precisa saber onde está, o que falta e o que já fechou. Para abas paralelas use <code class="inline">&lt;Tabs&gt;</code>; para barra de progresso contínua use <code class="inline">&lt;Progress&gt;</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>horizontal · numbered · md</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Lista <code class="inline">&lt;ol&gt;</code> com
+      <code class="inline">aria-label="Progresso"</code>. O step ativo recebe
+      <code class="inline">aria-current="step"</code>. <code class="inline">activeIndex</code>
+      deriva os estados (steps anteriores ficam <code class="inline">complete</code>;
+      seguintes, <code class="inline">pending</code>) — passar <code class="inline">step.state</code>
+      explícito sobrescreve.
+    </p>
+  </section>
+
+  <!-- ============ VERTICAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Vertical</h2>
+      <small>orientation="vertical"</small>
+    </div>
+    <div class="preview">
+      <VerticalRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando a jornada precisa respirar (long onboarding, checklist com
+      descrições longas), a orientação vertical empilha os steps e desenha o
+      connector verticalmente.
+    </p>
+  </section>
+
+  <!-- ============ ICONED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Iconed</h2>
+      <small>variant="iconed"</small>
+    </div>
+    <div class="preview">
+      <IconedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Substitui o número pelo ícone definido em <code class="inline">step.icon</code>
+      (componente <code class="inline">lucide-react</code>-shaped). Se o ícone
+      não vier, cai para número.
+    </p>
+  </section>
+
+  <!-- ============ COMPACT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Compact</h2>
+      <small>variant="compact" · só markers</small>
+    </div>
+    <div class="preview">
+      <CompactRow client:load />
+    </div>
+    <p class="preview-caption">
+      Mostra apenas as bolinhas e o connector — útil para headers, wizards
+      densos e mini-indicadores em cards. Aceita ambos os <code class="inline">size</code>.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>pending · current · loading · complete · error</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cinco estados cobrem o fluxo inteiro. <code class="inline">complete</code>
+      mostra ícone Check; <code class="inline">error</code> mostra ícone X +
+      cor; <code class="inline">loading</code> renderiza spinner inline com
+      <code class="inline">role="status" aria-label="carregando"</code>.
+      Tons consomem <code class="inline">--primary</code> (CTA Notion-canonical)
+      e <code class="inline">--danger</code> (chain ADR-011) — zero hardcode.
+    </p>
+  </section>
+
+  <!-- ============ CLICKABLE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Clicável</h2>
+      <small>onStepClick · só steps não-pending/loading</small>
+    </div>
+    <div class="preview">
+      <ClickableRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando <code class="inline">onStepClick</code> é passado, steps em
+      <code class="inline">current</code>, <code class="inline">complete</code>
+      ou <code class="inline">error</code> viram <code class="inline">&lt;button&gt;</code>
+      com hover (<code class="inline">bg-primary/5</code>) e focus visível
+      (<code class="inline">ring-2 ring-ring</code>). Steps em
+      <code class="inline">pending</code> ou <code class="inline">loading</code>
+      permanecem não clicáveis — usuário não pula etapas em fluxos guiados.
+    </p>
+  </section>
+
+  <!-- ============ LOADING ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Loading</h2>
+      <small>state="loading" · spinner inline</small>
+    </div>
+    <div class="preview">
+      <LoadingRow client:load />
+    </div>
+    <p class="preview-caption">
+      O step <code class="inline">loading</code> usa
+      <code class="inline">animate-spin</code> nativo do Tailwind v4. Ring
+      discreto em <code class="inline">--primary/15</code> deixa claro que o
+      passo está ativo aguardando processamento assíncrono.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>md (default) · sm</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">size="md"</code> usa marker 24×24 com texto
+      <code class="inline">text-sm</code>; <code class="inline">size="sm"</code>
+      reduz para 20×20 com texto <code class="inline">text-xs</code> —
+      ideal para sidebars, headers de wizard ou indicadores secundários.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">steps</td>
+            <td class="type">Step[]</td>
+            <td class="default">—</td>
+            <td class="desc">Lista ordenada de passos. Cada <code class="inline">Step</code> traz <code class="inline">{`{ id, title, description?, icon?, state?, meta? }`}</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">activeIndex</td>
+            <td class="type">number</td>
+            <td class="default">0</td>
+            <td class="desc">Índice do step atual. Deriva o estado dos outros (anteriores = complete, próximos = pending) quando <code class="inline">step.state</code> não é explícito.</td>
+          </tr>
+          <tr>
+            <td class="name">orientation</td>
+            <td class="type">"horizontal" | "vertical"</td>
+            <td class="default">"horizontal"</td>
+            <td class="desc">Layout dos steps + direção do connector.</td>
+          </tr>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"numbered" | "iconed" | "compact"</td>
+            <td class="default">"numbered"</td>
+            <td class="desc">Conteúdo do marker. <code class="inline">compact</code> remove o body inteiro (só bolinhas).</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"md" | "sm"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Tamanho do marker e do texto.</td>
+          </tr>
+          <tr>
+            <td class="name">onStepClick</td>
+            <td class="type">(index: number, step: Step) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Quando passado, torna clicáveis os steps em <code class="inline">current</code> / <code class="inline">complete</code> / <code class="inline">error</code> (renderizam <code class="inline">&lt;button&gt;</code>).</td>
+          </tr>
+          <tr>
+            <td class="name">Step.state</td>
+            <td class="type">"pending" | "current" | "loading" | "complete" | "error"</td>
+            <td class="default">derivado de activeIndex</td>
+            <td class="desc">Override explícito. <code class="inline">loading</code> e <code class="inline">error</code> exigem flag — nunca derivados.</td>
+          </tr>
+          <tr>
+            <td class="name">Step.icon</td>
+            <td class="type">React.ComponentType</td>
+            <td class="default">—</td>
+            <td class="desc">Componente de ícone (<code class="inline">lucide-react</code>-shaped) renderizado quando <code class="inline">variant="iconed"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">Step.meta</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Slot opcional abaixo do body. Honrado apenas em <code class="inline">orientation="vertical"</code> + estados <code class="inline">current</code> ou <code class="inline">loading</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação acessível</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Move foco entre steps clicáveis (quando <code class="inline">onStepClick</code> está definido).</td></tr>
+          <tr><td class="name">Enter / Space</td><td class="desc">Ativa o step em foco — equivalente a clicar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/stepper/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={stepperSource}
+      language="tsx"
+      filename="ui_kit/components/stepper/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · APG · live regions</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Lista ordenada</b>: <code class="inline">&lt;ol role="list" aria-label="Progresso"&gt;</code> garante anúncio correto em screen readers (NVDA, JAWS, VoiceOver).</span></li>
+        <li><span><b>aria-current</b>: o step ativo recebe <code class="inline">aria-current="step"</code> per WAI-ARIA 1.2 / APG.</span></li>
+        <li><span><b>Marker decorativo</b>: número/ícone do marker leva <code class="inline">aria-hidden="true"</code> — o título do step é a label real.</span></li>
+        <li><span><b>Loading</b>: spinner inline com <code class="inline">role="status" aria-label="carregando"</code>; o título informa o que está acontecendo.</span></li>
+        <li><span><b>Cor não é o único indicador</b>: <code class="inline">complete</code> traz Check; <code class="inline">error</code> traz X + título em vermelho; <code class="inline">current</code> traz ring + <code class="inline">aria-current</code>.</span></li>
+        <li><span><b>Foco visível</b>: steps clicáveis usam <code class="inline">focus-visible:ring-2 focus-visible:ring-ring</code>; nunca removemos o outline.</span></li>
+        <li><span><b>jest-axe</b> cobre Horizontal Numbered, Vertical Iconed + loading, Horizontal Error e Compact em <code class="inline">light</code> e <code class="inline">dark</code> (ver <code class="inline">Stepper.test.tsx</code>).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
