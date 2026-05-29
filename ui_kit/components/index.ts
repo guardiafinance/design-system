@@ -16,6 +16,7 @@ export * from "./combobox";
 export * from "./collapsible";
 export * from "./dialog";
 export * from "./drawer";
+export * from "./empty-state";
 export * from "./form";
 export * from "./icon-button";
 export * from "./input";
