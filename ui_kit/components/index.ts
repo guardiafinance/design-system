@@ -3,7 +3,9 @@ export * from "./agent-card";
 export * from "./alert";
 export * from "./avatar";
 export * from "./alert-dialog";
-export * from "./breadcrumb";
+// Breadcrumbs (plural) replaces the singular `breadcrumb/` baseline as the
+// canonical Navigation primitive — see ADR-016.
+export * from "./breadcrumbs";
 export * from "./button";
 export * from "./button-group";
 export * from "./badge";
