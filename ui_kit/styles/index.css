@@ -159,15 +159,24 @@
   /* Surface hover for ghost/outline interactive elements — soft brand tint */
   --bg-hover: var(--guardia-purple-100);
 
-  /* State */
+  /* State (semantic feedback tones — consumed by Alert and future inline-feedback
+   * primitives via Tailwind utility classes `bg-{tone}-soft`, `border-{tone}`,
+   * `text-{tone}-fg`. Foregrounds are deep tones of the same signal anchor;
+   * contrast over the corresponding `*-soft` surface ≥ 4.5:1 (AA normal).
+   * Dark-theme overrides for `*-soft` + `*-fg` live under
+   * `:root[data-theme="dark"]` (ADR-011). */
   --success: var(--signal-green);
   --success-soft: #D6F5E6;
+  --success-fg: #0B5A2E;       /* 6.62:1 AAA over #D6F5E6 */
   --warning: var(--signal-yellow);
   --warning-soft: #FFF3CE;
+  --warning-fg: var(--guardia-yellow-900);  /* AAA over #FFF3CE */
   --danger: var(--signal-red);
   --danger-soft: #FFE0E0;
+  --danger-fg: #7A0E0E;        /* 6.85:1 AAA over #FFE0E0 */
   --info: var(--signal-blue);
   --info-soft: #D9E3F7;
+  --info-fg: #002E6B;          /* 9.11:1 AAA over #D9E3F7 */
 
   /* Skeleton (loading placeholders) — matches wip palette */
   --skeleton-base: var(--guardia-gray-100);
@@ -284,6 +293,20 @@
   /* Skeleton (loading placeholders) — dark variants alinhados a Cinza */
   --skeleton-base: var(--guardia-gray-700);
   --skeleton-shine: var(--guardia-gray-500);
+
+  /* State (dark theme overrides — ADR-011 / #56).
+   * Soft surfaces are derived from the same signal anchor via `color-mix` so a
+   * brand-token update propagates automatically. 18% mix keeps the tone
+   * recognizable while preserving contrast against the gray-900 page surface;
+   * foregrounds collapse to mono-white over the tinted dark soft. */
+  --success-soft: color-mix(in oklab, var(--signal-green) 18%, var(--guardia-gray-800));
+  --success-fg: var(--mono-white);
+  --warning-soft: color-mix(in oklab, var(--signal-yellow) 18%, var(--guardia-gray-800));
+  --warning-fg: var(--mono-white);
+  --danger-soft: color-mix(in oklab, var(--signal-red) 18%, var(--guardia-gray-800));
+  --danger-fg: var(--mono-white);
+  --info-soft: color-mix(in oklab, var(--signal-blue) 24%, var(--guardia-gray-800));
+  --info-fg: var(--mono-white);
 
   --surface-bg: var(--bg);
   --surface-fg: var(--fg);
@@ -535,6 +558,23 @@
   --color-signal-yellow: var(--signal-yellow);
   --color-signal-red: var(--signal-red);
   --color-signal-blue: var(--signal-blue);
+
+  /* State (feedback tones — consumed by Alert via `bg-{tone}-soft`,
+   * `border-{tone}`, `text-{tone}-fg`. The tone family is theme-aware:
+   * `--*-soft` and `--*-fg` swap automatically with `data-theme="dark"`
+   * (ADR-011). */
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-fg: var(--success-fg);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-fg: var(--warning-fg);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-fg: var(--info-fg);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-fg: var(--danger-fg);
 
   /* Signal shade scale — soft tints + outline hover (see palette block above) */
   --color-signal-green-100: var(--signal-green-100);
