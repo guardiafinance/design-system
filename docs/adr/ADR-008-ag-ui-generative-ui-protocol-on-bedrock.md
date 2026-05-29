@@ -33,6 +33,48 @@ A escolha de AG-UI repousa em três propriedades que nenhuma alternativa entrega
 - **Não escolhe o framework backend do agente.** Bedrock AgentCore Runtime hospeda agentes de várias origens (Mastra-on-AgentCore, LangGraph-on-AgentCore, ou um agente "naked" sobre o Converse API). Esta ADR só exige que o backend exponha um endpoint AG-UI conforme; a escolha do framework agêntico é uma decisão separada.
 - **Não congela CopilotKit como única lib cliente.** CopilotKit é a referência hoje; se um cliente AG-UI alternativo surgir e for mais alinhado com o stack, a substituição é permitida desde que respeite o mesmo protocolo (o catálogo do DS continua funcionando).
 
+### Cenário concreto — braço analítico do financial-context com consulta ad-hoc
+
+A escolha do protocolo fica concreta no caso típico de Isac sendo usado pelo cliente final. Considere a pergunta `"me mostre receita por categoria nos últimos 3 meses"`: a sessão Claude no thread roteia pro **braço analítico do bounded context `financial-context`** (agente especialista hospedado em Bedrock AgentCore), que precisa (a) decidir qual consulta ad-hoc rodar, (b) executar contra a fonte de dados do contexto, e (c) compor a resposta visual que aparece no thread.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cliente
+    participant IsacUI as Isac UI<br/>(CopilotKit + AG-UI client)
+    participant AgentCore as Bedrock<br/>AgentCore Runtime
+    participant FinAgent as financial-context<br/>braço analítico
+    participant Claude
+    participant FinData as financial-context<br/>data source
+    participant Dispatcher as @guardia/design-system/agent<br/>(dispatcher Zod)
+
+    Cliente->>IsacUI: "Mostre receita por categoria<br/>nos últimos 3 meses"
+    IsacUI->>AgentCore: AG-UI message (turno do usuário)
+    AgentCore->>FinAgent: roteia pro agente do contexto
+
+    Note over FinAgent,FinData: Loop ad-hoc — Claude propõe query, agente executa
+    FinAgent->>Claude: prompt + tools<br/>(query_revenue, list_categories, ...)
+    Claude-->>FinAgent: tool_call(query_revenue,<br/>period=3m, group_by=category)
+    FinAgent->>FinData: SQL ad-hoc gerado
+    FinData-->>FinAgent: dataset (rows)
+    FinAgent->>Claude: tool_result(dataset)<br/>+ pedido de composição visual
+    Claude-->>FinAgent: AG-UI tool_calls:<br/>Card > Chart(bars) + Table(rows)
+
+    Note right of FinAgent: brand-voice filter<br/>server-side (salvaguarda)
+    FinAgent->>AgentCore: stream AG-UI events (filtrados)
+    AgentCore-->>IsacUI: SSE: TOOL_CALL_*<br/>(incremental)
+
+    Note over IsacUI,Dispatcher: Salvaguardas client-side
+    IsacUI->>Dispatcher: dispatch(toolCall)
+    Dispatcher->>Dispatcher: Zod.parse(props) OK
+    Dispatcher->>Dispatcher: axe-core runtime OK
+    Dispatcher-->>IsacUI: React tree<br/>Card / Chart / Table
+
+    IsacUI->>Cliente: renderiza no thread<br/>(progressivo, conforme chega)
+```
+
+O loop ad-hoc (passos 4–8) é o que justifica a escolha de Bedrock AgentCore + AG-UI: cada turno Claude pode propor uma nova ferramenta de consulta, o agente executa, e o resultado realimenta o próximo turno até a composição visual estar pronta. O AG-UI carrega o resultado como uma sequência de `TOOL_CALL_*` que o dispatcher do DS valida com Zod antes de virar React tree — a árvore final (`Card > Chart + Table`) é decidida pelo Claude no último turno, não pré-registrada como template.
+
 ## Decision 2 — A decisão é cross-repo: DS + Isac + demais widget exporters
 
 **Adotado:** a adoção de AG-UI/CopilotKit é uma decisão de **arquitetura horizontal**, não de uma biblioteca local. Tem três superfícies de execução simultâneas, com responsabilidades distintas:
@@ -48,6 +90,46 @@ O inventário definitivo de "demais projetos que exportam widgets" é **out of s
 ### Por que a decisão precisa ser declarada cross-repo aqui
 
 Se essa ADR fosse só "o DS expõe descritores", os consumidores ficariam livres pra inventar outro protocolo cliente. Resultado previsível: dois caminhos divergentes em produção, dobro de manutenção, e violação prática de `lex-design-system-library` (porque cada consumer reinventaria a integração). Declarar o escopo aqui — neste ADR neste repo — fixa a expectativa pra todos os consumidores **antes** da divergência acontecer.
+
+### Topologia cross-repo
+
+```mermaid
+flowchart LR
+    subgraph DS["@guardia/design-system (este repo) — Catálogo agêntico"]
+        Catalog["entry-point<br/>@guardia/design-system/agent"]
+        Descriptors["descritores<br/>name + propsSchema (Zod) + render"]
+        Primitives["primitivas DS<br/>Alert · Card · Button<br/>Badge · Chart · Table · ..."]
+        Catalog --- Descriptors
+        Descriptors --- Primitives
+    end
+
+    subgraph Isac["Isac — consumer primário"]
+        IsacClient["@copilotkit/react-core<br/>+ dispatcher do DS"]
+    end
+
+    subgraph Other["Demais widget exporters"]
+        OtherClient["dashboards · embeds<br/>fluxos auditados · ..."]
+    end
+
+    subgraph Bedrock["AWS Bedrock AgentCore Runtime"]
+        Endpoint["AG-UI endpoint nativo<br/>(FAST template)"]
+        subgraph Agents["Agentes especialistas por bounded context"]
+          FinAgent["financial-context<br/>braço analítico"]
+          FiscAgent["fiscal-context"]
+          MoreAgents["outros contextos..."]
+        end
+        Claude["Claude (Opus / Sonnet)"]
+        Endpoint --> Agents
+        Agents --> Claude
+    end
+
+    Catalog -.->|"npm import"| IsacClient
+    Catalog -.->|"npm import"| OtherClient
+    IsacClient <==>|"AG-UI / SSE"| Endpoint
+    OtherClient <==>|"AG-UI / SSE"| Endpoint
+```
+
+Cada flecha sólida (`<==>`) representa comunicação em runtime (AG-UI/SSE entre cliente e Bedrock AgentCore Runtime); cada flecha tracejada (`-.->`) representa dependência de build/distribuição (import npm do entry-point `@guardia/design-system/agent`). O catálogo do DS é o ponto único de declaração das primitivas agênticas: trocar uma prop, adicionar um descritor ou apertar uma validação Zod acontece **neste repo**, e os consumidores recebem via bump de versão coordenado.
 
 ### Coordenação de versionamento (esboço, decisão pós-PoC)
 
@@ -65,6 +147,38 @@ A primeira versão do entry-point `@guardia/design-system/agent` será publicada
 | **Confirmação explícita pra ações irreversíveis** | `lex-ai-first-experience` é categórica: ações irreversíveis exigem confirmação. Um widget `<Button intent="primary">Aprovar</Button>` gerado pelo agente **não pode** auto-executar a aprovação no `onClick`. O catálogo agêntico só permite registrar o **descritor visual** da ação; a execução é wrap'd numa primitiva de confirmação (`<ConfirmAction>`) que o consumer plumbiza. | `@guardia/design-system/agent` (forma do descritor) + Isac (plumbing) |
 
 Essas salvaguardas são parte do PoC, não trabalho pós-PoC. Sem elas a stack não é Lex-compliant.
+
+### Ciclo de vida de um widget gerado e os 4 portões
+
+```mermaid
+flowchart TB
+    Start([Agente compõe widget<br/>e emite AG-UI tool_call])
+
+    Start --> G1{1. brand-voice filter<br/>server-side}
+    G1 -->|"buzzword detectado"| G1Fail[bloqueia o field<br/>log pra ajustar prompt]
+    G1 -->|OK| Stream[stream AG-UI<br/>chega ao cliente]
+
+    Stream --> G2{2. Zod.parse<br/>no dispatcher do DS}
+    G2 -->|"prop inválida<br/>intent=awesome"| G2Fail["fallback Alert tone=warning<br/>(degradação graciosa)"]
+    G2 -->|OK| G3{3. axe-core<br/>runtime check}
+
+    G3 -->|"violação crítica<br/>(role conflict, missing label)"| G3Fail[bloqueia render<br/>log a11y]
+    G3 -->|OK| G4{4. ação irreversível?<br/>Approve · Delete · Send}
+
+    G4 -->|sim| Wrap["wrap em ConfirmAction<br/>(per lex-ai-first-experience)"]
+    G4 -->|não| Render
+    Wrap --> Render([widget no DOM])
+
+    style G1 fill:#e8f0ff,stroke:#4f86c6
+    style G2 fill:#e8f0ff,stroke:#4f86c6
+    style G3 fill:#e8f0ff,stroke:#4f86c6
+    style G4 fill:#e8f0ff,stroke:#4f86c6
+    style G1Fail fill:#ffe8e8,stroke:#c64f4f
+    style G3Fail fill:#ffe8e8,stroke:#c64f4f
+    style G2Fail fill:#fff5e8,stroke:#c69d4f
+```
+
+Os 4 portões são sequenciais e não-opcionais. Portões **1** e **4** dependem de plumbing fora do DS (filtro server-side no backend agêntico; wrapper de confirmação no consumer); portões **2** e **3** são entregues pelo dispatcher exportado de `@guardia/design-system/agent` — habilitados por construção pra todo widget que passar por ele. Sem o dispatcher central, cada consumer ficaria livre pra pular portões em silêncio; esse risco é o motivo principal de o catálogo ser exposto via dispatcher único, não como componentes "soltos" que o consumer instancia direto.
 
 ## Consequences
 
