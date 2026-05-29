@@ -1,0 +1,235 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  TonesRow,
+  SizesRow,
+  ActionsRow,
+  DismissRow,
+  LongContentRow,
+} from "../../previews/alert";
+import alertSource from "@ds/components/alert/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Alert"
+  group="Overlays"
+  storybookId="components-alert--default"
+  sourcePath="ui_kit/components/alert"
+  lede='Banner inline com severidade semântica para feedback persistente in-flow. Use Alert para mensagens que precisam permanecer visíveis até o usuário agir — para feedback transiente prefira <code class="inline">&lt;Toast&gt;</code>; para confirmações modais, <code class="inline">&lt;Dialog&gt;</code> ou <code class="inline">&lt;AlertDialog&gt;</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Alert · AlertIcon · AlertTitle · AlertDescription</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Render como <code class="inline">role="status"</code> (polite) por
+      default. O <code class="inline">aria-labelledby</code> é gerado
+      automaticamente e aponta para o <code class="inline">AlertTitle</code>.
+    </p>
+  </section>
+
+  <!-- ============ TONES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tons</h2>
+      <small>info · success · warning · error</small>
+    </div>
+    <div class="preview">
+      <TonesRow client:load />
+    </div>
+    <p class="preview-caption">
+      A matriz consome <code class="inline">--info-soft</code> /
+      <code class="inline">--success-soft</code> /
+      <code class="inline">--warning-soft</code> /
+      <code class="inline">--danger-soft</code> com bordas e foregrounds
+      semânticos. A vocabulary <code class="inline">error</code> espelha o
+      vocabulário de form-state (Combobox, Input, Select) e aliasa
+      internamente o token <code class="inline">--danger</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 8 · md 12 (default) · lg 16</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ladder de padding idêntico a Popover e Tooltip
+      (<code class="inline">p-2</code> / <code class="inline">p-3</code> /
+      <code class="inline">p-4</code>). Tipografia em duas raias
+      (<code class="inline">text-xs</code> para
+      <code class="inline">sm</code>, <code class="inline">text-sm</code>
+      para <code class="inline">md</code> e <code class="inline">lg</code>).
+    </p>
+  </section>
+
+  <!-- ============ ACTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Ações</h2>
+      <small>slot AlertActions ao final do banner</small>
+    </div>
+    <div class="preview">
+      <ActionsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Trailing slot que aceita qualquer composição de
+      <code class="inline">Button</code> /
+      <code class="inline">IconButton</code>. Alinha ao centro vertical do
+      banner e mantém <code class="inline">shrink-0</code> para não comprimir
+      o corpo.
+    </p>
+  </section>
+
+  <!-- ============ DISMISS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Dismiss</h2>
+      <small>AlertClose · controlled e uncontrolled</small>
+    </div>
+    <div class="preview">
+      <DismissRow client:load />
+    </div>
+    <p class="preview-caption">
+      Em modo uncontrolled (default), o clique desmonta a árvore inteira.
+      Em modo controlled, o parent passa <code class="inline">open</code> +
+      <code class="inline">onOpenChange</code> e governa o ciclo de vida.
+      O botão tem <code class="inline">aria-label="Fechar"</code> por default
+      (sobrescrevível).
+    </p>
+  </section>
+
+  <!-- ============ LONG CONTENT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Conteúdo longo</h2>
+      <small>vários parágrafos / fluxo denso</small>
+    </div>
+    <div class="preview">
+      <LongContentRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente · Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Alert · tone</td>
+            <td class="type">"info" | "success" | "warning" | "error"</td>
+            <td class="default">"info"</td>
+            <td class="desc">Família de tokens semânticos. <code class="inline">error</code> aliasa o chain <code class="inline">--danger</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">Alert · size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Ladder de padding 8 / 12 / 16 px e tipografia em duas raias.</td>
+          </tr>
+          <tr>
+            <td class="name">Alert · assertive</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc"><code class="inline">true</code> = <code class="inline">role="alert"</code> (assertive). <code class="inline">false</code> = <code class="inline">role="status"</code> (polite, default).</td>
+          </tr>
+          <tr>
+            <td class="name">Alert · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">defaultOpen=true</td>
+            <td class="desc">Controlled / uncontrolled. <code class="inline">open=false</code> ou clique em <code class="inline">AlertClose</code> desmonta a árvore.</td>
+          </tr>
+          <tr>
+            <td class="name">Alert · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Notifica mudanças de estado por parent control ou por <code class="inline">AlertClose</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">AlertClose · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Fechar"</td>
+            <td class="desc">Rótulo acessível do botão de dismiss; sobrescreva para localização.</td>
+          </tr>
+          <tr>
+            <td class="name">AlertClose · onClick</td>
+            <td class="type">(e: MouseEvent) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Roda antes do dismiss. <code class="inline">event.preventDefault()</code> impede o fechamento.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>foco e dismissal</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Foco no <code class="inline">AlertClose</code> seguindo a ordem do DOM.</td></tr>
+          <tr><td class="name">Enter / Space</td><td class="desc">Ativa o <code class="inline">AlertClose</code> com semântica de botão nativa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/alert/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={alertSource}
+      language="tsx"
+      filename="ui_kit/components/alert/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · live regions</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Live region</b>: <code class="inline">role="status"</code> (polite) por default; <code class="inline">role="alert"</code> (assertive) com <code class="inline">assertive=true</code>.</span></li>
+        <li><span><b>aria-labelledby</b>: gerado automaticamente, aponta para o <code class="inline">AlertTitle</code> renderizado.</span></li>
+        <li><span><b>Ícone</b>: o <code class="inline">AlertIcon</code> é <code class="inline">aria-hidden="true"</code> — toda informação acessível está no título e na descrição.</span></li>
+        <li><span><b>Dismiss</b>: <code class="inline">aria-label="Fechar"</code> por default (sobrescrevível), foco visível via <code class="inline">ring-ring</code>.</span></li>
+        <li><span><b>jest-axe</b> em light + dark cobre Default + 4 tons + WithClose + Assertive (ver <code class="inline">Alert.test.tsx</code>).</span></li>
+        <li><span><b>Contraste</b>: tokens <code class="inline">--*-fg</code> sobre <code class="inline">--*-soft</code> ≥ 6.6:1 em light; mono-white sobre soft tingido em dark mantém ≥ 7:1 (ADR-011).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
