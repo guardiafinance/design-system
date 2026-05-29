@@ -49,4 +49,21 @@ if (typeof window !== 'undefined') {
       thresholds = [];
     };
   }
+
+  // jsdom does not implement the Pointer Capture API. Radix primitives that
+  // implement swipe gestures (e.g. @radix-ui/react-toast) call
+  // hasPointerCapture / setPointerCapture / releasePointerCapture inside
+  // pointer event handlers and throw when the methods are missing. Stub them
+  // as no-ops so component tests can dispatch pointer events without crashing.
+  const elementProto = window.Element?.prototype as unknown as Record<
+    string,
+    unknown
+  >;
+  if (elementProto && typeof elementProto.hasPointerCapture !== 'function') {
+    elementProto.hasPointerCapture = function hasPointerCapture(): boolean {
+      return false;
+    };
+    elementProto.setPointerCapture = function setPointerCapture(): void {};
+    elementProto.releasePointerCapture = function releasePointerCapture(): void {};
+  }
 }

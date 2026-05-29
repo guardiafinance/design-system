@@ -1,0 +1,302 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  TonesRow,
+  ActionsRow,
+  PositionsRow,
+  PersistentRow,
+  StackedRow,
+  DeclarativeRow,
+} from "../../previews/toast";
+import toastSource from "@ds/components/toast/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Toast"
+  group="Overlays"
+  storybookId="components-toast--default"
+  sourcePath="ui_kit/components/toast"
+  lede='Notificação transiente empilhada no canto da viewport para sinalizar o resultado de uma ação que ocorreu há pouco tempo. Use Toast para confirmações breves, falhas e processamentos em andamento — para feedback persistente in-flow prefira <code class="inline">&lt;Alert&gt;</code>; para confirmações modais, <code class="inline">&lt;Dialog&gt;</code> ou <code class="inline">&lt;AlertDialog&gt;</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: ToastProvider · useToast()</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Envolva a aplicação em <code class="inline">&lt;ToastProvider&gt;</code> e
+      consuma a API imperativa via <code class="inline">useToast()</code>. O
+      retorno traz <code class="inline">{`{ toast, dismiss, dismissAll }`}</code>;
+      <code class="inline">toast(options)</code> devolve o id atribuído.
+    </p>
+  </section>
+
+  <!-- ============ TONES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tons</h2>
+      <small>info · success · warning · error</small>
+    </div>
+    <div class="preview">
+      <TonesRow client:load />
+    </div>
+    <p class="preview-caption">
+      A matriz consome <code class="inline">--info-soft</code> /
+      <code class="inline">--success-soft</code> /
+      <code class="inline">--warning-soft</code> /
+      <code class="inline">--danger-soft</code> — mesmos tokens de Alert
+      (ADR-011). Tons informativos (<code class="inline">info</code>,
+      <code class="inline">success</code>) renderizam como polite live regions
+      (<code class="inline">role="status"</code>); aviso e erro renderizam
+      como assertive (<code class="inline">role="alert"</code>).
+    </p>
+  </section>
+
+  <!-- ============ ACTIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Ações</h2>
+      <small>botão à direita · ToastAction</small>
+    </div>
+    <div class="preview">
+      <ActionsRow client:load />
+    </div>
+    <p class="preview-caption">
+      A propriedade <code class="inline">action</code> aceita
+      <code class="inline">{`{ label, onClick, altText? }`}</code>. O
+      <code class="inline">altText</code> é obrigatório por contrato Radix
+      para que o anúncio em screen readers funcione em modo assertivo — a
+      wrapper preenche automaticamente quando o label é string.
+    </p>
+  </section>
+
+  <!-- ============ POSITIONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Posições</h2>
+      <small>6 cantos · swipeDirection derivado</small>
+    </div>
+    <div class="preview">
+      <PositionsRow client:load />
+    </div>
+    <p class="preview-caption">
+      A prop <code class="inline">position</code> em
+      <code class="inline">&lt;ToastProvider&gt;</code> aceita
+      <code class="inline">bottom-right</code> (default),
+      <code class="inline">bottom-left</code>,
+      <code class="inline">top-right</code>,
+      <code class="inline">top-left</code>,
+      <code class="inline">bottom-center</code>,
+      <code class="inline">top-center</code>. O
+      <code class="inline">swipeDirection</code> é derivado da posição (pode
+      ser sobrescrito).
+    </p>
+  </section>
+
+  <!-- ============ PERSISTENT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Persistente</h2>
+      <small>duration = Infinity · sem auto-dismiss</small>
+    </div>
+    <div class="preview">
+      <PersistentRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">duration: Infinity</code> (ou
+      <code class="inline">0</code> como alias compat com a referência legacy)
+      transforma o Toast em persistente. Só sai via
+      <code class="inline">ToastClose</code> ou
+      <code class="inline">dismiss(id)</code>.
+    </p>
+  </section>
+
+  <!-- ============ STACKED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Empilhamento</h2>
+      <small>FIFO · limit configurável</small>
+    </div>
+    <div class="preview">
+      <StackedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Por default <code class="inline">limit=5</code>. Toasts excedentes
+      entram em fila e ganham slot conforme os existentes são dispensados.
+      Useful para sinalizar processamento em batch.
+    </p>
+  </section>
+
+  <!-- ============ DECLARATIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Composição declarativa</h2>
+      <small>Toast · ToastTitle · ToastDescription · ToastAction · ToastClose</small>
+    </div>
+    <div class="preview">
+      <DeclarativeRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando o consumidor precisa de markup customizado (avatar, barra de
+      progresso, layout específico), as primitivas Radix re-exportadas dão
+      controle total sem perder o token contract. Paridade com
+      Dialog/Popover.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente · Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">ToastProvider · position</td>
+            <td class="type">"bottom-right" | "bottom-left" | "top-right" | "top-left" | "bottom-center" | "top-center"</td>
+            <td class="default">"bottom-right"</td>
+            <td class="desc">Canto da viewport onde os toasts aparecem.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastProvider · duration</td>
+            <td class="type">number</td>
+            <td class="default">5000</td>
+            <td class="desc">Auto-dismiss baseline em ms. Hover ou foco pausa o timer (Radix nativo).</td>
+          </tr>
+          <tr>
+            <td class="name">ToastProvider · limit</td>
+            <td class="type">number</td>
+            <td class="default">5</td>
+            <td class="desc">Toasts simultâneos. Excedentes em fila FIFO.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastProvider · swipeDirection</td>
+            <td class="type">"right" | "left" | "up" | "down"</td>
+            <td class="default">derivado de position</td>
+            <td class="desc">Direção do swipe-to-dismiss em dispositivos touch.</td>
+          </tr>
+          <tr>
+            <td class="name">useToast() · toast(options)</td>
+            <td class="type">(options: ToastOptions) =&gt; string</td>
+            <td class="default">—</td>
+            <td class="desc">Cria um toast. Retorna o id atribuído. Passar id estável faz update em vez de duplicar.</td>
+          </tr>
+          <tr>
+            <td class="name">useToast() · dismiss(id)</td>
+            <td class="type">(id: string) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Remove o toast por id.</td>
+          </tr>
+          <tr>
+            <td class="name">useToast() · dismissAll()</td>
+            <td class="type">() =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Esvazia viewport + fila.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · tone</td>
+            <td class="type">"info" | "success" | "warning" | "error"</td>
+            <td class="default">"info"</td>
+            <td class="desc">Severidade semântica. <code class="inline">error</code> aliasa o chain <code class="inline">--danger</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · title</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Linha principal (obrigatória).</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · description</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Linha de apoio.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · duration</td>
+            <td class="type">number | Infinity</td>
+            <td class="default">herda do Provider</td>
+            <td class="desc"><code class="inline">Infinity</code> ou <code class="inline">0</code> = persistente até dismiss explícito.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · action</td>
+            <td class="type">{`{ label, onClick, altText? }`}</td>
+            <td class="default">—</td>
+            <td class="desc">Botão à direita. <code class="inline">altText</code> default vem de <code class="inline">label</code> quando string.</td>
+          </tr>
+          <tr>
+            <td class="name">ToastOptions · id</td>
+            <td class="type">string</td>
+            <td class="default">auto</td>
+            <td class="desc">Id estável; reuso faz update (debounce / progressive feedback).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>foco e dismissal</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">F8</td><td class="desc">Foca o viewport. Atalho default do Radix Toast.</td></tr>
+          <tr><td class="name">Tab</td><td class="desc">Navega entre ações + close dentro do toast em foco.</td></tr>
+          <tr><td class="name">Enter / Space</td><td class="desc">Ativa o botão em foco (ação ou close).</td></tr>
+          <tr><td class="name">Esc</td><td class="desc">Dispensa o toast em foco.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/toast/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={toastSource}
+      language="tsx"
+      filename="ui_kit/components/toast/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · live regions</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Live region</b>: tons <code class="inline">info</code> e <code class="inline">success</code> renderizam <code class="inline">role="status"</code> (polite); <code class="inline">warning</code> e <code class="inline">error</code> renderizam <code class="inline">role="alert"</code> (assertive).</span></li>
+        <li><span><b>Close</b>: <code class="inline">aria-label="Fechar"</code> por default, foco visível via <code class="inline">ring-ring</code>, acionável por <code class="inline">Enter</code> ou <code class="inline">Space</code>.</span></li>
+        <li><span><b>Action</b>: <code class="inline">altText</code> obrigatório no Radix garante anúncio em screen readers no modo assertivo. A wrapper preenche automaticamente quando <code class="inline">label</code> é string.</span></li>
+        <li><span><b>Pause-on-hover/focus</b>: o auto-dismiss timer pausa enquanto o usuário interage com o toast.</span></li>
+        <li><span><b>jest-axe</b> cobre Default + 4 tons + WithAction + Assertive em <code class="inline">light</code> e <code class="inline">dark</code> (ver <code class="inline">Toast.test.tsx</code>).</span></li>
+        <li><span><b>Contraste</b>: tokens <code class="inline">--*-fg</code> sobre <code class="inline">--*-soft</code> ≥ 6.6:1 em light; mono-white sobre soft tingido em dark mantém ≥ 7:1 (ADR-011 herança).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
