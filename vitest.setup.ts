@@ -66,4 +66,14 @@ if (typeof window !== 'undefined') {
     elementProto.setPointerCapture = function setPointerCapture(): void {};
     elementProto.releasePointerCapture = function releasePointerCapture(): void {};
   }
+
+  // jsdom does not implement Element.prototype.scrollIntoView. cmdk
+  // (Command primitive — see ADR-017) calls scrollIntoView on the
+  // active item to keep it visible when keyboard navigation moves
+  // the highlight. Stub it as a no-op so the Command tests can
+  // render and interact without crashing inside cmdk's selection
+  // effect.
+  if (elementProto && typeof elementProto.scrollIntoView !== 'function') {
+    elementProto.scrollIntoView = function scrollIntoView(): void {};
+  }
 }
