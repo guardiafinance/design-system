@@ -102,7 +102,7 @@ Ou use `<ThemeToggle />` / `<ThemeProvider />`.
 
 **Navegação** — Accordion · Breadcrumb · Collapsible · Menubar · Navbar · NavigationMenu · Pagination · Sidebar · Tabs
 
-**Overlays** — Dialog · AlertDialog · Drawer · Sheet · Popover · Tooltip · DropdownMenu · ContextMenu
+**Overlays** — Dialog · AlertDialog · Drawer · Sheet · Popover · Tooltip · Menu
 
 **Feedback** — Alert · Sonner (Toast)
 
