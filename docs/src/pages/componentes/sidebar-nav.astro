@@ -1,0 +1,327 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  CollapsedRow,
+  ActiveItemRow,
+  BadgesRow,
+  GroupsRow,
+  RealisticRow,
+} from "../../previews/sidebar-nav";
+import sidebarNavSource from "@ds/components/sidebar-nav/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVIGATION"
+  title="SidebarNav"
+  group="Navigation"
+  storybookId="components-sidebarnav--default"
+  sourcePath="ui_kit/components/sidebar-nav"
+  lede='Primitiva canônica de navegação lateral vertical com seções, grupos colapsáveis, item ativo, badge e modo <code class="inline">collapsed</code> (só ícones). Distinta de <code class="inline">&lt;Sidebar&gt;</code> (chrome de aplicação com <code class="inline">&lt;SidebarProvider&gt;</code>, persistência cookie e Drawer mobile) — <code class="inline">SidebarNav</code> é a árvore de navegação consumida dentro de qualquer chrome. Sem Radix base (composição manual de <code class="inline">aria-expanded</code> + <code class="inline">aria-controls</code>); em modo collapsed cada item interativo é wrappeado em <code class="inline">&lt;Tooltip&gt;</code> do DS com defesa em profundidade via <code class="inline">sr-only</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: SidebarNav · SidebarNavSection · SidebarNavItem</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Estrutura típica: <code class="inline">&lt;SidebarNav&gt;</code> envolve
+      uma ou mais <code class="inline">&lt;SidebarNavSection&gt;</code>; cada
+      seção contém <code class="inline">&lt;SidebarNavItem&gt;</code>. O item
+      ativo recebe <code class="inline">active</code> e o DS aplica
+      <code class="inline">aria-current="page"</code> automaticamente.
+    </p>
+  </section>
+
+  <!-- ============ COLLAPSED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Modo Collapsed</h2>
+      <small>só ícones · tooltips automáticos</small>
+    </div>
+    <div class="preview">
+      <CollapsedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Em <code class="inline">collapsed=true</code> a largura reduz para a
+      faixa compacta, labels viram <code class="inline">sr-only</code>, badges
+      somem e cada item interativo é wrappeado em
+      <code class="inline">&lt;Tooltip&gt;</code> do DS com o label textual.
+      Labels de seção viram divisor (<code class="inline">&lt;hr&gt;</code>).
+      A transição <code class="inline">width</code> respeita
+      <code class="inline">prefers-reduced-motion</code>.
+    </p>
+  </section>
+
+  <!-- ============ ACTIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estado Ativo</h2>
+      <small>aria-current="page" automático</small>
+    </div>
+    <div class="preview">
+      <ActiveItemRow client:load />
+    </div>
+    <p class="preview-caption">
+      Controle externo via prop <code class="inline">active</code>. O
+      componente aplica o token chain
+      <code class="inline">bg-sidebar-accent</code> +
+      <code class="inline">text-sidebar-accent-foreground</code> +
+      <code class="inline">font-semibold</code>; o ícone migra para
+      <code class="inline">text-sidebar-primary</code>.
+    </p>
+  </section>
+
+  <!-- ============ BADGES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Badges</h2>
+      <small>contadores à direita · ocultos em collapsed</small>
+    </div>
+    <div class="preview">
+      <BadgesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Badge à direita, alinhado por <code class="inline">ml-auto</code>.
+      Aceita <code class="inline">ReactNode</code> arbitrário — o caso comum
+      é número/string curtos. Em <code class="inline">collapsed=true</code> o
+      badge não é renderizado (a contagem fica disponível ao expandir).
+    </p>
+  </section>
+
+  <!-- ============ GROUPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupos</h2>
+      <small>SidebarNavGroup · trigger + content controlados</small>
+    </div>
+    <div class="preview">
+      <GroupsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Grupos colapsáveis: <code class="inline">defaultOpen</code> para uso
+      descontrolado, ou <code class="inline">open</code> +
+      <code class="inline">onOpenChange</code> para controle externo. A
+      trigger emite <code class="inline">aria-expanded</code> +
+      <code class="inline">aria-controls</code>; o conteúdo expõe
+      <code class="inline">role="group"</code> +
+      <code class="inline">aria-labelledby</code>. Em
+      <code class="inline">collapsed</code>, o grupo se dissolve — os filhos
+      são renderizados inline (paridade com a referência legada).
+    </p>
+  </section>
+
+  <!-- ============ REALISTIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estrutura Realista</h2>
+      <small>paridade com playground legado</small>
+    </div>
+    <div class="preview">
+      <RealisticRow client:load />
+    </div>
+    <p class="preview-caption">
+      Fixture canônica: 3 seções, 2 grupos (um aberto, um fechado), 3 itens
+      com ícone, 2 com badge, 1 ativo. Replica
+      <code class="inline">ux_references/ui_kits/components/SidebarNav/SidebarNav.playground.html</code>.
+    </p>
+  </section>
+
+  <!-- ============ COEXISTENCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Quando usar Sidebar vs SidebarNav</h2>
+      <small>ortogonal · composição opcional</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Cenário</th><th>Use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Quero o chrome inteiro de app (header com trigger, persistência cookie, mobile Drawer)</td>
+            <td class="desc"><code class="inline">&lt;SidebarProvider&gt;</code> + <code class="inline">&lt;Sidebar&gt;</code> (shell shadcn-derived)</td>
+          </tr>
+          <tr>
+            <td class="name">Quero apenas a árvore de navegação tokenizada (sem chrome)</td>
+            <td class="desc"><code class="inline">&lt;SidebarNav&gt;</code> (este componente)</td>
+          </tr>
+          <tr>
+            <td class="name">Quero o chrome shell <b>com</b> árvore tokenizada dentro</td>
+            <td class="desc"><code class="inline">&lt;Sidebar&gt;&lt;SidebarContent&gt;&lt;SidebarNav&gt;...&lt;/SidebarNav&gt;&lt;/SidebarContent&gt;&lt;/Sidebar&gt;</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente · Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">SidebarNav · collapsed</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Modo compacto (só ícones, labels em <code class="inline">sr-only</code>, badges ocultos).</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNav · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Navegação principal"</td>
+            <td class="desc">Override do nome acessível do <code class="inline">&lt;nav&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavSection · label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Cabeçalho da seção (oculto em <code class="inline">collapsed</code>, substituído por divisor).</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · icon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda. Recomendado: Lucide React.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · badge</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Contador à direita. Oculto em <code class="inline">collapsed</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · active</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Estado selecionado. Aplica <code class="inline">aria-current="page"</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desativa interação. Em <code class="inline">&lt;a&gt;</code>, aplica <code class="inline">aria-disabled</code> + <code class="inline">tabIndex=-1</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · href</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Se presente, renderiza <code class="inline">&lt;a&gt;</code>; senão <code class="inline">&lt;button&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · onClick</td>
+            <td class="type">MouseEventHandler</td>
+            <td class="default">—</td>
+            <td class="desc">Forwarded ao elemento renderizado.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavItem · label</td>
+            <td class="type">string</td>
+            <td class="default">derivado de children quando string</td>
+            <td class="desc">Override do label para Tooltip em modo collapsed.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavGroup · label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Cabeçalho do grupo (obrigatório).</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavGroup · icon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone à esquerda do header.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavGroup · defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Estado inicial (uncontrolled).</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavGroup · open</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Estado controlado.</td>
+          </tr>
+          <tr>
+            <td class="name">SidebarNavGroup · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback de mudança de estado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação e ativação</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Avança para o próximo item interativo (ordem visual).</td></tr>
+          <tr><td class="name">Shift + Tab</td><td class="desc">Retrocede para o item anterior.</td></tr>
+          <tr><td class="name">Enter / Space</td><td class="desc">Ativa <code class="inline">&lt;button&gt;</code> (item ou trigger de grupo).</td></tr>
+          <tr><td class="name">Enter</td><td class="desc">Ativa <code class="inline">&lt;a&gt;</code> (item com <code class="inline">href</code>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/sidebar-nav/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={sidebarNavSource}
+      language="tsx"
+      filename="ui_kit/components/sidebar-nav/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · ARIA disclosure pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Landmark</b>: o container raiz é um <code class="inline">&lt;nav&gt;</code> com <code class="inline">aria-label="Navegação principal"</code> (override via prop).</span></li>
+        <li><span><b>Item ativo</b>: aplica <code class="inline">aria-current="page"</code> no elemento renderizado (button ou anchor).</span></li>
+        <li><span><b>Grupo</b>: trigger expõe <code class="inline">aria-expanded</code> + <code class="inline">aria-controls</code>; conteúdo expõe <code class="inline">role="group"</code> + <code class="inline">aria-labelledby</code> apontando para a trigger.</span></li>
+        <li><span><b>Disabled em link</b>: <code class="inline">aria-disabled="true"</code> + <code class="inline">tabIndex=-1</code> + <code class="inline">pointer-events-none</code> — interação efetivamente bloqueada (paridade com <code class="inline">&lt;button disabled&gt;</code>).</span></li>
+        <li><span><b>Collapsed disclosure</b>: cada item interativo é wrappeado em <code class="inline">&lt;Tooltip&gt;</code> do DS; o label original vai também para <code class="inline">&lt;span className="sr-only"&gt;</code> via <code class="inline">aria-label</code> no elemento renderizado — defesa em profundidade.</span></li>
+        <li><span><b>Foco visível</b>: <code class="inline">focus-visible:ring-2 ring-ring ring-offset-1</code> em todos os interativos.</span></li>
+        <li><span><b>Motion</b>: a transição de width respeita <code class="inline">prefers-reduced-motion: reduce</code> via <code class="inline">motion-reduce:transition-none</code>.</span></li>
+        <li><span><b>jest-axe</b> cobre Default + Active + Collapsed + GroupOpen + Disabled em <code class="inline">light</code> e <code class="inline">dark</code> (ver <code class="inline">SidebarNav.test.tsx</code>).</span></li>
+        <li><span><b>Contraste</b>: token chain <code class="inline">--sidebar-*</code> garante ≥ 4.5:1 (texto) e ≥ 3:1 (UI) em ambos os temas.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>

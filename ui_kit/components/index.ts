@@ -38,6 +38,7 @@ export * from "./separator";
 // Sheet retired by ADR-012 (Drawer + Sheet consolidation under canonical
 // Drawer with `side` variant). See docs/adr/ADR-012-drawer-v0.1.0-dod-migration.md.
 export * from "./sidebar";
+export * from "./sidebar-nav";
 export * from "./skeleton";
 export * from "./slider";
 export * from "./sonner";
