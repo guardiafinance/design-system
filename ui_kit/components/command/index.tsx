@@ -183,10 +183,20 @@ function CommandShortcut({
   className,
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>): React.ReactElement {
+  // Kbd-style chip com chain semântico `--accent` / `--accent-foreground`:
+  //   light → violet-500 + #FFFFFF (7.85:1 AAA) — "branco Guardia" sobre
+  //           violeta canônico.
+  //   dark  → orange-500 + mono-black (6.2:1 AA) — paridade com Button
+  //           action no tema escuro, onde white-on-orange falha contraste
+  //           (lex-brand-colors).
+  // Resolve a queixa de a11y do tema light, onde `text-fg-muted` se
+  // confunde com o label sob o eye-test.
   return (
     <span
       className={cn(
-        "ml-auto text-xs font-mono tracking-widest text-fg-muted",
+        "ml-auto inline-flex items-center rounded-md px-1.5 py-0.5",
+        "bg-accent text-accent-foreground",
+        "text-[10px] font-mono font-semibold tracking-wider",
         className,
       )}
       {...props}
