@@ -25,7 +25,7 @@ const meta: Meta<typeof CommandPalette> = {
     docs: {
       description: {
         component:
-          'Paleta de comandos (⌘K) com search, grupos e entries keyboard-navegáveis. Para acesso rápido a ações conhecidas, complementar ao chat com Isac. Base em `cmdk` (filter heurístico, ARIA roles, keyboard nav) hospedado em `<Dialog>` (ADR-010 — focus trap, ESC, portal). API imperativa `<CommandPalette open onOpenChange items />` espelha a referência legacy; primitivas declarativas re-exportadas (`Command`, `CommandInput`, `CommandList`, `CommandGroup`, `CommandItem`, `CommandSeparator`, `CommandEmpty`, `CommandShortcut`) permitem composição avançada (paleta inline, sugestões streaming do Isac).',
+          'Paleta de comandos (⌘K / Ctrl+K) com search, grupos e entries keyboard-navegáveis. Para acesso rápido a ações conhecidas, complementar ao chat com Isac. Base em `cmdk` (filter heurístico, ARIA roles, keyboard nav) hospedado em `<Dialog>` (ADR-010 — focus trap, ESC, portal). API imperativa `<CommandPalette open onOpenChange items />` espelha a referência legacy; primitivas declarativas re-exportadas (`Command`, `CommandInput`, `CommandList`, `CommandGroup`, `CommandItem`, `CommandSeparator`, `CommandEmpty`, `CommandShortcut`) permitem composição avançada (paleta inline, sugestões streaming do Isac). Para os shortcuts à direita, use o helper `formatShortcut(["mod", "K"])` exportado pelo barrel — renderiza `⌘K / Ctrl+K` (Mac e Win/Linux lado a lado) sem detecção de SO; veja a story **Forced platform shortcuts** para o escape hatch `{ platform }`.',
       },
     },
   },
@@ -49,7 +49,7 @@ function Trigger({
   items,
   placeholder,
   emptyText,
-  label = "Abrir paleta de comandos (⌘K)",
+  label = `Abrir paleta de comandos (${formatShortcut(["mod", "K"])})`,
 }: TriggerProps): React.ReactElement {
   const [open, setOpen] = React.useState(false);
 
@@ -90,18 +90,18 @@ export const Default: Story = {
         id: "navigation",
         heading: "Navegação",
         entries: [
-          { id: "home", label: "Início", shortcut: "⌘H" },
-          { id: "dashboard", label: "Dashboard", shortcut: "⌘D" },
-          { id: "profile", label: "Perfil", shortcut: "⌘P" },
+          { id: "home", label: "Início", shortcut: formatShortcut(["mod", "H"]) },
+          { id: "dashboard", label: "Dashboard", shortcut: formatShortcut(["mod", "D"]) },
+          { id: "profile", label: "Perfil", shortcut: formatShortcut(["mod", "P"]) },
         ],
       },
       {
         id: "actions",
         heading: "Ações",
         entries: [
-          { id: "create", label: "Criar lançamento", shortcut: "⌘N" },
+          { id: "create", label: "Criar lançamento", shortcut: formatShortcut(["mod", "N"]) },
           { id: "sync", label: "Sincronizar contas", keywords: "atualizar refresh" },
-          { id: "settings", label: "Configurações", shortcut: "⌘," },
+          { id: "settings", label: "Configurações", shortcut: formatShortcut(["mod", ","]) },
         ],
       },
     ];
@@ -128,19 +128,19 @@ export const WithIcons: Story = {
         id: "navigation",
         heading: "Navegação",
         entries: [
-          { id: "home", label: "Início", icon: <Home />, shortcut: "⌘H" },
+          { id: "home", label: "Início", icon: <Home />, shortcut: formatShortcut(["mod", "H"]) },
           {
             id: "dashboard",
             label: "Dashboard",
             description: "Visão consolidada de KPIs",
             icon: <LayoutDashboard />,
-            shortcut: "⌘D",
+            shortcut: formatShortcut(["mod", "D"]),
           },
           {
             id: "profile",
             label: "Perfil",
             icon: <User />,
-            shortcut: "⌘P",
+            shortcut: formatShortcut(["mod", "P"]),
           },
         ],
       },
@@ -153,7 +153,7 @@ export const WithIcons: Story = {
             label: "Criar lançamento",
             description: "Abre o formulário de novo lançamento contábil",
             icon: <Plus />,
-            shortcut: "⌘N",
+            shortcut: formatShortcut(["mod", "N"]),
           },
           {
             id: "sync",
@@ -166,14 +166,14 @@ export const WithIcons: Story = {
             id: "settings",
             label: "Configurações",
             icon: <Settings />,
-            shortcut: "⌘,",
+            shortcut: formatShortcut(["mod", ","]),
           },
           {
             id: "delete",
             label: "Excluir lançamento atual",
             description: "Remove o lançamento selecionado",
             icon: <Trash2 />,
-            shortcut: "⌘⌫",
+            shortcut: formatShortcut(["mod", "Backspace"]),
           },
         ],
       },
@@ -263,77 +263,69 @@ export const EmptyState: Story = {
 };
 
 // ──────────────────────────────────────────────────────────────────
-// PlatformAwareShortcuts — usa formatShortcut() para renderizar
-// glyphs Mac (⌘) ou rótulos Win/Linux (Ctrl+) sem hardcode.
+// ForcedPlatformShortcuts — demo da opção `{ platform }` do helper
+// pra docs/contextos onde só um SO importa (e.g. wiki interna Windows-only).
 // ──────────────────────────────────────────────────────────────────
 
-export const PlatformAwareShortcuts: Story = {
+export const ForcedPlatformShortcuts: Story = {
   render: () => {
     const items: CommandPaletteGroup[] = [
       {
-        id: "nav",
-        heading: "Navegação",
+        id: "mac",
+        heading: "Apenas Mac (platform: 'mac')",
         entries: [
           {
-            id: "home",
-            label: "Início",
-            icon: <Home />,
-            shortcut: formatShortcut(["mod", "H"]),
+            id: "mac-search",
+            label: "Buscar comando…",
+            icon: <Search />,
+            shortcut: formatShortcut(["mod", "K"], { platform: "mac" }),
           },
           {
-            id: "dashboard",
-            label: "Dashboard",
-            icon: <LayoutDashboard />,
-            shortcut: formatShortcut(["mod", "D"]),
+            id: "mac-create",
+            label: "Criar lançamento",
+            icon: <Plus />,
+            shortcut: formatShortcut(["mod", "shift", "N"], { platform: "mac" }),
           },
           {
-            id: "profile",
-            label: "Perfil",
-            icon: <User />,
-            shortcut: formatShortcut(["mod", "P"]),
+            id: "mac-delete",
+            label: "Excluir item",
+            icon: <Trash2 />,
+            shortcut: formatShortcut(["mod", "shift", "Backspace"], { platform: "mac" }),
           },
         ],
       },
       {
-        id: "actions",
-        heading: "Ações",
+        id: "non-mac",
+        heading: "Apenas Win/Linux (platform: 'non-mac')",
         entries: [
           {
-            id: "create",
-            label: "Criar lançamento",
-            icon: <Plus />,
-            shortcut: formatShortcut(["mod", "N"]),
-          },
-          {
-            id: "search",
+            id: "win-search",
             label: "Buscar comando…",
             icon: <Search />,
-            shortcut: formatShortcut(["mod", "K"]),
+            shortcut: formatShortcut(["mod", "K"], { platform: "non-mac" }),
           },
           {
-            id: "settings",
-            label: "Configurações",
-            icon: <Settings />,
-            shortcut: formatShortcut(["mod", ","]),
+            id: "win-create",
+            label: "Criar lançamento",
+            icon: <Plus />,
+            shortcut: formatShortcut(["mod", "shift", "N"], { platform: "non-mac" }),
           },
           {
-            id: "delete",
+            id: "win-delete",
             label: "Excluir item",
             icon: <Trash2 />,
-            shortcut: formatShortcut(["mod", "shift", "Backspace"]),
+            shortcut: formatShortcut(["mod", "shift", "Backspace"], { platform: "non-mac" }),
           },
         ],
       },
     ];
-    return (
-      <Trigger items={items} label="Abrir paleta cross-platform" />
-    );
+    return <Trigger items={items} label="Abrir paleta · forced platform" />;
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Mesma paleta renderizada com `formatShortcut(['mod', 'K'])` em vez de literal `'⌘K'`. No Mac aparece `⌘K`; em Windows/Linux, `Ctrl+K`. Tokens semânticos suportados: `mod`, `shift`, `alt`, `ctrl`, `cmd`, `meta`, mais teclas especiais (`Backspace`, `Enter`, `Escape`, `Tab`, arrows). Modificadores no Mac são re-ordenados para a convenção canônica `⌃⌥⇧⌘` automaticamente — `['mod', 'shift', 'Backspace']` rende `⇧⌘⌫`. Detecção SSR-safe via `navigator.platform`. Decisão de API em ADR-017 (Addendum).",
+          "Demonstra a opção `{ platform }` do helper. Default (`'both'`) renderiza os dois lados (`⌘K / Ctrl+K`) — visível em todas as outras stories. Use `{ platform: 'mac' }` ou `{ platform: 'non-mac' }` quando o contexto restringe o SO (e.g. wiki interna Windows-only, screenshots por plataforma). Mac re-ordena modificadores para `⌃⌥⇧⌘key` automaticamente; non-Mac preserva a ordem do array com `+`.",
       },
     },
   },

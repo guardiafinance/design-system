@@ -35,7 +35,7 @@ function PaletteTrigger({
   items,
   placeholder,
   emptyText,
-  label = "Abrir paleta (⌘K)",
+  label = `Abrir paleta (${formatShortcut(["mod", "K"])})`,
 }: TriggerProps): React.ReactElement {
   const [open, setOpen] = React.useState(false);
 
@@ -74,18 +74,18 @@ export function BasicRow(): React.ReactElement {
       id: "navigation",
       heading: "Navegação",
       entries: [
-        { id: "home", label: "Início", shortcut: "⌘H" },
-        { id: "dashboard", label: "Dashboard", shortcut: "⌘D" },
-        { id: "profile", label: "Perfil", shortcut: "⌘P" },
+        { id: "home", label: "Início", shortcut: formatShortcut(["mod", "H"]) },
+        { id: "dashboard", label: "Dashboard", shortcut: formatShortcut(["mod", "D"]) },
+        { id: "profile", label: "Perfil", shortcut: formatShortcut(["mod", "P"]) },
       ],
     },
     {
       id: "actions",
       heading: "Ações",
       entries: [
-        { id: "create", label: "Criar lançamento", shortcut: "⌘N" },
+        { id: "create", label: "Criar lançamento", shortcut: formatShortcut(["mod", "N"]) },
         { id: "sync", label: "Sincronizar contas", keywords: "atualizar refresh" },
-        { id: "settings", label: "Configurações", shortcut: "⌘," },
+        { id: "settings", label: "Configurações", shortcut: formatShortcut(["mod", ","]) },
       ],
     },
   ];
@@ -106,15 +106,15 @@ export function WithIconsRow(): React.ReactElement {
       id: "navigation",
       heading: "Navegação",
       entries: [
-        { id: "home", label: "Início", icon: <Home />, shortcut: "⌘H" },
+        { id: "home", label: "Início", icon: <Home />, shortcut: formatShortcut(["mod", "H"]) },
         {
           id: "dashboard",
           label: "Dashboard",
           description: "Visão consolidada de KPIs",
           icon: <LayoutDashboard />,
-          shortcut: "⌘D",
+          shortcut: formatShortcut(["mod", "D"]),
         },
-        { id: "profile", label: "Perfil", icon: <User />, shortcut: "⌘P" },
+        { id: "profile", label: "Perfil", icon: <User />, shortcut: formatShortcut(["mod", "P"]) },
       ],
     },
     {
@@ -126,7 +126,7 @@ export function WithIconsRow(): React.ReactElement {
           label: "Criar lançamento",
           description: "Abre o formulário de novo lançamento contábil",
           icon: <Plus />,
-          shortcut: "⌘N",
+          shortcut: formatShortcut(["mod", "N"]),
         },
         {
           id: "sync",
@@ -139,14 +139,17 @@ export function WithIconsRow(): React.ReactElement {
           id: "settings",
           label: "Configurações",
           icon: <Settings />,
-          shortcut: "⌘,",
+          shortcut: formatShortcut(["mod", ","]),
         },
       ],
     },
   ];
   return (
     <div className="flex items-center justify-center py-6">
-      <PaletteTrigger items={items} label="Paleta com ícones (⌘K)" />
+      <PaletteTrigger
+        items={items}
+        label={`Paleta com ícones (${formatShortcut(["mod", "K"])})`}
+      />
     </div>
   );
 }
@@ -205,7 +208,7 @@ export function UseCasesRow(): React.ReactElement {
           label: "Excluir lançamento atual",
           description: "Remove o lançamento selecionado",
           icon: <Trash2 />,
-          shortcut: "⌘⌫",
+          shortcut: formatShortcut(["mod", "Backspace"]),
         },
       ],
     },
@@ -218,70 +221,64 @@ export function UseCasesRow(): React.ReactElement {
 }
 
 // ──────────────────────────────────────────────────────────────────
-// PlatformAware — usa formatShortcut() para detectar Mac vs Win/Linux
-// e renderizar o glyph/label correto sem hardcode.
+// ForcedPlatformRow — demo da opção `{ platform }` do helper pra
+// docs/contextos que restringem o SO (e.g. wiki interna Windows-only).
 // ──────────────────────────────────────────────────────────────────
 
-export function PlatformAwareRow(): React.ReactElement {
+export function ForcedPlatformRow(): React.ReactElement {
   const items: CommandPaletteGroup[] = [
     {
-      id: "nav",
-      heading: "Navegação",
+      id: "mac-only",
+      heading: "Apenas Mac (platform: 'mac')",
       entries: [
         {
-          id: "home",
-          label: "Início",
-          icon: <Home />,
-          shortcut: formatShortcut(["mod", "H"]),
+          id: "mac-search",
+          label: "Buscar comando…",
+          icon: <Search />,
+          shortcut: formatShortcut(["mod", "K"], { platform: "mac" }),
         },
         {
-          id: "dashboard",
-          label: "Dashboard",
-          icon: <LayoutDashboard />,
-          shortcut: formatShortcut(["mod", "D"]),
+          id: "mac-create",
+          label: "Criar lançamento",
+          icon: <Plus />,
+          shortcut: formatShortcut(["mod", "shift", "N"], { platform: "mac" }),
         },
         {
-          id: "profile",
-          label: "Perfil",
-          icon: <User />,
-          shortcut: formatShortcut(["mod", "P"]),
+          id: "mac-delete",
+          label: "Excluir item",
+          icon: <Trash2 />,
+          shortcut: formatShortcut(["mod", "shift", "Backspace"], { platform: "mac" }),
         },
       ],
     },
     {
-      id: "actions",
-      heading: "Ações",
+      id: "non-mac-only",
+      heading: "Apenas Win/Linux (platform: 'non-mac')",
       entries: [
         {
-          id: "create",
-          label: "Criar lançamento",
-          icon: <Plus />,
-          shortcut: formatShortcut(["mod", "N"]),
-        },
-        {
-          id: "search",
+          id: "win-search",
           label: "Buscar comando…",
           icon: <Search />,
-          shortcut: formatShortcut(["mod", "K"]),
+          shortcut: formatShortcut(["mod", "K"], { platform: "non-mac" }),
         },
         {
-          id: "settings",
-          label: "Configurações",
-          icon: <Settings />,
-          shortcut: formatShortcut(["mod", ","]),
+          id: "win-create",
+          label: "Criar lançamento",
+          icon: <Plus />,
+          shortcut: formatShortcut(["mod", "shift", "N"], { platform: "non-mac" }),
         },
         {
-          id: "delete",
+          id: "win-delete",
           label: "Excluir item",
           icon: <Trash2 />,
-          shortcut: formatShortcut(["mod", "shift", "Backspace"]),
+          shortcut: formatShortcut(["mod", "shift", "Backspace"], { platform: "non-mac" }),
         },
       ],
     },
   ];
   return (
     <div className="flex items-center justify-center py-6">
-      <PaletteTrigger items={items} label="Paleta cross-platform" />
+      <PaletteTrigger items={items} label="Paleta · forced platform" />
     </div>
   );
 }

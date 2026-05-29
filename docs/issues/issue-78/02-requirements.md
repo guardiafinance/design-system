@@ -54,15 +54,17 @@
 - **AC-24.** `docs/src/previews/command.tsx` expõe os componentes preview (`BasicRow`, `WithIconsRow`, `EmptyStateRow`, `UseCasesRow`).
 - **AC-25.** `docs/src/pages/index.astro` adiciona `"Command"` ao Set `MIGRATED` em ordem alfabética (entre `ConfidenceIndicator` e `DatePicker`).
 
-### Cross-platform shortcuts (scope expansion 2026-05-29 14:00 UTC)
+### Cross-platform shortcuts (scope expansion 2026-05-29 14:00 UTC, abordagem revisada 15:30 UTC)
 
-Findado durante review do PR #266: `shortcut: string` é estritamente apresentacional e não detecta SO. Per `lex-no-silent-tech-debt`, decisão registrada em Plan #79 (seção "Scope expansion") e ADR-017 (addendum) antes de executar.
+Findado durante review do PR #266: `shortcut: string` é estritamente apresentacional e todos os exemplos hardcodavam glyphs de Mac — Windows users viam ⌘ no Storybook. Per `lex-no-silent-tech-debt`, decisão registrada em Plan #79 (seção "Scope expansion") e ADR-017 (addendum) antes de executar.
 
-- **AC-29.** O barrel `@guardia/design-system` exporta `formatShortcut(keys: readonly string[], options?: { platform?: "mac" | "non-mac" }): string` implementado em `ui_kit/components/command/format-shortcut.ts`. A API `shortcut: string` em `CommandPaletteEntry` permanece intacta — zero breaking.
-- **AC-30.** Detecção SSR-safe: tenta `navigator.platform` primeiro, cai em `navigator.userAgent`; quando `navigator` indisponível (SSR, jsdom sem stub), assume Mac. Inclui iOS/iPadOS na detecção Mac.
+**Primeira tentativa** (descartada após review com @fernandoseguim): detectar SO via `navigator.platform` e renderizar só o lado correspondente. Trade-offs identificados — hidratação SSR fragmentada, baselines visuais divergentes por plataforma, não-determinismo em testes. **Decisão final**: render both lados (`⌘K / Ctrl+K`) sempre por default.
+
+- **AC-29.** O barrel `@guardia/design-system` exporta `formatShortcut(keys: readonly string[], options?: { platform?: "mac" | "non-mac" | "both" }): string` implementado em `ui_kit/components/command/format-shortcut.ts`. A API `shortcut: string` em `CommandPaletteEntry` permanece intacta — zero breaking.
+- **AC-30.** Default `platform: "both"` renderiza os dois lados separados por ` / ` (`formatShortcut(["mod", "K"])` → `"⌘K / Ctrl+K"`). Sem detecção de SO, sem hidratação fragmentada, sem baselines visuais por plataforma. Usuário lê o lado correto do separador conforme o teclado dele.
 - **AC-31.** Tokens semânticos mapeados — `mod` (⌘/Ctrl+), `shift` (⇧/Shift+), `alt`/`option` (⌥/Alt+), `ctrl`/`control` (⌃/Ctrl+ explícito), `cmd` (⌘/Ctrl+, alias), `meta` (⌘/Win+). Glyphs de teclas especiais: `backspace`/`⌫`, `enter`/`return`/`↵`, `tab`/`⇥`, `escape`/`esc`/`⎋`, `space`/`␣`, `arrowup/down/left/right`/↑↓←→. Modificadores no Mac são re-ordenados para a convenção canônica `⌃⌥⇧⌘key` independente da ordem de input; non-Mac preserva a ordem do array com separador `+`. Letras e símbolos preservados literalmente. Lookup case-insensitive.
-- **AC-32.** `format-shortcut.test.ts` cobre Mac (forced), non-Mac (forced) e auto-detection, com ≥ 12 asserts incluindo: glyph único, modificador composto, re-ordenação canônica no Mac, preservação de ordem em non-Mac, tokens case-insensitive, teclas especiais, letras/símbolos literais.
-- **AC-33.** ≥ 1 story (`PlatformAwareShortcuts`) e ≥ 1 preview row (`PlatformAwareRow`) consomem `formatShortcut` para demonstrar a renderização cross-platform e quebrar o vício do exemplo Mac-only nos demais previews.
+- **AC-32.** `format-shortcut.test.ts` cobre default (`"both"`), Mac (forced), non-Mac (forced), com ≥ 18 asserts incluindo: render lado a lado, modificador composto, re-ordenação canônica no Mac, preservação de ordem em non-Mac, tokens case-insensitive, teclas especiais, letras/símbolos literais, meta vs Win.
+- **AC-33.** Todas as stories com shortcuts (`Default`, `WithIcons`) e todas as previews com shortcuts (`BasicRow`, `WithIconsRow`, `UseCasesRow`) usam `formatShortcut(["mod", X])` em vez de literais Mac. Story `ForcedPlatformShortcuts` + preview `ForcedPlatformRow` demonstram o escape hatch `{ platform }`. Trigger button labels nas previews/stories também usam o helper.
 
 ### Quality gates
 

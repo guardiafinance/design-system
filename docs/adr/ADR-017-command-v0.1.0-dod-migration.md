@@ -118,46 +118,56 @@ Migrar Command ao v0.1.0 DoD seguindo o recipe **Dialog + cmdk**:
 
 ### Context
 
-Review do PR #266 por @fernandoseguim identificou que `shortcut: string` em `CommandPaletteEntry` é estritamente apresentacional — todos os exemplos em stories e previews hardcodam glyphs de Mac (`⌘K`, `⌘N`, `⌘,`, `⌘⌫`), sem detecção de SO. Usuários Windows/Linux veem o glyph errado. Não é defeito do componente entregue (cumpre o escopo declarado), mas é gap de UX cross-platform e armadilha de onboarding (todo consumidor que copia o exemplo herda o vício Mac-only).
+Review do PR #266 por @fernandoseguim identificou que `shortcut: string` em `CommandPaletteEntry` é estritamente apresentacional — todos os exemplos em stories e previews hardcodavam glyphs de Mac (`⌘K`, `⌘N`, `⌘,`, `⌘⌫`), sem refletir o SO do usuário. Acessando a Storybook do PR a partir do Windows, os shortcuts continuavam aparecendo como ⌘ — UX ruim e armadilha de onboarding (todo consumidor que copia o exemplo herda o vício Mac-only).
 
-### Decision
+### Decision (revisada na mesma sessão de review)
 
-Adicionar helper utility `formatShortcut(keys, options?)` exportado pelo barrel do design-system. Mantém `shortcut: string` na API atual — consumidor escolhe entre passar literal (`'⌘K'`) ou usar o helper (`formatShortcut(['mod', 'K'])`). Zero breaking.
+**Primeira tentativa** (descartada): detectar SO em runtime via `navigator.platform`/`userAgent` e renderizar apenas o lado correspondente (⌘K no Mac, Ctrl+K em Win/Linux). Problemas identificados após implementação:
+- Stories antigas continuavam com literais Mac hardcoded — converter todas era trabalho equivalente.
+- Hidratação SSR Astro virava risco: build no Linux CI emitia `Ctrl+K`, hidratação no Mac trocaria pra `⌘K`, e baselines visuais por plataforma divergiam.
+- Detecção introduz não-determinismo nos testes e nas baselines visuais (Ubuntu CI ≠ Mac dev local).
+
+**Decisão final**: helper `formatShortcut(keys, options?)` exportado pelo barrel. **Default `platform: "both"`** renderiza Mac e Win/Linux lado a lado, separados por ` / `. Sem detecção de SO. O usuário lê o lado correto do separador.
 
 ```ts
-formatShortcut(['mod', 'K'])               // → "⌘K"  | "Ctrl+K"
-formatShortcut(['mod', 'shift', 'P'])      // → "⇧⌘P" | "Ctrl+Shift+P"
-formatShortcut(['mod', 'Backspace'])       // → "⌘⌫"  | "Ctrl+Backspace"
-formatShortcut(['mod', 'K'], { platform: 'non-mac' })  // forçado — útil em stories
+formatShortcut(["mod", "K"])                          // → "⌘K / Ctrl+K"
+formatShortcut(["mod", "shift", "P"])                 // → "⇧⌘P / Ctrl+Shift+P"
+formatShortcut(["mod", "Backspace"])                  // → "⌘⌫ / Ctrl+Backspace"
+formatShortcut(["mod", "K"], { platform: "mac" })     // → "⌘K"     — escape hatch
+formatShortcut(["mod", "K"], { platform: "non-mac" }) // → "Ctrl+K" — escape hatch
 ```
 
 Decisões cravadas:
 
-1. **API por array de tokens** (não objeto `{mac, win}`). Razão: alinha com cmdk, VS Code, Linear; o consumidor declara a *intenção semântica* (`['mod', 'K']`) e o helper resolve glyph/label por SO. Objeto exigiria que cada consumidor reaprenda a convenção Mac.
+1. **Render both por default**. O componente renderiza string estática `"⌘K / Ctrl+K"`. Não há detecção, não há hidratação fragmentada, não há baseline visual diferente por plataforma. O design system entrega documentação clara em qualquer browser.
 
-2. **Detecção SSR-safe** via `navigator.platform` primeiro, fallback `navigator.userAgent`; quando `navigator` indisponível (SSR, jsdom sem stub) default Mac. Default Mac escolhido porque a base atual do design-system é majoritariamente macOS — a regra de menor surpresa em hidratação SSR/CSR.
+2. **Escape hatch `{ platform }`**. Para contextos onde só um SO importa (wiki interna Windows-only, screenshots de release notes, demos por plataforma), o consumidor força um lado via `{ platform: "mac" }` ou `{ platform: "non-mac" }`.
 
-3. **Re-ordenação canônica no Mac** (`⌃⌥⇧⌘key`) independente da ordem de input. `['mod', 'shift', 'P']` e `['shift', 'mod', 'P']` ambos rendem `⇧⌘P`. Razão: a convenção Mac é estrita e universal; expor reordering ao consumidor seria forçá-lo a memorizar uma ordem arbitrária. Non-Mac preserva ordem do array (Windows/Linux são mais flexíveis: `Ctrl+Shift+P` e `Shift+Ctrl+P` ambos legíveis).
+3. **API por array de tokens** (não objeto `{mac, win}`). Razão: alinha com cmdk, VS Code, Linear; consumidor declara a *intenção semântica* (`["mod", "K"]`) e o helper resolve glyph/label. Objeto exigiria que cada consumidor reaprenda a convenção Mac.
 
-4. **Tokens semânticos + aliases**:
-   - Modificadores: `mod` (⌘ Mac / Ctrl+ non-Mac), `shift` (⇧/Shift+), `alt`/`option` (⌥/Alt+), `ctrl`/`control` (⌃/Ctrl+ — para casos onde `mod` ≠ `ctrl` em Mac), `cmd` (⌘/Ctrl+, alias para clareza intencional), `meta` (⌘/Win+).
+4. **Re-ordenação canônica no Mac** (`⌃⌥⇧⌘key`) independente da ordem de input. `["mod", "shift", "P"]` e `["shift", "mod", "P"]` ambos rendem `⇧⌘P` no lado esquerdo. Non-Mac preserva ordem do array no lado direito (`Ctrl+Shift+P` e `Shift+Ctrl+P` ambos legíveis em Win/Linux).
+
+5. **Tokens semânticos + aliases**:
+   - Modificadores: `mod` (⌘ Mac / Ctrl+ non-Mac), `shift` (⇧/Shift+), `alt`/`option` (⌥/Alt+), `ctrl`/`control` (⌃/Ctrl+ explícito), `cmd` (⌘/Ctrl+, alias), `meta` (⌘/Win+).
    - Teclas especiais: `backspace`/⌫, `enter`/`return`/↵, `tab`/⇥, `escape`/`esc`/⎋, `space`/␣, `arrowup/down/left/right`/↑↓←→.
-   - Letras (`K`, `N`) e símbolos (`,`, `/`) preservados literalmente.
-   - Lookup **case-insensitive** no input; output respeita o case Mac convention (glyphs únicos) ou Win/Linux convention (palavras capitalizadas).
+   - Letras e símbolos preservados literalmente.
+   - Lookup case-insensitive.
 
-5. **Sem provider, sem hook**. Helper puro (`() => string`) — chama no render. Trocar de OS em runtime é cenário raríssimo (basicamente impossível); não justifica reatividade. Stories que precisam alternar usam `{ platform }` explícito.
+6. **Todas as stories e previews convertidos**. `Default`, `WithIcons`, `BasicRow`, `WithIconsRow`, `UseCasesRow` agora usam `formatShortcut(["mod", X])` — não há mais literais Mac escondidos. A story/preview "Forced platform shortcuts" demonstra o escape hatch `{ platform }`.
+
+7. **Sem provider, sem hook**. Helper puro `() => string` — chama no render.
 
 ### Consequences
 
 **Positive:**
-- Consumidores que querem cross-platform certo ganham helper one-liner.
-- API atual `shortcut: string` segue intacta — quem prefere literal continua passando literal.
-- Stories e previews ganham 1 exemplo canônico que ensina o padrão correto.
-- Não acopla o componente Command ao helper — qualquer outro componente DS pode importar (Menu, Tooltip eventualmente, AlertDialog quando ganharem shortcuts).
+- Funciona em qualquer browser/SO sem detecção, sem hidratação fragmentada.
+- Stories e previews exibem o pattern correto em todo lugar — onboarding de consumidor não pega vício Mac-only.
+- Baselines visuais únicas por componente (não por SO) — CI mais simples.
+- Escape hatch claro pra docs single-SO via `{ platform }`.
+- Não acopla o componente Command ao helper — qualquer outro componente DS pode importar (Menu, Tooltip, AlertDialog quando ganharem shortcuts).
 
 **Negative:**
-- +1 export no barrel. Surface cresce mas o helper é pequeno e auto-contido.
-- Re-ordenação automática no Mac pode surpreender consumidor que esperava ordem literal — mitigado por documentar explicitamente na JSDoc + README.
+- Cada shortcut ocupa ~2x o espaço horizontal em UI estreita (e.g. `⇧⌘⌫ / Ctrl+Shift+Backspace`). Mitigado: a CSS já usa `truncate` no label da paleta; shortcut tem `ml-auto` e `text-xs` — o layout absorve a expansão. Em outros componentes com kbds mais apertados, o consumidor pode forçar `{ platform }` ou aceitar a redução.
 
 **Neutral:**
-- +2 arquivos novos (`format-shortcut.ts`, `format-shortcut.test.ts`), +1 export em `index.tsx`, +1 story, +1 preview row. Segundo commit atômico no mesmo PR.
+- +2 arquivos novos (`format-shortcut.ts`, `format-shortcut.test.ts`), +1 export em `index.tsx`. Stories/previews/Astro reconfigurados. Story `ForcedPlatformShortcuts` + preview `ForcedPlatformRow` demonstram o escape hatch. Segundo commit atômico no mesmo PR.
