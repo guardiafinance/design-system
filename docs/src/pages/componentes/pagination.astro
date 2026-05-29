@@ -1,0 +1,234 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  ActiveRow,
+  DisabledRow,
+  EllipsisRow,
+  EdgesRow,
+} from "../../previews/pagination";
+import paginationSource from "@ds/components/pagination/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVEGAÇÃO"
+  title="Pagination"
+  group="Navegação"
+  storybookId="components-pagination--default"
+  sourcePath="ui_kit/components/pagination"
+  lede='Navegação numérica composta para listas paginadas. Composição shadcn-style multi-parte (<code class="inline">Pagination</code> + <code class="inline">Content</code> + <code class="inline">Item</code> + <code class="inline">Link</code> + variantes <code class="inline">Previous</code> · <code class="inline">Next</code> · <code class="inline">First</code> · <code class="inline">Last</code> + <code class="inline">Ellipsis</code>) alinhada com Breadcrumb, NavigationMenu e Menu. O consumidor monta o range e decide quando exibir reticências, edges e qual página marcar como ativa.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Pagination · Content · Item · Link · Previous · Next</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Render como <code class="inline">&lt;nav role="navigation" aria-label="pagination"&gt;</code> contendo
+      <code class="inline">&lt;ul&gt;</code> + <code class="inline">&lt;li&gt;</code> semânticos.
+      Cada <code class="inline">PaginationLink</code> recebe <code class="inline">href</code> para
+      navegação SPA / SSR e <code class="inline">isActive</code> para a página atual.
+    </p>
+  </section>
+
+  <!-- ============ ACTIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estado ativo</h2>
+      <small>aria-current="page" · variante outline</small>
+    </div>
+    <div class="preview">
+      <ActiveRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">isActive</code> aplica
+      <code class="inline">aria-current="page"</code> e troca a variante visual
+      para <code class="inline">outline</code> (idle usa <code class="inline">ghost</code>).
+      Screen readers anunciam a página atual sem reapresentar o número.
+    </p>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Desabilitado</h2>
+      <small>fronteiras · aria-disabled · tabIndex=-1</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">disabled</code> aplica
+      <code class="inline">aria-disabled="true"</code>,
+      <code class="inline">tabIndex={-1}</code>, suprime
+      <code class="inline">onClick</code> e marca o chain visual desabilitado
+      (<code class="inline">cursor-not-allowed</code> +
+      <code class="inline">opacity-50</code>).
+    </p>
+  </section>
+
+  <!-- ============ ELLIPSIS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Reticências</h2>
+      <small>composição comprimida em torno da página atual</small>
+    </div>
+    <div class="preview">
+      <EllipsisRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">PaginationEllipsis</code> renderiza o ícone
+      <code class="inline">MoreHorizontal</code> com
+      <code class="inline">aria-hidden="true"</code> e um sibling
+      <code class="inline">.sr-only</code> "Mais páginas" para anúncio em SR.
+      O range visível (1 · … · 11 · 12 · 13 · … · 42) é decidido pelo consumidor.
+    </p>
+  </section>
+
+  <!-- ============ EDGES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Edges</h2>
+      <small>First / Last em composição com Prev / Next</small>
+    </div>
+    <div class="preview">
+      <EdgesRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">PaginationFirst</code> e
+      <code class="inline">PaginationLast</code> oferecem saltos diretos
+      para início e fim. Use quando a paginação cobre &gt; ~20 páginas.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente · Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Pagination · ...nav</td>
+            <td class="type">React.ComponentProps&lt;"nav"&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Atributos HTML padrão do <code class="inline">&lt;nav&gt;</code>. <code class="inline">role</code> e <code class="inline">aria-label</code> já vêm preenchidos.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationLink · isActive</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc"><code class="inline">true</code> aplica <code class="inline">aria-current="page"</code> e variante <code class="inline">outline</code>; <code class="inline">false</code> usa <code class="inline">ghost</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationLink · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc"><code class="inline">aria-disabled="true"</code> + <code class="inline">tabIndex={-1}</code> + <code class="inline">onClick</code> suprimido + visual desabilitado.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationLink · size</td>
+            <td class="type">"xs" | "sm" | "default" | "lg" | "icon"</td>
+            <td class="default">"default"</td>
+            <td class="desc">Propagada para <code class="inline">buttonVariants</code> — ladder de altura idêntico ao Button.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationLink · href</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Sem <code class="inline">href</code>, o link assume <code class="inline">role="button"</code> com handler Enter/Space.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationPrevious · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Página anterior"</td>
+            <td class="desc">Rótulo acessível em pt-BR; sobrescreva para i18n.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationNext · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Próxima página"</td>
+            <td class="desc">Rótulo acessível em pt-BR; sobrescreva para i18n.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationFirst · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Primeira página"</td>
+            <td class="desc">Rótulo acessível em pt-BR; sobrescreva para i18n.</td>
+          </tr>
+          <tr>
+            <td class="name">PaginationLast · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"Última página"</td>
+            <td class="desc">Rótulo acessível em pt-BR; sobrescreva para i18n.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação e ativação</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Avança o foco através dos links em ordem do DOM.</td></tr>
+          <tr><td class="name">Shift + Tab</td><td class="desc">Retrocede o foco.</td></tr>
+          <tr><td class="name">Enter</td><td class="desc">Ativa o link em foco — comportamento nativo de <code class="inline">&lt;a&gt;</code> com <code class="inline">href</code>; equivalente a <code class="inline">onClick</code> quando <code class="inline">role="button"</code>.</td></tr>
+          <tr><td class="name">Space</td><td class="desc">Ativa o link quando atua como botão (sem <code class="inline">href</code>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/pagination/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={paginationSource}
+      language="tsx"
+      filename="ui_kit/components/pagination/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · landmark · keyboard</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Landmark</b>: <code class="inline">&lt;nav role="navigation" aria-label="pagination"&gt;</code> — identificado por SR como landmark dedicado.</span></li>
+        <li><span><b>Estado ativo</b>: <code class="inline">aria-current="page"</code> aplicado por <code class="inline">isActive</code>; sem ambiguidade entre "está aqui" e "ir para".</span></li>
+        <li><span><b>Estado desabilitado</b>: <code class="inline">aria-disabled="true"</code> + <code class="inline">tabIndex={-1}</code> + <code class="inline">onClick</code> suprimido — SR anuncia como indisponível.</span></li>
+        <li><span><b>Labels pt-BR</b>: <code class="inline">PaginationPrevious</code>, <code class="inline">Next</code>, <code class="inline">First</code> e <code class="inline">Last</code> declaram <code class="inline">aria-label</code> explícito mesmo com texto visível interno — ratifica anúncio correto em SR.</span></li>
+        <li><span><b>Reticências</b>: <code class="inline">PaginationEllipsis</code> com wrapper <code class="inline">aria-hidden="true"</code> + sibling <code class="inline">.sr-only</code> "Mais páginas".</span></li>
+        <li><span><b>Teclado</b>: <code class="inline">Enter</code> sempre ativa; <code class="inline">Space</code> ativa quando o link atua como botão (sem <code class="inline">href</code>).</span></li>
+        <li><span><b>jest-axe</b> em light + dark cobre Default + ManyPagesWithEllipsis + Edges + Disabled (ver <code class="inline">Pagination.test.tsx</code>).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
