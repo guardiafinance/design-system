@@ -1,0 +1,196 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  LevelsRow,
+  VariantsRow,
+  SizesRow,
+  InContextRow,
+} from "../../previews/confidence-indicator";
+import confidenceIndicatorSource from "@ds/components/confidence-indicator/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · FEEDBACK"
+  title="ConfidenceIndicator"
+  group="Feedback"
+  storybookId="components-confidenceindicator--default"
+  sourcePath="ui_kit/components/confidence-indicator"
+  lede='Semáforo de confiança para outputs de IA. Comunica o grau de confiança da Guardia em uma decisão de agente — sistema Lighthouse: <b>high</b> (≥ 95 %, auto-aplicado), <b>medium</b> (80–94 %, revisar), <b>low</b> (&lt; 80 %, atenção). Três variantes — <code class="inline">chip</code>, <code class="inline">bar</code>, <code class="inline">dot</code> — sobre o mesmo contrato semântico (<code class="inline">role="meter"</code>).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>chip default com percentual</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sem <code class="inline">level</code> explícito, o tier é derivado do
+      <code class="inline">value</code>: ≥ 95 → high, 80–94 → medium, &lt; 80 → low.
+    </p>
+  </section>
+
+  <!-- ============ LEVELS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Níveis</h2>
+      <small>high · medium · low</small>
+    </div>
+    <div class="preview">
+      <LevelsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cada tier usa um par superfície/texto recomputado para WCAG 2.1 AA — verde
+      sobre tint verde, amarelo sobre tint amarelo (AAA via
+      <code class="inline">guardia-yellow-{900}</code>), vermelho sobre tint vermelho.
+      Ver ADR-013.
+    </p>
+  </section>
+
+  <!-- ============ VARIANTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>chip · bar · dot</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      O mesmo valor escalar em três tratamentos visuais.
+      <code class="inline">chip</code> é o default; <code class="inline">bar</code>
+      mostra a magnitude; <code class="inline">dot</code> é a forma mínima para
+      uso inline em listas densas.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm · md (default)</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ IN CONTEXT ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Em contexto</h2>
+      <small>sugestão de agente — chip sm ao lado do nome</small>
+    </div>
+    <div class="preview">
+      <InContextRow client:load />
+    </div>
+    <p class="preview-caption">
+      Espelha o uso canônico do playground legacy. O chip <code class="inline">sm</code>
+      ao lado do nome do agente comunica o tier sem competir com o conteúdo da
+      sugestão; as ações (aceitar/rejeitar) ficam claras à direita.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API canônica</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">value</td>
+            <td class="type">number</td>
+            <td class="default">—</td>
+            <td class="desc">Percentual de confiança em [0, 100]. Clampado nas bordas.</td>
+          </tr>
+          <tr>
+            <td class="name">level</td>
+            <td class="type">"high" | "medium" | "low"</td>
+            <td class="default">derivado de <code class="inline">value</code></td>
+            <td class="desc">Override explícito do tier; vence a derivação.</td>
+          </tr>
+          <tr>
+            <td class="name">variant</td>
+            <td class="type">"chip" | "bar" | "dot"</td>
+            <td class="default">"chip"</td>
+            <td class="desc">Tratamento visual do mesmo valor escalar.</td>
+          </tr>
+          <tr>
+            <td class="name">size</td>
+            <td class="type">"sm" | "md"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Escala visual (padding / tipografia / bullet).</td>
+          </tr>
+          <tr>
+            <td class="name">showValue</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Oculta o percentual da DOM visível — <code class="inline">aria-valuenow</code> permanece.</td>
+          </tr>
+          <tr>
+            <td class="name">label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">tier label</td>
+            <td class="desc">Substitui o rótulo do tier (default em pt-BR: Alta confiança · Revisar · Atenção).</td>
+          </tr>
+          <tr>
+            <td class="name">levelLabels</td>
+            <td class="type">Partial&lt;Record&lt;Level, string&gt;&gt;</td>
+            <td class="default">defaults pt-BR</td>
+            <td class="desc">Override parcial dos rótulos por tier — útil para i18n.</td>
+          </tr>
+          <tr>
+            <td class="name">aria-label</td>
+            <td class="type">string</td>
+            <td class="default">auto-composto</td>
+            <td class="desc">Override do <code class="inline">aria-label</code> default <code class="inline">"Confiança: &lbrace;label&rbrace; &lbrace;N&rbrace;%"</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · WAI-ARIA meter pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>role="meter"</b> (WAI-ARIA 1.2 §5.3.18) — medida escalar dentro de um intervalo conhecido. <code class="inline">progressbar</code> seria errado porque sinaliza progresso temporal.</span></li>
+        <li><span><b>aria-valuemin=0 / aria-valuemax=100 / aria-valuenow</b> reflete o valor clampado e arredondado.</span></li>
+        <li><span><b>aria-valuetext</b> sempre composto — <code class="inline">"&lbrace;label&rbrace; &lbrace;N&rbrace;%"</code> quando o valor é conhecido, apenas o <code class="inline">label</code> caso contrário.</span></li>
+        <li><span><b>aria-label</b> auto-composto com prefixo <code class="inline">"Confiança:"</code>, sobrescrevível via prop.</span></li>
+        <li><span><b>Contraste WCAG AA</b> em light + dark para os três tiers — recomputed para texto normal (≥ 4.5:1). Ver ADR-013 § "Tier surfaces".</span></li>
+        <li><span><b>jest-axe</b> roda em <code class="inline">light</code> e <code class="inline">dark</code> sobre Default + cada tier + cada variante + variações de prop (ver <code class="inline">ConfidenceIndicator.test.tsx</code>).</span></li>
+        <li><span><b>Não focável</b> por default — é uma medida escalar passiva. Consumidor que torne o componente clicável carrega seu próprio foco e <code class="inline">aria-describedby</code>.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/confidence-indicator/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={confidenceIndicatorSource}
+      language="tsx"
+      filename="ui_kit/components/confidence-indicator/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+</ComponentPreview>
