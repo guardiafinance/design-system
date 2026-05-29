@@ -1,0 +1,276 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SidesRow,
+  AlignmentsRow,
+  SizesRow,
+  StatesRow,
+  DelaysRow,
+} from "../../previews/tooltip";
+import { LiveTooltipSnippet } from "../../previews/tooltip-live";
+import tooltipSource from "@ds/components/tooltip/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Tooltip"
+  group="Overlays"
+  storybookId="components-tooltip--default"
+  sourcePath="ui_kit/components/tooltip"
+  lede='Hint flutuante acionado por hover ou foco. Use para microcopy contextual — atalhos de teclado, descrição curta de ícone, esclarecimento de campo. Base no Radix Tooltip com tokens semânticos canônicos e CVA <code class="inline">size</code> alinhado a Popover, Combobox e Select.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Tooltip · Trigger · Content</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para conteúdo acionável (form compacto, lista filtrável) prefira
+      <code class="inline">&lt;Popover&gt;</code>; para diálogo modal,
+      <code class="inline">&lt;Dialog&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIDES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Posicionamento</h2>
+      <small>side · top / right / bottom / left</small>
+    </div>
+    <div class="preview">
+      <SidesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Radix pode inverter automaticamente em caso de collision com a viewport.
+      O atributo <code class="inline">data-side</code> no DOM reflete o lado
+      resolvido após eventual flip.
+    </p>
+  </section>
+
+  <!-- ============ ALIGNMENTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Alinhamento</h2>
+      <small>align · start / center / end</small>
+    </div>
+    <div class="preview">
+      <AlignmentsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 8 · md 12 (default) · lg 16</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Ladder de padding (<code class="inline">p-2</code> /
+      <code class="inline">p-3</code> / <code class="inline">p-4</code>) idêntico
+      a Popover, Combobox e Select. Tipografia em duas raias
+      (<code class="inline">text-xs</code> para
+      <code class="inline">sm</code>, <code class="inline">text-sm</code> para
+      <code class="inline">md</code> e <code class="inline">lg</code>) — sem
+      <code class="inline">text-base</code> em <code class="inline">lg</code>
+      para preservar a legibilidade no max-width restrito do tooltip
+      (ver ADR-007).
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · long content · withArrow=false</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O arrow é renderizado por default (<code class="inline">withArrow=true</code>)
+      consumindo <code class="inline">fill-background</code> +
+      <code class="inline">stroke-border-strong</code>. Para densidade visual
+      máxima (e.g., grupos de hints adjacentes), suprima via
+      <code class="inline">withArrow={false}</code>.
+    </p>
+  </section>
+
+  <!-- ============ DELAYS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Delays</h2>
+      <small>delayDuration · skipDelayDuration · Provider</small>
+    </div>
+    <div class="preview">
+      <DelaysRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cada <code class="inline">&lt;Tooltip&gt;</code> monta um Provider
+      implícito com os defaults Radix (700ms / 300ms). Para grupos de tooltips
+      que devem compartilhar ritmo (e.g., barra lateral com vários hints
+      rápidos), envolva-os manualmente em
+      <code class="inline">&lt;TooltipProvider&gt;</code> ancestral —
+      Radix tolera providers aninhados.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveTooltipSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente / Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Tooltip · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">Tooltip · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback ao abrir/fechar.</td>
+          </tr>
+          <tr>
+            <td class="name">Tooltip · delayDuration</td>
+            <td class="type">number</td>
+            <td class="default">700</td>
+            <td class="desc">Tempo (ms) que o cursor descansa no trigger antes de abrir. Propagado tanto ao Provider implícito quanto ao Root.</td>
+          </tr>
+          <tr>
+            <td class="name">Tooltip · skipDelayDuration</td>
+            <td class="type">number</td>
+            <td class="default">300</td>
+            <td class="desc">Janela durante a qual o próximo tooltip do mesmo Provider abre sem repetir o delay.</td>
+          </tr>
+          <tr>
+            <td class="name">Tooltip · disableHoverableContent</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Desmonta o content assim que o cursor sai do trigger — impede interação com o content.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipTrigger · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Repassa props para o filho (sem wrapper extra).</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipContent · side</td>
+            <td class="type">"top" | "right" | "bottom" | "left"</td>
+            <td class="default">"top"</td>
+            <td class="desc">Posição preferida. Pode ser invertida na collision.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipContent · align</td>
+            <td class="type">"start" | "center" | "end"</td>
+            <td class="default">"center"</td>
+            <td class="desc">Alinhamento relativo ao trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipContent · sideOffset</td>
+            <td class="type">number</td>
+            <td class="default">4</td>
+            <td class="desc">Distância em px ao trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipContent · size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Padding ladder 8 / 12 / 16 px + tamanho do texto.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipContent · withArrow</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Renderiza o <code class="inline">Tooltip.Arrow</code> com tokens semânticos. Suprima para densidade visual.</td>
+          </tr>
+          <tr>
+            <td class="name">TooltipProvider</td>
+            <td class="type">—</td>
+            <td class="default">—</td>
+            <td class="desc">Re-export do Radix Provider. Use ancestralmente para compartilhar <code class="inline">delayDuration</code> / <code class="inline">skipDelayDuration</code> entre um grupo de tooltips.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>foco e dismissal</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Foco no trigger abre o tooltip (paridade com hover via <code class="inline">onFocus</code>).</td></tr>
+          <tr><td class="name">Shift+Tab</td><td class="desc">Saída do trigger fecha o tooltip.</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha o tooltip sem mover o foco.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/tooltip/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={tooltipSource}
+      language="tsx"
+      filename="ui_kit/components/tooltip/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · tooltip pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: recebe <code class="inline">aria-describedby</code> apontando para o content quando aberto (Radix).</span></li>
+        <li><span><b>Content</b>: <code class="inline">role="tooltip"</code>, com transição animada por <code class="inline">data-state</code>.</span></li>
+        <li><span><b>Hover + Focus</b>: o tooltip abre tanto via cursor quanto via teclado — paridade obrigatória per <code class="inline">lex-frontend-accessibility</code>.</span></li>
+        <li><span><b>Escape</b> fecha sem perda de foco; o trigger permanece focado para o próximo Tab.</span></li>
+        <li><span><b>jest-axe</b> em light + dark cobre Default, Open e Disabled (ver <code class="inline">Tooltip.test.tsx</code>).</span></li>
+        <li><span><b>Foco visível</b>: o ring laranja (<code class="inline">ring-ring</code>) no trigger não é removido pelo content em cima.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
