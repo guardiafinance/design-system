@@ -1,0 +1,336 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SidesRow,
+  AlignmentsRow,
+  SizesRow,
+  CheckboxRow,
+  RadioRow,
+  GroupsRow,
+  SubmenuRow,
+  ContextModeRow,
+} from "../../previews/menu";
+import { LiveMenuSnippet } from "../../previews/menu-live";
+import menuSource from "@ds/components/menu/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Menu"
+  group="Overlays"
+  storybookId="components-menu--default"
+  sourcePath="ui_kit/components/menu"
+  lede='Menu canônico de ações. Consolida dropdown-menu + context-menu sob a mesma API via <code class="inline">&lt;Menu mode&gt;</code>. Base no Radix com tokens semânticos compartilhados (ADR-006).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Menu · Trigger · Content · Item</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para ações simples acionadas por clique. Para abrir via clique direito,
+      use <code class="inline">&lt;Menu mode="context"&gt;</code>. Para listas longas com busca,
+      prefira <code class="inline">&lt;Combobox&gt;</code>; para conteúdo arbitrário ancorado,
+      <code class="inline">&lt;Popover&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIDES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Posicionamento</h2>
+      <small>side · top / right / bottom / left</small>
+    </div>
+    <div class="preview">
+      <SidesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Radix pode inverter automaticamente em caso de collision com a viewport.
+      O atributo <code class="inline">data-side</code> no DOM reflete o lado
+      resolvido após eventual flip.
+    </p>
+  </section>
+
+  <!-- ============ ALIGNMENTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Alinhamento</h2>
+      <small>align · start / center / end</small>
+    </div>
+    <div class="preview">
+      <AlignmentsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm · md (default) · lg</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O ladder de padding externo (<code class="inline">p-1</code> /
+      <code class="inline">p-1.5</code> / <code class="inline">p-2</code>) é mais
+      apertado que o de <code class="inline">Popover</code> porque cada
+      <code class="inline">MenuItem</code> já carrega <code class="inline">py-1.5 px-2</code>.
+      A escala tipográfica (<code class="inline">text-[13px]</code> /
+      <code class="inline">text-sm</code> / <code class="inline">text-[15px]</code>)
+      acompanha Popover para manter consistência entre Overlays.
+    </p>
+  </section>
+
+  <!-- ============ CHECKBOX ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Checkbox</h2>
+      <small>MenuCheckboxItem · estado independente por linha</small>
+    </div>
+    <div class="preview">
+      <CheckboxRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ RADIO ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Radio</h2>
+      <small>MenuRadioGroup + MenuRadioItem · seleção exclusiva</small>
+    </div>
+    <div class="preview">
+      <RadioRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ GROUPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Grupos, rótulos e atalhos</h2>
+      <small>MenuGroup · MenuLabel · MenuShortcut · MenuSeparator</small>
+    </div>
+    <div class="preview">
+      <GroupsRow client:load />
+    </div>
+  </section>
+
+  <!-- ============ SUBMENU ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Submenu</h2>
+      <small>MenuSub · MenuSubTrigger · MenuSubContent</small>
+    </div>
+    <div class="preview">
+      <SubmenuRow client:load />
+    </div>
+    <p class="preview-caption">
+      Submenu suporta navegação por teclado (<code class="inline">ArrowRight</code> abre,
+      <code class="inline">ArrowLeft</code> fecha). A documentação cobre um nível;
+      o componente aceita aninhamento adicional suportado pelo Radix.
+    </p>
+  </section>
+
+  <!-- ============ CONTEXT MODE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Modo contexto</h2>
+      <small>&lt;Menu mode="context"&gt; · trigger por clique direito</small>
+    </div>
+    <div class="preview">
+      <ContextModeRow client:load />
+    </div>
+    <p class="preview-caption">
+      Mesma API pública, mesmo token contract, mesma navegação por teclado;
+      o que muda é apenas o evento de abertura (<code class="inline">contextmenu</code>).
+      Decisão registrada em <code class="inline">ADR-006</code>.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveMenuSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente / Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Menu · mode</td>
+            <td class="type">"dropdown" | "context"</td>
+            <td class="default">"dropdown"</td>
+            <td class="desc">Seleciona a primitiva Radix interna.</td>
+          </tr>
+          <tr>
+            <td class="name">Menu · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled (modo dropdown).</td>
+          </tr>
+          <tr>
+            <td class="name">Menu · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback ao abrir/fechar.</td>
+          </tr>
+          <tr>
+            <td class="name">Menu · modal</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Quando true, bloqueia interação com o background.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuTrigger · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Repassa props para o filho (sem wrapper extra).</td>
+          </tr>
+          <tr>
+            <td class="name">MenuTrigger · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuContent · side</td>
+            <td class="type">"top" | "right" | "bottom" | "left"</td>
+            <td class="default">"bottom"</td>
+            <td class="desc">Posição preferida. Pode inverter na collision.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuContent · align</td>
+            <td class="type">"start" | "center" | "end"</td>
+            <td class="default">"start"</td>
+            <td class="desc">Alinhamento relativo ao trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuContent · sideOffset</td>
+            <td class="type">number</td>
+            <td class="default">4</td>
+            <td class="desc">Distância em px ao trigger.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuContent · size</td>
+            <td class="type">"sm" | "md" | "lg"</td>
+            <td class="default">"md"</td>
+            <td class="desc">Padding/texto ladder; outer mais apertado que Popover por densidade.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuContent · width</td>
+            <td class="type">number | string</td>
+            <td class="default">min-w-[8rem]</td>
+            <td class="desc">Override do width. Número vira px; string vai como inline style.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuItem · destructive</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Aplica token <code class="inline">text-destructive</code> para ações irreversíveis.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuItem · inset</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Alinha o conteúdo com itens que têm ícone à esquerda (<code class="inline">pl-8</code>).</td>
+          </tr>
+          <tr>
+            <td class="name">MenuItem · disabled / onSelect</td>
+            <td class="type">boolean / (e) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Item desabilitado não emite onSelect; chamar <code class="inline">e.preventDefault()</code> dentro de onSelect mantém o menu aberto.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuCheckboxItem · checked / onCheckedChange</td>
+            <td class="type">boolean / (v: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Estado independente por linha.</td>
+          </tr>
+          <tr>
+            <td class="name">MenuRadioGroup · value / onValueChange</td>
+            <td class="type">string / (v: string) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Seleção exclusiva entre <code class="inline">MenuRadioItem</code> filhos.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>ARIA Menu pattern · navegação completa</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Space / Enter</td><td class="desc">Abre o menu quando o trigger está focado.</td></tr>
+          <tr><td class="name">ArrowDown</td><td class="desc">Abre o menu e move o foco para o primeiro item.</td></tr>
+          <tr><td class="name">ArrowUp / ArrowDown</td><td class="desc">Ciclo de foco entre os itens, pulando os desabilitados.</td></tr>
+          <tr><td class="name">Home / End</td><td class="desc">Foco no primeiro / último item.</td></tr>
+          <tr><td class="name">Typeahead</td><td class="desc">Digitar caractere salta para o próximo item cuja label começa com ele.</td></tr>
+          <tr><td class="name">ArrowRight</td><td class="desc">Abre submenu quando o item é um <code class="inline">MenuSubTrigger</code>.</td></tr>
+          <tr><td class="name">ArrowLeft</td><td class="desc">Fecha submenu (dentro de <code class="inline">MenuSubContent</code>).</td></tr>
+          <tr><td class="name">Escape</td><td class="desc">Fecha o menu e devolve foco ao trigger.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/menu/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={menuSource}
+      language="tsx"
+      filename="ui_kit/components/menu/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · ARIA Menu pattern</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Trigger</b>: <code class="inline">aria-haspopup="menu"</code> + <code class="inline">aria-expanded</code> + <code class="inline">data-state</code>.</span></li>
+        <li><span><b>Content</b>: <code class="inline">role="menu"</code> com navegação ARIA Menu pattern via Radix (Arrow / Home / End / typeahead).</span></li>
+        <li><span><b>Items</b>: <code class="inline">role="menuitem"</code>, <code class="inline">menuitemcheckbox</code>, <code class="inline">menuitemradio</code> com <code class="inline">aria-checked</code> conforme o caso.</span></li>
+        <li><span><b>Escape</b> e clique fora fecham o menu e devolvem foco ao trigger.</span></li>
+        <li><span><b>jest-axe</b> em light + dark cobre Default (fechado), Open e Disabled (ver <code class="inline">Menu.test.tsx</code>).</span></li>
+        <li><span><b>Foco visível</b>: o content recebe ring laranja (<code class="inline">ring-ring</code>) quando focado via teclado.</span></li>
+        <li><span><b>Modo contexto</b>: o trigger expõe <code class="inline">contextmenu</code> ao invés de clique; a ARIA é equivalente.</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
