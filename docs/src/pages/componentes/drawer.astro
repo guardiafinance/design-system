@@ -1,0 +1,259 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  SidesRow,
+  SizesRow,
+  StatesRow,
+  UseCasesRow,
+} from "../../previews/drawer";
+import { LiveDrawerSnippet } from "../../previews/drawer-live";
+import drawerSource from "@ds/components/drawer/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · OVERLAYS"
+  title="Drawer"
+  group="Overlays"
+  storybookId="components-drawer--default"
+  sourcePath="ui_kit/components/drawer"
+  lede='Painel lateral modal ancorado a uma borda do viewport, com foco capturado. Use para contextos secundários que mantêm a superfície principal em vista — filtros, formulários secundários, painéis de detalhe, bandeja de notificações. Base no Radix Dialog com tokens semânticos canônicos, CVA <code class="inline">side</code> (top/right/bottom/left) e <code class="inline">size</code> (sm 384 / md 512 / lg 672 / xl 896 px) — width nos lados horizontais, height nos verticais. Consolida o baseline Sheet sob o nome canônico Drawer (ADR-012).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Drawer · Trigger · Content · Header · Footer · Close</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para modais centralizados no viewport (confirmações destrutivas, forms
+      curtos), prefira <code class="inline">&lt;Dialog&gt;</code>; para overlays
+      inline ancorados a um trigger (filtros, hints), prefira
+      <code class="inline">&lt;Popover&gt;</code>; para microcopy hover,
+      <code class="inline">&lt;Tooltip&gt;</code>; para confirmações destrutivas
+      com role="alertdialog", <code class="inline">&lt;AlertDialog&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ SIDES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Lados</h2>
+      <small>top · right (default) · bottom · left</small>
+    </div>
+    <div class="preview">
+      <SidesRow client:load />
+    </div>
+    <p class="preview-caption">
+      O CVA <code class="inline">side</code> posiciona o painel contra uma das
+      quatro bordas do viewport. Cada lado aplica a animação de slide
+      correspondente (<code class="inline">slide-in-from-{"{side}"}</code>) e o
+      border-token correto (left border em <code class="inline">side="right"</code>,
+      etc.). Decisão registrada em ADR-012 Decision 3.
+    </p>
+  </section>
+
+  <!-- ============ SIZES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Tamanhos</h2>
+      <small>sm 384 · md 512 (default) · lg 672 · xl 896 px</small>
+    </div>
+    <div class="preview">
+      <SizesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Size ladder espelha o budget do Dialog ADR-010 (sm/md/lg/xl). Para lados
+      horizontais (<code class="inline">left</code> / <code class="inline">right</code>),
+      o rung vira <code class="inline">max-w-*</code>; para lados verticais
+      (<code class="inline">top</code> / <code class="inline">bottom</code>),
+      vira <code class="inline">max-h-*</code>. Para override fino axis-contextual,
+      use as props <code class="inline">width</code> (sides horizontais) ou
+      <code class="inline">height</code> (sides verticais) em
+      <code class="inline">DrawerContent</code>.
+    </p>
+  </section>
+
+  <!-- ============ STATES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estados</h2>
+      <small>default · defaultOpen · disabled trigger</small>
+    </div>
+    <div class="preview">
+      <StatesRow client:load />
+    </div>
+    <p class="preview-caption">
+      Modos controlled (<code class="inline">open</code> +
+      <code class="inline">onOpenChange</code>) e uncontrolled
+      (<code class="inline">defaultOpen</code>) coexistem. Trigger desabilitado
+      bloqueia abertura mas não remove o componente do DOM.
+    </p>
+  </section>
+
+  <!-- ============ USE CASES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Casos de uso</h2>
+      <small>filtros · form secundário · painel de detalhes · destructive</small>
+    </div>
+    <div class="preview">
+      <UseCasesRow client:load />
+    </div>
+    <p class="preview-caption">
+      A ação destrutiva usa <code class="inline">Button variant="destructive"</code>
+      no footer — sem helpers externos de cor (sem wrapper
+      <code class="inline">text-destructive</code> externo). O destaque visual
+      vem do componente Button, não do conteúdo do Drawer.
+    </p>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Playground</h2>
+      <small>edite o JSX e veja ao vivo</small>
+    </div>
+    <LiveDrawerSnippet client:load />
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente / Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Drawer · open / defaultOpen</td>
+            <td class="type">boolean</td>
+            <td class="default">—</td>
+            <td class="desc">Controlled / uncontrolled.</td>
+          </tr>
+          <tr>
+            <td class="name">Drawer · onOpenChange</td>
+            <td class="type">(open: boolean) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callback ao abrir/fechar.</td>
+          </tr>
+          <tr>
+            <td class="name">Drawer · modal</td>
+            <td class="type">boolean</td>
+            <td class="default">true</td>
+            <td class="desc">Por default Drawer é modal — captura foco e bloqueia interação com o background.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerTrigger · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Repassa props para o filho (sem wrapper extra).</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerTrigger · disabled</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Bloqueia abertura.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerContent · side</td>
+            <td class="type">"top" | "right" | "bottom" | "left"</td>
+            <td class="default">"right"</td>
+            <td class="desc">Lado do viewport contra o qual o painel é ancorado.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerContent · size</td>
+            <td class="type">"sm" | "md" | "lg" | "xl"</td>
+            <td class="default">"md"</td>
+            <td class="desc">24 / 32 / 42 / 56 rem. Vira max-w-* em lados horizontais; max-h-* em verticais.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerContent · width</td>
+            <td class="type">number | string</td>
+            <td class="default">—</td>
+            <td class="desc">Override do size ladder em lados horizontais. Number → px; string → style.maxWidth.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerContent · height</td>
+            <td class="type">number | string</td>
+            <td class="default">—</td>
+            <td class="desc">Override do size ladder em lados verticais. Number → px; string → style.maxHeight.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerContent · onOpenAutoFocus / onCloseAutoFocus / onEscapeKeyDown / onPointerDownOutside / onInteractOutside</td>
+            <td class="type">(e: Event) =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Callbacks Radix para customizar foco automático e dispositivos de fechamento.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerHeader / DrawerFooter</td>
+            <td class="type">React.HTMLAttributes&lt;HTMLDivElement&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Layout primitives. Header: flex-col gap-1.5 px-6 pt-6 pb-2. Footer: mt-auto flex-col-reverse gap-2 px-6 pt-2 pb-6 sm:flex-row sm:justify-end.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerTitle / DrawerDescription</td>
+            <td class="type">Radix Title / Description</td>
+            <td class="default">—</td>
+            <td class="desc">Auto-wired via aria-labelledby e aria-describedby quando montados dentro de DrawerContent.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerClose · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Permite usar qualquer elemento (e.g. Button) como close trigger sem wrapper extra.</td>
+          </tr>
+          <tr>
+            <td class="name">DrawerPortal / DrawerOverlay</td>
+            <td class="type">Radix Portal / Overlay</td>
+            <td class="default">—</td>
+            <td class="desc">Re-exports diretos. DrawerContent já mounts portal+overlay; expostos para composição avançada.</td>
+          </tr>
+          <tr>
+            <td class="name">drawerContentVariants</td>
+            <td class="type">CVA accessor</td>
+            <td class="default">—</td>
+            <td class="desc">CVA function para consumer compor variantes (e.g. higher-order drawer em código de produto).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · Radix Dialog</small>
+    </div>
+    <div class="preview-caption">
+      <ul class="list-disc pl-6">
+        <li><code class="inline">role="dialog"</code> + <code class="inline">aria-modal="true"</code> aplicados automaticamente em <code class="inline">DrawerContent</code> (landmark — regra <code class="inline">region</code> do axe NÃO é desabilitada).</li>
+        <li><code class="inline">aria-labelledby</code> aponta para o ID do <code class="inline">DrawerTitle</code> renderizado; <code class="inline">aria-describedby</code> para o <code class="inline">DrawerDescription</code>.</li>
+        <li>Foco é trap dentro do content. Tab cicla entre descendentes focáveis sem escapar.</li>
+        <li>Escape fecha e devolve foco ao trigger.</li>
+        <li>Click no overlay fecha (default; customizável via <code class="inline">onPointerDownOutside</code>).</li>
+        <li>Scroll do <code class="inline">&lt;body&gt;</code> é travado enquanto aberto (Radix gerencia <code class="inline">pointer-events</code>).</li>
+        <li><code class="inline">DrawerClose</code> tem <code class="inline">aria-label="Close"</code> e é keyboard-activatable via Enter ou Space.</li>
+        <li>Overlay usa tokens semânticos brand-palette (<code class="inline">bg-guardia-purple-900/60 dark:bg-guardia-gray-900/80</code>) — sem hex, sem <code class="inline">bg-black</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/drawer/index.tsx</small>
+    </div>
+    <HighlightedCode code={drawerSource} lang="tsx" />
+  </section>
+</ComponentPreview>
