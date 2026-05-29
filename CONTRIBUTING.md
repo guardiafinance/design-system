@@ -185,6 +185,31 @@ Use com critério — toda exceção precisa de justificativa explícita no PR o
 - Conventional Commits no subject.
 - Branch follow `{type}/{N}-{slug}`.
 
+## Artefatos do fluxo Issue-Driven
+
+Toda PR conduzida pelo fluxo Issue-Driven (`/cry-implement-issue`) DEVE persistir os cinco artefatos de fase no caminho canônico definido por `lex-issue-driven` Rule 5 e ratificado pelo ADR-009:
+
+```
+docs/issues/issue-{N}/
+├── 01-brief.md             # Phase 1 — leitura da Issue
+├── 02-requirements.md      # Phase 2 — ACs numerados + DoD
+├── 03-architecture.md      # Phase 3 — design + componentes afetados
+├── 05-security-review.md   # Phase 5 — revisão de segurança
+└── 06-quality-report.md    # Phase 6 — relatório do Gate 2
+```
+
+Esses arquivos são **committados** e fazem parte do histórico permanente do `main`. Os anchors no corpo da PR (`[Phase 1 brief](docs/issues/issue-{N}/01-brief.md)`) resolvem a partir de um clone limpo.
+
+Estado **efêmero** de orquestração (checkpoints entre fases, scratch da sessão, heartbeat) fica em:
+
+```
+.ahrena/workflow/issue-{N}/
+```
+
+Esse diretório permanece em `.gitignore` (linha 21 atual) e nunca é committado.
+
+**NÃO** escreva artefatos de fase em `.ahrena/issues/{N}/` — esse caminho era a prática anterior do projeto, foi divergente em relação ao Lex e está sendo descontinuado a partir do PR #248. ADRs ficam em `docs/adr/ADR-{NNN}-{slug}.md` (não em `docs/issues/issue-{N}/`).
+
 ## Licença
 
 Propriedade da Guardia Finance. Uso interno apenas.

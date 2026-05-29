@@ -89,3 +89,7 @@ Available in `.claude/docs/` — use `@` to import when needed:
 - `.claude/docs/product/discovery/codex-discovery-artifacts.md`
 
 <!-- AHRENA:END -->
+
+## Project conventions
+
+- **Issue-Driven phase artifacts** live at `docs/issues/issue-{N}/{01..06}-*.md` per `lex-issue-driven` Rule 5 and ADR-009. Ephemeral orchestration state (checkpoints, heartbeats) lives at `.ahrena/workflow/issue-{N}/` (gitignored). Do not write phase artifacts to `.ahrena/issues/{N}/` — that path was the project's previous practice and is deprecated as of PR #248.

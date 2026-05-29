@@ -17,10 +17,8 @@ storybook-static
 .worktrees/
 .plans/
 
-# Ahrena Issue-Driven flow scratchpad (canonical docs live under docs/issues/issue-{N}/)
-.ahrena/issues/
-
 # Ahrena ephemeral orchestration state (checkpoints, session heartbeats — never committed)
+# Durable phase artifacts live under docs/issues/issue-{N}/ per lex-issue-driven Rule 5 (ADR-009)
 .ahrena/workflow/
 
 # Astro generated cache
