@@ -14,6 +14,7 @@ export * from "./code-block";
 export * from "./code-editor";
 export * from "./combobox";
 export * from "./collapsible";
+export * from "./command";
 export * from "./confidence-indicator";
 export * from "./dialog";
 export * from "./drawer";

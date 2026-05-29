@@ -1,0 +1,281 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithIconsRow,
+  EmptyStateRow,
+  UseCasesRow,
+} from "../../previews/command";
+import commandSource from "@ds/components/command/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVEGAÇÃO"
+  title="Command"
+  group="Navegação"
+  storybookId="components-command--default"
+  sourcePath="ui_kit/components/command"
+  lede='Paleta de comandos (⌘K) com search, grupos e entries keyboard-navegáveis. Acesso rápido a ações conhecidas, complementar ao chat com Isac. Base em <code class="inline">cmdk</code> (filter heurístico, ARIA roles, keyboard nav) hospedado em <code class="inline">&lt;Dialog&gt;</code> (ADR-010 — focus trap, ESC, portal).'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: CommandPalette · items[group, entries]</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      A API imperativa <code class="inline">&lt;CommandPalette open onOpenChange items /&gt;</code>
+      monta Dialog + Command + mapeamento de items internamente — paridade
+      direta com a referência legacy em
+      <code class="inline">ux_references/ui_kits/components/Command/</code>.
+      Para casos avançados (paleta inline sem Dialog, sugestões streaming do
+      Isac, renderer custom), use as primitivas declarativas re-exportadas
+      (<code class="inline">Command</code>, <code class="inline">CommandInput</code>,
+      <code class="inline">CommandList</code>, <code class="inline">CommandGroup</code>,
+      <code class="inline">CommandItem</code>, <code class="inline">CommandSeparator</code>,
+      <code class="inline">CommandEmpty</code>, <code class="inline">CommandShortcut</code>).
+    </p>
+  </section>
+
+  <!-- ============ WITH ICONS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícones</h2>
+      <small>icon · description · shortcut por entry</small>
+    </div>
+    <div class="preview">
+      <WithIconsRow client:load />
+    </div>
+    <p class="preview-caption">
+      Entries com <code class="inline">icon</code> (qualquer ReactNode, prefira
+      lucide), <code class="inline">description</code> (texto secundário
+      empilhado abaixo do label) e <code class="inline">shortcut</code> (kbd à
+      direita). Filter heurístico do <code class="inline">cmdk</code> ranqueia
+      por relevância — também varre <code class="inline">keywords</code> para
+      sinônimos (e.g.
+      <code class="inline">keywords="atualizar refresh sync"</code> em
+      <em>Sincronizar contas</em>).
+    </p>
+  </section>
+
+  <!-- ============ EMPTY ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Estado vazio</h2>
+      <small>filter sem match → emptyText</small>
+    </div>
+    <div class="preview">
+      <EmptyStateRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando nenhum grupo retorna entries para a query, a paleta renderiza o
+      texto de <code class="inline">emptyText</code>. Default
+      <code class="inline">"Nenhum resultado"</code>; sobrescreva para
+      mensagens contextuais (e.g. orientar o usuário a digitar diferente, abrir
+      ticket, conversar com Isac).
+    </p>
+  </section>
+
+  <!-- ============ USE CASES ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Casos de uso</h2>
+      <small>paleta global de produto · docs + ops + ações destrutivas</small>
+    </div>
+    <div class="preview">
+      <UseCasesRow client:load />
+    </div>
+    <p class="preview-caption">
+      A ação destrutiva (<em>Excluir lançamento atual</em>) usa o ícone
+      <code class="inline">Trash2</code> à esquerda — o destaque visual vem do
+      ícone, <strong>não</strong> de um wrapper externo
+      <code class="inline">text-destructive</code> aplicado ao conteúdo
+      (decisão alinhada com o feedback de PR #258 sobre stories sem helpers
+      externos de cor).
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API imperativa <code class="inline">CommandPalette</code></small>
+    </div>
+    <div class="props-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Tipo</th>
+            <th>Default</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline">open</code></td>
+            <td><code class="inline">boolean</code></td>
+            <td>—</td>
+            <td>Controla a visibilidade da paleta.</td>
+          </tr>
+          <tr>
+            <td><code class="inline">onOpenChange</code></td>
+            <td><code class="inline">(open: boolean) =&gt; void</code></td>
+            <td>—</td>
+            <td>
+              Callback de mudança — chamado pelo Dialog (ESC, click fora) e
+              após cada <code class="inline">onSelect</code> com
+              <code class="inline">false</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">items</code></td>
+            <td><code class="inline">CommandPaletteGroup[]</code></td>
+            <td>—</td>
+            <td>
+              Grupos de entries renderizados na lista. Cada grupo carrega
+              <code class="inline">{`{ id, heading, entries }`}</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">placeholder</code></td>
+            <td><code class="inline">string</code></td>
+            <td><code class="inline">"Buscar comando…"</code></td>
+            <td>Placeholder do input de busca.</td>
+          </tr>
+          <tr>
+            <td><code class="inline">emptyText</code></td>
+            <td><code class="inline">ReactNode</code></td>
+            <td><code class="inline">"Nenhum resultado"</code></td>
+            <td>Conteúdo quando o filter não retorna entries.</td>
+          </tr>
+          <tr>
+            <td><code class="inline">ariaLabel</code></td>
+            <td><code class="inline">string</code></td>
+            <td><code class="inline">"Paleta de comandos"</code></td>
+            <td>
+              Label semântica do dialog para tecnologias assistivas
+              (renderizada via <code class="inline">DialogTitle</code> com
+              <code class="inline">sr-only</code>).
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">ariaDescription</code></td>
+            <td><code class="inline">string</code></td>
+            <td>—</td>
+            <td>
+              Descrição semântica opcional, renderizada via
+              <code class="inline">DialogDescription</code> com
+              <code class="inline">sr-only</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">filter</code></td>
+            <td>
+              <code class="inline">(value: string, search: string) =&gt; number</code>
+            </td>
+            <td>filter nativo do <code class="inline">cmdk</code></td>
+            <td>
+              Override do filter heurístico. Retorne 0 (sem match) a 1 (match
+              perfeito).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ ACCESSIBILITY ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · jest-axe light + dark</small>
+    </div>
+    <ul class="a11y-list">
+      <li>
+        <code class="inline">CommandInput</code> herda
+        <code class="inline">role="combobox"</code> +
+        <code class="inline">aria-expanded</code> +
+        <code class="inline">aria-controls</code> do
+        <code class="inline">cmdk</code>; a wrapper adiciona
+        <code class="inline">aria-label="Paleta de comandos"</code> para
+        satisfazer <code class="inline">lex-frontend-accessibility</code>
+        Rule 4.1.
+      </li>
+      <li>
+        <code class="inline">CommandList</code> herda
+        <code class="inline">role="listbox"</code>; cada
+        <code class="inline">CommandItem</code> herda
+        <code class="inline">role="option"</code> +
+        <code class="inline">aria-selected</code>.
+      </li>
+      <li>
+        Focus trap, ESC handler e portal vêm do
+        <code class="inline">&lt;Dialog&gt;</code> canônico (ADR-010) — sem
+        reimplementação.
+      </li>
+      <li>
+        Foco entra automaticamente no input ao abrir a paleta (autofocus do
+        <code class="inline">cmdk</code>).
+      </li>
+      <li>
+        Cobertura jest-axe em 4 cenários (Default, WithGroups, WithIcons,
+        EmptyState) × 2 temas (light + dark) = 8 invocações com 0 violações.
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/command/index.tsx</small>
+    </div>
+    <HighlightedCode code={commandSource} lang="tsx" />
+  </section>
+</ComponentPreview>
+
+<style>
+  .props-table {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .props-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .props-table th,
+  .props-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .props-table th {
+    background: var(--bg-subtle);
+    font-weight: 600;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+  }
+  .props-table tr:last-child td {
+    border-bottom: none;
+  }
+  .a11y-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 14px;
+    color: var(--fg);
+    line-height: 1.6;
+  }
+  .a11y-list li + li {
+    margin-top: 8px;
+  }
+</style>
