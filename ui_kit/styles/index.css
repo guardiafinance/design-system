@@ -61,11 +61,17 @@
   --guardia-purple-700: #37104C;
   --guardia-purple-900: #1F092B;
 
-  /* Gray — estabilidade e integridade */
+  /* Gray — estabilidade e integridade.
+   * gray-800 (#1E1E24, Notion Surface 1) é necessário para os tokens dark
+   * `--bg-subtle` e `--*-soft` (success/danger/warning/info), que misturam
+   * o sinal sobre essa superfície via color-mix; sem o token definido, a
+   * mistura invalida e os utilitários `bg-bg-subtle` / `bg-*-soft` caem
+   * para `unset` (transparente) no tema escuro. */
   --guardia-gray-100: #D7D7D9;
   --guardia-gray-200: #A6A6AA;
   --guardia-gray-500: #3A3A44;
   --guardia-gray-700: #28282F;
+  --guardia-gray-800: #1E1E24;
   --guardia-gray-900: #17171B;
 
   /* Monochrome */
@@ -542,6 +548,7 @@
   --color-guardia-gray-200: var(--guardia-gray-200);
   --color-guardia-gray-500: var(--guardia-gray-500);
   --color-guardia-gray-700: var(--guardia-gray-700);
+  --color-guardia-gray-800: var(--guardia-gray-800);
   --color-guardia-gray-900: var(--guardia-gray-900);
 
   /* Legacy brand aliases (retro-compat com componentes herdados) */

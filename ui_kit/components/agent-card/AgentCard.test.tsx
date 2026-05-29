@@ -201,7 +201,10 @@ describe("AgentCard", () => {
     );
     const avatar = container.querySelector('[data-slot="agent-card-avatar"]');
     expect(avatar).toHaveAttribute("data-accent", "green");
-    expect(avatar).toHaveClass("bg-success-soft", "text-signal-green");
+    // WHY: `text-success-fg` (e `text-info-fg` p/ blue) garante contraste
+    // ≥ 4.5:1 em ambos os temas; `text-signal-green` puro reprovava em
+    // light (#00BF63 sobre `bg-success-soft` claro = 2.09:1).
+    expect(avatar).toHaveClass("bg-success-soft", "text-success-fg");
   });
 
   it("AC-5 — Avatar com `accent` explícito sobrescreve o contexto", () => {
@@ -474,4 +477,19 @@ describe("AgentCard", () => {
     );
     await axeInThemes(container);
   });
+
+  // Cobertura ampliada (Tech Task #125) — cada combinação status×accent
+  // exercita uma pill e um tint de avatar distintos. axe valida o
+  // contraste real do tema corrente; sem stub e sem mock.
+  it.each([
+    ["working", "blue"],
+    ["paused", "violet"],
+    ["offline", "green"],
+  ] as const)(
+    "AC-18 — status %s + accent %s sem violações em light + dark",
+    async (status, accent) => {
+      const { container } = render(<FullCard status={status} accent={accent} />);
+      await axeInThemes(container);
+    },
+  );
 });

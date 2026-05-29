@@ -19,17 +19,12 @@ const meta: Meta<typeof AgentCard> = {
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
-    a11y: {
-      // WHY: o status pill e os capability tags são "badges" (texto curto a
-      // 11.5px). A marca permite combinações entre 3:1 e 4.5:1 explicitamente
-      // em "Combinações restritas a títulos, botões e badges" (lex-brand-
-      // colors). axe-core aplica o limite uniforme de 4.5:1 para texto normal
-      // e não distingue contexto de badge, então desabilitamos aqui — mesma
-      // decisão documentada em Badge.stories.tsx e Button.stories.tsx. O
-      // texto principal do card (Name, Role, métricas) continua sob avaliação
-      // estrita do axe em unit tests (jest-axe) e revisão de design.
-      config: { rules: [{ id: "color-contrast", enabled: false }] },
-    },
+    // WHY: o pill de status (`AgentCardStatus`) é "badge" semanticamente,
+    // mas suas combinações de cor agora respeitam o piso ≥ 4.5:1 em light
+    // e dark — verificado por jest-axe (unit) e axe-playwright (storybook
+    // test-runner). Em consequência, NÃO existe carve-out de `color-contrast`
+    // ao nível do meta. Stories que reusam capability tags (`Badge`) herdam
+    // a decisão da própria meta de `Badge.stories.tsx`.
     docs: {
       description: {
         component:

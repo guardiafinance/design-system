@@ -110,12 +110,22 @@ const ACCENT_STRIPE: Record<AgentAccent, string> = {
  * contraste do ícone sobre o fundo. Substituições closest-match:
  *   violet  600 (texto) → guardia-purple-500 (brand violet)
  *   blue/green          → tokens semânticos --info-soft/--success-soft
+ *
+ * Contraste do ícone (graphic contrast ≥ 3:1 — WCAG 2.1 AA):
+ *   - violet 500 sobre violet-100 = 8.39:1 ambos temas (palette fixa).
+ *   - orange-700 sobre orange-100 = 4.69:1 ambos temas (palette fixa).
+ *   - blue/green usam `text-{info|success}-fg` em vez do tom puro do sinal:
+ *     o token semântico `*-fg` é tema-aware (deep tone em light, mono-white
+ *     em dark) e contrasta ≥ 6.6:1 sobre o `*-soft` correspondente nos
+ *     dois temas. Usar `text-signal-{green|blue}` puro reprovava ambos
+ *     light (verde puro #00BF63 sobre verde claro = 2.09:1) e dark
+ *     (azul puro #004AAD sobre `info-soft` escuro = 1.76:1).
  */
 const ACCENT_AVATAR_TINT: Record<AgentAccent, string> = {
   violet: "bg-guardia-purple-100 text-guardia-purple-500",
   orange: "bg-guardia-orange-100 text-guardia-orange-700",
-  blue: "bg-info-soft text-signal-blue",
-  green: "bg-success-soft text-signal-green",
+  blue: "bg-info-soft text-info-fg",
+  green: "bg-success-soft text-success-fg",
 };
 
 /* ─── Context (status + accent cascade) ────────────────────────────── */
@@ -352,14 +362,35 @@ AgentCardRole.displayName = "AgentCardRole";
  *   color: color-mix(signal-red 45% black)   → text-signal-red-700.
  *   --yellow-{100,900}                       → guardia-yellow-{100,900}.
  *   --gray-100                               → guardia-gray-100.
+ *
+ * Overrides `dark:` por status — light usa tons soft+claros (palette fixa
+ * que não acompanha o tema); dark inverte para soft escuro do mesmo
+ * anchor + texto claro mantendo a identidade cromática do status.
+ *
+ * Contraste verificado em ambos os temas (WCAG 2.1 AA, ≥ 4.5:1 para
+ * texto normal — pill text 11.5px regular):
+ *   idle/offline   light 7.82:1 · dark 7.82:1 (gray-500 + fg-muted)
+ *   working        light 4.69:1 · dark 6.97:1 (orange-900 + orange-200)
+ *   active         light 8.65:1 · dark 12.21:1 (success-soft + fg=mono-white)
+ *   paused         light 7.14:1 · dark 6.31:1 (yellow-900 + yellow-200)
+ *   error          light 11.89:1 · dark 13.10:1 (danger-soft + fg=mono-white)
+ *
+ * Pré-condição infra: `--guardia-gray-800` (#1E1E24) declarada na palette
+ * para que `--*-soft` em dark (color-mix com gray-800) resolva — antes
+ * disso, `bg-success-soft` e `bg-danger-soft` caíam para transparente.
  */
 const STATUS_PILL_CLASSES: Record<AgentStatus, string> = {
-  idle: "bg-guardia-gray-100 text-fg-muted",
-  working: "bg-guardia-orange-100 text-guardia-orange-700",
-  active: "bg-success-soft text-signal-green-700",
-  paused: "bg-guardia-yellow-100 text-guardia-yellow-900",
-  error: "bg-danger-soft text-signal-red-700",
-  offline: "bg-guardia-gray-100 text-fg-muted",
+  idle: "bg-guardia-gray-100 text-fg-muted dark:bg-guardia-gray-500 dark:text-fg-muted",
+  working:
+    "bg-guardia-orange-100 text-guardia-orange-700 dark:bg-guardia-orange-900 dark:text-guardia-orange-200",
+  active:
+    "bg-success-soft text-signal-green-700 dark:text-fg",
+  paused:
+    "bg-guardia-yellow-100 text-guardia-yellow-900 dark:bg-guardia-yellow-900 dark:text-guardia-yellow-200",
+  error:
+    "bg-danger-soft text-signal-red-700 dark:text-fg",
+  offline:
+    "bg-guardia-gray-100 text-fg-muted dark:bg-guardia-gray-500 dark:text-fg-muted",
 };
 
 /**
