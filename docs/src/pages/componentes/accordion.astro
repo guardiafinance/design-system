@@ -1,0 +1,120 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  VariantsRow,
+  MultipleRow,
+  DisabledRow,
+  ControlledRow,
+} from "../../previews/accordion";
+import accordionSource from "@ds/components/accordion/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVEGAÇÃO"
+  title="Accordion"
+  group="Navegação"
+  storybookId="components-accordion--default"
+  sourcePath="ui_kit/components/accordion"
+  lede='Grupos de painéis colapsáveis para conteúdo hierárquico — FAQs, configurações por seção, formulários longos divididos por etapa, dossiês de auditoria. Base no Radix Accordion com tokens semânticos canônicos e CVA <code class="inline">variant</code> (bordered · plain) replicando a paridade visual da referência legada.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Accordion · Item · Trigger · Content</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para conteúdo modal bloqueante prefira <code class="inline">&lt;Dialog&gt;</code>;
+      para painel lateral persistente, <code class="inline">&lt;Drawer&gt;</code>;
+      para uma única seção dispensável, <code class="inline">&lt;Collapsible&gt;</code>.
+    </p>
+  </section>
+
+  <!-- ============ VARIANTS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Variantes</h2>
+      <small>variant · bordered (default) · plain</small>
+    </div>
+    <div class="preview">
+      <VariantsRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">bordered</code> contém o grupo num frame único
+      arredondado, ideal para FAQs autônomas — o container externo
+      (<code class="inline">rounded-lg border border-border bg-card overflow-hidden</code>)
+      é opt-in, mantendo o componente composable.
+      <code class="inline">plain</code> empilha itens só com borda inferior,
+      adequado embedded em <code class="inline">&lt;Card&gt;</code> ou
+      sidebar onde o container já provê o frame visual.
+    </p>
+  </section>
+
+  <!-- ============ MULTIPLE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Múltiplos painéis abertos</h2>
+      <small>type · single (default) · multiple</small>
+    </div>
+    <div class="preview">
+      <MultipleRow client:load />
+    </div>
+    <p class="preview-caption">
+      Com <code class="inline">type="multiple"</code> o
+      <code class="inline">value</code> aceita um array de strings —
+      vários painéis convivem abertos. O <code class="inline">defaultValue</code>
+      define o estado inicial em modo uncontrolled.
+      Em <code class="inline">type="single"</code> abrir um item fecha o anterior;
+      adicione <code class="inline">collapsible</code> para permitir que o último
+      seja fechado também.
+    </p>
+  </section>
+
+  <!-- ============ DISABLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Item bloqueado</h2>
+      <small>AccordionItem disabled</small>
+    </div>
+    <div class="preview">
+      <DisabledRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">disabled</code> propaga <code class="inline">data-disabled</code>
+      no trigger; o cursor vira <code class="inline">not-allowed</code>,
+      a opacidade cai pra 50% e o foco por teclado pula o item — convencional
+      ARIA Authoring Practices.
+    </p>
+  </section>
+
+  <!-- ============ CONTROLLED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Modo controlled</h2>
+      <small>value · onValueChange</small>
+    </div>
+    <div class="preview">
+      <ControlledRow client:load />
+    </div>
+    <p class="preview-caption">
+      O par <code class="inline">value</code> + <code class="inline">onValueChange</code>
+      sincroniza o estado aberto com store externa
+      (URL hash para deep-link de FAQ, estado de sessão para wizards,
+      etc.). Em modo uncontrolled use <code class="inline">defaultValue</code>.
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/accordion/index.tsx</small>
+    </div>
+    <HighlightedCode code={accordionSource} lang="tsx" />
+  </section>
+</ComponentPreview>
