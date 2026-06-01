@@ -150,8 +150,10 @@ const AccordionTrigger = React.forwardRef<
       className={cn(
         // `group` enables descendant chevron to react to `data-state`
         "group flex flex-1 items-center justify-between gap-3",
-        // Spacing — paridade com `grd-acc-trigger` (12px vertical / 14px horizontal)
-        "px-3.5 py-3 text-left",
+        // Spacing — 16px vertical / 14px horizontal. Diverge ligeiramente do
+        // legacy (12px vertical) para dar respiro ao primeiro item dentro de
+        // um container `bordered`, onde `border-t-0` colaria o trigger no topo.
+        "px-3.5 py-4 text-left",
         // Typography — sm/medium, herdando `--font-sans` (Poppins → Roboto)
         "font-sans text-sm font-medium",
         // Color — text-fg base; hover preserva legibilidade via muted bg
