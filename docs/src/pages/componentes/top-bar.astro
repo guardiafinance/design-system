@@ -1,0 +1,98 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  EntityRow,
+  MinimalRow,
+  StickyRow,
+} from "../../previews/top-bar";
+import topBarSource from "@ds/components/top-bar/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVEGAÇÃO"
+  title="TopBar"
+  group="Navegação"
+  storybookId="components-topbar--default"
+  sourcePath="ui_kit/components/top-bar"
+  lede='Cabeçalho semântico de página: <code class="inline">&lt;header&gt;</code> com landmark <code class="inline">banner</code> implícito, três slots (<code class="inline">left</code> / <code class="inline">center</code> / <code class="inline">right</code>) e modo <code class="inline">sticky</code> opcional. TopBar é uma primitiva de layout — não introduz átomos visuais novos; os slots compõem <code class="inline">&lt;Logo&gt;</code>, <code class="inline">&lt;Avatar&gt;</code>, <code class="inline">&lt;IconButton&gt;</code>, <code class="inline">&lt;Input&gt;</code>, <code class="inline">&lt;Badge&gt;</code>, <code class="inline">&lt;Button&gt;</code> ou qualquer outra primitiva do design system. Para uma barra horizontal de itens com dropdowns e badges, use <code class="inline">&lt;Navbar&gt;</code> — ortogonal a TopBar.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão — Control Center</h2>
+      <small>marca + busca global + ações</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      Cenário canônico do shell de aplicação. Marca à esquerda, busca global
+      ocupando o slot <code class="inline">center</code> (largura máxima
+      <code class="inline">560px</code>) e ações + avatar à direita. O slot
+      <code class="inline">right</code> usa <code class="inline">ml-auto</code>
+      para ancorar no trailing edge, então funciona com ou sem
+      <code class="inline">center</code>.
+    </p>
+  </section>
+
+  <!-- ============ ENTITY PAGE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Página de entidade</h2>
+      <small>breadcrumb à esquerda · ações dedicadas à direita</small>
+    </div>
+    <div class="preview">
+      <EntityRow client:load />
+    </div>
+    <p class="preview-caption">
+      Sem slot <code class="inline">center</code>: o container central NÃO é
+      renderizado no DOM. A direita ancora no trailing edge naturalmente. Use
+      para páginas de detalhe / formulário onde a busca global não é a ação
+      primária.
+    </p>
+  </section>
+
+  <!-- ============ MINIMAL ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Mínimo</h2>
+      <small>marca + plano + avatar</small>
+    </div>
+    <div class="preview">
+      <MinimalRow client:load />
+    </div>
+    <p class="preview-caption">
+      Layout mínimo para onboarding, landings autenticadas e telas iniciais
+      onde TopBar serve só como assinatura da marca + identidade do usuário.
+    </p>
+  </section>
+
+  <!-- ============ STICKY ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Sticky</h2>
+      <small>sticky=true (default) · permanece visível ao rolar</small>
+    </div>
+    <div class="preview">
+      <StickyRow client:load />
+    </div>
+    <p class="preview-caption">
+      <code class="inline">sticky=true</code> aplica
+      <code class="inline">position: sticky; top: 0; z-index: 50</code> via
+      CVA. Para uma TopBar que rola com a página, passe
+      <code class="inline">sticky={`{false}`}</code> — o restante da chain de
+      classes permanece (surface, border, layout).
+    </p>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Source</h2>
+      <small>ui_kit/components/top-bar/index.tsx</small>
+    </div>
+    <HighlightedCode code={topBarSource} language="tsx" />
+  </section>
+</ComponentPreview>

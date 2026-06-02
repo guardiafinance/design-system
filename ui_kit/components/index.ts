@@ -55,6 +55,7 @@ export * from "./toast";
 export * from "./toggle";
 export * from "./toggle-group";
 export * from "./tooltip";
+export * from "./top-bar";
 export * from "./typography";
 export * from "./table";
 export * from "./custom-icons";
