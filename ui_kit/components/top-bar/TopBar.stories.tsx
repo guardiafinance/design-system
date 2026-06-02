@@ -46,7 +46,7 @@ function WordmarkLeft({
     <>
       <strong className="text-fg">Guardia</strong>
       {context ? (
-        <span className="text-fg/60 text-sm ml-2">/ {context}</span>
+        <span className="text-fg-muted text-sm ml-2">/ {context}</span>
       ) : null}
     </>
   );
@@ -54,9 +54,9 @@ function WordmarkLeft({
 
 function BreadcrumbLeft(): React.ReactElement {
   return (
-    <span className="text-fg/60 text-sm">
+    <span className="text-fg-muted text-sm">
       Empresas{" "}
-      <span className="text-fg/30 mx-1.5" aria-hidden="true">
+      <span className="text-fg-muted mx-1.5" aria-hidden="true">
         /
       </span>{" "}
       <strong className="text-fg font-semibold">Alfa Comércio LTDA</strong>
@@ -114,7 +114,7 @@ function PlanBadgeAndAvatar(): React.ReactElement {
 
 function Stub({ children }: { children?: React.ReactNode }): React.ReactElement {
   return (
-    <div className="min-h-[180px] bg-surface-2 text-fg/40 text-sm flex items-center justify-center">
+    <div className="min-h-[180px] bg-surface-2 text-fg-muted text-sm flex items-center justify-center">
       {children ?? "— conteúdo da página —"}
     </div>
   );
