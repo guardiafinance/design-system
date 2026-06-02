@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
+import { Bell, HelpCircle } from "lucide-react";
 
 import { TopBar } from "./index";
 import { Avatar, AvatarFallback } from "../avatar";
@@ -79,10 +80,10 @@ function HeaderActions(): React.ReactElement {
   return (
     <>
       <IconButton aria-label="Notificações" variant="ghost">
-        <span aria-hidden="true">🔔</span>
+        <Bell className="size-4" aria-hidden="true" />
       </IconButton>
       <IconButton aria-label="Ajuda" variant="ghost">
-        <span aria-hidden="true">?</span>
+        <HelpCircle className="size-4" aria-hidden="true" />
       </IconButton>
       <Avatar size="sm">
         <AvatarFallback aria-label="Luana Rocha">LR</AvatarFallback>

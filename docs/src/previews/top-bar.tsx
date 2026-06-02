@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Bell, HelpCircle } from "lucide-react";
 
 import { TopBar } from "@ds/components/top-bar";
 import { Avatar, AvatarFallback } from "@ds/components/avatar";
@@ -20,7 +21,7 @@ function WordmarkLeft({
     <>
       <strong className="text-fg">Guardia</strong>
       {context ? (
-        <span className="text-fg/60 text-sm ml-2">/ {context}</span>
+        <span className="text-fg-muted text-sm ml-2">/ {context}</span>
       ) : null}
     </>
   );
@@ -28,9 +29,9 @@ function WordmarkLeft({
 
 function BreadcrumbLeft(): React.ReactElement {
   return (
-    <span className="text-fg/60 text-sm">
+    <span className="text-fg-muted text-sm">
       Empresas{" "}
-      <span className="text-fg/30 mx-1.5" aria-hidden="true">
+      <span className="text-fg-muted mx-1.5" aria-hidden="true">
         /
       </span>{" "}
       <strong className="text-fg font-semibold">Alfa Comércio LTDA</strong>
@@ -53,10 +54,10 @@ function HeaderActions(): React.ReactElement {
   return (
     <>
       <IconButton aria-label="Notificações" variant="ghost">
-        <span aria-hidden="true">🔔</span>
+        <Bell className="size-4" aria-hidden="true" />
       </IconButton>
       <IconButton aria-label="Ajuda" variant="ghost">
-        <span aria-hidden="true">?</span>
+        <HelpCircle className="size-4" aria-hidden="true" />
       </IconButton>
       <Avatar size="sm">
         <AvatarFallback aria-label="Luana Rocha">LR</AvatarFallback>
@@ -69,7 +70,7 @@ function EntityActions(): React.ReactElement {
   return (
     <>
       <Button variant="ghost">Exportar</Button>
-      <Button variant="secondary">Ver histórico</Button>
+      <Button variant="outline">Ver histórico</Button>
       <Button>+ Novo lançamento</Button>
     </>
   );
@@ -92,7 +93,7 @@ function Stub({
   children?: React.ReactNode;
 }): React.ReactElement {
   return (
-    <div className="min-h-[140px] bg-surface-2 text-fg/40 text-xs flex items-center justify-center">
+    <div className="min-h-[140px] bg-surface-2 text-fg-muted text-xs flex items-center justify-center">
       {children ?? "— conteúdo da página —"}
     </div>
   );
