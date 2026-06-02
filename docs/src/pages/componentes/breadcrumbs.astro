@@ -1,0 +1,215 @@
+---
+import ComponentPreview from "../../layouts/ComponentPreview.astro";
+import HighlightedCode from "../../components/HighlightedCode.astro";
+import {
+  BasicRow,
+  WithIconRow,
+  TruncatedRow,
+  CustomSeparatorRow,
+  DeclarativeRow,
+} from "../../previews/breadcrumbs";
+import breadcrumbsSource from "@ds/components/breadcrumbs/index.tsx?raw";
+---
+
+<ComponentPreview
+  kicker="COMPONENTES · NAVIGATION"
+  title="Breadcrumbs"
+  group="Navigation"
+  storybookId="components-breadcrumbs--default"
+  sourcePath="ui_kit/components/breadcrumbs"
+  lede='Trilha de navegação hierárquica que sinaliza a posição do usuário na árvore de informação. Use Breadcrumbs em contextos hierárquicos profundos (conciliações, relatórios, configurações aninhadas) — para navegação primária prefira <code class="inline">&lt;Navbar&gt;</code> ou <code class="inline">&lt;Menu&gt;</code>.'
+>
+  <!-- ============ BASIC ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Padrão</h2>
+      <small>composição: Breadcrumbs · items</small>
+    </div>
+    <div class="preview">
+      <BasicRow client:load />
+    </div>
+    <p class="preview-caption">
+      A API imperativa <code class="inline">&lt;Breadcrumbs items=&#123;[...]&#125; /&gt;</code> aceita um array de itens <code class="inline">&#123; label, href?, onClick?, icon? &#125;</code>. O último item da trilha é renderizado como o destino atual (<code class="inline">&lt;BreadcrumbPage&gt;</code> com <code class="inline">aria-current="page"</code>).
+    </p>
+  </section>
+
+  <!-- ============ WITH ICON ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Com ícone</h2>
+      <small>icon: ReactNode opcional</small>
+    </div>
+    <div class="preview">
+      <WithIconRow client:load />
+    </div>
+    <p class="preview-caption">
+      O <code class="inline">icon</code> é renderizado antes do <code class="inline">label</code>. Use ícones Lucide ou qualquer <code class="inline">ReactNode</code> — herda <code class="inline">currentColor</code> e segue o token chain neutro do componente.
+    </p>
+  </section>
+
+  <!-- ============ TRUNCATED ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Truncação</h2>
+      <small>maxItems · ellipsis automática</small>
+    </div>
+    <div class="preview">
+      <TruncatedRow client:load />
+    </div>
+    <p class="preview-caption">
+      Quando <code class="inline">items.length &gt; maxItems</code>, o componente mantém o <strong>primeiro</strong> item (raiz) + <code class="inline">&lt;BreadcrumbEllipsis /&gt;</code> + os últimos <code class="inline">maxItems - 2</code> itens (próximos do contexto atual). Sem dropdown automático — para o pattern "ellipsis abre menu com elididos" componha com <code class="inline">&lt;Popover&gt;</code> no consumer.
+    </p>
+  </section>
+
+  <!-- ============ CUSTOM SEPARATOR ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Separator customizado</h2>
+      <small>separator: ReactNode</small>
+    </div>
+    <div class="preview">
+      <CustomSeparatorRow client:load />
+    </div>
+    <p class="preview-caption">
+      A prop <code class="inline">separator</code> substitui o <code class="inline">&lt;ChevronRight /&gt;</code> default. O wrapper aplica os atributos ARIA (<code class="inline">role="presentation"</code>, <code class="inline">aria-hidden="true"</code>) no <code class="inline">&lt;li&gt;</code> que envolve o separator — sempre invisível para screen readers.
+    </p>
+  </section>
+
+  <!-- ============ DECLARATIVE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Composição declarativa</h2>
+      <small>Breadcrumb · BreadcrumbList · BreadcrumbItem · BreadcrumbLink · BreadcrumbPage · BreadcrumbSeparator · BreadcrumbEllipsis</small>
+    </div>
+    <div class="preview">
+      <DeclarativeRow client:load />
+    </div>
+    <p class="preview-caption">
+      Para markup customizado (integração com router via <code class="inline">asChild</code>, dropdown elision custom, item com avatar), as 7 primitivas declarativas dão controle total sem perder o token contract. Paridade com Dialog / Popover / Toast.
+    </p>
+  </section>
+
+  <!-- ============ PROPS ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Props</h2>
+      <small>API pública</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Componente · Prop</th><th>Tipo</th><th>Default</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Breadcrumbs · items</td>
+            <td class="type">ReadonlyArray&lt;BreadcrumbsItem&gt;</td>
+            <td class="default">—</td>
+            <td class="desc">Lista ordenada de itens. Último item vira current page.</td>
+          </tr>
+          <tr>
+            <td class="name">Breadcrumbs · maxItems</td>
+            <td class="type">number</td>
+            <td class="default">undefined (sem truncar)</td>
+            <td class="desc">Máximo de itens visíveis. Excedentes viram <code class="inline">&lt;BreadcrumbEllipsis /&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">Breadcrumbs · separator</td>
+            <td class="type">ReactNode</td>
+            <td class="default">&lt;ChevronRight /&gt;</td>
+            <td class="desc">Substitui o separator default entre itens.</td>
+          </tr>
+          <tr>
+            <td class="name">Breadcrumbs · aria-label</td>
+            <td class="type">string</td>
+            <td class="default">"breadcrumb"</td>
+            <td class="desc">Override do label ARIA do <code class="inline">&lt;nav&gt;</code> (útil quando há múltiplas trilhas na mesma página).</td>
+          </tr>
+          <tr>
+            <td class="name">BreadcrumbsItem · label</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Conteúdo visível do item (obrigatório).</td>
+          </tr>
+          <tr>
+            <td class="name">BreadcrumbsItem · href</td>
+            <td class="type">string</td>
+            <td class="default">—</td>
+            <td class="desc">Quando presente, item renderiza como link.</td>
+          </tr>
+          <tr>
+            <td class="name">BreadcrumbsItem · onClick</td>
+            <td class="type">() =&gt; void</td>
+            <td class="default">—</td>
+            <td class="desc">Handler de click. Sem <code class="inline">href</code>, renderiza <code class="inline">&lt;a href="#"&gt;</code> com <code class="inline">preventDefault()</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">BreadcrumbsItem · icon</td>
+            <td class="type">ReactNode</td>
+            <td class="default">—</td>
+            <td class="desc">Ícone renderizado antes do label.</td>
+          </tr>
+          <tr>
+            <td class="name">BreadcrumbLink · asChild</td>
+            <td class="type">boolean</td>
+            <td class="default">false</td>
+            <td class="desc">Slot pattern (Radix). Use para integrar com routers (<code class="inline">&lt;Link&gt;</code> do Next/React Router).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ KEYBOARD ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Teclado</h2>
+      <small>navegação por links</small>
+    </div>
+    <div class="props">
+      <table>
+        <thead>
+          <tr><th>Tecla</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Tab</td><td class="desc">Foca o próximo link da trilha. Foco visível via <code class="inline">ring-ring</code>.</td></tr>
+          <tr><td class="name">Shift + Tab</td><td class="desc">Foca o link anterior.</td></tr>
+          <tr><td class="name">Enter</td><td class="desc">Ativa o link em foco (navegação ou <code class="inline">onClick</code>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ SOURCE ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Código-fonte</h2>
+      <small>ui_kit/components/breadcrumbs/index.tsx</small>
+    </div>
+    <HighlightedCode
+      code={breadcrumbsSource}
+      language="tsx"
+      filename="ui_kit/components/breadcrumbs/index.tsx"
+      maxHeight="520px"
+      showLineNumbers
+    />
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section class="sec">
+    <div class="sec-hdr">
+      <h2>Acessibilidade</h2>
+      <small>WCAG 2.1 AA · WAI-ARIA APG breadcrumb</small>
+    </div>
+    <div class="a11y">
+      <ul>
+        <li><span><b>Container</b>: <code class="inline">&lt;nav aria-label="breadcrumb"&gt;</code> sinaliza a região de navegação para screen readers; override via prop quando há múltiplas trilhas.</span></li>
+        <li><span><b>Lista ordenada</b>: <code class="inline">&lt;ol&gt;</code> preserva a semântica de hierarquia (raiz → contexto atual).</span></li>
+        <li><span><b>Current page</b>: <code class="inline">&lt;BreadcrumbPage&gt;</code> renderiza <code class="inline">aria-current="page"</code> + <code class="inline">aria-disabled="true"</code> — destino atual não é link.</span></li>
+        <li><span><b>Separators + ellipsis</b>: <code class="inline">role="presentation"</code> + <code class="inline">aria-hidden="true"</code> — invisíveis para screen readers. Ellipsis carrega <code class="inline">&lt;span class="sr-only"&gt;More&lt;/span&gt;</code> para anunciar overflow.</span></li>
+        <li><span><b>Foco visível</b>: <code class="inline">focus-visible:ring-2</code> em todos os links — respeita <code class="inline">lex-frontend-accessibility</code> regra 2.3.</span></li>
+        <li><span><b>jest-axe</b>: cobre Default + Truncated + Declarative + CustomSeparator + ClickHandler em <code class="inline">light</code> e <code class="inline">dark</code> (10 invocações axe-core; ver <code class="inline">Breadcrumbs.test.tsx</code>).</span></li>
+      </ul>
+    </div>
+  </section>
+</ComponentPreview>
