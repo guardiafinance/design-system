@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Slash } from "lucide-react";
+import { Home, Slash } from "lucide-react";
 
 import {
   Breadcrumbs,
@@ -57,15 +57,7 @@ export const WithIcon: Story = {
   render: () => (
     <Breadcrumbs
       items={[
-        {
-          label: "Início",
-          href: "/",
-          icon: (
-            <span aria-hidden className="size-3.5 inline-block">
-              ▾
-            </span>
-          ),
-        },
+        { label: "Início", href: "/", icon: <Home className="size-3.5" /> },
         { label: "Conciliação", href: "/c" },
         { label: "Itaú · maio/2026" },
       ]}

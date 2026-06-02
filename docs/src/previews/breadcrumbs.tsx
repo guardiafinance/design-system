@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Slash } from "lucide-react";
+import { Home, Slash } from "lucide-react";
 
 import {
   Breadcrumbs,
@@ -39,15 +39,7 @@ export function WithIconRow(): React.ReactElement {
     <div className="flex flex-col gap-3 py-4">
       <Breadcrumbs
         items={[
-          {
-            label: "Início",
-            href: "/",
-            icon: (
-              <span aria-hidden className="size-3.5 inline-flex items-center">
-                ▾
-              </span>
-            ),
-          },
+          { label: "Início", href: "/", icon: <Home className="size-3.5" /> },
           { label: "Conciliação", href: "/c" },
           { label: "Itaú · maio/2026" },
         ]}
