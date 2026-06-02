@@ -95,7 +95,7 @@ function EntityActions(): React.ReactElement {
   return (
     <>
       <Button variant="ghost">Exportar</Button>
-      <Button variant="secondary">Ver histórico</Button>
+      <Button variant="outline">Ver histórico</Button>
       <Button>+ Novo lançamento</Button>
     </>
   );
